@@ -20,6 +20,7 @@ requires = [
     'colander',
     'colanderalchemy',
     'deform',
+    'psycopg2',
     ]
 
 setup(name='c2cgeoform',
