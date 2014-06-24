@@ -21,6 +21,7 @@ requires = [
     'colanderalchemy',
     'deform',
     'psycopg2',
+    'geoalchemy2',
     ]
 
 setup(name='c2cgeoform',
