@@ -15,6 +15,10 @@ from ..models import (
     Base,
     )
 
+# FIXME this is needed for now so the Person table is in the
+# metadata object when create_all is called.
+from ..pully_demo import Person  # flake8: noqa
+
 
 def usage(argv):
     cmd = os.path.basename(argv[0])
