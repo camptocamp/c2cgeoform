@@ -5,10 +5,13 @@ from sqlalchemy import (
     Boolean
     )
 
+import geoalchemy2
+
 import colander
 import deform
 
 from .schema import register_schema
+from .ext import colander_ext
 from .models import Base
 
 
@@ -41,6 +44,11 @@ class Person(Base):
         'colanderalchemy': {
             'title': 'Validation',
             'label': 'Validated'
+        }})
+    geom = Column(geoalchemy2.Geometry('POINT'), info={
+        'colanderalchemy': {
+            'title': 'Location',
+            'typ': colander_ext.Geometry
         }})
 
 register_schema('persons', Person, excludes_user=['validated'])
