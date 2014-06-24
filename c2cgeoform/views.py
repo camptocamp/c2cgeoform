@@ -1,36 +1,74 @@
-from pyramid.response import Response
 from pyramid.view import view_config
+from deform import Form, ValidationFailure
 
-from sqlalchemy.exc import DBAPIError
-
-from .models import (
-    DBSession,
-    MyModel,
-    )
+from .models import DBSession
+from .schema import forms
 
 
-@view_config(route_name='home', renderer='templates/mytemplate.pt')
-def my_view(request):
-    try:
-        one = DBSession.query(MyModel).filter(MyModel.name == 'one').first()
-    except DBAPIError:
-        return Response(conn_err_msg, content_type='text/plain', status_int=500)
-    return {'one': one, 'project': 'c2cgeoform'}
+def _get_schema(request):
+    schema_name = request.matchdict['schema']
+
+    if schema_name in forms:
+        return forms.get(schema_name)
+    else:
+        raise RuntimeError('invalid schema ' + schema_name)
 
 
-conn_err_msg = """\
-Pyramid is having a problem using your SQL database.  The problem
-might be caused by one of the following things:
+@view_config(route_name='form', renderer='templates/form.mako')
+def form(request):
+    geo_form_schema = _get_schema(request)
 
-1.  You may need to run the "initialize_c2cgeoform_db" script
-    to initialize your database tables.  Check your virtual
-    environment's "bin" directory for this script and try to run it.
+    form = Form(geo_form_schema.schema_user, buttons=('submit',))
 
-2.  Your database server may not be running.  Check that the
-    database server referred to by the "sqlalchemy.url" setting in
-    your "development.ini" file is running.
+    if 'submit' in request.POST:
+        form_data = request.POST.items()
 
-After you fix the problem, please restart the Pyramid application to
-try it again.
-"""
+        try:
+            obj_dict = form.validate(form_data)
+        except ValidationFailure, e:
+            return {'form': e.render()}
 
+        obj = geo_form_schema.schema_user.objectify(obj_dict)
+        DBSession.add(obj)
+        DBSession.flush()
+
+        return {'form': form.render(
+            geo_form_schema.schema_user.dictify(obj), readonly=True)}
+
+    return {'form': form.render()}
+
+
+@view_config(route_name='list', renderer='templates/list.mako')
+def list(request):
+    geo_form_schema = _get_schema(request)
+    entities = DBSession.query(geo_form_schema.model).all()
+    return {'entities': entities, 'schema': geo_form_schema}
+
+
+@view_config(route_name='edit', renderer='templates/edit.mako')
+def edit(request):
+    geo_form_schema = _get_schema(request)
+    form = Form(geo_form_schema.schema_admin, buttons=('submit',))
+
+    if 'submit' in request.POST:
+        form_data = request.POST.items()
+
+        try:
+            obj_dict = form.validate(form_data)
+        except ValidationFailure, e:
+            return {'form': e.render(), 'schema': geo_form_schema}
+
+        obj = geo_form_schema.schema_admin.objectify(obj_dict)
+        DBSession.merge(obj)
+        DBSession.flush()
+
+        return {
+            'form': form.render(geo_form_schema.schema_admin.dictify(obj)),
+            'schema': geo_form_schema}
+
+    id = request.matchdict['id']
+    obj = DBSession.query(geo_form_schema.model).get(id)
+
+    return {
+        'form': form.render(geo_form_schema.schema_admin.dictify(obj)),
+        'schema': geo_form_schema}

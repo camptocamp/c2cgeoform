@@ -21,6 +21,12 @@
       <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
       <script src="//oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
     <![endif]-->
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="/static-deform/css/form.css" type="text/css" />
+    <!-- JavaScript -->
+    <script type="text/javascript" src="/static-deform/scripts/jquery-2.0.3.min.js"></script>
+    <script type="text/javascript" src="/static-deform/scripts/deform.js"></script>
   </head>
 
   <body>
@@ -33,8 +39,7 @@
           </div>
           <div class="col-md-10">
             <div class="content">
-              <h1><span class="font-semi-bold">Pyramid</span> <span class="smaller">Alchemy scaffold</span></h1>
-              <p class="lead">Welcome to <span class="font-normal">${project}</span>, an&nbsp;application generated&nbsp;by<br>the <span class="font-normal">Pyramid Web Framework 1.5.1</span>.</p>
+            ${self.body()}
             </div>
           </div>
         </div>
@@ -62,5 +67,6 @@
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="//oss.maxcdn.com/libs/jquery/1.10.2/jquery.min.js"></script>
     <script src="//oss.maxcdn.com/libs/twitter-bootstrap/3.0.3/js/bootstrap.min.js"></script>
+    <script type="text/javascript">deform.load()</script>
   </body>
 </html>
