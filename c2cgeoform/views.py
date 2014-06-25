@@ -11,7 +11,7 @@ def _get_schema(request):
     if schema_name in forms:
         return forms.get(schema_name)
     else:
-        raise RuntimeError('invalid schema ' + schema_name)
+        raise RuntimeError('invalid schema \'' + schema_name + '\'')
 
 
 @view_config(route_name='form', renderer='templates/form.mako')
