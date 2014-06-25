@@ -45,10 +45,10 @@ class Person(Base):
             'title': 'Validation',
             'label': 'Validated'
         }})
-    geom = Column(geoalchemy2.Geometry('POINT'), info={
+    geom = Column(geoalchemy2.Geometry('POINT', 4326), info={
         'colanderalchemy': {
             'title': 'Location',
-            'typ': colander_ext.Geometry
+            'typ': colander_ext.Geometry('POINT', 4326)
         }})
 
 register_schema('persons', Person, excludes_user=['validated'])
