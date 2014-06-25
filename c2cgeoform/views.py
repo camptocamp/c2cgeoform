@@ -14,7 +14,7 @@ def _get_schema(request):
         raise RuntimeError('invalid schema \'' + schema_name + '\'')
 
 
-@view_config(route_name='form', renderer='templates/form.mako')
+@view_config(route_name='form', renderer='templates/site/form.mako')
 def form(request):
     geo_form_schema = _get_schema(request)
 
@@ -38,14 +38,14 @@ def form(request):
     return {'form': form.render()}
 
 
-@view_config(route_name='list', renderer='templates/list.mako')
+@view_config(route_name='list', renderer='templates/site/list.mako')
 def list(request):
     geo_form_schema = _get_schema(request)
     entities = DBSession.query(geo_form_schema.model).all()
     return {'entities': entities, 'schema': geo_form_schema}
 
 
-@view_config(route_name='edit', renderer='templates/edit.mako')
+@view_config(route_name='edit', renderer='templates/site/edit.mako')
 def edit(request):
     geo_form_schema = _get_schema(request)
     form = Form(geo_form_schema.schema_admin, buttons=('submit',))
