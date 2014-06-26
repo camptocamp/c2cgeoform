@@ -11,7 +11,7 @@ import colander
 import deform
 
 from .schema import register_schema
-from .ext import colander_ext
+from .ext import colander_ext, deform_ext
 from .models import Base
 
 
@@ -48,7 +48,8 @@ class Person(Base):
     geom = Column(geoalchemy2.Geometry('POINT', 4326, management=True), info={
         'colanderalchemy': {
             'title': 'Location',
-            'typ': colander_ext.Geometry('POINT', 4326)
+            'typ': colander_ext.Geometry('POINT', 4326),
+            'widget': deform_ext.MapWidget()
         }})
 
 register_schema('persons', Person, excludes_user=['validated'])

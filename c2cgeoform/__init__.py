@@ -23,4 +23,18 @@ def main(global_config, **settings):
     config.add_route('edit', '/{schema}/{id}')
 
     config.scan()
+
+    set_widget_template_path()
+
     return config.make_wsgi_app()
+
+
+def set_widget_template_path():
+    from pkg_resources import resource_filename
+    from deform import Form
+
+    deform_templates = resource_filename('deform', 'templates')
+    custom_templates = resource_filename('c2cgeoform', 'templates/widgets')
+    search_path = (custom_templates, deform_templates)
+
+    Form.set_zpt_renderer(search_path)
