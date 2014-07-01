@@ -32,7 +32,7 @@ class Geometry(object):
         Python data structure (a appstruct).
         Or: Converts a GeoJSON string into a `WKBElement`.
         """
-        if cstruct is null:
+        if cstruct is null or cstruct == '':
             return null
         try:
             geometry = shape(json.loads(cstruct))

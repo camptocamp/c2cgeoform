@@ -34,6 +34,7 @@ class TestColanderExt(unittest.TestCase):
         geomSchema = Geometry()
 
         self.assertEquals(null, geomSchema.deserialize({}, null))
+        self.assertEquals(null, geomSchema.deserialize({}, ''))
 
     def test_deserialize_valid_geojson(self):
         from c2cgeoform.ext.colander_ext import Geometry
