@@ -1,6 +1,9 @@
+
 from colander import (null, Invalid)
 
-from geoalchemy2 import WKBElement
+from c2cgeoform.models import DBSession
+
+from geoalchemy2 import WKBElement, functions
 from geoalchemy2.shape import to_shape, from_shape
 from shapely.geometry import mapping, shape
 import json
@@ -9,9 +12,10 @@ import json
 class Geometry(object):
     """
     """
-    def __init__(self, geometry_type='GEOMETRY', srid=-1):
+    def __init__(self, geometry_type='GEOMETRY', srid=-1, map_srid=-1):
         self.geometry_type = geometry_type.upper()
         self.srid = int(srid)
+        self.map_srid = int(map_srid)
 
     def serialize(self, node, appstruct):
         """
@@ -22,7 +26,12 @@ class Geometry(object):
         if appstruct is null:
             return null
         if isinstance(appstruct, WKBElement):
-            geometry = to_shape(appstruct)
+            wkb = appstruct
+            if self.srid != self.map_srid and wkb.srid != self.map_srid:
+                wkb = DBSession.scalar(
+                    functions.ST_Transform(wkb, self.map_srid))
+
+            geometry = to_shape(wkb)
             return json.dumps(mapping(geometry))
         raise Invalid(node, 'Unexpected value: %r' % appstruct)
 
@@ -35,10 +44,18 @@ class Geometry(object):
         if cstruct is null or cstruct == '':
             return null
         try:
-            geometry = shape(json.loads(cstruct))
+            geometry = from_shape(
+                shape(json.loads(cstruct)),
+                srid=self.map_srid)
         except Exception:
             raise Invalid(node, 'Invalid geometry: %r' % cstruct)
-        return from_shape(geometry)
+
+        if self.srid != self.map_srid:
+            geometry = DBSession.scalar(
+                functions.ST_Transform(geometry, self.srid))
+            geometry = WKBElement(geometry.data, srid=self.srid)
+
+        return geometry
 
     def cstruct_children(self, node, cstruct):
         return []

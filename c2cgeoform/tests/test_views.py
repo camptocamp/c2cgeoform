@@ -1,34 +1,20 @@
 import unittest
-import os
 from pyramid import testing
-from pyramid.paster import get_appsettings
-from sqlalchemy import engine_from_config
 
-from c2cgeoform.models import (DBSession, Base)
+from c2cgeoform.tests import (setUp, tearDown, cleanup)
+from c2cgeoform.models import DBSession
 
 
 class TestView(unittest.TestCase):
     def setUp(self):
-        curdir = os.path.dirname(os.path.abspath(__file__))
-        configfile = os.path.realpath(
-            os.path.join(curdir, '../../development.ini'))
-        settings = get_appsettings(configfile)
-        engine = engine_from_config(settings, 'sqlalchemy.')
-        DBSession.configure(bind=engine)
-
-        from models_test import Person  # noqa
-        Base.metadata.create_all(engine)
-        self.cleanup()
+        setUp()
 
     def tearDown(self):
-        self.cleanup()
-
-        DBSession.remove()
+        tearDown()
         testing.tearDown()
 
     def cleanup(self):
-        from models_test import Person
-        DBSession.query(Person).delete()
+        cleanup()
 
     def test_form_unknown_schema(self):
         from c2cgeoform.views import form

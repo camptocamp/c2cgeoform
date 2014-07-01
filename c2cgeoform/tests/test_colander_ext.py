@@ -1,9 +1,23 @@
 import unittest
+from pyramid import testing
 from colander import (null, Invalid)
 from geoalchemy2 import WKBElement
+from geoalchemy2.shape import to_shape, from_shape
+import json
+
+from c2cgeoform.tests import (setUp, tearDown, cleanup)
 
 
 class TestColanderExt(unittest.TestCase):
+    def setUp(self):
+        setUp()
+
+    def tearDown(self):
+        tearDown()
+        testing.tearDown()
+
+    def cleanup(self):
+        cleanup()
 
     def test_serialize_null(self):
         from c2cgeoform.ext.colander_ext import Geometry
@@ -16,10 +30,21 @@ class TestColanderExt(unittest.TestCase):
         geomSchema = Geometry()
 
         from shapely.geometry.point import Point
-        wkb = WKBElement(Point(1.0, 2.0).wkb)
+        wkb = from_shape(Point(1.0, 2.0))
         self.assertEquals(
             '{"type": "Point", "coordinates": [1.0, 2.0]}',
             geomSchema.serialize({}, wkb))
+
+    def test_serialize_reproject(self):
+        from c2cgeoform.ext.colander_ext import Geometry
+        geomSchema = Geometry(srid=4326, map_srid=3857)
+
+        from shapely.geometry.point import Point
+        wkb = from_shape(Point(1.0, 2.0), 4326)
+        geoJson = json.loads(geomSchema.serialize({}, wkb))
+        self.assertEquals('Point', geoJson['type'])
+        self.assertAlmostEqual(111319.49079327231, geoJson['coordinates'][0])
+        self.assertAlmostEqual(222684.20850554455, geoJson['coordinates'][1])
 
     def test_serialize_invalid(self):
         from c2cgeoform.ext.colander_ext import Geometry
@@ -46,6 +71,20 @@ class TestColanderExt(unittest.TestCase):
         wkb = geomSchema.deserialize(
             {}, '{"type": "Point", "coordinates": [1.0, 2.0]}')
         self.assertEquals(expected_wkb.desc, wkb.desc)
+
+    def test_deserialize_reproject(self):
+        from c2cgeoform.ext.colander_ext import Geometry
+        geomSchema = Geometry(srid=4326, map_srid=3857)
+
+        wkb = geomSchema.deserialize(
+            {},
+            '{"type": "Point", '
+            '"coordinates": [111319.49079327231, 222684.20850554455]}')
+        self.assertEquals(4326, wkb.srid)
+
+        shape = to_shape(wkb)
+        self.assertAlmostEqual(1.0, shape.x)
+        self.assertAlmostEqual(2.0, shape.y)
 
     def test_serialize_invalid_wrong_type(self):
         from c2cgeoform.ext.colander_ext import Geometry

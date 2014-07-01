@@ -48,7 +48,7 @@ class Person(Base):
     geom = Column(geoalchemy2.Geometry('POINT', 4326, management=True), info={
         'colanderalchemy': {
             'title': 'Location',
-            'typ': colander_ext.Geometry('POINT', 4326),
+            'typ': colander_ext.Geometry('POINT', srid=4326, map_srid=3857),
             'widget': deform_ext.MapWidget()
         }})
 
