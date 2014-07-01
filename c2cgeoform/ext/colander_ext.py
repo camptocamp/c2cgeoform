@@ -39,3 +39,6 @@ class Geometry(object):
         except Exception:
             raise Invalid(node, 'Invalid geometry: %r' % cstruct)
         return from_shape(geometry)
+
+    def cstruct_children(self, node, cstruct):
+        return []
