@@ -22,7 +22,8 @@ requires = [
     'deform',
     'psycopg2',
     'geoalchemy2',
-    'shapely'
+    'shapely',
+    'pyproj'
     ]
 
 setup(name='c2cgeoform',

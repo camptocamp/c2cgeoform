@@ -1,11 +1,12 @@
 
 from colander import (null, Invalid)
 
-from c2cgeoform.models import DBSession
-
-from geoalchemy2 import WKBElement, functions
+from geoalchemy2 import WKBElement
 from geoalchemy2.shape import to_shape, from_shape
 from shapely.geometry import mapping, shape
+from shapely.ops import transform
+from functools import partial
+import pyproj
 import json
 
 
@@ -16,6 +17,18 @@ class Geometry(object):
         self.geometry_type = geometry_type.upper()
         self.srid = int(srid)
         self.map_srid = int(map_srid)
+        if self.map_srid == -1:
+            self.map_srid = self.srid
+
+        if self.srid != self.map_srid:
+            self.project_db_to_map = partial(
+                pyproj.transform,
+                pyproj.Proj(init='epsg:' + str(self.srid)),
+                pyproj.Proj(init='epsg:' + str(self.map_srid)))
+            self.project_map_to_db = partial(
+                pyproj.transform,
+                pyproj.Proj(init='epsg:' + str(self.map_srid)),
+                pyproj.Proj(init='epsg:' + str(self.srid)))
 
     def serialize(self, node, appstruct):
         """
@@ -26,12 +39,10 @@ class Geometry(object):
         if appstruct is null:
             return null
         if isinstance(appstruct, WKBElement):
-            wkb = appstruct
-            if self.srid != self.map_srid and wkb.srid != self.map_srid:
-                wkb = DBSession.scalar(
-                    functions.ST_Transform(wkb, self.map_srid))
+            geometry = to_shape(appstruct)
+            if self.srid != self.map_srid and appstruct.srid != self.map_srid:
+                geometry = transform(self.project_db_to_map, geometry)
 
-            geometry = to_shape(wkb)
             return json.dumps(mapping(geometry))
         raise Invalid(node, 'Unexpected value: %r' % appstruct)
 
@@ -44,18 +55,14 @@ class Geometry(object):
         if cstruct is null or cstruct == '':
             return null
         try:
-            geometry = from_shape(
-                shape(json.loads(cstruct)),
-                srid=self.map_srid)
+            geometry = shape(json.loads(cstruct))
         except Exception:
             raise Invalid(node, 'Invalid geometry: %r' % cstruct)
 
         if self.srid != self.map_srid:
-            geometry = DBSession.scalar(
-                functions.ST_Transform(geometry, self.srid))
-            geometry = WKBElement(geometry.data, srid=self.srid)
+            geometry = transform(self.project_map_to_db, geometry)
 
-        return geometry
+        return from_shape(geometry, srid=self.srid)
 
     def cstruct_children(self, node, cstruct):
         return []
