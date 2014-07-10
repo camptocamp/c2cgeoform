@@ -1,6 +1,6 @@
 import unittest
 from colander import (null, Invalid)
-from geoalchemy2 import (WKTElement, WKBElement)
+from geoalchemy2 import WKBElement
 
 
 class TestColanderExt(unittest.TestCase):
