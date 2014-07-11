@@ -15,7 +15,7 @@ class Geometry(object):
 
     def serialize(self, node, appstruct):
         """
-        In Colander speak: Converts a Python data structure (an appstruct) into 
+        In Colander speak: Converts a Python data structure (an appstruct) into
         a serialization (a cstruct).
         Or: Converts a `WKBElement` into a GeoJSON string.
         """
@@ -28,8 +28,8 @@ class Geometry(object):
 
     def deserialize(self, node, cstruct):
         """
-        In Colander speak: Converts a serialized value (a cstruct) into a Python
-        data structure (a appstruct).
+        In Colander speak: Converts a serialized value (a cstruct) into a
+        Python data structure (a appstruct).
         Or: Converts a GeoJSON string into a `WKBElement`.
         """
         if cstruct is null:
