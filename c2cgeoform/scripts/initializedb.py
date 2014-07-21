@@ -17,7 +17,7 @@ from ..models import (
 
 # FIXME this is needed for now so the Person table is in the
 # metadata object when create_all is called.
-from ..pully_demo import Person  # flake8: noqa
+from ..pully_demo import ExcavationPermission  # flake8: noqa
 
 
 def usage(argv):
@@ -36,4 +36,5 @@ def main(argv=sys.argv):
     settings = get_appsettings(config_uri, options=options)
     engine = engine_from_config(settings, 'sqlalchemy.')
     DBSession.configure(bind=engine)
+    # Base.metadata.drop_all(engine)
     Base.metadata.create_all(engine)

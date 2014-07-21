@@ -6,7 +6,8 @@ class GeoFormSchema():
     def __init__(
             self, name, model,
             includes_user=None, excludes_user=None,
-            includes_admin=None, excludes_admin=None):
+            includes_admin=None, excludes_admin=None,
+            templates_user=None, templates_admin=None):
         self.name = name
         self.model = model
         self.schema_user = SQLAlchemySchemaNode(
@@ -15,6 +16,8 @@ class GeoFormSchema():
         self.schema_admin = SQLAlchemySchemaNode(
             self.model,
             includes=includes_admin, excludes=excludes_admin)
+        self.templates_user = templates_user
+        self.templates_admin = templates_admin
 
         meta_model = class_mapper(model)
         if len(meta_model.primary_key) != 1:
@@ -29,8 +32,10 @@ forms = {}
 def register_schema(
         name, model,
         includes_user=None, excludes_user=None,
-        includes_admin=None, excludes_admin=None):
+        includes_admin=None, excludes_admin=None,
+        templates_user=None, templates_admin=None):
     schema = GeoFormSchema(
         name, model, includes_user, excludes_user,
-        includes_admin, excludes_admin)
+        includes_admin, excludes_admin,
+        templates_user, templates_admin)
     forms[name] = schema
