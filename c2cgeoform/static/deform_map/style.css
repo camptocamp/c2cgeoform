@@ -1,0 +1,99 @@
+/* Toolbar Control */
+.toolbar-control {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: rgba(0, 60, 136, 0.5);
+  padding: 0px;
+}
+.toolbar-control:hover {
+  background: rgba(0, 60, 136, 0.6);
+}
+
+/* Common Edit Control */
+.ol-control button.edit-control {
+  margin: 2px;
+  position: relative;
+/*  position: relative;*/
+/*  background: rgba(0, 60, 136, 0.5);*/
+/*  border-radius: 4px;
+  padding: 1px;
+  margin-bottom: 2px;*/
+}
+button.edit-control {
+  height: 24px;
+  width: 24px;
+}
+.ol-touch button.edit-control {
+  height: 30px;
+  width: 30px;
+}
+
+.toolbar-control .ol-has-tooltip:hover [role=tooltip],
+.toolbar-control .ol-has-tooltip:focus [role=tooltip] {
+  right: 2.1em;
+  top: 0.1em;
+  left: auto;
+  border-radius: 4px 0 0 4px;
+  padding: 2px;
+}
+
+/* Draw Point Control */
+.ol-control button.draw-point {
+  background: url("icons/glyphicons_242_google_maps.png") #FFFFFF center no-repeat;
+}
+.ol-control button.draw-point[activecontrol=active],
+.ol-control button.draw-point[activecontrol=active]:hover,
+.ol-control button.draw-point[activecontrol=active]:focus {
+  background: url("icons/glyphicons_242_google_maps.png") #BDBDBD center no-repeat;
+}
+.ol-control button.draw-point:hover, .ol-control button.draw-point:focus {
+  background: url("icons/glyphicons_242_google_maps.png") #F4F4F4 center no-repeat;
+}
+
+/* Draw Line Control */
+.ol-control button.draw-line {
+  background: url("icons/glyphicons_097_vector_path_line.png") #FFFFFF center no-repeat;
+}
+.ol-control button.draw-line[activecontrol=active],
+.ol-control button.draw-line[activecontrol=active]:hover,
+.ol-control button.draw-line[activecontrol=active]:focus {
+  background: url("icons/glyphicons_097_vector_path_line.png") #BDBDBD center no-repeat;
+}
+.ol-control button.draw-line:hover, .ol-control button.draw-line:focus {
+  background: url("icons/glyphicons_097_vector_path_line.png") #F4F4F4 center no-repeat;
+}
+
+/* Draw Polygon Control */
+.ol-control button.draw-polygon {
+  background: url("icons/glyphicons_096_vector_path_polygon.png") #FFFFFF center no-repeat;
+}
+.ol-control button.draw-polygon[activecontrol=active],
+.ol-control button.draw-polygon[activecontrol=active]:hover,
+.ol-control button.draw-polygon[activecontrol=active]:focus {
+  background: url("icons/glyphicons_096_vector_path_polygon.png") #BDBDBD center no-repeat;
+}
+.ol-control button.draw-polygon:hover, .ol-control button.draw-polygon:focus {
+  background: url("icons/glyphicons_096_vector_path_polygon.png") #F4F4F4 center no-repeat;
+}
+
+/* Modify Control */
+.ol-control button.modify {
+  background: url("icons/glyphicons_150_edit.png") #FFFFFF center no-repeat;
+}
+.ol-control button.modify[activecontrol=active],
+.ol-control button.modify[activecontrol=active]:hover,
+.ol-control button.modify[activecontrol=active]:focus {
+  background: url("icons/glyphicons_150_edit.png") #BDBDBD center no-repeat;
+}
+.ol-control button.modify:hover, .ol-control button.modify:focus {
+  background: url("icons/glyphicons_150_edit.png") #F4F4F4 center no-repeat;
+}
+
+/* Clear Features Control */
+.ol-control button.clear-features {
+  background: url("icons/glyphicons_197_remove.png") #FFFFFF center no-repeat;
+}
+.ol-control button.clear-features:hover, .ol-control button.clear-features:focus {
+  background: url("icons/glyphicons_197_remove.png") #F4F4F4 center no-repeat;
+}

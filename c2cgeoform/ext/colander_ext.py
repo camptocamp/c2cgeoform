@@ -55,6 +55,8 @@ class Geometry(object):
         if cstruct is null or cstruct == '':
             return null
         try:
+            # TODO Shapely does not support loading GeometryCollections from
+            # GeoJSON, see https://github.com/Toblerity/Shapely/issues/115
             geometry = shape(json.loads(cstruct))
         except Exception:
             raise Invalid(node, 'Invalid geometry: %r' % cstruct)

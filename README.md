@@ -12,3 +12,8 @@ Getting Started
 
 - $VENV/bin/pserve development.ini
 
+Copyright
+----------
+c2cgeoform makes use of the icons by [GLYPHICONS](http://glyphicons.com).
+Make sure to comply with the [usage terms](http://glyphicons.com/license/) when
+utilizing c2cgeoform.

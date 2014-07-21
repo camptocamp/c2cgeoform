@@ -16,7 +16,7 @@ def main(global_config, **settings):
     config = Configurator(settings=settings)
     config.include('pyramid_mako')
     config.add_static_view('static', 'static', cache_max_age=3600)
-    config.add_static_view('static-deform', 'deform:static')
+    config.add_static_view('deform:static', 'deform:static')
 
     config.add_route('form', '/{schema}/form')
     config.add_route('list', '/{schema}')
@@ -31,10 +31,19 @@ def main(global_config, **settings):
 
 def set_widget_template_path():
     from pkg_resources import resource_filename
-    from deform import Form
+    from deform import (Form, widget)
 
     deform_templates = resource_filename('deform', 'templates')
     custom_templates = resource_filename('c2cgeoform', 'templates/widgets')
     search_path = (custom_templates, deform_templates)
-
     Form.set_zpt_renderer(search_path)
+
+    registry = widget.ResourceRegistry()
+    registry.set_js_resources('json2', None, 'static/js/json2.min.js')
+    registry.set_js_resources('openlayers', '3.0.0', 'static/js/ol.js')
+    registry.set_css_resources('openlayers', '3.0.0', 'static/js/ol.css')
+    registry.set_js_resources(
+        'c2cgeoform.deform_map', None, 'static/deform_map/controls.js')
+    registry.set_css_resources(
+        'c2cgeoform.deform_map', None, 'static/deform_map/style.css')
+    Form.set_default_resource_registry(registry)
