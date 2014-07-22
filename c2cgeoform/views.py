@@ -26,16 +26,19 @@ def form(request):
         try:
             obj_dict = form.validate(form_data)
         except ValidationFailure, e:
-            return {'form': e.render()}
+            rendered = e.render()
+        else:
+            obj = geo_form_schema.schema_user.objectify(obj_dict)
+            DBSession.add(obj)
+            DBSession.flush()
 
-        obj = geo_form_schema.schema_user.objectify(obj_dict)
-        DBSession.add(obj)
-        DBSession.flush()
+            rendered = form.render(
+                geo_form_schema.schema_user.dictify(obj), readonly=True)
+    else:
+        rendered = form.render()
 
-        return {'form': form.render(
-            geo_form_schema.schema_user.dictify(obj), readonly=True)}
-
-    return {'form': form.render()}
+    return {'form': rendered,
+            'deform_dependencies': form.get_widget_resources()}
 
 
 @view_config(route_name='list', renderer='templates/site/list.mako')
@@ -56,19 +59,18 @@ def edit(request):
         try:
             obj_dict = form.validate(form_data)
         except ValidationFailure, e:
-            return {'form': e.render(), 'schema': geo_form_schema}
-
-        obj = geo_form_schema.schema_admin.objectify(obj_dict)
-        DBSession.merge(obj)
-        DBSession.flush()
-
-        return {
-            'form': form.render(geo_form_schema.schema_admin.dictify(obj)),
-            'schema': geo_form_schema}
-
-    id = request.matchdict['id']
-    obj = DBSession.query(geo_form_schema.model).get(id)
+            rendered = e.render()
+        else:
+            obj = geo_form_schema.schema_admin.objectify(obj_dict)
+            DBSession.merge(obj)
+            DBSession.flush()
+            rendered = form.render(geo_form_schema.schema_admin.dictify(obj))
+    else:
+        id = request.matchdict['id']
+        obj = DBSession.query(geo_form_schema.model).get(id)
+        rendered = form.render(geo_form_schema.schema_admin.dictify(obj))
 
     return {
-        'form': form.render(geo_form_schema.schema_admin.dictify(obj)),
-        'schema': geo_form_schema}
+        'form': rendered,
+        'schema': geo_form_schema,
+        'deform_dependencies': form.get_widget_resources()}
