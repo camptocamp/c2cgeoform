@@ -1,5 +1,6 @@
 from pyramid.config import Configurator
 from sqlalchemy import engine_from_config
+from pkg_resources import resource_filename
 
 from .models import (
     DBSession,
@@ -24,19 +25,22 @@ def main(global_config, **settings):
 
     config.scan()
 
-    set_widget_template_path()
+    _set_widget_template_path()
 
     return config.make_wsgi_app()
 
 
-def set_widget_template_path():
-    from pkg_resources import resource_filename
+""" Default search paths for the form templates.
+"""
+default_search_paths = (
+    resource_filename('deform', 'templates'),
+    resource_filename('c2cgeoform', 'templates/widgets'))
+
+
+def _set_widget_template_path():
     from deform import (Form, widget)
 
-    deform_templates = resource_filename('deform', 'templates')
-    custom_templates = resource_filename('c2cgeoform', 'templates/widgets')
-    search_path = (custom_templates, deform_templates)
-    Form.set_zpt_renderer(search_path)
+    Form.set_zpt_renderer(default_search_paths)
 
     registry = widget.ResourceRegistry()
     registry.set_js_resources('json2', None, 'static/js/json2.min.js')

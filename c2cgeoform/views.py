@@ -1,5 +1,5 @@
 from pyramid.view import view_config
-from deform import Form, ValidationFailure
+from deform import Form, ValidationFailure, ZPTRendererFactory
 
 from .models import DBSession
 from .schema import forms
@@ -18,7 +18,9 @@ def _get_schema(request):
 def form(request):
     geo_form_schema = _get_schema(request)
 
-    form = Form(geo_form_schema.schema_user, buttons=('submit',))
+    renderer = _get_renderer(geo_form_schema.templates_user)
+    form = Form(
+        geo_form_schema.schema_user, buttons=('submit',), renderer=renderer)
 
     if 'submit' in request.POST:
         form_data = request.POST.items()
@@ -51,7 +53,10 @@ def list(request):
 @view_config(route_name='edit', renderer='templates/site/edit.mako')
 def edit(request):
     geo_form_schema = _get_schema(request)
-    form = Form(geo_form_schema.schema_admin, buttons=('submit',))
+
+    renderer = _get_renderer(geo_form_schema.templates_admin)
+    form = Form(
+        geo_form_schema.schema_admin, buttons=('submit',), renderer=renderer)
 
     if 'submit' in request.POST:
         form_data = request.POST.items()
@@ -74,3 +79,10 @@ def edit(request):
         'form': rendered,
         'schema': geo_form_schema,
         'deform_dependencies': form.get_widget_resources()}
+
+
+def _get_renderer(search_paths):
+    if search_paths is None:
+        return None
+    else:
+        return ZPTRendererFactory(search_paths)
