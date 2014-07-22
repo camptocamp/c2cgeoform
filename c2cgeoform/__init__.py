@@ -1,6 +1,8 @@
 from pyramid.config import Configurator
 from sqlalchemy import engine_from_config
 from pkg_resources import resource_filename
+from pyramid.i18n import get_localizer
+from pyramid.threadlocal import get_current_request
 
 from .models import (
     DBSession,
@@ -23,6 +25,8 @@ def main(global_config, **settings):
     config.add_route('list', '/{schema}')
     config.add_route('edit', '/{schema}/{id}')
 
+    config.add_translation_dirs('colander:locale', 'deform:locale')
+
     config.scan()
 
     _set_widget_template_path()
@@ -37,10 +41,14 @@ default_search_paths = (
     resource_filename('c2cgeoform', 'templates/widgets'))
 
 
+def translator(term):
+    return get_localizer(get_current_request()).translate(term)
+
+
 def _set_widget_template_path():
     from deform import (Form, widget)
 
-    Form.set_zpt_renderer(default_search_paths)
+    Form.set_zpt_renderer(default_search_paths, translator=translator)
 
     registry = widget.ResourceRegistry()
     registry.set_js_resources('json2', None, 'static/js/json2.min.js')

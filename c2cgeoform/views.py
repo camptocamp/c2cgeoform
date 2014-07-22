@@ -85,4 +85,5 @@ def _get_renderer(search_paths):
     if search_paths is None:
         return None
     else:
-        return ZPTRendererFactory(search_paths)
+        from c2cgeoform import translator
+        return ZPTRendererFactory(search_paths, translator=translator)

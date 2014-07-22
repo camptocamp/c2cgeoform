@@ -43,6 +43,13 @@
     <div class="starter-template">
       <div class="container">
         <div class="row">
+          <div class="col-md-11"></div>
+          <div class="col-md-1">
+            <a href="?_LOCALE_=en">en</a> 
+            <a href="?_LOCALE_=fr">fr</a>
+          </div>
+        </div>
+        <div class="row">
           <div class="col-md-2">
             <img class="logo img-responsive" src="${request.static_url('c2cgeoform:static/pyramid.png')}" alt="pyramid web framework">
           </div>
