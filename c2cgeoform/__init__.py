@@ -27,6 +27,9 @@ def main(global_config, **settings):
 
     config.add_translation_dirs('colander:locale', 'deform:locale')
 
+    # this should be in the example project
+    config.add_translation_dirs('pully/locale')
+
     config.scan()
 
     _set_widget_template_path()

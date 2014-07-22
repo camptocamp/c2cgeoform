@@ -23,7 +23,8 @@ requires = [
     'psycopg2',
     'geoalchemy2',
     'shapely',
-    'pyproj'
+    'pyproj',
+    'lingua'
     ]
 
 setup(name='c2cgeoform',
