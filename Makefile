@@ -12,6 +12,7 @@ help:
 	@echo "- serve                   Run the dev server"
 	@echo "- check                   Check the code with flake8"
 	@echo "- modwsgi                 Create files for Apache mod_wsgi"
+	@echo "- test                    Run the unit tests"
 	@echo
 
 .PHONY: install
@@ -35,6 +36,10 @@ flake8: .build/venv/bin/flake8
 
 .PHONY: modwsgi
 modwsgi: install .build/venv/c2cgeoform.wsgi .build/apache.conf
+
+.PHONY: test
+test:
+	.build/venv/bin/python setup.py test
 
 .build/venv:
 	mkdir -p $(dir $@)
