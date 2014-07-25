@@ -21,20 +21,21 @@
 
     <!-- Deform CSS -->
     % if deform_dependencies is not Undefined:
-    <link rel="stylesheet" href="/deform:static/css/form.css" type="text/css" />
-    % for css in deform_dependencies['css']:
-    <link rel="stylesheet" href="/${css}" type="text/css"/>
+    <link rel="stylesheet" href="${request.static_url('deform:static/css/form.css')}" type="text/css" />
+     % for css in deform_dependencies['css']:
+    <link rel="stylesheet" href="${request.static_url(css)}" type="text/css"/>
     % endfor
     % endif
 
+
     <!-- Bootstrap core JavaScript -->
-    <script type="text/javascript" src="/deform:static/scripts/jquery-2.0.3.min.js"></script>
+    <script type="text/javascript" src="${request.static_url('deform:static/scripts/jquery-2.0.3.min.js')}"></script>
     <script src="//oss.maxcdn.com/libs/twitter-bootstrap/3.0.3/js/bootstrap.min.js"></script>
 
     <!-- Deform JavaScript -->
     % if deform_dependencies is not Undefined:
     % for js in deform_dependencies['js']:
-    <script type="text/javascript" src="/${js}"></script>
+    <script type="text/javascript" src="${request.static_url(js)}"></script>
     % endfor
     % endif
   </head>
