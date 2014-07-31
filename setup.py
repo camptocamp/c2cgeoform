@@ -24,7 +24,7 @@ requires = [
     'geoalchemy2',
     'shapely',
     'pyproj',
-    'lingua'
+    'lingua>=2.4'
     ]
 
 setup(name='c2cgeoform',
