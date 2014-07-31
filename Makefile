@@ -18,8 +18,13 @@ help:
 .PHONY: install
 install: .build/venv
 	.build/venv/bin/python setup.py develop
+	# compile i18n messages
 	msgfmt c2cgeoform/pully/locale/fr/LC_MESSAGES/pully.po \
 			--output-file=c2cgeoform/pully/locale/fr/LC_MESSAGES/pully.mo
+	msgfmt c2cgeoform/locale/fr/LC_MESSAGES/c2cgeoform.po \
+			--output-file=c2cgeoform/locale/fr/LC_MESSAGES/c2cgeoform.mo
+	msgfmt c2cgeoform/locale/de/LC_MESSAGES/c2cgeoform.po \
+			--output-file=c2cgeoform/locale/de/LC_MESSAGES/c2cgeoform.mo
 
 .PHONY: initdb
 initdb:

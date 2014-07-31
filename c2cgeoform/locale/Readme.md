@@ -1,0 +1,20 @@
+Updating the messages
+
+Extract messages from the templates:
+
+    ./.build/venv/bin/pot-create -c lingua.cfg -o c2cgeoform/locale/c2cgeoform.pot c2cgeoform/templates/
+
+Update catalog files:
+
+    cd c2cgeoform/locale/
+    msgmerge --update d/LC_MESSAGES/c2cgeoform.po c2cgeoform.pot
+    msgmerge --update de/LC_MESSAGES/c2cgeoform.po c2cgeoform.pot
+
+Compile translations to *.mo files:
+
+    make install
+
+Or:
+
+    msgfmt c2cgeoform/locale/fr/LC_MESSAGES/c2cgeoform.po --output-file=c2cgeoform/locale/fr/LC_MESSAGES/c2cgeoform.mo
+    msgfmt c2cgeoform/locale/de/LC_MESSAGES/c2cgeoform.po --output-file=c2cgeoform/locale/de/LC_MESSAGES/c2cgeoform.mo

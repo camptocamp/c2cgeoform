@@ -3,7 +3,7 @@
                   oid oid|field.oid;
                   style style|field.widget.style;
 "
-      tal:omit-tag="">
+      tal:omit-tag="" i18n:domain="c2cgeoform">
     <input type="hidden" name="${name}" value="${cstruct}" 
            tal:attributes="class string: form-control ${css_class or ''};
                            style style"
@@ -25,6 +25,17 @@
         var defaultZoom = 7;
         /** Minimum zoom when a geometry is given. */
         var zoomForGeometry = 14;
+
+        /** Translations */
+        c2cgeoform.i18n = {};
+        c2cgeoform.i18n['zoomInTipLabel'] = '${_('Zoom In')}';
+        c2cgeoform.i18n['zoomOutTipLabel'] = '${_('Zoom Out')}';
+        c2cgeoform.i18n['attributionTipLabel'] = '${_('Attributions')}';
+        controlsDefinition['drawPointTooltip'] = '${_('Draw point')}';
+        controlsDefinition['drawLineTooltip'] = '${_('Draw line')}';
+        controlsDefinition['drawPolygonTooltip'] = '${_('Draw polygon')}';
+        controlsDefinition['modifyTooltip'] = '${_('Modify')}';
+        controlsDefinition['clearTooltip'] = '${_('Remove all')}';
 
         var source = new ol.source.Vector();
         var vector = new ol.layer.Vector({
@@ -58,6 +69,15 @@
             center: defaultCenter,
             zoom: defaultZoom
           }),
+          controls: ol.control.defaults({
+            zoomOptions: {
+              zoomInTipLabel: c2cgeoform.i18n['zoomInTipLabel'],
+              zoomOutTipLabel: c2cgeoform.i18n['zoomOutTipLabel']
+            },
+            attributionOptions: {
+              tipLabel: c2cgeoform.i18n['attributionTipLabel']
+            }
+          })
         });
 
         c2cgeoform.addFeature(map, source, geoJson, zoomForGeometry, controlsDefinition);

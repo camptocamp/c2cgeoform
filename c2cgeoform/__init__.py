@@ -25,7 +25,7 @@ def main(global_config, **settings):
     config.add_route('list', '/{schema}')
     config.add_route('edit', '/{schema}/{id}')
 
-    config.add_translation_dirs('colander:locale', 'deform:locale')
+    config.add_translation_dirs('colander:locale', 'deform:locale', 'locale')
 
     # this should be in the example project
     config.add_translation_dirs('pully/locale')
