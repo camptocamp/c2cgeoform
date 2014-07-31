@@ -1,4 +1,5 @@
 from pyramid.view import view_config
+from pyramid.httpexceptions import HTTPNotFound
 from deform import Form, ValidationFailure, ZPTRendererFactory
 
 from .models import DBSession
@@ -8,10 +9,13 @@ from .schema import forms
 def _get_schema(request):
     schema_name = request.matchdict['schema']
 
-    if schema_name in forms:
+    if _is_favicon_request(schema_name):
+        # send a 404 for favicon requests that were mapped to the route
+        raise HTTPNotFound()
+    elif schema_name in forms:
         return forms.get(schema_name)
     else:
-        raise RuntimeError('invalid schema \'' + schema_name + '\'')
+        raise HTTPNotFound('invalid schema \'' + schema_name + '\'')
 
 
 @view_config(route_name='form', renderer='templates/site/form.mako')
@@ -87,3 +91,10 @@ def _get_renderer(search_paths):
     else:
         from c2cgeoform import translator
         return ZPTRendererFactory(search_paths, translator=translator)
+
+
+def _is_favicon_request(text):
+    return text in [
+        'favicon.ico',
+        'apple-touch-icon-precomposed.png',
+        'apple-touch-icon.png']

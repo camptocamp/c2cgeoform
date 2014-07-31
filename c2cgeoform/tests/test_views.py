@@ -1,5 +1,6 @@
 import unittest
 from pyramid import testing
+from pyramid.httpexceptions import HTTPNotFound
 
 from c2cgeoform.tests import (setUp, tearDown, cleanup)
 from c2cgeoform.models import DBSession
@@ -22,7 +23,7 @@ class TestView(unittest.TestCase):
         request.matchdict['schema'] = 'unknown-schema'
 
         self.assertRaisesRegexp(
-            RuntimeError, 'invalid schema \'unknown-schema\'',
+            HTTPNotFound, 'invalid schema \'unknown-schema\'',
             form, request)
 
     def test_form_show(self):
