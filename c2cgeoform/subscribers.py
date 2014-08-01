@@ -44,7 +44,7 @@ def _setAcceptedLanguagesLocale(event):
         # _LOCALE_ was explicitly set, do not change
         return
 
-    # _LOCALE_ is not set, try to get the prefered language
+    # _LOCALE_ is not set, try to get the preferred language
     if not event.request.accept_language:
         return
     accepted = event.request.accept_language

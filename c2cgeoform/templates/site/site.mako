@@ -46,8 +46,8 @@
         <div class="row">
           <div class="col-md-11"></div>
           <div class="col-md-1">
-            <a href="?_LOCALE_=en">en</a> 
-            <a href="?_LOCALE_=fr">fr</a>
+            <a href="${request.route_url('locale', _query=(('language', 'en'),))}">en</a> 
+            <a href="${request.route_url('locale', _query=(('language', 'fr'),))}">fr</a>
           </div>
         </div>
         <div class="row">

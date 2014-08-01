@@ -1,5 +1,6 @@
 from pyramid.view import view_config
-from pyramid.httpexceptions import HTTPNotFound
+from pyramid.response import Response
+from pyramid.httpexceptions import HTTPNotFound, HTTPFound
 from deform import Form, ValidationFailure, ZPTRendererFactory
 
 from .models import DBSession
@@ -83,6 +84,20 @@ def edit(request):
         'form': rendered,
         'schema': geo_form_schema,
         'deform_dependencies': form.get_widget_resources()}
+
+
+@view_config(route_name='locale')
+def set_locale_cookie(request):
+    """ View to change the preferred language.
+    """
+    if request.GET['language']:
+        language = request.GET['language']
+        response = Response()
+        response.set_cookie('_LOCALE_',
+                            value=language,
+                            max_age=31536000)  # max_age = year
+    return HTTPFound(location=request.environ['HTTP_REFERER'],
+                     headers=response.headers)
 
 
 def _get_renderer(search_paths):

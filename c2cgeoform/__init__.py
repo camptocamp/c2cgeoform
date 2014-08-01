@@ -4,10 +4,7 @@ from pkg_resources import resource_filename
 from pyramid.i18n import get_localizer
 from pyramid.threadlocal import get_current_request
 
-from .models import (
-    DBSession,
-    Base,
-    )
+from .models import (DBSession, Base,)
 
 
 def main(global_config, **settings):
@@ -21,6 +18,7 @@ def main(global_config, **settings):
     config.add_static_view('static', 'static', cache_max_age=3600)
     config.add_static_view('deform_static', 'deform:static')
 
+    config.add_route('locale', '/locale')
     config.add_route('form', '/{schema}/form')
     config.add_route('list', '/{schema}')
     config.add_route('edit', '/{schema}/{id}')
