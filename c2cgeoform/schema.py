@@ -1,21 +1,25 @@
-from sqlalchemy.orm import class_mapper
+from sqlalchemy.orm import (class_mapper, ColumnProperty, RelationshipProperty)
+from sqlalchemy import inspect
 from colanderalchemy import SQLAlchemySchemaNode
 
 
 class GeoFormSchema():
+
+    _COLANDERALCHEMY = 'colanderalchemy'
+    _ADMIN_ONLY = 'admin_only'
+
     def __init__(
             self, name, model,
-            includes_user=None, excludes_user=None,
-            includes_admin=None, excludes_admin=None,
             templates_user=None, templates_admin=None):
         self.name = name
         self.model = model
+
+        excludes_user = self._get_user_excludes()
         self.schema_user = SQLAlchemySchemaNode(
             self.model,
-            includes=includes_user, excludes=excludes_user)
-        self.schema_admin = SQLAlchemySchemaNode(
-            self.model,
-            includes=includes_admin, excludes=excludes_admin)
+            excludes=excludes_user)
+        self.schema_admin = SQLAlchemySchemaNode(self.model)
+
         self.templates_user = templates_user
         self.templates_admin = templates_admin
 
@@ -26,16 +30,30 @@ class GeoFormSchema():
                 'one primary key column')
         self.id_field = meta_model.primary_key[0].name
 
+    def _get_user_excludes(self):
+        """ Search the columns where 'admin_only' is set to True.
+        """
+        user_excludes = []
+        mapper = inspect(self.model)
+        for column in mapper.attrs:
+            info = {}
+            if isinstance(column, ColumnProperty):
+                info = column.columns[0].info
+            elif isinstance(column, RelationshipProperty):
+                info = column.info
+
+            if self._COLANDERALCHEMY in info and \
+                    info[self._COLANDERALCHEMY].get(self._ADMIN_ONLY, False):
+                user_excludes.append(column.key)
+        return user_excludes
+
+
 forms = {}
 
 
 def register_schema(
         name, model,
-        includes_user=None, excludes_user=None,
-        includes_admin=None, excludes_admin=None,
         templates_user=None, templates_admin=None):
     schema = GeoFormSchema(
-        name, model, includes_user, excludes_user,
-        includes_admin, excludes_admin,
-        templates_user, templates_admin)
+        name, model, templates_user, templates_admin)
     forms[name] = schema
