@@ -7,7 +7,7 @@ Extract messages from the templates:
 Update catalog files:
 
     cd c2cgeoform/locale/
-    msgmerge --update d/LC_MESSAGES/c2cgeoform.po c2cgeoform.pot
+    msgmerge --update fr/LC_MESSAGES/c2cgeoform.po c2cgeoform.pot
     msgmerge --update de/LC_MESSAGES/c2cgeoform.po c2cgeoform.pot
 
 Compile translations to *.mo files:

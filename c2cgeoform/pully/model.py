@@ -76,6 +76,16 @@ class ExcavationPermission(Base):
             }})
 
     # Person in Charge for the Work
+    responsibleTitle = Column(Text, nullable=True, info={
+        'colanderalchemy': {
+            'title': _('Title'),
+            'validator': colander.OneOf(['mr', 'mrs']),
+            'widget': deform.widget.SelectWidget(values=(
+                ('', _('- Select -')),
+                ('mr', _('Mr.')),
+                ('mrs', _('Mrs.'))
+            ))
+        }})
     responsibleName = Column(Text, nullable=True, info={
         'colanderalchemy': {
             'title': _('Name')

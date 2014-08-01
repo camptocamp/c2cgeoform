@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2014-07-22 16:07+02:00\n"
+"POT-Creation-Date: 2014-08-01 15:10+0200\n"
 "PO-Revision-Date: 2014-07-22 14:53+0200\n"
 "Last-Translator: FULL NAME <your@mail.com>\n"
 "Language-Team: French\n"
@@ -16,96 +16,101 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #: c2cgeoform/pully/model.py:28
-#, c-format
 msgid "Application form for permission to carry out excavation work"
 msgstr "Permis de fouille sur le domaine public"
 
 #: c2cgeoform/pully/model.py:33
-#, c-format
 msgid "Permission Number"
 msgstr "N° de permis"
 
 #: c2cgeoform/pully/model.py:38
-#, c-format
 msgid "Reference Number"
 msgstr "Sobriquet"
 
-#: c2cgeoform/pully/model.py:42
-#, c-format
+#: c2cgeoform/pully/model.py:43
 msgid "Request Date"
 msgstr "Date de la demande"
 
-#: c2cgeoform/pully/model.py:47
-#, c-format
+#: c2cgeoform/pully/model.py:48
 msgid "Description of the Work"
 msgstr "Description des traveaux"
 
-#: c2cgeoform/pully/model.py:52
-#, c-format
+#: c2cgeoform/pully/model.py:53
 msgid "Motive for the Work"
 msgstr "Motifs des traveaux"
 
-#: c2cgeoform/pully/model.py:58
-#, c-format
+#: c2cgeoform/pully/model.py:59
 msgid "Street"
 msgstr "Rue"
 
-#: c2cgeoform/pully/model.py:62
-#, c-format
+#: c2cgeoform/pully/model.py:63
 msgid "Postal Code"
 msgstr "Code postal"
 
-#: c2cgeoform/pully/model.py:66
-#, c-format
+#: c2cgeoform/pully/model.py:67
 msgid "Town"
 msgstr "Ville"
 
-#: c2cgeoform/pully/model.py:71
-#, c-format
+#: c2cgeoform/pully/model.py:72
 msgid "Position"
 msgstr "Position"
 
-#: c2cgeoform/pully/model.py:80
-#, c-format
+#: c2cgeoform/pully/model.py:81
+msgid "Title"
+msgstr "Titre"
+
+#: c2cgeoform/pully/model.py:91
 msgid "Name"
 msgstr "Nom"
 
-#: c2cgeoform/pully/model.py:84
-#, c-format
+#: c2cgeoform/pully/model.py:95
 msgid "First Name"
 msgstr "Prénom"
 
-#: c2cgeoform/pully/model.py:88
-#, c-format
+#: c2cgeoform/pully/model.py:99
 msgid "Mobile Phone"
 msgstr "No tél portable"
 
-#: c2cgeoform/pully/model.py:92
-#, c-format
+#: c2cgeoform/pully/model.py:103
 msgid "Mail"
 msgstr "Email"
 
-#: c2cgeoform/pully/model.py:97
-#, c-format
+#: c2cgeoform/pully/model.py:108
 msgid "Company"
 msgstr "Entreprise"
 
-#: c2cgeoform/pully/model.py:102
-#, c-format
+#: c2cgeoform/pully/model.py:113
 msgid "Validation"
 msgstr "Validation"
 
-#: c2cgeoform/pully/model.py:103
-#, c-format
+#: c2cgeoform/pully/model.py:114
 msgid "Validated"
 msgstr "Validé"
 
+#: c2cgeoform/pully/model.py:84
+msgid "- Select -"
+msgstr "- Choisir -"
+
+#: c2cgeoform/pully/model.py:85
+msgid "Mr."
+msgstr "M."
+
+#: c2cgeoform/pully/model.py:86
+msgid "Mrs."
+msgstr "Mme."
+
+#: c2cgeoform/pully/templates/form.pt:18
+msgid "There was a problem with your submission"
+msgstr "Il y a eu un problème avec votre requete"
+
+#: c2cgeoform/pully/templates/form.pt:21
+msgid "Errors have been highlighted below"
+msgstr "Les erreurs ont été mise en évidence ci dessous"
+
 #: c2cgeoform/pully/templates/form.pt:49
-#, c-format
 msgid "Location"
 msgstr "Position"
 
 #: c2cgeoform/pully/templates/form.pt:77
-#, c-format
 msgid "Person in Charge for the Work"
 msgstr "Responsable du chantier"
