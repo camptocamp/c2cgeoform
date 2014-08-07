@@ -12,6 +12,13 @@ from c2cgeoform.schema import register_schema
 from c2cgeoform.models import Base
 
 
+class EmploymentStatus(Base):
+    __tablename__ = 'tests_employment_status'
+
+    id = Column(Integer, primary_key=True)
+    name = Column(Text, nullable=False)
+
+
 class Person(Base):
     __tablename__ = 'tests_persons'
     __colanderalchemy_config__ = {

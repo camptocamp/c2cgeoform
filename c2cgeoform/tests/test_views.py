@@ -1,21 +1,11 @@
-import unittest
 from pyramid import testing
 from pyramid.httpexceptions import HTTPNotFound
 
-from c2cgeoform.tests import (setUp, tearDown, cleanup)
+from c2cgeoform.tests import DatabaseTestCase
 from c2cgeoform.models import DBSession
 
 
-class TestView(unittest.TestCase):
-    def setUp(self):
-        setUp()
-
-    def tearDown(self):
-        tearDown()
-        testing.tearDown()
-
-    def cleanup(self):
-        cleanup()
+class TestView(DatabaseTestCase):
 
     def test_form_unknown_schema(self):
         from c2cgeoform.views import form
