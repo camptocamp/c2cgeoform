@@ -52,6 +52,8 @@
 
     <fieldset>
       <legend i18n:domain="pully" i18n:translate="">Location</legend>
+      <div tal:replace="structure field['locationDistrictId'].render_template(item_template)"/>
+
       <div tal:replace="structure field['locationStreet'].render_template(item_template)"/>
       <div class="row">
         <div class="col-xs-2">

@@ -3,7 +3,8 @@ from sqlalchemy import (
     Integer,
     Text,
     Boolean,
-    Date
+    Date,
+    ForeignKey
     )
 
 import geoalchemy2
@@ -19,6 +20,13 @@ from c2cgeoform.models import Base
 from c2cgeoform import default_search_paths
 
 _ = TranslationStringFactory('pully')
+
+
+class District(Base):
+    __tablename__ = 'district'
+
+    id = Column(Integer, primary_key=True)
+    name = Column(Text, nullable=False)
 
 
 class ExcavationPermission(Base):
@@ -53,7 +61,20 @@ class ExcavationPermission(Base):
             'title': _('Motive for the Work'),
             'widget': deform.widget.TextAreaWidget(rows=3),
         }})
-
+    locationDistrictId = Column(Integer, ForeignKey('district.id'), info={
+        'colanderalchemy': {
+            'title': _('District'),
+            'widget': deform_ext.RelationSelect2Widget(
+                District,
+                'id',
+                # for i18n create columns like 'name_fr' in 'District'
+                # and set these column names in the translation files. then use
+                # the label `_('name'))` instead of `name`.
+                'name',
+                order_by='name',
+                default_value=('', _('- Select -')),
+            )
+        }})
     locationStreet = Column(Text, nullable=False, info={
         'colanderalchemy': {
             'title': _('Street')
@@ -135,3 +156,21 @@ register_schema(
     ExcavationPermission,
     templates_user=templates_user
     )
+
+
+def setup_test_data():
+    from c2cgeoform.models import DBSession
+    import transaction
+
+    if DBSession.query(District).get(0) is not None:
+        return
+
+    DBSession.add(District(id=0, name="Pully"))
+    DBSession.add(District(id=1, name="Paudex"))
+    DBSession.add(District(id=2, name="Belmont-sur-Lausanne"))
+    DBSession.add(District(id=3, name="Trois-Chasseurs"))
+    DBSession.add(District(id=4, name="La Claie-aux-Moines"))
+    DBSession.add(District(id=5, name="Savigny"))
+    DBSession.add(District(id=6, name="Mollie-Margot"))
+
+    transaction.commit()
