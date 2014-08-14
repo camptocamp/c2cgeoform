@@ -2,8 +2,10 @@ from sqlalchemy import (
     Column,
     Integer,
     Text,
-    Boolean
+    Boolean,
+    ForeignKey
     )
+from sqlalchemy.orm import relationship
 
 import colander
 import deform
@@ -17,6 +19,23 @@ class EmploymentStatus(Base):
 
     id = Column(Integer, primary_key=True)
     name = Column(Text, nullable=False)
+
+
+class Phone(Base):
+    __tablename__ = 'tests_phones'
+
+    id = Column(Integer, primary_key=True, info={
+        'colanderalchemy': {
+            'widget': deform.widget.HiddenWidget()
+        }})
+    number = Column(Text, nullable=False, info={
+        'colanderalchemy': {
+            'title': 'Phone number'
+        }})
+    personId = Column(Integer, ForeignKey('tests_persons.id'), info={
+        'colanderalchemy': {
+            'widget': deform.widget.HiddenWidget()
+        }})
 
 
 class Person(Base):
@@ -44,6 +63,13 @@ class Person(Base):
             'title': 'Your age',
             'validator': colander.Range(18,)
         }})
+    phones = relationship(
+        Phone,
+        cascade="all, delete-orphan",
+        info={
+            'colanderalchemy': {
+                'title': 'Phone numbers',
+            }})
     validated = Column(Boolean, info={
         'colanderalchemy': {
             'title': 'Validation',

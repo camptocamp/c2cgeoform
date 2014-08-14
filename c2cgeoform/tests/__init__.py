@@ -34,6 +34,7 @@ class DatabaseTestCase(unittest.TestCase):
         testing.tearDown()
 
     def cleanup(self):
-        from models_test import Person, EmploymentStatus
+        from models_test import Person, EmploymentStatus, Phone
+        DBSession.query(Phone).delete()
         DBSession.query(Person).delete()
         DBSession.query(EmploymentStatus).delete()

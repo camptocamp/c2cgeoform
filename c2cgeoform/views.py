@@ -51,6 +51,13 @@ def form(request):
             DBSession.add(obj)
             DBSession.flush()
 
+            # FIXME create a fresh form, otherwise the IDs of objects in
+            # relationships will not be rendered
+            # see https://github.com/Pylons/deform/issues/236
+            form = Form(
+                geo_form_schema.schema_user, buttons=('submit',),
+                renderer=renderer)
+
             rendered = form.render(
                 geo_form_schema.schema_user.dictify(obj), readonly=True)
     else:
@@ -85,9 +92,17 @@ def edit(request):
             rendered = e.render()
         else:
             obj = geo_form_schema.schema_admin.objectify(obj_dict)
-            DBSession.merge(obj)
+            obj = DBSession.merge(obj)
             DBSession.flush()
-            rendered = form.render(geo_form_schema.schema_admin.dictify(obj))
+
+            # FIXME create a fresh form, otherwise the IDs of objects in
+            # relationships will not be rendered
+            # see https://github.com/Pylons/deform/issues/236
+            form = Form(
+                geo_form_schema.schema_admin, buttons=('submit',),
+                renderer=renderer)
+
+            rendered = form.render(obj_dict)
     else:
         id = request.matchdict['id']
         obj = DBSession.query(geo_form_schema.model).get(id)
