@@ -6,7 +6,7 @@ from sqlalchemy import (
     Date,
     ForeignKey
     )
-
+from sqlalchemy.orm import relationship
 import geoalchemy2
 
 import colander
@@ -27,6 +27,31 @@ class District(Base):
 
     id = Column(Integer, primary_key=True)
     name = Column(Text, nullable=False)
+
+
+class ContactPerson(Base):
+    __tablename__ = 'contact_person'
+    __colanderalchemy_config__ = {
+        'title':
+            _('Contact Person')
+    }
+
+    id = Column(Integer, primary_key=True, info={
+        'colanderalchemy': {
+            'widget': deform.widget.HiddenWidget()
+        }})
+    firstName = Column(Text, nullable=False, info={
+        'colanderalchemy': {
+            'title': _('First name')
+        }})
+    lastName = Column(Text, nullable=False, info={
+        'colanderalchemy': {
+            'title': _('Last name')
+        }})
+    permissionId = Column(Integer, ForeignKey('excavations.id'), info={
+        'colanderalchemy': {
+            'widget': deform.widget.HiddenWidget()
+        }})
 
 
 class ExcavationPermission(Base):
@@ -61,6 +86,14 @@ class ExcavationPermission(Base):
             'title': _('Motive for the Work'),
             'widget': deform.widget.TextAreaWidget(rows=3),
         }})
+    contactPersons = relationship(
+        ContactPerson,
+        # make sure persons are deleted when removed from the relation
+        cascade="all, delete-orphan",
+        info={
+            'colanderalchemy': {
+                'title': _('Contact Persons')
+            }})
     locationDistrictId = Column(Integer, ForeignKey('district.id'), info={
         'colanderalchemy': {
             'title': _('District'),

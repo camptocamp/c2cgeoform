@@ -150,3 +150,13 @@ p {
     margin-top: 20px;
   }
 }
+.panel-body label {
+  color: black;
+}
+
+.panel-body .form-control-static {
+  color: black;
+}
+.deformClosebutton {
+  margin-right: 3px;
+}
