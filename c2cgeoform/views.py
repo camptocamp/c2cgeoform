@@ -96,6 +96,22 @@ def edit(request):
         'deform_dependencies': form.get_widget_resources()}
 
 
+@view_config(route_name='view', renderer='templates/site/view.mako')
+def view(request):
+    id_ = request.matchdict['id']
+    geo_form_schema = _get_schema(request)
+    renderer = _get_renderer(geo_form_schema.templates_admin)
+    form = Form(geo_form_schema.schema_admin, buttons=('submit',),
+                renderer=renderer)
+    obj = DBSession.query(geo_form_schema.model).get(id_)
+    rendered = form.render(geo_form_schema.schema_admin.dictify(obj),
+                           readonly=True)
+    return {
+        'form': rendered,
+        'schema': geo_form_schema,
+        'deform_dependencies': form.get_widget_resources()}
+
+
 @view_config(route_name='locale')
 def set_locale_cookie(request):
     """ View to change the preferred language.
