@@ -160,3 +160,24 @@ class TestView(unittest.TestCase):
         self.assertTrue('name="id"' in form_html)
         self.assertTrue('value="' + str(person.id) + '"' in form_html)
         self.assertTrue('name="submit"' in form_html)
+
+    def test_view(self):
+        from c2cgeoform.views import view
+        from models_test import Person
+        person = Person(name="Peter", firstName="Smith")
+        DBSession.add(person)
+        DBSession.flush()
+
+        request = testing.DummyRequest()
+        request.matchdict['schema'] = 'tests_persons'
+        request.matchdict['id'] = str(person.id)
+        response = view(request)
+
+        self.assertTrue('schema' in response)
+        self.assertTrue('form' in response)
+
+        form_html = response['form']
+        self.assertTrue('name="id"' in form_html)
+        self.assertTrue('value="' + str(person.id) + '"' in form_html)
+        self.assertTrue('Peter' in form_html)
+        self.assertTrue('Smith' in form_html)
