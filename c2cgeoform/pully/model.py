@@ -105,6 +105,16 @@ class ExcavationPermission(Base):
             'admin_only': True
         }})
 
+    # Work footprint
+    workFootprint = Column(
+        geoalchemy2.Geometry('MULTIPOLYGON', 4326, management=True), info={
+            'colanderalchemy': {
+                'title': _('Footprint for the Work'),
+                'typ': colander_ext.Geometry(
+                    'MULTIPOLYGON', srid=4326, map_srid=3857),
+                'widget': deform_ext.MapWidget()
+            }})
+
 
 # overwrite the form template for the user view
 pully_templates = resource_filename('c2cgeoform', 'pully/templates')
