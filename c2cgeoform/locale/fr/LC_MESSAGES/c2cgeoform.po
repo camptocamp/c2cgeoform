@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2014-07-31 15:34+0200\n"
+"POT-Creation-Date: 2014-09-02 12:15+0200\n"
 "PO-Revision-Date: 2014-07-31 11:13+0200\n"
 "Last-Translator: Tobias Sauerwein <tobias.sauerwein@camptocamp.com>\n"
 "Language-Team: French\n"
@@ -14,19 +14,6 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-
-#: c2cgeoform/templates/site/list.mako:4
-msgid "All entities"
-msgstr "Toutes données"
-
-#: c2cgeoform/templates/site/list.mako:10
-#: c2cgeoform/templates/site/edit.mako:4
-msgid "Edit"
-msgstr "Modifier"
-
-#: c2cgeoform/templates/site/edit.mako:6
-msgid "Back to overview"
-msgstr "Retourner à l'index"
 
 #: c2cgeoform/templates/widgets/map.pt:29
 msgid "Zoom In"
@@ -59,3 +46,20 @@ msgstr "Modifier"
 #: c2cgeoform/templates/widgets/map.pt:36
 msgid "Remove all"
 msgstr "Effacer tous les objets"
+
+#: c2cgeoform/templates/site/edit.mako:4
+#: c2cgeoform/templates/site/list.mako:11
+msgid "Edit"
+msgstr "Modifier"
+
+#: c2cgeoform/templates/site/edit.mako:6
+msgid "Back to overview"
+msgstr "Retourner à l'index"
+
+#: c2cgeoform/templates/site/list.mako:4
+msgid "All entities"
+msgstr "Toutes données"
+
+#: c2cgeoform/templates/site/list.mako:9
+msgid "View"
+msgstr "Voir"
