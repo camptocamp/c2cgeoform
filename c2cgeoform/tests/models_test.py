@@ -40,7 +40,8 @@ class Person(Base):
     validated = Column(Boolean, info={
         'colanderalchemy': {
             'title': 'Validation',
-            'label': 'Validated'
+            'label': 'Validated',
+            'admin_only': True
         }})
 
-register_schema('tests_persons', Person, excludes_user=['validated'])
+register_schema('tests_persons', Person)

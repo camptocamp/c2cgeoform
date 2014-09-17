@@ -35,7 +35,8 @@ class ExcavationPermission(Base):
         }})
     referenceNumber = Column(Text, nullable=True, info={
         'colanderalchemy': {
-            'title': _('Reference Number')
+            'title': _('Reference Number'),
+            'admin_only': True
         }})
     requestDate = Column(Date, nullable=True, info={
         'colanderalchemy': {
@@ -100,7 +101,8 @@ class ExcavationPermission(Base):
     validated = Column(Boolean, info={
         'colanderalchemy': {
             'title': _('Validation'),
-            'label': _('Validated')
+            'label': _('Validated'),
+            'admin_only': True
         }})
 
 
@@ -111,6 +113,5 @@ templates_user = (pully_templates,) + default_search_paths
 register_schema(
     'fouille',
     ExcavationPermission,
-    excludes_user=['referenceNumber', 'validated'],
     templates_user=templates_user
     )
