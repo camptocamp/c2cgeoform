@@ -1,4 +1,4 @@
-from pyramid.view import view_config
+from pyramid.view import view_config, notfound_view_config
 from pyramid.response import Response
 from pyramid.httpexceptions import HTTPNotFound, HTTPFound
 from deform import Form, ValidationFailure, ZPTRendererFactory
@@ -17,6 +17,16 @@ def _get_schema(request):
         return forms.get(schema_name)
     else:
         raise HTTPNotFound('invalid schema \'' + schema_name + '\'')
+
+
+@notfound_view_config(append_slash=True)
+def notfound(request):
+    """ Automatically append a slash if no route can be found for a
+        request and try again.
+        This allows to make requests with ".../fouille/form/" and also
+        ".../fouille/form".
+    """
+    return HTTPNotFound()
 
 
 @view_config(route_name='form', renderer='templates/site/form.mako')
