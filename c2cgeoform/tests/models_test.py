@@ -3,8 +3,7 @@ from sqlalchemy import (
     Integer,
     Text,
     Boolean,
-    ForeignKey
-    )
+    ForeignKey)
 from sqlalchemy.orm import relationship
 
 import colander
@@ -12,6 +11,7 @@ import deform
 
 from c2cgeoform.schema import register_schema
 from c2cgeoform.models import Base
+from c2cgeoform.ext.deform_ext import RelationSelect2Widget
 
 
 class EmploymentStatus(Base):
@@ -36,6 +36,23 @@ class Phone(Base):
         'colanderalchemy': {
             'widget': deform.widget.HiddenWidget()
         }})
+
+
+class Tag(Base):
+    __tablename__ = 'tests_tags'
+
+    id = Column(Integer, primary_key=True)
+    name = Column(Text, nullable=False)
+
+
+class TagsForPerson(Base):
+    __tablename__ = 'tests_tags_for_person'
+
+    id = Column(Integer, primary_key=True)
+    tagId = Column(
+        Integer, ForeignKey('tests_tags.id'))
+    personId = Column(
+        Integer, ForeignKey('tests_persons.id'))
 
 
 class Person(Base):
@@ -69,6 +86,20 @@ class Person(Base):
         info={
             'colanderalchemy': {
                 'title': 'Phone numbers',
+            }})
+    tags = relationship(
+        TagsForPerson,
+        cascade="all, delete-orphan",
+        info={
+            'colanderalchemy': {
+                'title': 'Tags',
+                'widget': RelationSelect2Widget(
+                    Tag,
+                    'id',
+                    'name',
+                    order_by='name',
+                    multiple=True
+                )
             }})
     validated = Column(Boolean, info={
         'colanderalchemy': {

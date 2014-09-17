@@ -16,11 +16,11 @@ class DatabaseTestCase(unittest.TestCase):
         engine = engine_from_config(settings, 'sqlalchemy.')
         DBSession.configure(bind=engine)
 
-        from models_test import Person, EmploymentStatus  # noqa
+        from models_test import Person, EmploymentStatus, Tag  # noqa
         Base.metadata.create_all(engine)
         self.cleanup()
 
-        # fill some test data into the `EmploymentStatus` table
+        # fill some test data into the `EmploymentStatus` and `Tags` table
         DBSession.add(EmploymentStatus(id=0, name='Worker'))
         DBSession.add(EmploymentStatus(id=1, name='Employee'))
         DBSession.add(EmploymentStatus(
@@ -28,13 +28,22 @@ class DatabaseTestCase(unittest.TestCase):
         DBSession.add(EmploymentStatus(id=3, name='Director'))
         DBSession.add(EmploymentStatus(id=4, name='Office holder'))
 
+        DBSession.add(Tag(id=0, name='Tag A'))
+        DBSession.add(Tag(id=1, name='Tag B'))
+        DBSession.add(Tag(id=2, name='Tag C'))
+        DBSession.add(Tag(id=3, name='Tag D'))
+        DBSession.add(Tag(id=4, name='Tag E'))
+
     def tearDown(self):
         self.cleanup()
         DBSession.remove()
         testing.tearDown()
 
     def cleanup(self):
-        from models_test import Person, EmploymentStatus, Phone
+        from models_test import Person, EmploymentStatus, Phone,\
+            Tag, TagsForPerson
+        DBSession.query(TagsForPerson).delete()
+        DBSession.query(Tag).delete()
         DBSession.query(Phone).delete()
         DBSession.query(Person).delete()
         DBSession.query(EmploymentStatus).delete()

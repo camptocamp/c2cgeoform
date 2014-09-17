@@ -1,7 +1,7 @@
 from colander import null
 
 from c2cgeoform.tests import DatabaseTestCase
-from models_test import EmploymentStatus
+from models_test import EmploymentStatus, Person, Tag
 from c2cgeoform.models import DBSession
 
 
@@ -100,8 +100,97 @@ class TestRelationRadioChoiceWidget(DatabaseTestCase):
         self.assertEqual('Worker', first_value[1])
 
 
+class RelationMultiSelect2Widget(DatabaseTestCase):
+
+    def test_serialize_empty(self):
+        from c2cgeoform.ext.deform_ext import RelationSelect2Widget
+        widget = RelationSelect2Widget(Tag, 'id', 'name', multiple=True)
+        renderer = DummyRenderer()
+
+        field = _get_field('tags', renderer)
+        widget.populate(DBSession)
+        widget.serialize(field, null)
+        self.assertEqual(renderer.kw['values'], _convert_values(widget.values))
+        self.assertEqual(renderer.kw['cstruct'], [])
+
+        first_value = renderer.kw['values'][0]
+        self.assertEqual('0', first_value[0])
+        self.assertEqual('Tag A', first_value[1])
+
+    def test_serialize(self):
+        from c2cgeoform.ext.deform_ext import RelationSelect2Widget
+        widget = RelationSelect2Widget(Tag, 'id', 'name', multiple=True)
+        renderer = DummyRenderer()
+
+        field = _get_field('tags', renderer)
+        widget.populate(DBSession)
+        objs = [
+            {'tagId': '0', 'personId': '1', 'id': '101'},
+            {'tagId': '2', 'personId': '1', 'id': '102'}]
+
+        widget.serialize(field, objs)
+        self.assertEqual(renderer.kw['values'], _convert_values(widget.values))
+        self.assertEqual(renderer.kw['cstruct'], ['0', '2'])
+
+        first_value = renderer.kw['values'][0]
+        self.assertEqual('0', first_value[0])
+        self.assertEqual('Tag A', first_value[1])
+
+    def test_serialize_wrong_mapping(self):
+        from c2cgeoform.ext.deform_ext import RelationSelect2Widget
+        widget = RelationSelect2Widget(
+            EmploymentStatus, 'id', 'name', multiple=True)
+        renderer = DummyRenderer()
+
+        field = _get_field('tags', renderer)
+        widget.populate(DBSession)
+        objs = [
+            {'tagId': '0', 'personId': '1', 'id': '101'},
+            {'tagId': '2', 'personId': '1', 'id': '102'}]
+
+        self.assertRaises(
+            RuntimeError,
+            widget.serialize,
+            field,
+            objs)
+
+    def test_deserialize_empty(self):
+        from c2cgeoform.ext.deform_ext import RelationSelect2Widget
+        widget = RelationSelect2Widget(Tag, 'id', 'name', multiple=True)
+        renderer = DummyRenderer()
+
+        field = _get_field('tags', renderer)
+        widget.populate(DBSession)
+        result = widget.deserialize(field, null)
+        self.assertEqual(result, [])
+
+    def test_deserialize(self):
+        from c2cgeoform.ext.deform_ext import RelationSelect2Widget
+        widget = RelationSelect2Widget(Tag, 'id', 'name', multiple=True)
+        renderer = DummyRenderer()
+
+        field = _get_field('tags', renderer)
+        widget.populate(DBSession)
+        result = widget.deserialize(field, ['1', '2'])
+        self.assertEqual(
+            result,
+            [{'tagId': '1'}, {'tagId': '2'}])
+
+
 def _convert_values(values_tuple):
     return [(str(key), label) for (key, label) in values_tuple]
+
+
+def _get_field(name, renderer):
+    from deform import Form
+    from colanderalchemy import SQLAlchemySchemaNode
+    form = Form(SQLAlchemySchemaNode(Person), renderer=renderer)
+
+    for field in form.children:
+        if field.name == name:
+            return field
+
+    raise RuntimeError('Field not found')
 
 
 class DummyRenderer(object):
