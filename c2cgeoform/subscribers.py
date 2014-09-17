@@ -24,7 +24,7 @@ tsf = TranslationStringFactory('c2cgeoform')
 
 @subscriber(NewRequest)
 def add_localizer(event):
-    _setAcceptedLanguagesLocale(event)
+    _set_accepted_languages_locale(event)
     request = event.request
     localizer = get_localizer(request)
 
@@ -35,7 +35,7 @@ def add_localizer(event):
     request.translate = auto_translate
 
 
-def _setAcceptedLanguagesLocale(event):
+def _set_accepted_languages_locale(event):
     """ Set the language depending on the browser settings.
     """
     if getattr(event.request, _LOCALE_, None) is not None or \
