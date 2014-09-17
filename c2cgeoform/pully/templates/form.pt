@@ -49,6 +49,7 @@
     <div tal:replace="structure field['requestDate'].render_template(item_template)"/>
     <div tal:replace="structure field['description'].render_template(item_template)"/>
     <div tal:replace="structure field['motif'].render_template(item_template)"/>
+    <div tal:replace="structure field['situations'].render_template(item_template)"/>
     <div tal:replace="structure field['contactPersons'].render_template(item_template)"/>
 
     <fieldset>
