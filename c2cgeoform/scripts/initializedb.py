@@ -17,7 +17,7 @@ from ..models import (
 
 # FIXME this is needed for now so the Person table is in the
 # metadata object when create_all is called.
-from ..pully_demo import ExcavationPermission  # flake8: noqa
+from ..pully.model import ExcavationPermission  # flake8: noqa
 
 
 def usage(argv):

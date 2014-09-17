@@ -137,8 +137,8 @@ c2cgeoform.InteractionControl.prototype.setActive = function(active, silent) {
 /**
  * Control for drawing points.
  */
-c2cgeoform.DrawPointControl = function(source, onDrawCallback) {
-  c2cgeoform.InteractionControl.call(this, 'draw-point', 'Draw point', source, onDrawCallback);
+c2cgeoform.DrawPointControl = function(source, onDrawCallback, tooltip) {
+  c2cgeoform.InteractionControl.call(this, 'draw-point', tooltip, source, onDrawCallback);
 };
 ol.inherits(c2cgeoform.DrawPointControl, c2cgeoform.InteractionControl);
 
@@ -155,8 +155,8 @@ c2cgeoform.DrawPointControl.prototype.createInteractions = function(source) {
 /**
  * Control for drawing lines.
  */
-c2cgeoform.DrawLineControl = function(source, onDrawCallback) {
-  c2cgeoform.InteractionControl.call(this, 'draw-line', 'Draw line', source, onDrawCallback);
+c2cgeoform.DrawLineControl = function(source, onDrawCallback, tooltip) {
+  c2cgeoform.InteractionControl.call(this, 'draw-line', tooltip, source, onDrawCallback);
 };
 ol.inherits(c2cgeoform.DrawLineControl, c2cgeoform.InteractionControl);
 
@@ -173,8 +173,8 @@ c2cgeoform.DrawLineControl.prototype.createInteractions = function(source) {
 /**
  * Control for drawing polygons.
  */
-c2cgeoform.DrawPolygonControl = function(source, onDrawCallback) {
-  c2cgeoform.InteractionControl.call(this, 'draw-polygon', 'Draw polygon', source, onDrawCallback);
+c2cgeoform.DrawPolygonControl = function(source, onDrawCallback, tooltip) {
+  c2cgeoform.InteractionControl.call(this, 'draw-polygon', tooltip, source, onDrawCallback);
 };
 ol.inherits(c2cgeoform.DrawPolygonControl, c2cgeoform.InteractionControl);
 
@@ -191,8 +191,8 @@ c2cgeoform.DrawPolygonControl.prototype.createInteractions = function(source) {
 /**
  * Control for a modify interaction.
  */
-c2cgeoform.ModifyControl = function(source, onChangeCallback) {
-  c2cgeoform.InteractionControl.call(this, 'modify', 'Modify', source, onChangeCallback);
+c2cgeoform.ModifyControl = function(source, onChangeCallback, tooltip) {
+  c2cgeoform.InteractionControl.call(this, 'modify', tooltip, source, onChangeCallback);
 };
 ol.inherits(c2cgeoform.ModifyControl, c2cgeoform.InteractionControl);
 
@@ -214,8 +214,8 @@ c2cgeoform.ModifyControl.prototype.createInteractions = function(source) {
 /**
  * Control to remove all features from the given source.
  */
-c2cgeoform.ClearFeaturesControl = function(source, onChangeCallback) {
-  c2cgeoform.EditingControl.call(this, 'clear-features', 'Remove all');
+c2cgeoform.ClearFeaturesControl = function(source, onChangeCallback, tooltip) {
+  c2cgeoform.EditingControl.call(this, 'clear-features', tooltip);
   this.handleAction = function(e) {
     // TODO ask for confirmation
     source.clear();
@@ -358,16 +358,21 @@ c2cgeoform.initializeToolbar = function(map, source, options) {
   };
 
   if (options.controlsDefinition.point) {
-    toolbar.addControl(new c2cgeoform.DrawPointControl(source, onDrawCallback));
+    toolbar.addControl(new c2cgeoform.DrawPointControl(
+      source, onDrawCallback, options.controlsDefinition.drawPointTooltip));
   }
   if (options.controlsDefinition.line) {
-    toolbar.addControl(new c2cgeoform.DrawLineControl(source, onDrawCallback));
+    toolbar.addControl(new c2cgeoform.DrawLineControl(
+      source, onDrawCallback, options.controlsDefinition.drawLineTooltip));
   }
   if (options.controlsDefinition.polygon) {
-    toolbar.addControl(new c2cgeoform.DrawPolygonControl(source, onDrawCallback));
+    toolbar.addControl(new c2cgeoform.DrawPolygonControl(
+      source, onDrawCallback, options.controlsDefinition.drawPolygonTooltip));
   }
-  toolbar.addControl(new c2cgeoform.ModifyControl(source, onChangeCallback));
-  toolbar.addControl(new c2cgeoform.ClearFeaturesControl(source, onChangeCallback));
+  toolbar.addControl(new c2cgeoform.ModifyControl(
+    source, onChangeCallback, options.controlsDefinition.modifyTooltip));
+  toolbar.addControl(new c2cgeoform.ClearFeaturesControl(
+    source, onChangeCallback, options.controlsDefinition.clearTooltip));
 
   map.addControl(toolbar);
   toolbar.initialize(map);

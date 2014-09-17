@@ -1,3 +1,4 @@
+from translationstring import TranslationStringFactory
 from deform.widget import Widget
 from colander import null
 import json
@@ -15,6 +16,8 @@ class MapWidget(Widget):
         values = self.get_template_values(field, cstruct, kw)
         values['controls_definition'] = \
             self._get_controls_definition(field, readonly)
+        # make `_` available in template for i18n messages
+        values['_'] = TranslationStringFactory('c2cgeoform')
         return field.renderer('map', **values)
 
     def deserialize(self, field, pstruct):

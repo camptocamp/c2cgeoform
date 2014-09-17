@@ -51,17 +51,29 @@
     <div tal:replace="structure field['motif'].render_template(item_template)"/>
 
     <fieldset>
-      <legend>Location</legend>
+      <legend i18n:domain="pully" i18n:translate="">Location</legend>
       <div tal:replace="structure field['locationStreet'].render_template(item_template)"/>
-      <div tal:replace="structure field['locationPostalCode'].render_template(item_template)"/>
-      <div tal:replace="structure field['locationTown'].render_template(item_template)"/>
+      <div class="row">
+        <div class="col-xs-2">
+          <div tal:replace="structure field['locationPostalCode'].render_template(item_template)"/>
+        </div>
+        <div class="col-xs-5">
+          <div tal:replace="structure field['locationTown'].render_template(item_template)"/>
+        </div>
+      </div>
       <div tal:replace="structure field['locationPosition'].render_template(item_template)"/>
     </fieldset>
 
     <fieldset>
-      <legend>Person in Charge for the Work</legend>
-      <div tal:replace="structure field['responsibleName'].render_template(item_template)"/>
-      <div tal:replace="structure field['responsiblefFirstName'].render_template(item_template)"/>
+      <legend i18n:domain="pully" i18n:translate="">Person in Charge for the Work</legend>
+      <div class="row">
+        <div class="col-xs-5">
+          <div tal:replace="structure field['responsibleName'].render_template(item_template)"/>
+        </div>
+        <div class="col-xs-5">
+          <div tal:replace="structure field['responsiblefFirstName'].render_template(item_template)"/>
+        </div>
+      </div>
       <div tal:replace="structure field['responsiblefCompany'].render_template(item_template)"/>
       <div tal:replace="structure field['responsiblefMobile'].render_template(item_template)"/>
       <div tal:replace="structure field['responsiblefMail'].render_template(item_template)"/>
