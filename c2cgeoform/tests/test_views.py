@@ -195,9 +195,9 @@ class TestView(DatabaseTestCase):
         self.assertEquals('Smith', person.firstName)
         self.assertEquals(43, person.age)
         self.assertEquals(1, len(person.phones))
-        newPhone = person.phones[0]
-        self.assertEquals('23456789', newPhone.number)
-        self.assertEquals(phone.id, newPhone.id)
+        new_phone = person.phones[0]
+        self.assertEquals('23456789', new_phone.number)
+        self.assertEquals(phone.id, new_phone.id)
         self.assertEquals(2, len(person.tags))
         tag_for_person1 = person.tags[0]
         self.assertEquals(0, tag_for_person1.tagId)
