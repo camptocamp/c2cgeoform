@@ -28,7 +28,7 @@ class TestView(DatabaseTestCase):
 
         self.assertTrue('name="id"' in form_html)
         self.assertTrue('name="name"' in form_html)
-        self.assertTrue('name="firstName"' in form_html)
+        self.assertTrue('name="first_name"' in form_html)
         self.assertTrue('name="age"' in form_html)
         self.assertTrue('name="validated"' not in form_html)
 
@@ -52,7 +52,7 @@ class TestView(DatabaseTestCase):
         request.matchdict['schema'] = 'tests_persons'
         request.POST.add('submit', 'submit')
         request.POST.add('name', 'Peter')
-        request.POST.add('firstName', 'Smith')
+        request.POST.add('first_name', 'Smith')
 
         request.POST.add('__start__', 'phones:sequence')
         request.POST.add('__start__', 'phones:mapping')
@@ -71,19 +71,19 @@ class TestView(DatabaseTestCase):
 
         person = DBSession.query(Person).one()
         self.assertEquals('Peter', person.name)
-        self.assertEquals('Smith', person.firstName)
+        self.assertEquals('Smith', person.first_name)
         self.assertEquals(1, len(person.phones))
         phone = person.phones[0]
         self.assertEquals('123456789', phone.number)
         self.assertIsNotNone(phone.id)
         self.assertEquals(2, len(person.tags))
         tag_for_person1 = person.tags[0]
-        self.assertEquals(0, tag_for_person1.tagId)
-        self.assertEquals(person.id, tag_for_person1.personId)
+        self.assertEquals(0, tag_for_person1.tag_id)
+        self.assertEquals(person.id, tag_for_person1.person_id)
         self.assertIsNotNone(tag_for_person1.id)
         tag_for_person2 = person.tags[1]
-        self.assertEquals(1, tag_for_person2.tagId)
-        self.assertEquals(person.id, tag_for_person2.personId)
+        self.assertEquals(1, tag_for_person2.tag_id)
+        self.assertEquals(person.id, tag_for_person2.person_id)
         self.assertIsNotNone(tag_for_person2.id)
 
         id = person.id
@@ -93,7 +93,8 @@ class TestView(DatabaseTestCase):
         form_html = response['form']
         self.assertTrue('name="id" value="' + str(id) + '"' in form_html)
         self.assertTrue('name="id" value="' + str(phone_id) + '"' in form_html)
-        self.assertTrue('name="personId" value="' + str(id) + '"' in form_html)
+        self.assertTrue(
+            'name="person_id" value="' + str(id) + '"' in form_html)
         self.assertTrue('Tag A' in form_html)
         self.assertTrue('Tag B' in form_html)
         self.assertTrue('name="submit"' not in form_html)
@@ -101,8 +102,8 @@ class TestView(DatabaseTestCase):
     def test_list(self):
         from c2cgeoform.views import list
         from models_test import Person
-        DBSession.add(Person(name="Peter", firstName="Smith"))
-        DBSession.add(Person(name="John", firstName="Wayne"))
+        DBSession.add(Person(name="Peter", first_name="Smith"))
+        DBSession.add(Person(name="John", first_name="Wayne"))
 
         request = testing.DummyRequest()
         request.matchdict['schema'] = 'tests_persons'
@@ -115,7 +116,7 @@ class TestView(DatabaseTestCase):
     def test_edit_show(self):
         from c2cgeoform.views import edit
         from models_test import Person
-        person = Person(name="Peter", firstName="Smith")
+        person = Person(name="Peter", first_name="Smith")
         DBSession.add(person)
         DBSession.flush()
 
@@ -137,7 +138,7 @@ class TestView(DatabaseTestCase):
     def test_edit_submit_invalid(self):
         from c2cgeoform.views import edit
         from models_test import Person
-        person = Person(name="Peter", firstName="Smith")
+        person = Person(name="Peter", first_name="Smith")
         DBSession.add(person)
         DBSession.flush()
 
@@ -157,10 +158,10 @@ class TestView(DatabaseTestCase):
     def test_edit_submit_successful(self):
         from c2cgeoform.views import edit
         from models_test import Person, Phone, TagsForPerson
-        person = Person(name="Peter", firstName="Smith")
+        person = Person(name="Peter", first_name="Smith")
         phone = Phone(number="123456789")
         person.phones.append(phone)
-        tag_for_person = TagsForPerson(tagId=0)
+        tag_for_person = TagsForPerson(tag_id=0)
         person.tags.append(tag_for_person)
         DBSession.add(person)
         DBSession.flush()
@@ -172,14 +173,14 @@ class TestView(DatabaseTestCase):
         request.POST.add('id', str(person.id))
         request.POST.add('submit', 'submit')
         request.POST.add('name', 'Peter')
-        request.POST.add('firstName', 'Smith')
+        request.POST.add('first_name', 'Smith')
         request.POST.add('age', '43')
 
         request.POST.add('__start__', 'phones:sequence')
         request.POST.add('__start__', 'phones:mapping')
         request.POST.add('id', str(phone.id))
         request.POST.add('number', '23456789')
-        request.POST.add('personId', str(person.id))
+        request.POST.add('person_id', str(person.id))
         request.POST.add('__end__', 'phones:mapping')
         request.POST.add('__end__', 'phones:sequence')
 
@@ -192,22 +193,22 @@ class TestView(DatabaseTestCase):
 
         person = DBSession.query(Person).get(person.id)
         self.assertEquals('Peter', person.name)
-        self.assertEquals('Smith', person.firstName)
+        self.assertEquals('Smith', person.first_name)
         self.assertEquals(43, person.age)
         self.assertEquals(1, len(person.phones))
-        newPhone = person.phones[0]
-        self.assertEquals('23456789', newPhone.number)
-        self.assertEquals(phone.id, newPhone.id)
+        new_phone = person.phones[0]
+        self.assertEquals('23456789', new_phone.number)
+        self.assertEquals(phone.id, new_phone.id)
         self.assertEquals(2, len(person.tags))
         tag_for_person1 = person.tags[0]
-        self.assertEquals(0, tag_for_person1.tagId)
-        self.assertEquals(person.id, tag_for_person1.personId)
+        self.assertEquals(0, tag_for_person1.tag_id)
+        self.assertEquals(person.id, tag_for_person1.person_id)
         self.assertIsNotNone(tag_for_person1.id)
         # a new row is created, also for the old entry
         self.assertNotEquals(old_tag_for_person_id, tag_for_person1.id)
         tag_for_person2 = person.tags[1]
-        self.assertEquals(1, tag_for_person2.tagId)
-        self.assertEquals(person.id, tag_for_person2.personId)
+        self.assertEquals(1, tag_for_person2.tag_id)
+        self.assertEquals(person.id, tag_for_person2.person_id)
         self.assertIsNotNone(tag_for_person2.id)
         tags_for_persons = DBSession.query(TagsForPerson).all()
         # check that the old entry was deleted, so that there are only 2
@@ -223,7 +224,7 @@ class TestView(DatabaseTestCase):
             'name="id" value="' + str(person.id) + '"' in form_html)
         self.assertTrue('name="id" value="' + str(phone.id) + '"' in form_html)
         self.assertTrue(
-            'name="personId" value="' + str(person.id) + '"' in form_html)
+            'name="person_id" value="' + str(person.id) + '"' in form_html)
         self.assertTrue('name="submit"' in form_html)
         self.assertTrue('Tag A' in form_html)
         self.assertTrue('Tag B' in form_html)
@@ -231,7 +232,7 @@ class TestView(DatabaseTestCase):
     def test_view(self):
         from c2cgeoform.views import view
         from models_test import Person
-        person = Person(name="Peter", firstName="Smith")
+        person = Person(name="Peter", first_name="Smith")
         DBSession.add(person)
         DBSession.flush()
 

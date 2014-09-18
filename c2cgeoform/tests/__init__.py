@@ -8,7 +8,7 @@ from c2cgeoform.models import (DBSession, Base)
 
 
 class DatabaseTestCase(unittest.TestCase):
-    def setUp(self):
+    def setUp(self): # flake8: noqa
         curdir = os.path.dirname(os.path.abspath(__file__))
         configfile = os.path.realpath(
             os.path.join(curdir, '../../development.ini'))
@@ -34,7 +34,7 @@ class DatabaseTestCase(unittest.TestCase):
         DBSession.add(Tag(id=3, name='Tag D'))
         DBSession.add(Tag(id=4, name='Tag E'))
 
-    def tearDown(self):
+    def tearDown(self): # flake8: noqa
         self.cleanup()
         DBSession.remove()
         testing.tearDown()

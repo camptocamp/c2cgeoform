@@ -31,7 +31,7 @@ class MapWidget(Widget):
         point = True
         line = True
         polygon = True
-        isMultiGeometry = False
+        is_multi_geometry = False
 
         if 'POINT' in geometry_type:
             line = False
@@ -46,13 +46,13 @@ class MapWidget(Widget):
         if 'MULTI' in geometry_type \
                 or geometry_type == 'GEOMETRY' \
                 or geometry_type == 'GEOMETRYCOLLECTION':
-            isMultiGeometry = True
+            is_multi_geometry = True
 
         return json.dumps({
             'point': point,
             'line': line,
             'polygon': polygon,
-            'isMultiGeometry': isMultiGeometry,
+            'isMultiGeometry': is_multi_geometry,
             'readonly': readonly
         })
 

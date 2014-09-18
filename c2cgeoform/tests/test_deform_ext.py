@@ -125,8 +125,8 @@ class RelationMultiSelect2Widget(DatabaseTestCase):
         field = _get_field('tags', renderer)
         widget.populate(DBSession)
         objs = [
-            {'tagId': '0', 'personId': '1', 'id': '101'},
-            {'tagId': '2', 'personId': '1', 'id': '102'}]
+            {'tag_id': '0', 'personId': '1', 'id': '101'},
+            {'tag_id': '2', 'personId': '1', 'id': '102'}]
 
         widget.serialize(field, objs)
         self.assertEqual(renderer.kw['values'], _convert_values(widget.values))
@@ -145,8 +145,8 @@ class RelationMultiSelect2Widget(DatabaseTestCase):
         field = _get_field('tags', renderer)
         widget.populate(DBSession)
         objs = [
-            {'tagId': '0', 'personId': '1', 'id': '101'},
-            {'tagId': '2', 'personId': '1', 'id': '102'}]
+            {'tag_id': '0', 'personId': '1', 'id': '101'},
+            {'tag_id': '2', 'personId': '1', 'id': '102'}]
 
         self.assertRaises(
             RuntimeError,
@@ -174,7 +174,7 @@ class RelationMultiSelect2Widget(DatabaseTestCase):
         result = widget.deserialize(field, ['1', '2'])
         self.assertEqual(
             result,
-            [{'tagId': '1'}, {'tagId': '2'}])
+            [{'tag_id': '1'}, {'tag_id': '2'}])
 
 
 def _convert_values(values_tuple):

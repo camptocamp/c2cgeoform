@@ -39,15 +39,15 @@ class ContactPerson(Base):
         'colanderalchemy': {
             'widget': deform.widget.HiddenWidget()
         }})
-    firstName = Column(Text, nullable=False, info={
+    first_name = Column(Text, nullable=False, info={
         'colanderalchemy': {
             'title': _('First name')
         }})
-    lastName = Column(Text, nullable=False, info={
+    last_name = Column(Text, nullable=False, info={
         'colanderalchemy': {
             'title': _('Last name')
         }})
-    permissionId = Column(Integer, ForeignKey('excavations.id'), info={
+    permission_id = Column(Integer, ForeignKey('excavations.id'), info={
         'colanderalchemy': {
             'widget': deform.widget.HiddenWidget()
         }})
@@ -65,9 +65,9 @@ class SituationForPermission(Base):
     __tablename__ = 'situation_for_permission'
 
     id = Column(Integer, primary_key=True)
-    situationId = Column(
+    situation_id = Column(
         Integer, ForeignKey('situation.id'))
-    permissionId = Column(
+    permission_id = Column(
         Integer, ForeignKey('excavations.id'))
 
 
@@ -83,12 +83,12 @@ class ExcavationPermission(Base):
             'title': _('Permission Number'),
             'widget': deform.widget.HiddenWidget()
         }})
-    referenceNumber = Column(Text, nullable=True, info={
+    reference_number = Column(Text, nullable=True, info={
         'colanderalchemy': {
             'title': _('Reference Number'),
             'admin_only': True
         }})
-    requestDate = Column(Date, nullable=True, info={
+    request_date = Column(Date, nullable=True, info={
         'colanderalchemy': {
             'title': _('Request Date')
         }})
@@ -118,7 +118,7 @@ class ExcavationPermission(Base):
                     multiple=True
                 )
             }})
-    contactPersons = relationship(
+    contact_persons = relationship(
         ContactPerson,
         # make sure persons are deleted when removed from the relation
         cascade="all, delete-orphan",
@@ -126,7 +126,7 @@ class ExcavationPermission(Base):
             'colanderalchemy': {
                 'title': _('Contact Persons')
             }})
-    locationDistrictId = Column(Integer, ForeignKey('district.id'), info={
+    location_district_id = Column(Integer, ForeignKey('district.id'), info={
         'colanderalchemy': {
             'title': _('District'),
             'widget': deform_ext.RelationSelect2Widget(
@@ -140,19 +140,19 @@ class ExcavationPermission(Base):
                 default_value=('', _('- Select -')),
             )
         }})
-    locationStreet = Column(Text, nullable=False, info={
+    location_street = Column(Text, nullable=False, info={
         'colanderalchemy': {
             'title': _('Street')
         }})
-    locationPostalCode = Column(Text, nullable=False, info={
+    location_postal_code = Column(Text, nullable=False, info={
         'colanderalchemy': {
             'title': _('Postal Code')
         }})
-    locationTown = Column(Text, nullable=False, info={
+    location_town = Column(Text, nullable=False, info={
         'colanderalchemy': {
             'title': _('Town')
         }})
-    locationPosition = Column(
+    location_position = Column(
         geoalchemy2.Geometry('POINT', 4326, management=True), info={
             'colanderalchemy': {
                 'title': _('Position'),
@@ -162,7 +162,7 @@ class ExcavationPermission(Base):
             }})
 
     # Person in Charge for the Work
-    responsibleTitle = Column(Text, nullable=True, info={
+    responsible_title = Column(Text, nullable=True, info={
         'colanderalchemy': {
             'title': _('Title'),
             'validator': colander.OneOf(['mr', 'mrs']),
@@ -172,24 +172,24 @@ class ExcavationPermission(Base):
                 ('mrs', _('Mrs.'))
             ))
         }})
-    responsibleName = Column(Text, nullable=True, info={
+    responsible_name = Column(Text, nullable=True, info={
         'colanderalchemy': {
             'title': _('Name')
         }})
-    responsiblefFirstName = Column(Text, nullable=True, info={
+    responsible_first_name = Column(Text, nullable=True, info={
         'colanderalchemy': {
             'title': _('First Name')
         }})
-    responsiblefMobile = Column(Text, nullable=True, info={
+    responsible_mobile = Column(Text, nullable=True, info={
         'colanderalchemy': {
             'title': _('Mobile Phone')
         }})
-    responsiblefMail = Column(Text, nullable=True, info={
+    responsible_mail = Column(Text, nullable=True, info={
         'colanderalchemy': {
             'title': _('Mail'),
             'validator': colander.Email()
         }})
-    responsiblefCompany = Column(Text, nullable=True, info={
+    responsible_company = Column(Text, nullable=True, info={
         'colanderalchemy': {
             'title': _('Company')
         }})
@@ -202,7 +202,7 @@ class ExcavationPermission(Base):
         }})
 
     # Work footprint
-    workFootprint = Column(
+    work_footprint = Column(
         geoalchemy2.Geometry('MULTIPOLYGON', 4326, management=True), info={
             'colanderalchemy': {
                 'title': _('Footprint for the Work'),
