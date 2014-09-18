@@ -97,3 +97,13 @@ button.edit-control {
 .ol-control button.clear-features:hover, .ol-control button.clear-features:focus {
   background: url("icons/glyphicons_197_remove.png") #F4F4F4 center no-repeat;
 }
+
+/* Attribution Control */
+.ol-attribution ul {
+  max-width: none;
+  font-size: .8rem;
+}
+
+.ol-attribution.ol-uncollapsible {
+  height: 1.4em;
+}
