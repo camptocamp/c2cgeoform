@@ -32,7 +32,7 @@ class Phone(Base):
         'colanderalchemy': {
             'title': 'Phone number'
         }})
-    personId = Column(Integer, ForeignKey('tests_persons.id'), info={
+    person_id = Column(Integer, ForeignKey('tests_persons.id'), info={
         'colanderalchemy': {
             'widget': deform.widget.HiddenWidget()
         }})
@@ -49,9 +49,9 @@ class TagsForPerson(Base):
     __tablename__ = 'tests_tags_for_person'
 
     id = Column(Integer, primary_key=True)
-    tagId = Column(
+    tag_id = Column(
         Integer, ForeignKey('tests_tags.id'))
-    personId = Column(
+    person_id = Column(
         Integer, ForeignKey('tests_persons.id'))
 
 
@@ -71,7 +71,7 @@ class Person(Base):
         'colanderalchemy': {
             'title': 'Your name'
         }})
-    firstName = Column(Text, nullable=False, info={
+    first_name = Column(Text, nullable=False, info={
         'colanderalchemy': {
             'title': 'Your first name'
         }})
