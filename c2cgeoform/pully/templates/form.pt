@@ -49,9 +49,13 @@
     <div tal:replace="structure field['requestDate'].render_template(item_template)"/>
     <div tal:replace="structure field['description'].render_template(item_template)"/>
     <div tal:replace="structure field['motif'].render_template(item_template)"/>
+    <div tal:replace="structure field['situations'].render_template(item_template)"/>
+    <div tal:replace="structure field['contactPersons'].render_template(item_template)"/>
 
     <fieldset>
       <legend i18n:domain="pully" i18n:translate="">Location</legend>
+      <div tal:replace="structure field['locationDistrictId'].render_template(item_template)"/>
+
       <div tal:replace="structure field['locationStreet'].render_template(item_template)"/>
       <div class="row">
         <div class="col-xs-2">
@@ -67,10 +71,13 @@
     <fieldset>
       <legend i18n:domain="pully" i18n:translate="">Person in Charge for the Work</legend>
       <div class="row">
-        <div class="col-xs-5">
+        <div class="col-xs-2">
+          <div tal:replace="structure field['responsibleTitle'].render_template(item_template)"/>
+        </div>
+        <div class="col-xs-4">
           <div tal:replace="structure field['responsibleName'].render_template(item_template)"/>
         </div>
-        <div class="col-xs-5">
+        <div class="col-xs-4">
           <div tal:replace="structure field['responsiblefFirstName'].render_template(item_template)"/>
         </div>
       </div>

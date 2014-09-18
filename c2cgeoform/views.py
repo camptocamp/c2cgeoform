@@ -5,6 +5,7 @@ from deform import Form, ValidationFailure, ZPTRendererFactory
 
 from .models import DBSession
 from .schema import forms
+from .ext import deform_ext
 
 
 def _get_schema(request):
@@ -36,6 +37,7 @@ def form(request):
     renderer = _get_renderer(geo_form_schema.templates_user)
     form = Form(
         geo_form_schema.schema_user, buttons=('submit',), renderer=renderer)
+    _populate_widgets(form, DBSession)
 
     if 'submit' in request.POST:
         form_data = request.POST.items()
@@ -48,6 +50,13 @@ def form(request):
             obj = geo_form_schema.schema_user.objectify(obj_dict)
             DBSession.add(obj)
             DBSession.flush()
+
+            # FIXME create a fresh form, otherwise the IDs of objects in
+            # relationships will not be rendered
+            # see https://github.com/Pylons/deform/issues/236
+            form = Form(
+                geo_form_schema.schema_user, buttons=('submit',),
+                renderer=renderer)
 
             rendered = form.render(
                 geo_form_schema.schema_user.dictify(obj), readonly=True)
@@ -72,6 +81,7 @@ def edit(request):
     renderer = _get_renderer(geo_form_schema.templates_admin)
     form = Form(
         geo_form_schema.schema_admin, buttons=('submit',), renderer=renderer)
+    _populate_widgets(form, DBSession)
 
     if 'submit' in request.POST:
         form_data = request.POST.items()
@@ -82,9 +92,17 @@ def edit(request):
             rendered = e.render()
         else:
             obj = geo_form_schema.schema_admin.objectify(obj_dict)
-            DBSession.merge(obj)
+            obj = DBSession.merge(obj)
             DBSession.flush()
-            rendered = form.render(geo_form_schema.schema_admin.dictify(obj))
+
+            # FIXME create a fresh form, otherwise the IDs of objects in
+            # relationships will not be rendered
+            # see https://github.com/Pylons/deform/issues/236
+            form = Form(
+                geo_form_schema.schema_admin, buttons=('submit',),
+                renderer=renderer)
+
+            rendered = form.render(obj_dict)
     else:
         id = request.matchdict['id']
         obj = DBSession.query(geo_form_schema.model).get(id)
@@ -124,6 +142,14 @@ def set_locale_cookie(request):
                             max_age=31536000)  # max_age = year
     return HTTPFound(location=request.environ['HTTP_REFERER'],
                      headers=response.headers)
+
+
+def _populate_widgets(form, session):
+    """ Populate ``deform_ext.RelationSelectMixin`` widgets.
+    """
+    for node in form.schema:
+        if isinstance(node.widget, deform_ext.RelationSelectMixin):
+            node.widget.populate(session)
 
 
 def _get_renderer(search_paths):

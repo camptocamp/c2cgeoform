@@ -26,8 +26,10 @@ def main(global_config, **settings):
 
     config.add_translation_dirs('colander:locale', 'deform:locale', 'locale')
 
-    # this should be in the example project
+    # FIXME this should be in the example project
     config.add_translation_dirs('pully/locale')
+    from pully import model
+    model.setup_test_data()
 
     config.scan()
 

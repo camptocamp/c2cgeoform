@@ -1,23 +1,12 @@
-import unittest
-from pyramid import testing
 from colander import (null, Invalid)
 from geoalchemy2 import WKBElement
 from geoalchemy2.shape import to_shape, from_shape
 import json
 
-from c2cgeoform.tests import (setUp, tearDown, cleanup)
+from c2cgeoform.tests import DatabaseTestCase
 
 
-class TestColanderExt(unittest.TestCase):
-    def setUp(self):
-        setUp()
-
-    def tearDown(self):
-        tearDown()
-        testing.tearDown()
-
-    def cleanup(self):
-        cleanup()
+class TestColanderExt(DatabaseTestCase):
 
     def test_serialize_null(self):
         from c2cgeoform.ext.colander_ext import Geometry

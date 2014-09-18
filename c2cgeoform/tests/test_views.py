@@ -1,21 +1,12 @@
-import unittest
 from pyramid import testing
 from pyramid.httpexceptions import HTTPNotFound
+from webob.multidict import MultiDict
 
-from c2cgeoform.tests import (setUp, tearDown, cleanup)
+from c2cgeoform.tests import DatabaseTestCase
 from c2cgeoform.models import DBSession
 
 
-class TestView(unittest.TestCase):
-    def setUp(self):
-        setUp()
-
-    def tearDown(self):
-        tearDown()
-        testing.tearDown()
-
-    def cleanup(self):
-        cleanup()
+class TestView(DatabaseTestCase):
 
     def test_form_unknown_schema(self):
         from c2cgeoform.views import form
@@ -57,22 +48,54 @@ class TestView(unittest.TestCase):
         from c2cgeoform.views import form
         from models_test import Person
 
-        request = testing.DummyRequest()
+        request = testing.DummyRequest(post=MultiDict())
         request.matchdict['schema'] = 'tests_persons'
-        request.POST['submit'] = 'submit'
-        request.POST['name'] = 'Peter'
-        request.POST['firstName'] = 'Smith'
+        request.POST.add('submit', 'submit')
+        request.POST.add('name', 'Peter')
+        request.POST.add('firstName', 'Smith')
+
+        request.POST.add('__start__', 'phones:sequence')
+        request.POST.add('__start__', 'phones:mapping')
+        request.POST.add('id', '')
+        request.POST.add('number', '123456789')
+        request.POST.add('personId', '')
+        request.POST.add('__end__', 'phones:mapping')
+        request.POST.add('__end__', 'phones:sequence')
+
+        request.POST.add('__start__', 'tags:sequence')
+        request.POST.add('tags', u'0')
+        request.POST.add('tags', u'1')
+        request.POST.add('__end__', 'tags:sequence')
+
         response = form(request)
 
         person = DBSession.query(Person).one()
         self.assertEquals('Peter', person.name)
         self.assertEquals('Smith', person.firstName)
+        self.assertEquals(1, len(person.phones))
+        phone = person.phones[0]
+        self.assertEquals('123456789', phone.number)
+        self.assertIsNotNone(phone.id)
+        self.assertEquals(2, len(person.tags))
+        tag_for_person1 = person.tags[0]
+        self.assertEquals(0, tag_for_person1.tagId)
+        self.assertEquals(person.id, tag_for_person1.personId)
+        self.assertIsNotNone(tag_for_person1.id)
+        tag_for_person2 = person.tags[1]
+        self.assertEquals(1, tag_for_person2.tagId)
+        self.assertEquals(person.id, tag_for_person2.personId)
+        self.assertIsNotNone(tag_for_person2.id)
+
         id = person.id
+        phone_id = phone.id
 
         self.assertTrue('form' in response)
         form_html = response['form']
-        self.assertTrue('name="id"' in form_html)
-        self.assertTrue('value="' + str(id) + '"' in form_html)
+        self.assertTrue('name="id" value="' + str(id) + '"' in form_html)
+        self.assertTrue('name="id" value="' + str(phone_id) + '"' in form_html)
+        self.assertTrue('name="personId" value="' + str(id) + '"' in form_html)
+        self.assertTrue('Tag A' in form_html)
+        self.assertTrue('Tag B' in form_html)
         self.assertTrue('name="submit"' not in form_html)
 
     def test_list(self):
@@ -133,25 +156,62 @@ class TestView(unittest.TestCase):
 
     def test_edit_submit_successful(self):
         from c2cgeoform.views import edit
-        from models_test import Person
+        from models_test import Person, Phone, TagsForPerson
         person = Person(name="Peter", firstName="Smith")
+        phone = Phone(number="123456789")
+        person.phones.append(phone)
+        tag_for_person = TagsForPerson(tagId=0)
+        person.tags.append(tag_for_person)
         DBSession.add(person)
         DBSession.flush()
+        old_tag_for_person_id = tag_for_person.id
 
-        request = testing.DummyRequest()
+        request = testing.DummyRequest(post=MultiDict())
         request.matchdict['schema'] = 'tests_persons'
         request.matchdict['id'] = str(person.id)
-        request.POST['submit'] = 'submit'
-        request.POST['id'] = str(person.id)
-        request.POST['name'] = 'Peter'
-        request.POST['firstName'] = 'Smith'
-        request.POST['age'] = '43'
+        request.POST.add('id', str(person.id))
+        request.POST.add('submit', 'submit')
+        request.POST.add('name', 'Peter')
+        request.POST.add('firstName', 'Smith')
+        request.POST.add('age', '43')
+
+        request.POST.add('__start__', 'phones:sequence')
+        request.POST.add('__start__', 'phones:mapping')
+        request.POST.add('id', str(phone.id))
+        request.POST.add('number', '23456789')
+        request.POST.add('personId', str(person.id))
+        request.POST.add('__end__', 'phones:mapping')
+        request.POST.add('__end__', 'phones:sequence')
+
+        request.POST.add('__start__', 'tags:sequence')
+        request.POST.add('tags', u'0')
+        request.POST.add('tags', u'1')
+        request.POST.add('__end__', 'tags:sequence')
+
         response = edit(request)
 
         person = DBSession.query(Person).get(person.id)
         self.assertEquals('Peter', person.name)
         self.assertEquals('Smith', person.firstName)
         self.assertEquals(43, person.age)
+        self.assertEquals(1, len(person.phones))
+        newPhone = person.phones[0]
+        self.assertEquals('23456789', newPhone.number)
+        self.assertEquals(phone.id, newPhone.id)
+        self.assertEquals(2, len(person.tags))
+        tag_for_person1 = person.tags[0]
+        self.assertEquals(0, tag_for_person1.tagId)
+        self.assertEquals(person.id, tag_for_person1.personId)
+        self.assertIsNotNone(tag_for_person1.id)
+        # a new row is created, also for the old entry
+        self.assertNotEquals(old_tag_for_person_id, tag_for_person1.id)
+        tag_for_person2 = person.tags[1]
+        self.assertEquals(1, tag_for_person2.tagId)
+        self.assertEquals(person.id, tag_for_person2.personId)
+        self.assertIsNotNone(tag_for_person2.id)
+        tags_for_persons = DBSession.query(TagsForPerson).all()
+        # check that the old entry was deleted, so that there are only 2
+        self.assertEquals(2, len(tags_for_persons))
 
         self.assertTrue('schema' in response)
         self.assertTrue('form' in response)
@@ -159,7 +219,14 @@ class TestView(unittest.TestCase):
         form_html = response['form']
         self.assertTrue('name="id"' in form_html)
         self.assertTrue('value="' + str(person.id) + '"' in form_html)
+        self.assertTrue(
+            'name="id" value="' + str(person.id) + '"' in form_html)
+        self.assertTrue('name="id" value="' + str(phone.id) + '"' in form_html)
+        self.assertTrue(
+            'name="personId" value="' + str(person.id) + '"' in form_html)
         self.assertTrue('name="submit"' in form_html)
+        self.assertTrue('Tag A' in form_html)
+        self.assertTrue('Tag B' in form_html)
 
     def test_view(self):
         from c2cgeoform.views import view
