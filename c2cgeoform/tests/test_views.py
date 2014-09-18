@@ -113,6 +113,9 @@ class TestView(DatabaseTestCase):
         entities = response['entities']
         self.assertEquals(2, len(entities))
 
+        schema = response['schema']
+        self.assertEquals(['id', 'name'], schema.list_fields)
+
     def test_edit_show(self):
         from c2cgeoform.views import edit
         from models_test import Person

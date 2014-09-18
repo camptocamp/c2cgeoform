@@ -6,7 +6,10 @@ from colanderalchemy import SQLAlchemySchemaNode
 class GeoFormSchema():
 
     _COLANDERALCHEMY = 'colanderalchemy'
+    # key to indicate that a field should only be shown in the admin view
     _ADMIN_ONLY = 'admin_only'
+    # key to indicate that a field should be shown in the admin list
+    _ADMIN_LIST = 'admin_list'
 
     def __init__(
             self, name, model,
@@ -14,7 +17,7 @@ class GeoFormSchema():
         self.name = name
         self.model = model
 
-        excludes_user = self._get_user_excludes()
+        excludes_user = self._get_fields_with_property(self._ADMIN_ONLY)
         self.schema_user = SQLAlchemySchemaNode(
             self.model,
             excludes=excludes_user)
@@ -30,10 +33,12 @@ class GeoFormSchema():
                 'one primary key column')
         self.id_field = meta_model.primary_key[0].name
 
-    def _get_user_excludes(self):
-        """ Search the columns where 'admin_only' is set to True.
+        self.list_fields = self._get_fields_with_property(self._ADMIN_LIST)
+
+    def _get_fields_with_property(self, property):
+        """ Search the columns where the given property is set to True.
         """
-        user_excludes = []
+        fields = []
         mapper = inspect(self.model)
         for column in mapper.attrs:
             info = {}
@@ -43,9 +48,9 @@ class GeoFormSchema():
                 info = column.info
 
             if self._COLANDERALCHEMY in info and \
-                    info[self._COLANDERALCHEMY].get(self._ADMIN_ONLY, False):
-                user_excludes.append(column.key)
-        return user_excludes
+                    info[self._COLANDERALCHEMY].get(property, False):
+                fields.append(column.key)
+        return fields
 
 
 forms = {}

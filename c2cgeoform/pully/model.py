@@ -81,7 +81,8 @@ class ExcavationPermission(Base):
     id = Column(Integer, primary_key=True, info={
         'colanderalchemy': {
             'title': _('Permission Number'),
-            'widget': deform.widget.HiddenWidget()
+            'widget': deform.widget.HiddenWidget(),
+            'admin_list': True
         }})
     reference_number = Column(Text, nullable=True, info={
         'colanderalchemy': {
@@ -90,7 +91,8 @@ class ExcavationPermission(Base):
         }})
     request_date = Column(Date, nullable=True, info={
         'colanderalchemy': {
-            'title': _('Request Date')
+            'title': _('Request Date'),
+            'admin_list': True
         }})
 
     description = Column(Text, nullable=True, info={
@@ -174,11 +176,13 @@ class ExcavationPermission(Base):
         }})
     responsible_name = Column(Text, nullable=True, info={
         'colanderalchemy': {
-            'title': _('Name')
+            'title': _('Name'),
+            'admin_list': True
         }})
     responsible_first_name = Column(Text, nullable=True, info={
         'colanderalchemy': {
-            'title': _('First Name')
+            'title': _('First Name'),
+            'admin_list': True
         }})
     responsible_mobile = Column(Text, nullable=True, info={
         'colanderalchemy': {

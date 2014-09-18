@@ -65,11 +65,13 @@ class Person(Base):
     id = Column(Integer, primary_key=True, info={
         'colanderalchemy': {
             'title': 'ID',
-            'widget': deform.widget.HiddenWidget()
+            'widget': deform.widget.HiddenWidget(),
+            'admin_list': True
         }})
     name = Column(Text, nullable=False, info={
         'colanderalchemy': {
-            'title': 'Your name'
+            'title': 'Your name',
+            'admin_list': True
         }})
     first_name = Column(Text, nullable=False, info={
         'colanderalchemy': {
