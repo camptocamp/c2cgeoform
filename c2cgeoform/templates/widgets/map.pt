@@ -75,7 +75,8 @@
               zoomOutTipLabel: c2cgeoform.i18n['zoomOutTipLabel']
             },
             attributionOptions: {
-              tipLabel: c2cgeoform.i18n['attributionTipLabel']
+              tipLabel: c2cgeoform.i18n['attributionTipLabel'],
+              collapsible: false
             }
           })
         });
