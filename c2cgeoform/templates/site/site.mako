@@ -8,7 +8,8 @@
     <title>c2cgeoform</title>
     <link rel="icon" href="data:;base64,=">
     <!-- Bootstrap core CSS -->
-    <link href="//oss.maxcdn.com/libs/twitter-bootstrap/3.0.3/css/bootstrap.min.css" rel="stylesheet">
+    <link href="${request.static_url('c2cgeoform:static/js/bootstrap/css/bootstrap.min.css')}" rel="stylesheet">
+    <link href="${request.static_url('c2cgeoform:static/js/jquery.bootgrid.css')}" rel="stylesheet">
 
     <!-- Custom styles for this scaffold -->
     <link href="${request.static_url('c2cgeoform:static/theme.css')}" rel="stylesheet">
@@ -30,7 +31,8 @@
 
     <!-- Bootstrap core JavaScript -->
     <script type="text/javascript" src="${request.static_url('deform:static/scripts/jquery-2.0.3.min.js')}"></script>
-    <script src="//oss.maxcdn.com/libs/twitter-bootstrap/3.0.3/js/bootstrap.min.js"></script>
+    <script src="${request.static_url('c2cgeoform:static/js/bootstrap/js/bootstrap.min.js')}"></script>
+    <script type="text/javascript" src="${request.static_url('c2cgeoform:static/js/jquery.bootgrid.min.js')}"></script>
 
     <!-- Deform JavaScript -->
     % if deform_dependencies is not Undefined:

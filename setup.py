@@ -25,8 +25,8 @@ requires = [
     'shapely',
     'pyproj',
     'lingua>=2.4',
-    'babel'
-    ]
+    'babel',
+    'webhelpers']
 
 setup(name='c2cgeoform',
       version='0.0',

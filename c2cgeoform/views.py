@@ -2,6 +2,9 @@ from pyramid.view import view_config, notfound_view_config
 from pyramid.response import Response
 from pyramid.httpexceptions import HTTPNotFound, HTTPFound
 from deform import Form, ValidationFailure, ZPTRendererFactory
+import webhelpers.paginate as paginate
+from sqlalchemy import desc, or_, types
+from geoalchemy2.elements import WKBElement
 
 from .models import DBSession
 from .schema import forms
@@ -72,6 +75,99 @@ def list(request):
     geo_form_schema = _get_schema(request)
     entities = DBSession.query(geo_form_schema.model).all()
     return {'entities': entities, 'schema': geo_form_schema}
+
+
+@view_config(route_name='grid', renderer='json', request_method='POST')
+def grid(request):
+    """API method which serves the JSON data for the Bootgrid table
+    in the admin view.
+    """
+    geo_form_schema = _get_schema(request)
+
+    current_page = int(request.POST.get('current'))
+    row_count = int(request.POST.get('rowCount'))
+    search_phrase = request.POST.get('searchPhrase', '').strip()
+    sort = _get_sort_param(request.POST)
+
+    query = _get_query(geo_form_schema, sort, search_phrase)
+    page = paginate.Page(query, page=current_page, items_per_page=row_count)
+
+    return {
+        "current": page.page,
+        "rowCount": page.items_per_page,
+        "rows": _get_grid_rows(page.items, geo_form_schema),
+        "total": page.item_count
+    }
+
+
+def _get_sort_param(params):
+    for key in params:
+        # Bootgrid sends the sort field as "sort[first_name]: asc"
+        if key.startswith('sort'):
+            field = key.replace('sort[', '').replace(']', '')
+            sort_order = 'asc' if params[key] == 'asc' else 'desc'
+            return (field, sort_order)
+    return None
+
+
+def _get_query(geo_form_schema, sort, search_phrase):
+    query = DBSession.query(geo_form_schema.model)
+
+    # order by
+    if sort is not None and hasattr(geo_form_schema.model, sort[0]):
+        sort_field = getattr(geo_form_schema.model, sort[0])
+        if sort[1] == 'desc':
+            sort_field = desc(sort_field)
+        query = query.order_by(sort_field)
+
+    # search
+    if search_phrase != '':
+        search_expr = '%' + '%'.join(search_phrase.split()) + '%'
+
+        # create `ilike` filters for every list text field
+        filters = []
+        for field in geo_form_schema.list_fields:
+            column = getattr(geo_form_schema.model, field)
+            # NOTE only text fields are searched
+            if isinstance(column.type, types.String):
+                like = getattr(column, 'ilike')
+                filters.append(like(search_expr))
+
+        # then join the filters into one `or` condition
+        if len(filters) > 0:
+            filter_expr = filters.pop()
+            filter_expr = reduce(
+                lambda filter_expr, filter: or_(filter_expr, filter),
+                filters,
+                filter_expr)
+            query = query.filter(filter_expr)
+
+    return query
+
+
+def _get_grid_rows(entities, schema):
+    """Creates plain objects for the given entities containing
+    only those properties flagged with `admin_list`.
+    """
+    rows = []
+
+    for entity in entities:
+        obj = {}
+        for field in schema.list_fields:
+            value = getattr(entity, field)
+            if value is None:
+                value = ''
+            else:
+                if isinstance(value, WKBElement):
+                    value = 'Geometry'
+                else:
+                    value = str(value)
+            obj[field] = value
+        # set the entity id on a special property
+        obj['_id_'] = str(getattr(entity, schema.id_field))
+        rows.append(obj)
+
+    return rows
 
 
 @view_config(route_name='edit', renderer='templates/site/edit.mako')

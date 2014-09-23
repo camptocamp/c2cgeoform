@@ -21,6 +21,7 @@ def main(global_config, **settings):
     config.add_route('locale', '/locale/')
     config.add_route('form', '/{schema}/form/')
     config.add_route('list', '/{schema}/')
+    config.add_route('grid', '/{schema}/grid/')
     config.add_route('edit', '/{schema}/{id}/form')
     config.add_route('view', '/{schema}/{id}')
 
