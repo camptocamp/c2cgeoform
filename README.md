@@ -5,7 +5,8 @@
 ### Prequesites
 
 You need to install PostgreSQL and PostGIS, and create a PostGIS database for
-`c2cgeoform`.
+`c2cgeoform`. On Ubuntu, the packages `postgresql-server-dev-9.3` and
+`python-dev` are required.
 
 One option for PostGIS is to use Oslandia's [PostGIS Docker
 image](http://www.oslandia.com/full-spatial-database-power-in-2-lines-en.html).
