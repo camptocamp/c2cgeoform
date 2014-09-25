@@ -113,6 +113,100 @@ class TestView(DatabaseTestCase):
         entities = response['entities']
         self.assertEquals(2, len(entities))
 
+        schema = response['schema']
+        self.assertEquals(['id', 'name'], schema.list_fields)
+
+    def test_grid(self):
+        from c2cgeoform.views import grid
+        _add_test_persons()
+
+        request = testing.DummyRequest()
+        request.matchdict['schema'] = 'tests_persons'
+        request.POST['current'] = '1'
+        request.POST['rowCount'] = '5'
+        response = grid(request)
+
+        self.assertEquals(1, response['current'])
+        self.assertEquals(5, response['rowCount'])
+        self.assertEquals(22, response['total'])
+
+        rows = response['rows']
+        self.assertEquals(5, len(rows))
+        self.assertTrue('_id_' in rows[0])
+        self.assertEquals('Smith', rows[0]['name'])
+
+    def test_grid_sort(self):
+        from c2cgeoform.views import grid
+        _add_test_persons()
+
+        request = testing.DummyRequest()
+        request.matchdict['schema'] = 'tests_persons'
+        request.POST['current'] = '1'
+        request.POST['rowCount'] = '5'
+        request.POST['sort[name]'] = 'asc'
+        response = grid(request)
+
+        self.assertEquals(1, response['current'])
+        self.assertEquals(5, response['rowCount'])
+        self.assertEquals(22, response['total'])
+
+        rows = response['rows']
+        self.assertEquals('Bess', rows[0]['name'])
+        self.assertEquals('Claudio', rows[1]['name'])
+
+    def test_grid_paging(self):
+        from c2cgeoform.views import grid
+        _add_test_persons()
+
+        request = testing.DummyRequest()
+        request.matchdict['schema'] = 'tests_persons'
+        request.POST['current'] = '2'
+        request.POST['rowCount'] = '5'
+        request.POST['sort[name]'] = 'asc'
+        response = grid(request)
+
+        self.assertEquals(2, response['current'])
+        self.assertEquals(5, response['rowCount'])
+        self.assertEquals(22, response['total'])
+
+        rows = response['rows']
+        self.assertEquals('Elda', rows[0]['name'])
+        self.assertEquals('Eloise', rows[1]['name'])
+
+        # invalid page
+        request.POST['current'] = '99'
+        response = grid(request)
+        self.assertEquals(5, response['current'])
+
+    def test_grid_search(self):
+        from c2cgeoform.views import grid
+        _add_test_persons()
+
+        request = testing.DummyRequest()
+        request.matchdict['schema'] = 'tests_persons'
+        request.POST['current'] = '1'
+        request.POST['rowCount'] = '5'
+        request.POST['sort[name]'] = 'asc'
+        request.POST['searchPhrase'] = 'sha'
+        response = grid(request)
+
+        self.assertEquals(1, response['current'])
+        self.assertEquals(5, response['rowCount'])
+        self.assertEquals(4, response['total'])
+
+        request.POST['searchPhrase'] = '   Smith  '
+        response = grid(request)
+        self.assertEquals(1, response['total'])
+
+        request.POST['searchPhrase'] = 'NOT FOUND'
+        response = grid(request)
+        self.assertEquals(0, response['total'])
+
+        # only text fields tagged with 'admin_list' are searched
+        request.POST['searchPhrase'] = 'Peter'
+        response = grid(request)
+        self.assertEquals(0, response['total'])
+
     def test_edit_show(self):
         from c2cgeoform.views import edit
         from models_test import Person
@@ -249,3 +343,29 @@ class TestView(DatabaseTestCase):
         self.assertTrue('value="' + str(person.id) + '"' in form_html)
         self.assertTrue('Peter' in form_html)
         self.assertTrue('Smith' in form_html)
+
+
+def _add_test_persons():
+    from models_test import Person
+    DBSession.add(Person(name="Smith", first_name="Peter"))
+    DBSession.add(Person(name="Wayne", first_name="John"))
+    DBSession.add(Person(name="Elda", first_name="Hasbrouck"))
+    DBSession.add(Person(name="Lashaun", first_name="Brasel"))
+    DBSession.add(Person(name="Lashawna", first_name="Ashford"))
+    DBSession.add(Person(name="Lesha", first_name="Snellgrove"))
+    DBSession.add(Person(name="Sulema", first_name="Page"))
+    DBSession.add(Person(name="Derek", first_name="Boroughs"))
+    DBSession.add(Person(name="Odis", first_name="Bateman"))
+    DBSession.add(Person(name="Venetta", first_name="Briganti"))
+    DBSession.add(Person(name="Monte", first_name="Quill"))
+    DBSession.add(Person(name="Daniel", first_name="Ruth"))
+    DBSession.add(Person(name="Eloise", first_name="Hellickson"))
+    DBSession.add(Person(name="Hee", first_name="Deloney"))
+    DBSession.add(Person(name="Sharee", first_name="Warf"))
+    DBSession.add(Person(name="Delpha", first_name="Philip"))
+    DBSession.add(Person(name="Claudio", first_name="Campfield"))
+    DBSession.add(Person(name="Janessa", first_name="Beatty"))
+    DBSession.add(Person(name="Hollis", first_name="Richmond"))
+    DBSession.add(Person(name="Karoline", first_name="Carew"))
+    DBSession.add(Person(name="Bess", first_name="Papp"))
+    DBSession.add(Person(name="Vada", first_name="Infantino"))
