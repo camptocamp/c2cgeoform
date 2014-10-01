@@ -91,6 +91,11 @@
       <div tal:replace="structure field['work_footprint'].render_template(item_template)"/>
     </fieldset>
 
+    <fieldset>
+      <legend i18n:domain="pully" i18n:translate="">Photo</legend>
+      <div tal:replace="structure field['photos'].render_template(item_template)"/>
+    </fieldset>
+
     <div class="form-group">
       <tal:loop tal:repeat="button buttons">
         <button
