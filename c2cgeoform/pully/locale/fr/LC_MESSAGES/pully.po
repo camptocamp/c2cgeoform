@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2014-08-14 14:12+0200\n"
+"POT-Creation-Date: 2014-10-01 16:24+0200\n"
 "PO-Revision-Date: 2014-07-22 14:53+0200\n"
 "Last-Translator: FULL NAME <your@mail.com>\n"
 "Language-Team: French\n"
@@ -15,107 +15,122 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: c2cgeoform/pully/model.py:36
+#: c2cgeoform/pully/model.py:44
 msgid "Contact Person"
 msgstr "Contact"
 
-#: c2cgeoform/pully/model.py:61
+#: c2cgeoform/pully/model.py:68 c2cgeoform/pully/model.py:242
+#: c2cgeoform/pully/templates/form.pt:130
+msgid "Photo"
+msgstr "Photo"
+
+#: c2cgeoform/pully/model.py:96
 msgid "Application form for permission to carry out excavation work"
 msgstr "Permis de fouille sur le domaine public"
 
-#: c2cgeoform/pully/model.py:45
+#: c2cgeoform/pully/model.py:53
 msgid "First name"
 msgstr "Prénom"
 
-#: c2cgeoform/pully/model.py:49
+#: c2cgeoform/pully/model.py:57
 msgid "Last name"
 msgstr "Nom"
 
-#: c2cgeoform/pully/model.py:66
+#: c2cgeoform/pully/model.py:101
 msgid "Permission Number"
 msgstr "N° de permis"
 
-#: c2cgeoform/pully/model.py:71
+#: c2cgeoform/pully/model.py:107
 msgid "Reference Number"
 msgstr "Sobriquet"
 
-#: c2cgeoform/pully/model.py:76
+#: c2cgeoform/pully/model.py:112
 msgid "Request Date"
 msgstr "Date de la demande"
 
-#: c2cgeoform/pully/model.py:81
+#: c2cgeoform/pully/model.py:118
 msgid "Description of the Work"
 msgstr "Description des traveaux"
 
-#: c2cgeoform/pully/model.py:86
+#: c2cgeoform/pully/model.py:123
 msgid "Motive for the Work"
 msgstr "Motifs des traveaux"
 
-#: c2cgeoform/pully/model.py:95
+#: c2cgeoform/pully/model.py:132
+#, fuzzy
+msgid "Situation"
+msgstr "Validation"
+
+#: c2cgeoform/pully/model.py:147
 msgid "Contact Persons"
 msgstr "Contacts"
 
-#: c2cgeoform/pully/model.py:99
+#: c2cgeoform/pully/model.py:151
 msgid "District"
 msgstr "District"
 
-#: c2cgeoform/pully/model.py:113
+#: c2cgeoform/pully/model.py:165
 msgid "Street"
 msgstr "Rue"
 
-#: c2cgeoform/pully/model.py:117
+#: c2cgeoform/pully/model.py:169
 msgid "Postal Code"
 msgstr "Code postal"
 
-#: c2cgeoform/pully/model.py:121
+#: c2cgeoform/pully/model.py:173
 msgid "Town"
 msgstr "Ville"
 
-#: c2cgeoform/pully/model.py:126
+#: c2cgeoform/pully/model.py:178
 msgid "Position"
 msgstr "Position"
 
-#: c2cgeoform/pully/model.py:135
+#: c2cgeoform/pully/model.py:187
 msgid "Title"
 msgstr "Titre"
 
-#: c2cgeoform/pully/model.py:145
+#: c2cgeoform/pully/model.py:197
 msgid "Name"
 msgstr "Nom"
 
-#: c2cgeoform/pully/model.py:149
+#: c2cgeoform/pully/model.py:202
 msgid "First Name"
 msgstr "Prénom"
 
-#: c2cgeoform/pully/model.py:153
+#: c2cgeoform/pully/model.py:207
 msgid "Mobile Phone"
 msgstr "No tél portable"
 
-#: c2cgeoform/pully/model.py:157
+#: c2cgeoform/pully/model.py:211
 msgid "Mail"
 msgstr "Email"
 
-#: c2cgeoform/pully/model.py:162
+#: c2cgeoform/pully/model.py:216
 msgid "Company"
 msgstr "Entreprise"
 
-#: c2cgeoform/pully/model.py:167
+#: c2cgeoform/pully/model.py:221
 msgid "Validation"
 msgstr "Validation"
 
-#: c2cgeoform/pully/model.py:168
+#: c2cgeoform/pully/model.py:222
 msgid "Validated"
 msgstr "Validé"
 
-#: c2cgeoform/pully/model.py:108 c2cgeoform/pully/model.py:138
+#: c2cgeoform/pully/model.py:230
+#, fuzzy
+msgid "Footprint for the Work"
+msgstr "Motifs des traveaux"
+
+#: c2cgeoform/pully/model.py:160 c2cgeoform/pully/model.py:190
 msgid "- Select -"
 msgstr "- Choisir -"
 
-#: c2cgeoform/pully/model.py:139
+#: c2cgeoform/pully/model.py:191
 msgid "Mr."
 msgstr "M."
 
-#: c2cgeoform/pully/model.py:140
+#: c2cgeoform/pully/model.py:192
 msgid "Mrs."
 msgstr "Mme."
 
@@ -127,10 +142,14 @@ msgstr "Il y a eu un problème avec votre requete"
 msgid "Errors have been highlighted below"
 msgstr "Les erreurs ont été mise en évidence ci dessous"
 
-#: c2cgeoform/pully/templates/form.pt:51
+#: c2cgeoform/pully/templates/form.pt:53
 msgid "Location"
 msgstr "Position"
 
-#: c2cgeoform/pully/templates/form.pt:82
+#: c2cgeoform/pully/templates/form.pt:84
 msgid "Person in Charge for the Work"
 msgstr "Responsable du chantier"
+
+#: c2cgeoform/pully/templates/form.pt:120
+msgid "Footprint"
+msgstr ""
