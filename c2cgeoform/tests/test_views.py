@@ -99,6 +99,23 @@ class TestView(DatabaseTestCase):
         self.assertTrue('Tag B' in form_html)
         self.assertTrue('name="submit"' not in form_html)
 
+    def test_form_submit_only_validate(self):
+        from c2cgeoform.views import form
+        from models_test import Person
+
+        request = testing.DummyRequest(post=MultiDict())
+        request.matchdict['schema'] = 'tests_persons'
+        request.POST.add('submit', 'submit')
+        request.POST.add('name', 'Peter')
+        request.POST.add('first_name', 'Smith')
+        request.POST.add('__only_validate__', '1')
+
+        form(request)
+        count = DBSession.query(Person).count()
+
+        # form was valid, but not row was created
+        self.assertEquals(0, count)
+
     def test_list(self):
         from c2cgeoform.views import list
         from models_test import Person
