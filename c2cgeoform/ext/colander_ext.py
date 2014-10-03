@@ -8,6 +8,8 @@ from shapely.ops import transform
 from functools import partial
 import pyproj
 import json
+from StringIO import StringIO
+import os
 
 
 class Geometry(object):
@@ -65,6 +67,59 @@ class Geometry(object):
             geometry = transform(self.project_map_to_db, geometry)
 
         return from_shape(geometry, srid=self.srid)
+
+    def cstruct_children(self, node, cstruct):
+        return []
+
+
+class BinaryData(object):
+    """ A Colander type meant to be used with ``LargeBinary`` columns.
+
+    Example usage
+
+    .. code-block:: python
+
+        class Model():
+            id = Column(Integer, primary_key=True)
+            data = Colum(LargeBinary, info={
+                'colanderalchemy': {
+                    'typ': colander_ext.BinaryData()
+                }})
+
+    It is usually not used directly in application models, but through
+    the ``c2cgeoform.models.FileData`` mixin, which is meant to be used
+    with a ``deform_ext.FileUploadWidget``.
+
+    The serialize method just returns ``colander.null``. This is because
+    the ``FileUploadWidget``'s template does not use and need the binary
+    data.
+
+    The deserialize method gets a Python ``file`` object and returns a
+    bytes string that is appropriate for the database.
+
+    """
+
+    def serialize(self, node, appstruct):
+        """
+        In Colander speak: Converts a Python data structure (an appstruct) into
+        a serialization (a cstruct).
+        """
+        if appstruct is null or appstruct == '':
+            return null
+        return StringIO(appstruct)
+
+    def deserialize(self, node, cstruct):
+        """
+        In Colander speak: Converts a serialized value (a cstruct) into a
+        Python data structure (a appstruct).
+        Or: Converts a Python file stream to plain binary data.
+        """
+        if cstruct is null or cstruct == '':
+            return null
+        byte_array = memoryview(cstruct.read())
+        # set the file position back to 0, so that the file can be read again
+        cstruct.seek(0, os.SEEK_SET)
+        return byte_array
 
     def cstruct_children(self, node, cstruct):
         return []

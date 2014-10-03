@@ -16,10 +16,19 @@ from translationstring import TranslationStringFactory
 
 from c2cgeoform.schema import register_schema
 from c2cgeoform.ext import colander_ext, deform_ext
-from c2cgeoform.models import Base
+from c2cgeoform.models import Base, FileData
 from c2cgeoform import default_search_paths
 
 _ = TranslationStringFactory('pully')
+
+
+# FIXME a file upload memory store is not appropriate for production
+# See http://docs.pylonsproject.org/projects/deform/en/latest/interfaces.html#deform.interfaces.FileUploadTempStore  # noqa
+class FileUploadTempStore(dict):
+    def preview_url(self, name):
+        return None
+
+_file_upload_temp_store = FileUploadTempStore()
 
 
 class District(Base):
@@ -51,6 +60,15 @@ class ContactPerson(Base):
         'colanderalchemy': {
             'widget': deform.widget.HiddenWidget()
         }})
+
+
+class Photo(FileData, Base):
+    __tablename__ = 'photo'
+    __colanderalchemy_config__ = {
+        'title': _('Photo'),
+        'widget': deform_ext.FileUploadWidget(_file_upload_temp_store)
+    }
+    permission_id = Column(Integer, ForeignKey('excavations.id'))
 
 
 class Situation(Base):
@@ -213,6 +231,15 @@ class ExcavationPermission(Base):
                 'typ': colander_ext.Geometry(
                     'MULTIPOLYGON', srid=4326, map_srid=3857),
                 'widget': deform_ext.MapWidget()
+            }})
+
+    # Photo
+    photos = relationship(
+        Photo,
+        cascade="all, delete-orphan",
+        info={
+            'colanderalchemy': {
+                'title': _('Photo')
             }})
 
 

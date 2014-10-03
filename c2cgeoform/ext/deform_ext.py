@@ -1,6 +1,7 @@
 from translationstring import TranslationStringFactory
 from deform.widget import (
     Widget, SelectWidget, Select2Widget, RadioChoiceWidget)
+from deform.widget import FileUploadWidget as DeformFileUploadWidget
 from sqlalchemy.orm import ColumnProperty
 from colander import null
 import json
@@ -412,3 +413,42 @@ class RelationRadioChoiceWidget(RelationSelectMixin, RadioChoiceWidget):
         RelationSelectMixin.__init__(
             self, model, id_field, label_field, None, order_by)
         RadioChoiceWidget.__init__(self, **kw)
+
+
+class FileUploadWidget(DeformFileUploadWidget):
+    """ Extension of ``deform.widget.FileUploadWidget`` to be used in a model
+    class that extends the ``models.FileData`` mixin class.
+
+    Note: contrary to ``deform.widget.FileUploadWidget`` this extension is not
+    meant to be used with the ``deform.FileData`` Colander type. Instead it
+    works with the ``colander.Mapping`` type, which is what ``colanderalchemy``
+    uses for an SQLAlchemy model class.
+
+    Example usage
+
+    .. code-block:: python
+
+        from c2cgeoform import models
+        from c2cgeoform.ext import deform_ext
+
+        class Photo(models.FileData, Base):
+            __tablename__ = 'photo'
+            __colanderalchemy_config__ = {
+                'title': _('Photo'),
+                'widget': deform_ext.FileUploadWidget(file_upload_temp_store)
+            }
+            permission_id = Column(Integer, ForeignKey('excavations.id'))
+    """
+
+    def serialize(self, field, cstruct, **kw):
+        if cstruct in (null, None):
+            cstruct = {}
+        if 'id' in cstruct:
+            cstruct['uid'] = cstruct['id']
+        return DeformFileUploadWidget.serialize(self, field, cstruct, **kw)
+
+    def deserialize(self, field, pstruct):
+        value = DeformFileUploadWidget.deserialize(self, field, pstruct)
+        if value is not None and 'fp' in value:
+            value['data'] = value['fp']
+        return value

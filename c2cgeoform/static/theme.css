@@ -164,3 +164,11 @@ p {
 .list-grid {
   color: #42325b;
 }
+
+.deformFileupload span, .deformFileupload input[type=file] {
+  color: #000000;
+}
+
+.deformFileupload .deformReplaces {
+  float: none;
+}

@@ -198,7 +198,7 @@ def edit(request):
                 geo_form_schema.schema_admin, buttons=('submit',),
                 renderer=renderer)
 
-            rendered = form.render(obj_dict)
+            rendered = form.render(geo_form_schema.schema_admin.dictify(obj))
     else:
         id = request.matchdict['id']
         obj = DBSession.query(geo_form_schema.model).get(id)

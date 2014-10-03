@@ -276,6 +276,9 @@ class TestView(DatabaseTestCase):
         request.POST.add('number', '23456789')
         request.POST.add('person_id', str(person.id))
         request.POST.add('__end__', 'phones:mapping')
+        request.POST.add('__start__', 'phones:mapping')
+        request.POST.add('number', '123456')
+        request.POST.add('__end__', 'phones:mapping')
         request.POST.add('__end__', 'phones:sequence')
 
         request.POST.add('__start__', 'tags:sequence')
@@ -289,10 +292,13 @@ class TestView(DatabaseTestCase):
         self.assertEquals('Peter', person.name)
         self.assertEquals('Smith', person.first_name)
         self.assertEquals(43, person.age)
-        self.assertEquals(1, len(person.phones))
-        new_phone = person.phones[0]
-        self.assertEquals('23456789', new_phone.number)
-        self.assertEquals(phone.id, new_phone.id)
+        self.assertEquals(2, len(person.phones))
+        updated_phone = person.phones[0]
+        self.assertEquals('23456789', updated_phone.number)
+        self.assertEquals(phone.id, updated_phone.id)
+        new_phone = person.phones[1]
+        self.assertEquals('123456', new_phone.number)
+        self.assertIsNotNone(new_phone.id)
         self.assertEquals(2, len(person.tags))
         tag_for_person1 = person.tags[0]
         self.assertEquals(0, tag_for_person1.tag_id)
@@ -317,6 +323,8 @@ class TestView(DatabaseTestCase):
         self.assertTrue(
             'name="id" value="' + str(person.id) + '"' in form_html)
         self.assertTrue('name="id" value="' + str(phone.id) + '"' in form_html)
+        self.assertTrue(
+            'name="id" value="' + str(new_phone.id) + '"' in form_html)
         self.assertTrue(
             'name="person_id" value="' + str(person.id) + '"' in form_html)
         self.assertTrue('name="submit"' in form_html)
