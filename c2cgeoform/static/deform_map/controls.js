@@ -1,4 +1,3 @@
-var c2cgeoform = {};
 
 /**
  * ToolBar control which acts as a container for further controls.
@@ -378,4 +377,42 @@ c2cgeoform.initializeToolbar = function(map, source, options) {
   toolbar.initialize(map);
 
   source.on('change', onChangeCallback);
+};
+
+/**
+ * List of callbacks to call to init all maps of a form.
+ * Libraries like jQuery Steps modify the DOM which might lead to the
+ * case that a map is initialized twice. To avoid this, the map widget
+ * only registers a callback, which is called once third-party libraries
+ * have finished their setup.
+ */
+c2cgeoform.initCallbacks = {};
+c2cgeoform.init = function() {
+  jQuery.each(c2cgeoform.initCallbacks, function(mapKey, callback) {
+    callback();
+    c2cgeoform.initCallbacks[mapKey] = jQuery.noop;
+  });
+};
+c2cgeoform.initMap = function(mapKey) {
+  c2cgeoform.initCallbacks[mapKey]();
+  c2cgeoform.initCallbacks[mapKey] = jQuery.noop;
+};
+
+
+/**
+ * All maps on a page.
+ */
+c2cgeoform.maps = [];
+
+/*
+ * Calls 'updateSize' on all maps.
+ * When the map div of an ol3 map is in a hidden container at the moment
+ * it is initialized, it will not be displayed properly. So once the map
+ * is shown (e.g. the parent container becomes visible), this method can
+ * be called to fix the map.
+ */
+c2cgeoform.reinitMaps = function() {
+  jQuery.each(c2cgeoform.maps, function(_i, map) {
+    map.updateSize();
+  });
 };

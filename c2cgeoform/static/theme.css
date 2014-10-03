@@ -150,7 +150,7 @@ p {
     margin-top: 20px;
   }
 }
-.panel-body label {
+.panel-body label, .form-group label {
   color: black;
 }
 
