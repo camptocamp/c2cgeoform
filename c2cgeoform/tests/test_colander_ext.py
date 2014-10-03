@@ -101,7 +101,19 @@ class TestBinaryData(DatabaseTestCase):
     def test_serialize_anything(self):
         from c2cgeoform.ext.colander_ext import BinaryData
         binary = BinaryData()
-        self.assertEquals(null, binary.serialize({}, {}))
+        serialized = binary.serialize({}, 'a string of binary data')
+        self.assertNotEquals(null, serialized)
+        self.assertEquals('a string of binary data', serialized.getvalue())
+
+    def test_serialize_null(self):
+        from c2cgeoform.ext.colander_ext import BinaryData
+        binary = BinaryData()
+        self.assertEquals(null, binary.serialize({}, null))
+
+    def test_serialize_empty_string(self):
+        from c2cgeoform.ext.colander_ext import BinaryData
+        binary = BinaryData()
+        self.assertEquals(null, binary.serialize({}, ''))
 
     def test_deserialize_null(self):
         from c2cgeoform.ext.colander_ext import BinaryData
@@ -120,3 +132,9 @@ class TestBinaryData(DatabaseTestCase):
         file_ = open(os.path.join(dirpath, 'data', '1x1.png'), 'r')
         binary = BinaryData()
         self.assertIsInstance(binary.deserialize({}, file_), memoryview)
+
+        # test that the file can be read multiple times (simulates that
+        # a file in the tmpstore is requested several times)
+        self.assertEquals(95, len(binary.deserialize({}, file_)))
+        self.assertEquals(95, len(binary.deserialize({}, file_)))
+        self.assertEquals(95, len(binary.deserialize({}, file_)))

@@ -8,6 +8,8 @@ from shapely.ops import transform
 from functools import partial
 import pyproj
 import json
+from StringIO import StringIO
+import os
 
 
 class Geometry(object):
@@ -102,7 +104,9 @@ class BinaryData(object):
         In Colander speak: Converts a Python data structure (an appstruct) into
         a serialization (a cstruct).
         """
-        return null
+        if appstruct is null or appstruct == '':
+            return null
+        return StringIO(appstruct)
 
     def deserialize(self, node, cstruct):
         """
@@ -112,7 +116,10 @@ class BinaryData(object):
         """
         if cstruct is null or cstruct == '':
             return null
-        return memoryview(cstruct.read())
+        byte_array = memoryview(cstruct.read())
+        # set the file position back to 0, so that the file can be read again
+        cstruct.seek(0, os.SEEK_SET)
+        return byte_array
 
     def cstruct_children(self, node, cstruct):
         return []
