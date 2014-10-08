@@ -37,7 +37,7 @@ def notfound(request):
     return HTTPNotFound()
 
 
-@view_config(route_name='form', renderer='templates/site/form.mako')
+@view_config(route_name='form', renderer='templates/site/form.pt')
 def form(request):
     geo_form_schema = _get_schema(request)
 
