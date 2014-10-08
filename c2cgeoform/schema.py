@@ -1,6 +1,7 @@
 from sqlalchemy.orm import (class_mapper, ColumnProperty, RelationshipProperty)
 from sqlalchemy import inspect
 from colanderalchemy import SQLAlchemySchemaNode
+from . import default_search_paths
 
 
 class GeoFormSchema():
@@ -23,8 +24,13 @@ class GeoFormSchema():
             excludes=excludes_user)
         self.schema_admin = SQLAlchemySchemaNode(self.model)
 
-        self.templates_user = templates_user
-        self.templates_admin = templates_admin
+        self.templates_user = default_search_paths
+        if templates_user is not None:
+            self.templates_user = (templates_user,) + self.templates_user
+
+        self.templates_admin = default_search_paths
+        if templates_admin is not None:
+            self.templates_admin = (templates_admin,) + self.templates_admin
 
         meta_model = class_mapper(model)
         if len(meta_model.primary_key) != 1:
