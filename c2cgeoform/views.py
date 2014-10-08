@@ -224,7 +224,7 @@ def edit(request):
         'deform_dependencies': form.get_widget_resources()}
 
 
-@view_config(route_name='view', renderer='templates/site/view.mako')
+@view_config(route_name='view', renderer='templates/site/view.pt')
 def view(request):
     id_ = request.matchdict['id']
     geo_form_schema = _get_schema(request)
