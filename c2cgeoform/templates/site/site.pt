@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="${request.locale_name}">
+<html lang="${request.locale_name}"
+      tal:define="deform_dependencies deform_dependencies|None">
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -22,12 +23,11 @@
     <![endif]-->
 
     <!-- Deform CSS -->
-    % if deform_dependencies is not Undefined:
+
+    <tal:link tal:condition="deform_dependencies">
     <link rel="stylesheet" href="${request.static_url('deform:static/css/form.css')}" type="text/css" />
-     % for css in deform_dependencies['css']:
-    <link rel="stylesheet" href="${request.static_url(css)}" type="text/css"/>
-    % endfor
-    % endif
+    <link tal:repeat="css deform_dependencies['css']" rel="stylesheet" type="text/css" tal:attributes="href request.static_url(css)"/>
+    </tal:link>
 
 
     <!-- Bootstrap core JavaScript -->
@@ -38,11 +38,9 @@
     <script type="text/javascript" src="${request.static_url('c2cgeoform:static/js/c2cgeoform.js')}"></script>
 
     <!-- Deform JavaScript -->
-    % if deform_dependencies is not Undefined:
-    % for js in deform_dependencies['js']:
-    <script type="text/javascript" src="${request.static_url(js)}"></script>
-    % endfor
-    % endif
+    <tal:script tal:condition="deform_dependencies">
+    <script tal:repeat="js deform_dependencies['js']" type="text/javascript" tal:attributes="src request.static_url(js)"></script>
+    </tal:script>
   </head>
 
   <body>
@@ -51,7 +49,7 @@
         <div class="row">
           <div class="col-md-11"></div>
           <div class="col-md-1">
-            <a href="${request.route_url('locale', _query=(('language', 'en'),))}">en</a> 
+            <a href="${request.route_url('locale', _query=(('language', 'en'),))}">en</a>
             <a href="${request.route_url('locale', _query=(('language', 'fr'),))}">fr</a>
           </div>
         </div>
@@ -61,7 +59,7 @@
           </div>
           <div class="col-md-10">
             <div class="content">
-            ${self.body()}
+              <metal:content define-slot="content"></metal:content>
             </div>
           </div>
         </div>
