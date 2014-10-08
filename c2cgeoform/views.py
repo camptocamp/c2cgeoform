@@ -84,7 +84,7 @@ def form(request):
             'deform_dependencies': form.get_widget_resources()}
 
 
-@view_config(route_name='list', renderer='templates/site/list.mako')
+@view_config(route_name='list', renderer='templates/site/list.pt')
 def list(request):
     geo_form_schema = _get_schema(request)
     entities = DBSession.query(geo_form_schema.model).all()
