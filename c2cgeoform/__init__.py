@@ -42,7 +42,13 @@ def main(global_config, **settings):
     config.include(includeme)
 
     config.add_translation_dirs('pully/locale')
+
+    from .schema import register_schema
     from pully import model
+    register_schema(
+        'fouille',
+        model.ExcavationPermission,
+        templates_user=resource_filename('c2cgeoform', 'pully/templates'))
     model.setup_test_data()
 
     return config.make_wsgi_app()
