@@ -172,3 +172,8 @@ p {
 .deformFileupload .deformReplaces {
   float: none;
 }
+
+.wizard > .content > .body div.ol-attribution > ul > li {
+  display: inline;
+  padding: 0;
+}

@@ -113,7 +113,7 @@ class TestView(DatabaseTestCase):
         form(request)
         count = DBSession.query(Person).count()
 
-        # form was valid, but not row was created
+        # form was valid, but no row was created
         self.assertEquals(0, count)
 
     def test_list(self):
