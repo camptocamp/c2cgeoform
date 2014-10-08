@@ -13,8 +13,8 @@ def add_renderer_globals(event):
     if request is None:
         request = get_current_request()
     if request is not None:
-        # make `_` available in Mako templates, so that you can
-        # use e.g. `${_(u"Error")}` in the templates
+        # make `_` available in Chameleon templates, so that you can
+        # use e.g. `${_(u"Error")}` in templates
         event['_'] = request.translate
         event['localizer'] = request.localizer
 
