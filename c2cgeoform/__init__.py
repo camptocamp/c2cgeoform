@@ -61,8 +61,8 @@ def main(global_config, **settings):
 """ Default search paths for the form templates.
 """
 default_search_paths = (
-    resource_filename('deform', 'templates'),
-    resource_filename('c2cgeoform', 'templates/widgets'))
+    resource_filename('c2cgeoform', 'templates/widgets'),
+    resource_filename('deform', 'templates'))
 
 
 def translator(term):
