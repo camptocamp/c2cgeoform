@@ -2,13 +2,17 @@ from pyramid.view import view_config, notfound_view_config
 from pyramid.response import Response
 from pyramid.httpexceptions import HTTPNotFound, HTTPFound
 from deform import Form, ValidationFailure, ZPTRendererFactory
+from deform.form import Button
 import webhelpers.paginate as paginate
 from sqlalchemy import desc, or_, types
 from geoalchemy2.elements import WKBElement
+from translationstring import TranslationStringFactory
 
 from .models import DBSession
 from .schema import forms
 from .ext import deform_ext
+
+_ = TranslationStringFactory('c2cgeoform')
 
 
 def _get_schema(request):
@@ -38,33 +42,43 @@ def form(request):
     geo_form_schema = _get_schema(request)
 
     renderer = _get_renderer(geo_form_schema.templates_user)
+    submit_button = Button(name='formsubmit', title=_('Submit'))
     form = Form(
-        geo_form_schema.schema_user, buttons=('submit',), renderer=renderer)
+        geo_form_schema.schema_user, buttons=(submit_button,),
+        renderer=renderer)
     _populate_widgets(form, DBSession)
-
-    if 'submit' in request.POST:
+    if len(request.POST) > 0:
         form_data = request.POST.items()
+        custom_data = request.POST.get('__custom_data__')
+        only_validate = request.POST.get('__only_validate__')
 
         try:
             obj_dict = form.validate(form_data)
         except ValidationFailure, e:
-            rendered = e.render()
+            # FIXME see https://github.com/Pylons/deform/pull/243
+            rendered = e.field.widget.serialize(
+                e.field, e.cstruct, custom_data=custom_data)
         else:
-            obj = geo_form_schema.schema_user.objectify(obj_dict)
-            DBSession.add(obj)
-            DBSession.flush()
+            if only_validate == '1':
+                # even if the validation was successful, do not save the entity
+                rendered = form.render(obj_dict, custom_data=custom_data)
+            else:
+                obj = geo_form_schema.schema_user.objectify(obj_dict)
+                DBSession.add(obj)
+                DBSession.flush()
 
-            # FIXME create a fresh form, otherwise the IDs of objects in
-            # relationships will not be rendered
-            # see https://github.com/Pylons/deform/issues/236
-            form = Form(
-                geo_form_schema.schema_user, buttons=('submit',),
-                renderer=renderer)
+                # FIXME create a fresh form, otherwise the IDs of objects in
+                # relationships will not be rendered
+                # see https://github.com/Pylons/deform/issues/236
+                form = Form(
+                    geo_form_schema.schema_user, buttons=(submit_button,),
+                    renderer=renderer)
 
-            rendered = form.render(
-                geo_form_schema.schema_user.dictify(obj), readonly=True)
+                rendered = form.render(
+                    geo_form_schema.schema_user.dictify(obj), readonly=True,
+                    custom_data=custom_data)
     else:
-        rendered = form.render()
+        rendered = form.render(custom_data=None)
 
     return {'form': rendered,
             'deform_dependencies': form.get_widget_resources()}

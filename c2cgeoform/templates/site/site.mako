@@ -10,6 +10,7 @@
     <!-- Bootstrap core CSS -->
     <link href="${request.static_url('c2cgeoform:static/js/bootstrap/css/bootstrap.min.css')}" rel="stylesheet">
     <link href="${request.static_url('c2cgeoform:static/js/jquery.bootgrid.css')}" rel="stylesheet">
+    <link href="${request.static_url('c2cgeoform:static/js/jquery.steps.css')}" rel="stylesheet">
 
     <!-- Custom styles for this scaffold -->
     <link href="${request.static_url('c2cgeoform:static/theme.css')}" rel="stylesheet">
@@ -33,6 +34,8 @@
     <script type="text/javascript" src="${request.static_url('deform:static/scripts/jquery-2.0.3.min.js')}"></script>
     <script src="${request.static_url('c2cgeoform:static/js/bootstrap/js/bootstrap.min.js')}"></script>
     <script type="text/javascript" src="${request.static_url('c2cgeoform:static/js/jquery.bootgrid.min.js')}"></script>
+    <script type="text/javascript" src="${request.static_url('c2cgeoform:static/js/jquery.steps.min.js')}"></script>
+    <script type="text/javascript" src="${request.static_url('c2cgeoform:static/js/c2cgeoform.js')}"></script>
 
     <!-- Deform JavaScript -->
     % if deform_dependencies is not Undefined:

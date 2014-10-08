@@ -150,7 +150,7 @@ p {
     margin-top: 20px;
   }
 }
-.panel-body label {
+.panel-body label, .form-group label {
   color: black;
 }
 
@@ -171,4 +171,9 @@ p {
 
 .deformFileupload .deformReplaces {
   float: none;
+}
+
+.wizard > .content > .body div.ol-attribution > ul > li {
+  display: inline;
+  padding: 0;
 }

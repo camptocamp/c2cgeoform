@@ -16,7 +16,7 @@
       }
     </style>
     <script type="text/javascript">
-      jQuery(document).ready(function(){
+      c2cgeoform.initCallbacks['_map_${oid}'] = function() {
         var controlsDefinition = ${controls_definition};
         var geoJson = '${cstruct}';
 
@@ -88,6 +88,13 @@
             $('#${oid}').val(newGeoJson);
           }
         });
-      });
+        c2cgeoform.maps.push(map);
+      };
+      deform.addCallback(
+        '${oid}',
+        function (oid) {
+          c2cgeoform.initMap('_map_${oid}');
+        }
+      );
     </script>
 </span>

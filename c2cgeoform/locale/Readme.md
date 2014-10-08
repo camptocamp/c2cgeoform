@@ -2,7 +2,7 @@ Updating the messages
 
 Extract messages from the templates:
 
-    ./.build/venv/bin/pot-create -c lingua.cfg -o c2cgeoform/locale/c2cgeoform.pot c2cgeoform/templates/
+    ./.build/venv/bin/pot-create -c lingua.cfg -o c2cgeoform/locale/c2cgeoform.pot c2cgeoform/templates/ c2cgeoform/views.py
 
 Update catalog files:
 

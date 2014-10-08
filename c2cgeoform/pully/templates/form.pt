@@ -1,3 +1,4 @@
+<?python from translationstring import TranslationStringFactory ?>
 <form
   tal:define="style style|field.widget.style;
               css_class css_class|string:${field.widget.css_class or field.css_class or ''};
@@ -11,7 +12,8 @@
               ajax_options ajax_options|field.ajax_options;
               formid formid|field.formid;
               action action|field.action or None;
-              method method|field.method;"
+              method method|field.method;
+              _ TranslationStringFactory('pully');"
   tal:attributes="autocomplete autocomplete;
                   style style;
                   class css_class;
@@ -22,19 +24,14 @@
   accept-charset="utf-8"
   i18n:domain="deform"
   >
-
-  <fieldset class="deform-form-fieldset">
-
-    <legend tal:condition="title">${title}</legend>
-
     <input type="hidden" name="_charset_" />
     <input type="hidden" name="__formid__" value="${formid}"/>
+    <input type="hidden" name="__custom_data__" id="${formid}_custom_data" value="${custom_data}"/>
+    <input type="hidden" name="__only_validate__" id="${formid}_only_validate" value="1"/>
 
-    <div class="alert alert-danger" tal:condition="field.error">
-      <div class="error-msg-lbl" i18n:translate=""
-        >There was a problem with your submission</div>
-      <div class="error-msg-detail" i18n:translate=""
-        >Errors have been highlighted below</div>
+    <div id="${formid}_error" class="alert alert-danger" tal:condition="field.error">
+      <div class="error-msg-lbl" i18n:translate="">There was a problem with your submission</div>
+      <div class="error-msg-detail" i18n:translate="">Errors have been highlighted below</div>
       <p class="error-msg">${field.errormsg}</p>
     </div>
 
@@ -42,18 +39,20 @@
       ${description}
     </p>
 
-<!--     <div tal:repeat="child field"
-         tal:replace="structure child.render_template(item_template)"/> -->
+    <div id="steps-${formid}">
 
-    <div tal:replace="structure field['id'].render_template(item_template)"/>
-    <div tal:replace="structure field['request_date'].render_template(item_template)"/>
-    <div tal:replace="structure field['description'].render_template(item_template)"/>
-    <div tal:replace="structure field['motif'].render_template(item_template)"/>
-    <div tal:replace="structure field['situations'].render_template(item_template)"/>
-    <div tal:replace="structure field['contact_persons'].render_template(item_template)"/>
+    <h3 i18n:domain="pully" i18n:translate="">Basic</h3>
+    <section>
+      <div tal:replace="structure field['id'].render_template(item_template)"/>
+      <div tal:replace="structure field['request_date'].render_template(item_template)"/>
+      <div tal:replace="structure field['description'].render_template(item_template)"/>
+      <div tal:replace="structure field['motif'].render_template(item_template)"/>
+      <div tal:replace="structure field['situations'].render_template(item_template)"/>
+      <div tal:replace="structure field['contact_persons'].render_template(item_template)"/>
+    </section>
 
-    <fieldset>
-      <legend i18n:domain="pully" i18n:translate="">Location</legend>
+    <h3 i18n:domain="pully" i18n:translate="">Location</h3>
+    <section>
       <div tal:replace="structure field['location_district_id'].render_template(item_template)"/>
 
       <div tal:replace="structure field['location_street'].render_template(item_template)"/>
@@ -66,10 +65,10 @@
         </div>
       </div>
       <div tal:replace="structure field['location_position'].render_template(item_template)"/>
-    </fieldset>
+    </section>
 
-    <fieldset>
-      <legend i18n:domain="pully" i18n:translate="">Person in Charge for the Work</legend>
+    <h3 i18n:domain="pully" i18n:translate="">Person in Charge for the Work</h3>
+    <section>
       <div class="row">
         <div class="col-xs-2">
           <div tal:replace="structure field['responsible_title'].render_template(item_template)"/>
@@ -84,19 +83,16 @@
       <div tal:replace="structure field['responsible_company'].render_template(item_template)"/>
       <div tal:replace="structure field['responsible_mobile'].render_template(item_template)"/>
       <div tal:replace="structure field['responsible_mail'].render_template(item_template)"/>
-    </fieldset>
+    </section>
 
-    <fieldset>
-      <legend i18n:domain="pully" i18n:translate="">Footprint</legend>
+    <h3 i18n:domain="pully" i18n:translate="">Footprint</h3>
+    <section>
       <div tal:replace="structure field['work_footprint'].render_template(item_template)"/>
-    </fieldset>
-
-    <fieldset>
-      <legend i18n:domain="pully" i18n:translate="">Photo</legend>
       <div tal:replace="structure field['photos'].render_template(item_template)"/>
-    </fieldset>
+    </section>
+    </div>
 
-    <div class="form-group">
+    <div class="form-group" tal:condition="False">
       <tal:loop tal:repeat="button buttons">
         <button
               tal:define="btn_disposition repeat.button.start and 'btn-primary' or 'btn-default';
@@ -113,7 +109,6 @@
       </tal:loop>
     </div>
 
-  </fieldset>
 
   <script type="text/javascript" tal:condition="use_ajax">
    deform.addCallback(
@@ -127,7 +122,7 @@
            deform.processCallbacks();
            deform.focusFirstInput(target);
          },
-         beforeSerialize: function() { 
+         beforeSerialize: function() {
            // See http://bit.ly/1agBs9Z (hack to fix tinymce-related ajax bug)
            if ('tinymce' in window) {
              $(tinymce.get()).each(
@@ -143,6 +138,29 @@
        $('#' + oid).ajaxForm($.extend(options, extra_options));
      }
    );
+  </script>
+  <script type="text/javascript">
+    jQuery(document).ready(function() {
+      c2cgeoform.steps.init({
+        headerTag: 'h3',
+        bodyTag: 'section',
+        formId: '#${formid}',
+        stepsContainerId: '#steps-${formid}',
+        errorContainerId: '#${formid}_error',
+        customDataFieldId: '#${formid}_custom_data',
+        onlyValidateFieldId: '#${formid}_only_validate',
+        labels: {
+          'cancel': '${_('Cancel')}',
+          'current': '${_('current step:')}',
+          'pagination': '${_('Pagination')}',
+          'finish': '${_('Finish')}',
+          'next': '${_('Next')}',
+          'previous': '${_('Previous')}',
+          'loading': '${_('Loading ...')}'
+        }
+      });
+      c2cgeoform.init();
+    });
   </script>
 
 </form>
