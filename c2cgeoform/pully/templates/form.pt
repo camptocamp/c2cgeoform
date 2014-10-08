@@ -88,15 +88,11 @@
     <h3 i18n:domain="pully" i18n:translate="">Footprint</h3>
     <section>
       <div tal:replace="structure field['work_footprint'].render_template(item_template)"/>
+      <div tal:replace="structure field['photos'].render_template(item_template)"/>
     </section>
     </div>
 
-    <fieldset>
-      <legend i18n:domain="pully" i18n:translate="">Photo</legend>
-      <div tal:replace="structure field['photos'].render_template(item_template)"/>
-    </fieldset>
-
-    <div class="form-group">
+    <div class="form-group" tal:condition="False">
       <tal:loop tal:repeat="button buttons">
         <button
               tal:define="btn_disposition repeat.button.start and 'btn-primary' or 'btn-default';
@@ -144,59 +140,15 @@
    );
   </script>
   <script type="text/javascript">
-    jQuery(document).ready(function(){
-      var form = $('#steps-${formid}');
-      var silent = false;
-
-      form.steps({
+    jQuery(document).ready(function() {
+      c2cgeoform.steps.init({
         headerTag: 'h3',
         bodyTag: 'section',
-        enableAllSteps: false,
-        onStepChanging: function (event, currentIndex, newIndex) {
-          // store the current step in a hidden field, so that the next step
-          // can be restored after the form is submitted
-          jQuery('#${formid}_custom_data').val(currentIndex);
-          if (newIndex < currentIndex) {
-            // going backwards
-            return true;
-          } else if (silent) {
-            return true;
-          } else {
-            var only_validate = 1;
-            if (newIndex == c2cgeoform.steps.getLastStepIndex('#steps-${formid}')) {
-              // when on the last step, store the form data when validation successful
-              only_validate = 0;
-            }
-            jQuery('#${formid}_only_validate').val(only_validate);
-            jQuery('#${formid}').submit();
-            return false;
-          }
-        },
-        onFinishing: function (event, currentIndex) {
-          jQuery('#${formid}_only_validate').val(0);
-          jQuery('#${formid}').submit();
-          return true;
-        },
-        onStepChanged: function (event, currentIndex, priorIndex) {
-          // call reinitMaps after a timeout to work around render issues on Chrome
-          window.setTimeout(c2cgeoform.reinitMaps, 1);
-        },
-        onInit: function (event, currentIndex) {
-          var lastIndex = parseInt(jQuery('#${formid}_custom_data').val());
-          var stepToGoTo;
-          if (c2cgeoform.steps.lastStepIsValid('#steps-${formid}', lastIndex)) {
-            stepToGoTo = lastIndex + 1;
-            // remove error messages on the current step, when the step is
-            // opened for the first time
-            jQuery('#${formid}_error').hide();
-            jQuery('#steps-${formid}').find('.has-error').removeClass('has-error');
-          } else {
-            stepToGoTo = lastIndex;
-          }
-          silent = true;
-          c2cgeoform.steps.goToStep('#steps-${formid}', currentIndex, stepToGoTo);
-          silent = false;
-        },
+        formId: '#${formid}',
+        stepsContainerId: '#steps-${formid}',
+        errorContainerId: '#${formid}_error',
+        customDataFieldId: '#${formid}_custom_data',
+        onlyValidateFieldId: '#${formid}_only_validate',
         labels: {
           'cancel': '${_('Cancel')}',
           'current': '${_('current step:')}',
