@@ -184,7 +184,7 @@ def _get_grid_rows(entities, schema):
     return rows
 
 
-@view_config(route_name='edit', renderer='templates/site/edit.mako')
+@view_config(route_name='edit', renderer='templates/site/edit.pt')
 def edit(request):
     geo_form_schema = _get_schema(request)
 
