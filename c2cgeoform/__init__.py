@@ -30,6 +30,9 @@ def includeme(config):
 
 def main(global_config, **settings):
     """ This function returns a Pyramid WSGI application.
+
+    This a is test application for the model and templates defined in
+    c2cgeoform/pully.
     """
     engine = engine_from_config(settings, 'sqlalchemy.')
     DBSession.configure(bind=engine)
