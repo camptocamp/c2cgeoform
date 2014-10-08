@@ -41,7 +41,6 @@ def main(global_config, **settings):
     config.include('pyramid_mako')
     config.include(includeme)
 
-    # FIXME this should be in the example project
     config.add_translation_dirs('pully/locale')
     from pully import model
     model.setup_test_data()
