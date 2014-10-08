@@ -37,7 +37,7 @@ def notfound(request):
     return HTTPNotFound()
 
 
-@view_config(route_name='form', renderer='templates/site/form.mako')
+@view_config(route_name='form', renderer='templates/site/form.pt')
 def form(request):
     geo_form_schema = _get_schema(request)
 
@@ -84,7 +84,7 @@ def form(request):
             'deform_dependencies': form.get_widget_resources()}
 
 
-@view_config(route_name='list', renderer='templates/site/list.mako')
+@view_config(route_name='list', renderer='templates/site/list.pt')
 def list(request):
     geo_form_schema = _get_schema(request)
     entities = DBSession.query(geo_form_schema.model).all()
@@ -184,7 +184,7 @@ def _get_grid_rows(entities, schema):
     return rows
 
 
-@view_config(route_name='edit', renderer='templates/site/edit.mako')
+@view_config(route_name='edit', renderer='templates/site/edit.pt')
 def edit(request):
     geo_form_schema = _get_schema(request)
 
@@ -224,7 +224,7 @@ def edit(request):
         'deform_dependencies': form.get_widget_resources()}
 
 
-@view_config(route_name='view', renderer='templates/site/view.mako')
+@view_config(route_name='view', renderer='templates/site/view.pt')
 def view(request):
     id_ = request.matchdict['id']
     geo_form_schema = _get_schema(request)
