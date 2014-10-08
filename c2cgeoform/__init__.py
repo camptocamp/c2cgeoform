@@ -27,6 +27,9 @@ def includeme(config):
     config.scan(ignore='c2cgeoform.tests')
     _set_widget_template_path()
 
+    # use Beaker for session storage
+    config.include('pyramid_beaker')
+
 
 def main(global_config, **settings):
     """ This function returns a Pyramid WSGI application.

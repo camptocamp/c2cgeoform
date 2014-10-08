@@ -26,7 +26,8 @@ requires = [
     'pyproj',
     'lingua>=2.4',
     'babel',
-    'webhelpers']
+    'webhelpers',
+    'pyramid_beaker']
 
 setup(name='c2cgeoform',
       version='0.0',

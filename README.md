@@ -63,6 +63,12 @@ Start the dev server:
 $ make serve
 ```
 
+### Session management configuration
+
+By default c2cgeoform uses [pyramid_beaker](https://pypi.python.org/pypi/pyramid_beaker)
+to manage its sessions. Please refer to the [documentation](http://beaker.readthedocs.org)
+to adapt the configuration to your project setup.
+
 Copyright
 ----------
 c2cgeoform makes use of the icons by [GLYPHICONS](http://glyphicons.com).
