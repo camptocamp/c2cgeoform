@@ -7,6 +7,27 @@ from pyramid.threadlocal import get_current_request
 from .models import (DBSession, Base,)
 
 
+def includeme(config):
+    """
+    Function called when "c2cgeoform" is included in a project (with
+    ``config.include('c2cgeoform')``).
+
+    This function creates routes and views for c2cgeoform pages.
+    """
+    config.include('pyramid_chameleon')
+    config.add_static_view('static', 'static', cache_max_age=3600)
+    config.add_static_view('deform_static', 'deform:static')
+    config.add_route('locale', '/locale/')
+    config.add_route('form', '/{schema}/form/')
+    config.add_route('list', '/{schema}/')
+    config.add_route('grid', '/{schema}/grid/')
+    config.add_route('edit', '/{schema}/{id}/form')
+    config.add_route('view', '/{schema}/{id}')
+    config.add_translation_dirs('colander:locale', 'deform:locale', 'locale')
+    config.scan(ignore='c2cgeoform.tests')
+    _set_widget_template_path()
+
+
 def main(global_config, **settings):
     """ This function returns a Pyramid WSGI application.
     """
@@ -14,27 +35,13 @@ def main(global_config, **settings):
     DBSession.configure(bind=engine)
     Base.metadata.bind = engine
     config = Configurator(settings=settings)
-    config.include('pyramid_chameleon')
-    config.add_static_view('static', 'static', cache_max_age=3600)
-    config.add_static_view('deform_static', 'deform:static')
-
-    config.add_route('locale', '/locale/')
-    config.add_route('form', '/{schema}/form/')
-    config.add_route('list', '/{schema}/')
-    config.add_route('grid', '/{schema}/grid/')
-    config.add_route('edit', '/{schema}/{id}/form')
-    config.add_route('view', '/{schema}/{id}')
-
-    config.add_translation_dirs('colander:locale', 'deform:locale', 'locale')
+    config.include('pyramid_mako')
+    config.include(includeme)
 
     # FIXME this should be in the example project
     config.add_translation_dirs('pully/locale')
     from pully import model
     model.setup_test_data()
-
-    config.scan()
-
-    _set_widget_template_path()
 
     return config.make_wsgi_app()
 
