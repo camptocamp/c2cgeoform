@@ -66,7 +66,11 @@ default_search_paths = (
 
 
 def translator(term):
-    return get_localizer(get_current_request()).translate(term)
+    request = get_current_request()
+    if request is None:
+        return term
+    else:
+        return get_localizer(request).translate(term)
 
 
 def _set_widget_template_path():
