@@ -4,37 +4,51 @@ from pkg_resources import resource_filename
 from pyramid.i18n import get_localizer
 from pyramid.threadlocal import get_current_request
 
-from .models import (DBSession, Base,)
+from .models import DBSession
 
 
-def main(global_config, **settings):
-    """ This function returns a Pyramid WSGI application.
+def includeme(config):
     """
-    engine = engine_from_config(settings, 'sqlalchemy.')
-    DBSession.configure(bind=engine)
-    Base.metadata.bind = engine
-    config = Configurator(settings=settings)
-    config.include('pyramid_chameleon')
-    config.add_static_view('static', 'static', cache_max_age=3600)
-    config.add_static_view('deform_static', 'deform:static')
+    Function called when "c2cgeoform" is included in a project (with
+    ``config.include('c2cgeoform')``).
 
+    This function creates routes and views for c2cgeoform pages.
+    """
+    config.include('pyramid_chameleon')
+    config.add_static_view('c2cgeoform_static', 'static', cache_max_age=3600)
+    config.add_static_view('deform_static', 'deform:static')
     config.add_route('locale', '/locale/')
     config.add_route('form', '/{schema}/form/')
     config.add_route('list', '/{schema}/')
     config.add_route('grid', '/{schema}/grid/')
     config.add_route('edit', '/{schema}/{id}/form')
     config.add_route('view', '/{schema}/{id}')
-
     config.add_translation_dirs('colander:locale', 'deform:locale', 'locale')
-
-    # FIXME this should be in the example project
-    config.add_translation_dirs('pully/locale')
-    from pully import model
-    model.setup_test_data()
-
-    config.scan()
-
+    config.scan(ignore='c2cgeoform.tests')
     _set_widget_template_path()
+
+
+def main(global_config, **settings):
+    """ This function returns a Pyramid WSGI application.
+
+    This a is test application for the model and templates defined in
+    c2cgeoform/pully.
+    """
+    engine = engine_from_config(settings, 'sqlalchemy.')
+    DBSession.configure(bind=engine)
+    config = Configurator(settings=settings)
+    config.include('pyramid_mako')
+    config.include(includeme)
+
+    config.add_translation_dirs('pully/locale')
+
+    from .schema import register_schema
+    from pully import model
+    register_schema(
+        'fouille',
+        model.ExcavationPermission,
+        templates_user=resource_filename('c2cgeoform', 'pully/templates'))
+    model.setup_test_data()
 
     return config.make_wsgi_app()
 

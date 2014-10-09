@@ -10,10 +10,7 @@ from pyramid.paster import (
 
 from pyramid.scripts.common import parse_vars
 
-from ..models import (
-    DBSession,
-    Base,
-    )
+from ..models import Base
 
 
 def usage(argv):
@@ -24,6 +21,11 @@ def usage(argv):
 
 
 def main(argv=sys.argv):
+    """
+    Function called when the "initialize_c2cgeoform_db" script is run. It
+    creates in the database the tables declared in the model of the test
+    application ("pully").
+    """
     if len(argv) < 2:
         usage(argv)
     config_uri = argv[1]
@@ -31,7 +33,6 @@ def main(argv=sys.argv):
     setup_logging(config_uri)
     settings = get_appsettings(config_uri, options=options)
     engine = engine_from_config(settings, 'sqlalchemy.')
-    DBSession.configure(bind=engine)
 
     # FIXME this is needed for now so the "Pully" model is in the
     # metadata object when create_all is called.

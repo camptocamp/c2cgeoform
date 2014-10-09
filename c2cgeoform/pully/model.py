@@ -11,13 +11,10 @@ import geoalchemy2
 
 import colander
 import deform
-from pkg_resources import resource_filename
 from translationstring import TranslationStringFactory
 
-from c2cgeoform.schema import register_schema
 from c2cgeoform.ext import colander_ext, deform_ext
 from c2cgeoform.models import Base, FileData
-from c2cgeoform import default_search_paths
 
 _ = TranslationStringFactory('pully')
 
@@ -241,16 +238,6 @@ class ExcavationPermission(Base):
             'colanderalchemy': {
                 'title': _('Photo')
             }})
-
-
-# overwrite the form template for the user view
-pully_templates = resource_filename('c2cgeoform', 'pully/templates')
-templates_user = (pully_templates,) + default_search_paths
-
-register_schema(
-    'fouille',
-    ExcavationPermission,
-    templates_user=templates_user)
 
 
 def setup_test_data():
