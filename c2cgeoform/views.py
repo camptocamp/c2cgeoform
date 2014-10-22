@@ -57,11 +57,11 @@ def form(request):
         except ValidationFailure, e:
             # FIXME see https://github.com/Pylons/deform/pull/243
             rendered = e.field.widget.serialize(
-                e.field, e.cstruct, custom_data=custom_data)
+                e.field, e.cstruct, custom_data=custom_data, request=request)
         else:
             if only_validate == '1':
                 # even if the validation was successful, do not save the entity
-                rendered = form.render(obj_dict, custom_data=custom_data)
+                rendered = form.render(obj_dict, custom_data=custom_data, request=request)
             else:
                 obj = geo_form_schema.schema_user.objectify(obj_dict)
                 DBSession.add(obj)
@@ -78,7 +78,7 @@ def form(request):
                     geo_form_schema.schema_user.dictify(obj), readonly=True,
                     custom_data=custom_data)
     else:
-        rendered = form.render(custom_data=None)
+        rendered = form.render(custom_data=None, request=request)
 
     return {'form': rendered,
             'deform_dependencies': form.get_widget_resources()}
