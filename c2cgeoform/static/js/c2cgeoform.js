@@ -10,7 +10,7 @@ c2cgeoform.steps = {};
  * Returns true if all fields on the step page with the given index
  * are valid.
  */
-c2cgeoform.steps.lastStepIsValid = function(stepFormId, stepIndex) {
+c2cgeoform.steps.stepIsValid = function(stepFormId, stepIndex) {
   return jQuery(stepFormId)
     .children('.content')
     .children(stepFormId + '-p-' + stepIndex)
@@ -27,72 +27,79 @@ c2cgeoform.steps.getLastStepIndex = function(stepFormId) {
 }
 
 /**
- * Go to the given step.
- */
-c2cgeoform.steps.goToStep = function(stepFormId, current, target) {
-  // FIXME see https://github.com/rstaib/jquery-steps/pull/67
-  var stepsToGo = target - current;
-  for (var i = 0; i < stepsToGo; i++) {
-    jQuery(stepFormId).steps('next');
-  }
-}
-
-/**
  * Initialize JQuery Steps.
  */
 c2cgeoform.steps.init = function(options) {
-  var form = $(options.stepsContainerId);
+  var form = $(options.formId);
+  var stepsContainer = $(options.stepsContainerId);
   var silent = false;
 
-  form.steps({
-    headerTag: options.headerTag,
-    bodyTag: options.bodyTag,
-    enableAllSteps: false,
+  var previousStep = 0;  // Step before the last request
+  var requestedStep = 0; // Step asked at last request
+  var currentStep = 0;   // requestedStep or previousStep if not valid
+  customData = jQuery(options.customDataFieldId).val();
+  if (customData != '') {
+    customValues = jQuery.parseJSON(customData);
+    previousStep = customValues.previousStep;
+    requestedStep = customValues.requestedStep;
+  }
+
+  var form_clean = form.serialize();
+
+  stepsContainer.steps(jQuery.extend({
+
+    onInit: function (event, currentIndex) {
+      silent = true;
+      for (i=0; i<requestedStep; i++) {
+        if (stepsContainer.steps('next') == false) {
+          break;
+        }
+      }
+      silent = false;
+    },
+
     onStepChanging: function (event, currentIndex, newIndex) {
-      // store the current step in a hidden field, so that the next step
-      // can be restored after the form is submitted
-      jQuery(options.customDataFieldId).val(currentIndex);
       if (newIndex < currentIndex) {
         // going backwards
         return true;
-      } else if (silent) {
-        return true;
-      } else {
-        var only_validate = 1;
-        if (newIndex == c2cgeoform.steps.getLastStepIndex(options.stepsContainerId)) {
-          // when on the last step, store the form data when validation successful
-          only_validate = 0;
-        }
-        jQuery().val(only_validate);
-        jQuery(options.formId).submit();
-        return false;
       }
-    },
-    onFinishing: function (event, currentIndex) {
-      jQuery(options.onlyValidateFieldId).val(0);
+      valid = c2cgeoform.steps.stepIsValid(options.stepsContainerId, currentIndex);
+      if (silent) {
+        return valid;
+      }
+      var form_dirty = form.serialize();
+      if (form_clean==form_dirty && newIndex<=currentStep) {
+        return valid;
+      }
+      // store the current step in a hidden field, so that the next step
+      // can be restored after the form is submitted
+      jQuery(options.customDataFieldId).val('{"previousStep":'+currentIndex+', "requestedStep":'+newIndex+'}');
+      jQuery(options.onlyValidateFieldId).val(1);
       jQuery(options.formId).submit();
-      return true;
+      return false;
     },
+
     onStepChanged: function (event, currentIndex, priorIndex) {
+      if (silent) {
+        currentStep = currentIndex;
+      }
+      // remove error messages on the current step, when the step is
+      // opened for the first time
+      if (currentIndex > previousStep) {
+        jQuery(options.errorContainerId).hide();
+        stepsContainer.find('.has-error').removeClass('has-error');
+      }
       // call reinitMaps after a timeout to work around render issues on Chrome
       window.setTimeout(c2cgeoform.reinitMaps, 1);
     },
-    onInit: function (event, currentIndex) {
-      var lastIndex = parseInt(jQuery(options.customDataFieldId).val());
-      var stepToGoTo;
-      if (c2cgeoform.steps.lastStepIsValid(options.stepsContainerId, lastIndex)) {
-        stepToGoTo = lastIndex + 1;
-        // remove error messages on the current step, when the step is
-        // opened for the first time
-        jQuery(options.errorContainerId).hide();
-        form.find('.has-error').removeClass('has-error');
-      } else {
-        stepToGoTo = lastIndex;
-      }
-      silent = true;
-      c2cgeoform.steps.goToStep(options.stepsContainerId, currentIndex, stepToGoTo);
-      silent = false;
+
+    onFinishing: function (event, currentIndex) {
+      jQuery(options.onlyValidateFieldId).val(0);
+      return true;
     },
-    labels: options.labels
-  });
+
+    onFinished: function (event, currentIndex) {
+      jQuery(options.formId).submit();
+    }
+  }, options));
 };
