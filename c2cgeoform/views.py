@@ -67,16 +67,8 @@ def form(request):
                 DBSession.add(obj)
                 DBSession.flush()
 
-                # FIXME create a fresh form, otherwise the IDs of objects in
-                # relationships will not be rendered
-                # see https://github.com/Pylons/deform/issues/236
-                form = Form(
-                    geo_form_schema.schema_user, buttons=(submit_button,),
-                    renderer=renderer)
-
-                rendered = form.render(
-                    geo_form_schema.schema_user.dictify(obj), readonly=True,
-                    custom_data=custom_data)
+                url = request.route_url('view', schema=geo_form_schema.name, id=obj.id)
+                return HTTPFound(url)
     else:
         rendered = form.render(custom_data=None)
 
