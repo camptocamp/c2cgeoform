@@ -223,9 +223,16 @@ c2cgeoform.ClearFeaturesControl = function(source, onChangeCallback, tooltip) {
 ol.inherits(c2cgeoform.ClearFeaturesControl, c2cgeoform.EditingControl);
 
 
-c2cgeoform.zoomToGeometry_ = function(geometry, map, zoomForGeometry) {
+c2cgeoform.zoomToGeometry_ = function(map, geometry, zoomForGeometry) {
+  if (geometry == undefined) { geometry = map.get('geometry'); }
+  if (zoomForGeometry == undefined) { zoomForGeometry = map.get('zoomForGeometry'); }
+  if (geometry == undefined) { return; }
+  
   map.getView().fitGeometry(geometry, map.getSize(),
     {maxZoom: zoomForGeometry});
+  
+  map.set('geometry', geometry);
+  map.set('zoomForGeometry', zoomForGeometry);
 };
 
 
@@ -297,7 +304,7 @@ c2cgeoform.unpackGeometryCollection_ = function(collection, options) {
 
 /**
  * Adds the given geometry from the GeoJSON string to the vector source and
- * zooms the map to the geometry, so that the geometry is visisble.
+ * zooms the map to the geometry, so that the geometry is visible.
  */
 c2cgeoform.addFeature = function(map, source, geoJson, zoomForGeometry, options) {
   if (geoJson === '') {
@@ -314,7 +321,7 @@ c2cgeoform.addFeature = function(map, source, geoJson, zoomForGeometry, options)
   }
   source.addFeatures(features);
 
-  c2cgeoform.zoomToGeometry_(geometry, map, zoomForGeometry);
+  c2cgeoform.zoomToGeometry_(map, geometry, zoomForGeometry);
 };
 
 
@@ -395,5 +402,6 @@ c2cgeoform.maps = {};
 c2cgeoform.reinitMaps = function() {
   jQuery.each(c2cgeoform.maps, function(_i, map) {
     map.updateSize();
+    c2cgeoform.zoomToGeometry_(map);
   });
 };
