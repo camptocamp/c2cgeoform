@@ -61,7 +61,8 @@ def form(request):
         else:
             if only_validate == '1':
                 # even if the validation was successful, do not save the entity
-                rendered = form.render(obj_dict, custom_data=custom_data, request=request)
+                rendered = form.render(obj_dict, custom_data=custom_data,
+                                       request=request)
             else:
                 obj = geo_form_schema.schema_user.objectify(obj_dict)
                 DBSession.add(obj)
@@ -212,11 +213,13 @@ def edit(request):
                 geo_form_schema.schema_admin, buttons=('submit',),
                 renderer=renderer)
 
-            rendered = form.render(geo_form_schema.schema_admin.dictify(obj), request=request)
+            rendered = form.render(geo_form_schema.schema_admin.dictify(obj),
+                                   request=request)
     else:
         id = request.matchdict['id']
         obj = DBSession.query(geo_form_schema.model).get(id)
-        rendered = form.render(geo_form_schema.schema_admin.dictify(obj), request=request)
+        rendered = form.render(geo_form_schema.schema_admin.dictify(obj),
+                               request=request)
 
     return {
         'form': rendered,
