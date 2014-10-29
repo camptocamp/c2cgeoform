@@ -22,7 +22,6 @@
 
           var controlsDefinition = ${controls_definition};
           var geoJson = '${cstruct}';
-          console.log(geoJson)
 
           /** Default center and zoom when no geometry is given. */
           var defaultCenter = [829170, 5933942];
