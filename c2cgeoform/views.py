@@ -46,7 +46,7 @@ def form(request):
     form = Form(
         geo_form_schema.schema_user, buttons=(submit_button,),
         renderer=renderer)
-    _populate_widgets(form, DBSession)
+    _populate_widgets(form.schema, DBSession)
     if len(request.POST) > 0:
         form_data = request.POST.items()
         custom_data = request.POST.get('__custom_data__')
@@ -191,7 +191,7 @@ def edit(request):
     renderer = _get_renderer(geo_form_schema.templates_admin)
     form = Form(
         geo_form_schema.schema_admin, buttons=('submit',), renderer=renderer)
-    _populate_widgets(form, DBSession)
+    _populate_widgets(form.schema, DBSession)
 
     if 'submit' in request.POST:
         form_data = request.POST.items()
@@ -254,12 +254,14 @@ def set_locale_cookie(request):
                      headers=response.headers)
 
 
-def _populate_widgets(form, session):
+def _populate_widgets(node, session):
     """ Populate ``deform_ext.RelationSelectMixin`` widgets.
     """
-    for node in form.schema:
-        if isinstance(node.widget, deform_ext.RelationSelectMixin):
-            node.widget.populate(session)
+    if isinstance(node.widget, deform_ext.RelationSelectMixin):
+        node.widget.populate(session)
+
+    for child in node:
+        _populate_widgets(child, session)
 
 
 def _get_renderer(search_paths):
