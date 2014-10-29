@@ -379,30 +379,11 @@ c2cgeoform.initializeToolbar = function(map, source, options) {
   source.on('change', onChangeCallback);
 };
 
-/**
- * List of callbacks to call to init all maps of a form.
- * Libraries like jQuery Steps modify the DOM which might lead to the
- * case that a map is initialized twice. To avoid this, the map widget
- * only registers a callback, which is called once third-party libraries
- * have finished their setup.
- */
-c2cgeoform.initCallbacks = {};
-c2cgeoform.init = function() {
-  jQuery.each(c2cgeoform.initCallbacks, function(mapKey, callback) {
-    callback();
-    c2cgeoform.initCallbacks[mapKey] = jQuery.noop;
-  });
-};
-c2cgeoform.initMap = function(mapKey) {
-  c2cgeoform.initCallbacks[mapKey]();
-  c2cgeoform.initCallbacks[mapKey] = jQuery.noop;
-};
-
 
 /**
- * All maps on a page.
+ * All maps on a page {deform field oid: ol.Map}.
  */
-c2cgeoform.maps = [];
+c2cgeoform.maps = {};
 
 /*
  * Calls 'updateSize' on all maps.

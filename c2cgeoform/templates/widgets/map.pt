@@ -18,81 +18,81 @@
       deform.addCallback(
         '${oid}',
         function (oid) {
-          c2cgeoform.initCallbacks['_map_'+oid] = function() {
-            var controlsDefinition = ${controls_definition};
-            var geoJson = '${cstruct}';
+          if (oid in c2cgeoform.maps) return true;
 
-            /** Default center and zoom when no geometry is given. */
-            var defaultCenter = [829170, 5933942];
-            var defaultZoom = 7;
-            /** Minimum zoom when a geometry is given. */
-            var zoomForGeometry = 14;
+          var controlsDefinition = ${controls_definition};
+          var geoJson = '${cstruct}';
+          console.log(geoJson)
 
-            /** Translations */
-            c2cgeoform.i18n = {};
-            c2cgeoform.i18n['zoomInTipLabel'] = '${_('Zoom In')}';
-            c2cgeoform.i18n['zoomOutTipLabel'] = '${_('Zoom Out')}';
-            c2cgeoform.i18n['attributionTipLabel'] = '${_('Attributions')}';
-            controlsDefinition['drawPointTooltip'] = '${_('Draw point')}';
-            controlsDefinition['drawLineTooltip'] = '${_('Draw line')}';
-            controlsDefinition['drawPolygonTooltip'] = '${_('Draw polygon')}';
-            controlsDefinition['modifyTooltip'] = '${_('Modify')}';
-            controlsDefinition['clearTooltip'] = '${_('Remove all')}';
+          /** Default center and zoom when no geometry is given. */
+          var defaultCenter = [829170, 5933942];
+          var defaultZoom = 7;
+          /** Minimum zoom when a geometry is given. */
+          var zoomForGeometry = 14;
 
-            var source = new ol.source.Vector();
-            var vector = new ol.layer.Vector({
-              source: source,
-              style: new ol.style.Style({
+          /** Translations */
+          c2cgeoform.i18n = {};
+          c2cgeoform.i18n['zoomInTipLabel'] = '${_('Zoom In')}';
+          c2cgeoform.i18n['zoomOutTipLabel'] = '${_('Zoom Out')}';
+          c2cgeoform.i18n['attributionTipLabel'] = '${_('Attributions')}';
+          controlsDefinition['drawPointTooltip'] = '${_('Draw point')}';
+          controlsDefinition['drawLineTooltip'] = '${_('Draw line')}';
+          controlsDefinition['drawPolygonTooltip'] = '${_('Draw polygon')}';
+          controlsDefinition['modifyTooltip'] = '${_('Modify')}';
+          controlsDefinition['clearTooltip'] = '${_('Remove all')}';
+
+          var source = new ol.source.Vector();
+          var vector = new ol.layer.Vector({
+            source: source,
+            style: new ol.style.Style({
+              fill: new ol.style.Fill({
+                color: 'rgba(255, 255, 255, 0.2)'
+              }),
+              stroke: new ol.style.Stroke({
+                color: '#ffcc33',
+                width: 2
+              }),
+              image: new ol.style.Circle({
+                radius: 7,
                 fill: new ol.style.Fill({
-                  color: 'rgba(255, 255, 255, 0.2)'
-                }),
-                stroke: new ol.style.Stroke({
-                  color: '#ffcc33',
-                  width: 2
-                }),
-                image: new ol.style.Circle({
-                  radius: 7,
-                  fill: new ol.style.Fill({
-                    color: '#ffcc33'
-                  })
+                  color: '#ffcc33'
                 })
               })
-            });
+            })
+          });
 
-            var map = new ol.Map({
-              target: 'map_'+oid,
-              layers: [
-                new ol.layer.Tile({
-                  source: new ol.source.MapQuest({layer: 'osm'})
-                }),
-                vector
-              ],
-              view: new ol.View({
-                center: defaultCenter,
-                zoom: defaultZoom
+          var map = new ol.Map({
+            target: 'map_'+oid,
+            layers: [
+              new ol.layer.Tile({
+                source: new ol.source.MapQuest({layer: 'osm'})
               }),
-              controls: ol.control.defaults({
-                zoomOptions: {
-                  zoomInTipLabel: c2cgeoform.i18n['zoomInTipLabel'],
-                  zoomOutTipLabel: c2cgeoform.i18n['zoomOutTipLabel']
-                },
-                attributionOptions: {
-                  tipLabel: c2cgeoform.i18n['attributionTipLabel'],
-                  collapsible: false
-                }
-              })
-            });
-
-            c2cgeoform.addFeature(map, source, geoJson, zoomForGeometry, controlsDefinition);
-            c2cgeoform.initializeToolbar(map, source, {
-              controlsDefinition: controlsDefinition,
-              updateField: function(newGeoJson) {
-                $('#'+oid).val(newGeoJson);
+              vector
+            ],
+            view: new ol.View({
+              center: defaultCenter,
+              zoom: defaultZoom
+            }),
+            controls: ol.control.defaults({
+              zoomOptions: {
+                zoomInTipLabel: c2cgeoform.i18n['zoomInTipLabel'],
+                zoomOutTipLabel: c2cgeoform.i18n['zoomOutTipLabel']
+              },
+              attributionOptions: {
+                tipLabel: c2cgeoform.i18n['attributionTipLabel'],
+                collapsible: false
               }
-            });
-            c2cgeoform.maps.push(map);
-          };
-          c2cgeoform.initMap('_map_'+oid);
+            })
+          });
+
+          c2cgeoform.addFeature(map, source, geoJson, zoomForGeometry, controlsDefinition);
+          c2cgeoform.initializeToolbar(map, source, {
+            controlsDefinition: controlsDefinition,
+            updateField: function(newGeoJson) {
+              $('#'+oid).val(newGeoJson);
+            }
+          });
+          c2cgeoform.maps[oid] = map;
         }
       );
     </script>
