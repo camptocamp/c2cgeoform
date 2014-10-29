@@ -76,7 +76,7 @@ def form(request):
 
                 rendered = form.render(
                     geo_form_schema.schema_user.dictify(obj), readonly=True,
-                    custom_data=custom_data)
+                    custom_data=custom_data, request=request)
     else:
         rendered = form.render(custom_data=None, request=request)
 
@@ -212,11 +212,11 @@ def edit(request):
                 geo_form_schema.schema_admin, buttons=('submit',),
                 renderer=renderer)
 
-            rendered = form.render(geo_form_schema.schema_admin.dictify(obj))
+            rendered = form.render(geo_form_schema.schema_admin.dictify(obj), request=request)
     else:
         id = request.matchdict['id']
         obj = DBSession.query(geo_form_schema.model).get(id)
-        rendered = form.render(geo_form_schema.schema_admin.dictify(obj))
+        rendered = form.render(geo_form_schema.schema_admin.dictify(obj), request=request)
 
     return {
         'form': rendered,
@@ -233,7 +233,7 @@ def view(request):
                 renderer=renderer)
     obj = DBSession.query(geo_form_schema.model).get(id_)
     rendered = form.render(geo_form_schema.schema_admin.dictify(obj),
-                           readonly=True)
+                           readonly=True, request=request)
     return {
         'form': rendered,
         'schema': geo_form_schema,
