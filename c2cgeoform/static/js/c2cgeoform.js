@@ -88,6 +88,7 @@ c2cgeoform.steps.init = function(options) {
       if (currentIndex > previousStep) {
         jQuery(options.errorContainerId).hide();
         stepsContainer.find('.has-error').removeClass('has-error');
+        stepsContainer.find('p[id|="error"]').addClass('hidden');
       }
       // call reinitMaps after a timeout to work around render issues on Chrome
       window.setTimeout(c2cgeoform.reinitMaps, 1);
