@@ -401,7 +401,10 @@ c2cgeoform.maps = {};
  */
 c2cgeoform.reinitMaps = function() {
   jQuery.each(c2cgeoform.maps, function(_i, map) {
+    var initialWidth = map.getSize()[0];
     map.updateSize();
-    c2cgeoform.zoomToGeometry_(map);
+    if (initialWidth == 0) {
+      c2cgeoform.zoomToGeometry_(map);
+    }
   });
 };
