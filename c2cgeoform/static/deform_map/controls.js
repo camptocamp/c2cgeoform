@@ -223,9 +223,19 @@ c2cgeoform.ClearFeaturesControl = function(source, onChangeCallback, tooltip) {
 ol.inherits(c2cgeoform.ClearFeaturesControl, c2cgeoform.EditingControl);
 
 
-c2cgeoform.zoomToGeometry_ = function(geometry, map, zoomForGeometry) {
+c2cgeoform.zoomToGeometry_ = function(map, geometry, zoomForGeometry) {
+  geometry = (geometry === undefined) ? map.get('geometry') : geometry;
+  if (geometry === undefined) {
+    return;
+  }
+  zoomForGeometry = (zoomForGeometry === undefined) ?
+    map.get('zoomForGeometry') : zoomForGeometry;
+
   map.getView().fitGeometry(geometry, map.getSize(),
     {maxZoom: zoomForGeometry});
+
+  map.set('geometry', geometry);
+  map.set('zoomForGeometry', zoomForGeometry);
 };
 
 
@@ -297,7 +307,7 @@ c2cgeoform.unpackGeometryCollection_ = function(collection, options) {
 
 /**
  * Adds the given geometry from the GeoJSON string to the vector source and
- * zooms the map to the geometry, so that the geometry is visisble.
+ * zooms the map to the geometry, so that the geometry is visible.
  */
 c2cgeoform.addFeature = function(map, source, geoJson, zoomForGeometry, options) {
   if (geoJson === '') {
@@ -314,7 +324,7 @@ c2cgeoform.addFeature = function(map, source, geoJson, zoomForGeometry, options)
   }
   source.addFeatures(features);
 
-  c2cgeoform.zoomToGeometry_(geometry, map, zoomForGeometry);
+  c2cgeoform.zoomToGeometry_(map, geometry, zoomForGeometry);
 };
 
 
@@ -379,30 +389,11 @@ c2cgeoform.initializeToolbar = function(map, source, options) {
   source.on('change', onChangeCallback);
 };
 
-/**
- * List of callbacks to call to init all maps of a form.
- * Libraries like jQuery Steps modify the DOM which might lead to the
- * case that a map is initialized twice. To avoid this, the map widget
- * only registers a callback, which is called once third-party libraries
- * have finished their setup.
- */
-c2cgeoform.initCallbacks = {};
-c2cgeoform.init = function() {
-  jQuery.each(c2cgeoform.initCallbacks, function(mapKey, callback) {
-    callback();
-    c2cgeoform.initCallbacks[mapKey] = jQuery.noop;
-  });
-};
-c2cgeoform.initMap = function(mapKey) {
-  c2cgeoform.initCallbacks[mapKey]();
-  c2cgeoform.initCallbacks[mapKey] = jQuery.noop;
-};
-
 
 /**
- * All maps on a page.
+ * All maps on a page {deform field oid: ol.Map}.
  */
-c2cgeoform.maps = [];
+c2cgeoform.maps = {};
 
 /*
  * Calls 'updateSize' on all maps.
@@ -413,6 +404,10 @@ c2cgeoform.maps = [];
  */
 c2cgeoform.reinitMaps = function() {
   jQuery.each(c2cgeoform.maps, function(_i, map) {
+    var initialWidth = map.getSize()[0];
     map.updateSize();
+    if (initialWidth == 0) {
+      c2cgeoform.zoomToGeometry_(map);
+    }
   });
 };
