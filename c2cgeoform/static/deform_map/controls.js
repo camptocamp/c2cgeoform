@@ -224,13 +224,16 @@ ol.inherits(c2cgeoform.ClearFeaturesControl, c2cgeoform.EditingControl);
 
 
 c2cgeoform.zoomToGeometry_ = function(map, geometry, zoomForGeometry) {
-  if (geometry == undefined) { geometry = map.get('geometry'); }
-  if (zoomForGeometry == undefined) { zoomForGeometry = map.get('zoomForGeometry'); }
-  if (geometry == undefined) { return; }
-  
+  geometry = (geometry === undefined) ? map.get('geometry') : geometry;
+  if (geometry === undefined) {
+    return;
+  }
+  zoomForGeometry = (zoomForGeometry === undefined) ?
+    map.get('zoomForGeometry') : zoomForGeometry;
+
   map.getView().fitGeometry(geometry, map.getSize(),
     {maxZoom: zoomForGeometry});
-  
+
   map.set('geometry', geometry);
   map.set('zoomForGeometry', zoomForGeometry);
 };
