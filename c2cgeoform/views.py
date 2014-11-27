@@ -94,6 +94,8 @@ def form(request):
                         back_link=back_link)
                 else:
                     obj = geo_form_schema.schema_user.objectify(obj_dict)
+                    hash = str(uuid.uuid4())
+                    setattr(obj, geo_form_schema.hash_column_name, hash)
                     DBSession.add(obj)
                     DBSession.flush()
 
