@@ -260,8 +260,8 @@ def edit(request):
         'deform_dependencies': form.get_widget_resources()}
 
 
-@view_config(route_name='view', renderer='templates/site/view.pt')
-def view(request):
+@view_config(route_name='view_admin', renderer='templates/site/view_admin.pt')
+def view_admin(request):
     id_ = request.matchdict['id']
     geo_form_schema = _get_schema(request)
     renderer = _get_renderer(geo_form_schema.templates_admin)

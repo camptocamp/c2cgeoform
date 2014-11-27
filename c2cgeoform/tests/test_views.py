@@ -425,7 +425,7 @@ class TestView(DatabaseTestCase):
         self.assertTrue('Tag B' in form_html)
 
     def test_view(self):
-        from c2cgeoform.views import view
+        from c2cgeoform.views import view_admin
         from models_test import Person
         person = Person(name="Peter", first_name="Smith")
         DBSession.add(person)
@@ -434,7 +434,7 @@ class TestView(DatabaseTestCase):
         request = self._get_request()
         request.matchdict['schema'] = 'tests_persons'
         request.matchdict['id'] = str(person.id)
-        response = view(request)
+        response = view_admin(request)
 
         self.assertTrue('schema' in response)
         self.assertTrue('form' in response)

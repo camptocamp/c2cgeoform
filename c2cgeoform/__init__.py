@@ -22,7 +22,7 @@ def includeme(config):
     config.add_route('list', '/{schema}/')
     config.add_route('grid', '/{schema}/grid/')
     config.add_route('edit', '/{schema}/{id}/form')
-    config.add_route('view', '/{schema}/{id}')
+    config.add_route('view_admin', '/{schema}/{id}')
     config.add_translation_dirs('colander:locale', 'deform:locale', 'locale')
     config.scan(ignore='c2cgeoform.tests')
     _set_widget_template_path()
