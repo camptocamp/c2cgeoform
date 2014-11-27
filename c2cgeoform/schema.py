@@ -14,7 +14,8 @@ class GeoFormSchema():
 
     def __init__(
             self, name, model,
-            templates_user=None, templates_admin=None, overrides=None, **kw):
+            templates_user=None, templates_admin=None,
+            overrides_user=None, overrides_admin=None, **kw):
         self.name = name
         self.model = model
 
@@ -22,11 +23,11 @@ class GeoFormSchema():
         self.schema_user = SQLAlchemySchemaNode(
             self.model,
             excludes=excludes_user,
-            overrides=overrides,
+            overrides=overrides_user,
             **kw)
         self.schema_admin = SQLAlchemySchemaNode(
             self.model,
-            overrides=overrides,
+            overrides=overrides_admin,
             **kw)
 
         self.templates_user = default_search_paths
@@ -69,7 +70,9 @@ forms = {}
 
 def register_schema(
         name, model,
-        templates_user=None, templates_admin=None, overrides=None):
+        templates_user=None, templates_admin=None,
+        overrides_user=None, overrides_admin=None):
     schema = GeoFormSchema(
-        name, model, templates_user, templates_admin, overrides=overrides)
+        name, model, templates_user, templates_admin,
+        overrides_user, overrides_admin)
     forms[name] = schema
