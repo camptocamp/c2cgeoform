@@ -1,4 +1,4 @@
-from pyramid.httpexceptions import HTTPNotFound
+from pyramid.httpexceptions import HTTPNotFound, HTTPFound
 import re
 
 from c2cgeoform.tests import DatabaseTestCase
@@ -121,18 +121,10 @@ class TestView(DatabaseTestCase):
         self.assertEquals(person.id, tag_for_person2.person_id)
         self.assertIsNotNone(tag_for_person2.id)
 
-        id = person.id
-        phone_id = phone.id
-
-        self.assertTrue('form' in response)
-        form_html = response['form']
-        self.assertTrue('name="id" value="' + str(id) + '"' in form_html)
-        self.assertTrue('name="id" value="' + str(phone_id) + '"' in form_html)
-        self.assertTrue(
-            'name="person_id" value="' + str(id) + '"' in form_html)
-        self.assertTrue('Tag A' in form_html)
-        self.assertTrue('Tag B' in form_html)
-        self.assertTrue('name="submit"' not in form_html)
+        self.assertTrue(isinstance(response, HTTPFound))
+        self.assertEquals(
+            'http://example.com/tests_persons/form/' + person.hash,
+            response.location)
 
     def test_form_submit_confirmation_back(self):
         from c2cgeoform.views import form

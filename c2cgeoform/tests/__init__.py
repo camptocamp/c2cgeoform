@@ -41,6 +41,7 @@ class DatabaseTestCase(unittest.TestCase):
 
         config = testing.setUp()
         config.add_route('form', '/{schema}/form/')
+        config.add_route('view_user', '/{schema}/form/{hash}')
         from deform import Form
         Form.set_zpt_renderer(default_search_paths)
 
