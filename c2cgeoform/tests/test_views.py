@@ -104,6 +104,7 @@ class TestView(DatabaseTestCase):
         response = form(request2)
 
         person = DBSession.query(Person).one()
+        self.assertIsNotNone(person.hash)
         self.assertEquals('Peter', person.name)
         self.assertEquals('Smith', person.first_name)
         self.assertEquals(1, len(person.phones))

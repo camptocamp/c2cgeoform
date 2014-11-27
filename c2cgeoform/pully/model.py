@@ -99,6 +99,7 @@ class ExcavationPermission(Base):
             'widget': deform.widget.HiddenWidget(),
             'admin_list': True
         }})
+    hash = Column(Text, unique=True)
     reference_number = Column(Text, nullable=True, info={
         'colanderalchemy': {
             'title': _('Reference Number'),
