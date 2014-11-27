@@ -5,6 +5,7 @@ from deform import Form, ValidationFailure, ZPTRendererFactory
 from deform.form import Button
 import webhelpers.paginate as paginate
 from sqlalchemy import desc, or_, types
+from sqlalchemy.orm.exc import NoResultFound
 from geoalchemy2.elements import WKBElement
 from translationstring import TranslationStringFactory
 import uuid
@@ -116,6 +117,34 @@ def form(request):
 
     return {'form': rendered,
             'deform_dependencies': form.get_widget_resources()}
+
+
+@view_config(route_name='view_user', renderer='templates/site/view_user.pt')
+def view_user(request):
+    if 'hash' not in request.matchdict or not request.matchdict['hash']:
+        return {'form': None}
+
+    hash = request.matchdict['hash']
+    geo_form_schema = _get_schema(request)
+    renderer = _get_renderer(geo_form_schema.templates_user)
+    form = Form(geo_form_schema.schema_user, renderer=renderer)
+
+    hash_field = getattr(
+        geo_form_schema.model, geo_form_schema.hash_column_name)
+    try:
+        obj = DBSession \
+            .query(geo_form_schema.model) \
+            .filter(hash_field == hash) \
+            .one()
+    except NoResultFound:
+        return {'form': None}
+
+    rendered = form.render(geo_form_schema.schema_user.dictify(obj),
+                           readonly=True, request=request)
+    return {
+        'form': rendered,
+        'schema': geo_form_schema,
+        'deform_dependencies': form.get_widget_resources()}
 
 
 @view_config(route_name='list', renderer='templates/site/list.pt')

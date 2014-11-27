@@ -19,6 +19,7 @@ def includeme(config):
     config.add_static_view('deform_static', 'deform:static')
     config.add_route('locale', '/locale/')
     config.add_route('form', '/{schema}/form/')
+    config.add_route('view_user', '/{schema}/form/{hash}')
     config.add_route('list', '/{schema}/')
     config.add_route('grid', '/{schema}/grid/')
     config.add_route('edit', '/{schema}/{id}/form')
