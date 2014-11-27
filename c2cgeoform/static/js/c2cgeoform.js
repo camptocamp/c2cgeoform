@@ -44,14 +44,16 @@ c2cgeoform.steps.init = function(options) {
     requestedStep = customValues.requestedStep;
   }
 
-  var form_clean = form.serialize();
+  var initialFormState = form.serialize();
 
   stepsContainer.steps(jQuery.extend({
 
     onInit: function (event, currentIndex) {
       silent = true;
-      for (i=0; i<requestedStep; i++) {
-        if (stepsContainer.steps('next') == false) {
+      // goto to step `requestedStep`
+      // FIXME see https://github.com/rstaib/jquery-steps/pull/67
+      for (var i = 0; i < requestedStep; i++) {
+        if (!stepsContainer.steps('next')) {
           break;
         }
       }
@@ -63,19 +65,21 @@ c2cgeoform.steps.init = function(options) {
         // going backwards
         return true;
       }
-      valid = c2cgeoform.steps.stepIsValid(options.stepsContainerId, currentIndex);
+      var valid = c2cgeoform.steps.stepIsValid(options.stepsContainerId, currentIndex);
       if (silent) {
         return valid;
       }
-      var form_dirty = form.serialize();
-      if (form_clean==form_dirty && newIndex<=currentStep) {
+
+      if (newIndex <= currentStep && initialFormState == form.serialize()) {
         return valid;
       }
       // store the current step in a hidden field, so that the next step
       // can be restored after the form is submitted
-      jQuery(options.customDataFieldId).val('{"previousStep":'+currentIndex+', "requestedStep":'+newIndex+'}');
+      jQuery(options.customDataFieldId).val(
+        '{"previousStep":' + currentIndex + ', "requestedStep":' + newIndex + '}');
       jQuery(options.onlyValidateFieldId).val(1);
       jQuery(options.formId).submit();
+
       return false;
     },
 
