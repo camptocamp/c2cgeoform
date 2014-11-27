@@ -10,7 +10,7 @@ class TestView(DatabaseTestCase):
 
     def test_form_unknown_schema(self):
         from c2cgeoform.views import form
-        request = testing.DummyRequest()
+        request = self.request
         request.matchdict['schema'] = 'unknown-schema'
 
         self.assertRaisesRegexp(
@@ -19,7 +19,7 @@ class TestView(DatabaseTestCase):
 
     def test_form_show(self):
         from c2cgeoform.views import form
-        request = testing.DummyRequest()
+        request = self.request
         request.matchdict['schema'] = 'tests_persons'
         response = form(request)
 
@@ -34,7 +34,7 @@ class TestView(DatabaseTestCase):
 
     def test_form_submit_invalid(self):
         from c2cgeoform.views import form
-        request = testing.DummyRequest()
+        request = self.request
         request.matchdict['schema'] = 'tests_persons'
         request.POST['submit'] = 'submit'
         response = form(request)
@@ -122,7 +122,7 @@ class TestView(DatabaseTestCase):
         DBSession.add(Person(name="Peter", first_name="Smith"))
         DBSession.add(Person(name="John", first_name="Wayne"))
 
-        request = testing.DummyRequest()
+        request = self.request
         request.matchdict['schema'] = 'tests_persons'
         response = list(request)
 
@@ -137,7 +137,7 @@ class TestView(DatabaseTestCase):
         from c2cgeoform.views import grid
         _add_test_persons()
 
-        request = testing.DummyRequest()
+        request = self.request
         request.matchdict['schema'] = 'tests_persons'
         request.POST['current'] = '1'
         request.POST['rowCount'] = '5'
@@ -156,7 +156,7 @@ class TestView(DatabaseTestCase):
         from c2cgeoform.views import grid
         _add_test_persons()
 
-        request = testing.DummyRequest()
+        request = self.request
         request.matchdict['schema'] = 'tests_persons'
         request.POST['current'] = '1'
         request.POST['rowCount'] = '5'
@@ -175,7 +175,7 @@ class TestView(DatabaseTestCase):
         from c2cgeoform.views import grid
         _add_test_persons()
 
-        request = testing.DummyRequest()
+        request = self.request
         request.matchdict['schema'] = 'tests_persons'
         request.POST['current'] = '2'
         request.POST['rowCount'] = '5'
@@ -199,7 +199,7 @@ class TestView(DatabaseTestCase):
         from c2cgeoform.views import grid
         _add_test_persons()
 
-        request = testing.DummyRequest()
+        request = self.request
         request.matchdict['schema'] = 'tests_persons'
         request.POST['current'] = '1'
         request.POST['rowCount'] = '5'
@@ -231,7 +231,7 @@ class TestView(DatabaseTestCase):
         DBSession.add(person)
         DBSession.flush()
 
-        request = testing.DummyRequest()
+        request = self.request
         request.matchdict['schema'] = 'tests_persons'
         request.matchdict['id'] = str(person.id)
         response = edit(request)
@@ -253,7 +253,7 @@ class TestView(DatabaseTestCase):
         DBSession.add(person)
         DBSession.flush()
 
-        request = testing.DummyRequest()
+        request = self.request
         request.matchdict['schema'] = 'tests_persons'
         request.matchdict['id'] = str(person.id)
         request.POST['id'] = str(person.id)
@@ -355,7 +355,7 @@ class TestView(DatabaseTestCase):
         DBSession.add(person)
         DBSession.flush()
 
-        request = testing.DummyRequest()
+        request = self.request
         request.matchdict['schema'] = 'tests_persons'
         request.matchdict['id'] = str(person.id)
         response = view(request)
