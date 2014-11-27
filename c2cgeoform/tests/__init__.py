@@ -34,6 +34,9 @@ class DatabaseTestCase(unittest.TestCase):
         DBSession.add(Tag(id=3, name='Tag D'))
         DBSession.add(Tag(id=4, name='Tag E'))
 
+        self.request = testing.DummyRequest()
+        testing.setUp(request=self.request)
+
     def tearDown(self):  # noqa
         self.cleanup()
         DBSession.remove()
