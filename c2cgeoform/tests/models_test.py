@@ -110,4 +110,6 @@ class Person(Base):
             'admin_only': True
         }})
 
-register_schema('tests_persons', Person)
+register_schema(
+    'tests_persons', Person,
+    overrides_user={'name': {'title': 'The Name'}})

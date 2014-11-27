@@ -47,7 +47,9 @@ def main(global_config, **settings):
     register_schema(
         'fouille',
         model.ExcavationPermission,
-        templates_user=resource_filename('c2cgeoform', 'pully/templates'))
+        templates_user=resource_filename('c2cgeoform', 'pully/templates'),
+        # override the title for a field in the user form
+        overrides_user={'request_date': {'title': 'Date'}})
     model.setup_test_data()
 
     return config.make_wsgi_app()
