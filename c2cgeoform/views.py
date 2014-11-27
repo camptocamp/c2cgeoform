@@ -7,6 +7,7 @@ import webhelpers.paginate as paginate
 from sqlalchemy import desc, or_, types
 from geoalchemy2.elements import WKBElement
 from translationstring import TranslationStringFactory
+import uuid
 
 from .models import DBSession
 from .schema import forms
@@ -40,17 +41,30 @@ def notfound(request):
 @view_config(route_name='form', renderer='templates/site/form.pt')
 def form(request):
     geo_form_schema = _get_schema(request)
+    session = request.session
 
     renderer = _get_renderer(geo_form_schema.templates_user)
+    form_action = request.route_url('form', schema=geo_form_schema.name)
     submit_button = Button(name='formsubmit', title=_('Submit'))
     form = Form(
         geo_form_schema.schema_user, buttons=(submit_button,),
-        renderer=renderer)
+        renderer=renderer, action=form_action)
     _populate_widgets(form.schema, DBSession)
-    if len(request.POST) > 0:
-        form_data = request.POST.items()
-        custom_data = request.POST.get('__custom_data__')
-        only_validate = request.POST.get('__only_validate__')
+
+    submission_id = request.params.get('__submission_id__')
+    if len(request.POST) > 0 or submission_id is not None:
+        store_form = request.params.get('__store_form__')
+
+        if submission_id is not None and submission_id in session:
+            # restoring the form from the session when going back from the
+            # confirmation page, or when submitting on the confirmation page
+            form_data = session[submission_id]
+            custom_data = None
+            only_validate = '0' if store_form == '1' else '1'
+        else:
+            form_data = request.POST.items()
+            custom_data = request.POST.get('__custom_data__')
+            only_validate = request.POST.get('__only_validate__')
 
         try:
             obj_dict = form.validate(form_data)
@@ -64,20 +78,37 @@ def form(request):
                 rendered = form.render(obj_dict, custom_data=custom_data,
                                        request=request)
             else:
-                obj = geo_form_schema.schema_user.objectify(obj_dict)
-                DBSession.add(obj)
-                DBSession.flush()
+                # the form data is valid, ready to be stored in the database
+                if store_form != '1':
+                    # but first show a confirmation page and store the form
+                    # data in a session, so that it can be restored
+                    submission_id = str(uuid.uuid4())
+                    session[submission_id] = form_data
+                    session.save()
+                    back_link = request.route_url(
+                        'form', schema=geo_form_schema.name,
+                        _query={'__submission_id__': submission_id})
+                    rendered = form.render(
+                        obj_dict, readonly=True,
+                        custom_data=custom_data, submission_id=submission_id,
+                        back_link=back_link)
+                else:
+                    obj = geo_form_schema.schema_user.objectify(obj_dict)
+                    DBSession.add(obj)
+                    DBSession.flush()
 
-                # FIXME create a fresh form, otherwise the IDs of objects in
-                # relationships will not be rendered
-                # see https://github.com/Pylons/deform/issues/236
-                form = Form(
-                    geo_form_schema.schema_user, buttons=(submit_button,),
-                    renderer=renderer)
+                    # FIXME create a fresh form, otherwise the IDs of objects
+                    # in relationships will not be rendered
+                    # see https://github.com/Pylons/deform/issues/236
+                    form = Form(
+                        geo_form_schema.schema_user, buttons=(submit_button,),
+                        renderer=renderer)
 
-                rendered = form.render(
-                    geo_form_schema.schema_user.dictify(obj), readonly=True,
-                    custom_data=custom_data, request=request)
+                    rendered = form.render(
+                        geo_form_schema.schema_user.dictify(obj),
+                        readonly=True,
+                        custom_data=custom_data,
+                        request=request)
     else:
         rendered = form.render(custom_data=None, request=request)
 

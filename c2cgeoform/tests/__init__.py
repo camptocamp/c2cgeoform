@@ -3,8 +3,10 @@ import unittest
 from pyramid import testing
 from pyramid.paster import get_appsettings
 from sqlalchemy import engine_from_config
+from webob.multidict import MultiDict
 
 from c2cgeoform.models import (DBSession, Base)
+from c2cgeoform import default_search_paths
 
 
 class DatabaseTestCase(unittest.TestCase):
@@ -34,8 +36,13 @@ class DatabaseTestCase(unittest.TestCase):
         DBSession.add(Tag(id=3, name='Tag D'))
         DBSession.add(Tag(id=4, name='Tag E'))
 
-        self.request = testing.DummyRequest()
+        self.request = testing.DummyRequest(post=MultiDict())
         testing.setUp(request=self.request)
+
+        config = testing.setUp()
+        config.add_route('form', '/{schema}/form/')
+        from deform import Form
+        Form.set_zpt_renderer(default_search_paths)
 
     def tearDown(self):  # noqa
         self.cleanup()

@@ -27,6 +27,9 @@ def includeme(config):
     config.scan(ignore='c2cgeoform.tests')
     _set_widget_template_path()
 
+    # use Beaker for session storage
+    config.include('pyramid_beaker')
+
 
 def main(global_config, **settings):
     """ This function returns a Pyramid WSGI application.
@@ -58,12 +61,16 @@ def main(global_config, **settings):
 """ Default search paths for the form templates.
 """
 default_search_paths = (
-    resource_filename('deform', 'templates'),
-    resource_filename('c2cgeoform', 'templates/widgets'))
+    resource_filename('c2cgeoform', 'templates/widgets'),
+    resource_filename('deform', 'templates'))
 
 
 def translator(term):
-    return get_localizer(get_current_request()).translate(term)
+    request = get_current_request()
+    if request is None:
+        return term
+    else:
+        return get_localizer(request).translate(term)
 
 
 def _set_widget_template_path():

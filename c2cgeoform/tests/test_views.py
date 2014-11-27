@@ -1,6 +1,5 @@
-from pyramid import testing
 from pyramid.httpexceptions import HTTPNotFound
-from webob.multidict import MultiDict
+import re
 
 from c2cgeoform.tests import DatabaseTestCase
 from c2cgeoform.models import DBSession
@@ -8,9 +7,19 @@ from c2cgeoform.models import DBSession
 
 class TestView(DatabaseTestCase):
 
+    def _get_request(self):
+        request = self.request
+
+        # add a dummy `save` method to the session
+        def save():
+            pass
+        request.session.save = save
+
+        return request
+
     def test_form_unknown_schema(self):
         from c2cgeoform.views import form
-        request = self.request
+        request = self._get_request()
         request.matchdict['schema'] = 'unknown-schema'
 
         self.assertRaisesRegexp(
@@ -19,7 +28,7 @@ class TestView(DatabaseTestCase):
 
     def test_form_show(self):
         from c2cgeoform.views import form
-        request = self.request
+        request = self._get_request()
         request.matchdict['schema'] = 'tests_persons'
         response = form(request)
 
@@ -37,7 +46,7 @@ class TestView(DatabaseTestCase):
 
     def test_form_submit_invalid(self):
         from c2cgeoform.views import form
-        request = self.request
+        request = self._get_request()
         request.matchdict['schema'] = 'tests_persons'
         request.POST['submit'] = 'submit'
         response = form(request)
@@ -51,7 +60,7 @@ class TestView(DatabaseTestCase):
         from c2cgeoform.views import form
         from models_test import Person
 
-        request = testing.DummyRequest(post=MultiDict())
+        request = self._get_request()
         request.matchdict['schema'] = 'tests_persons'
         request.POST.add('submit', 'submit')
         request.POST.add('name', 'Peter')
@@ -71,6 +80,28 @@ class TestView(DatabaseTestCase):
         request.POST.add('__end__', 'tags:sequence')
 
         response = form(request)
+
+        # valid submission, confirmation page should be shown
+        self.assertTrue('form' in response)
+        form_html = response['form']
+        self.assertTrue(
+            '<input type="hidden" name="__submission_id__"' in form_html)
+        self.assertTrue(
+            '<input type="hidden" name="__store_form__"' in form_html)
+
+        # get submission_id
+        matcher = re.search(
+            'id="deform_submission_id" value="(.*)"', form_html)
+        submission_id = matcher.group(1)
+
+        # now simulate that the confirmation page is submitted
+        request2 = self._get_request()
+        request2.session = request.session
+        request2.matchdict['schema'] = 'tests_persons'
+        request2.params['__store_form__'] = '1'
+        request2.params['__submission_id__'] = submission_id
+
+        response = form(request2)
 
         person = DBSession.query(Person).one()
         self.assertEquals('Peter', person.name)
@@ -102,11 +133,52 @@ class TestView(DatabaseTestCase):
         self.assertTrue('Tag B' in form_html)
         self.assertTrue('name="submit"' not in form_html)
 
+    def test_form_submit_confirmation_back(self):
+        from c2cgeoform.views import form
+        from models_test import Person
+
+        request = self._get_request()
+        request.matchdict['schema'] = 'tests_persons'
+        request.POST.add('submit', 'submit')
+        request.POST.add('name', 'Peter')
+        request.POST.add('first_name', 'Smith')
+
+        response = form(request)
+
+        # valid submission, confirmation page should be shown
+        self.assertTrue('form' in response)
+        form_html = response['form']
+        self.assertTrue(
+            '<input type="hidden" name="__submission_id__"' in form_html)
+        self.assertTrue(
+            '<input type="hidden" name="__store_form__"' in form_html)
+
+        # get submission_id
+        matcher = re.search(
+            'id="deform_submission_id" value="(.*)"', form_html)
+        submission_id = matcher.group(1)
+
+        # now simulate going back to the form
+        request2 = self._get_request()
+        request2.session = request.session
+        request2.matchdict['schema'] = 'tests_persons'
+        request2.params['__submission_id__'] = submission_id
+
+        response = form(request2)
+        form_html = response['form']
+        # form is shown again with values restored from the session
+        self.assertTrue(
+            '<input type="text" name="name" value="Peter"' in form_html)
+
+        # and no row was created
+        count = DBSession.query(Person).count()
+        self.assertEquals(0, count)
+
     def test_form_submit_only_validate(self):
         from c2cgeoform.views import form
         from models_test import Person
 
-        request = testing.DummyRequest(post=MultiDict())
+        request = self._get_request()
         request.matchdict['schema'] = 'tests_persons'
         request.POST.add('submit', 'submit')
         request.POST.add('name', 'Peter')
@@ -125,7 +197,7 @@ class TestView(DatabaseTestCase):
         DBSession.add(Person(name="Peter", first_name="Smith"))
         DBSession.add(Person(name="John", first_name="Wayne"))
 
-        request = self.request
+        request = self._get_request()
         request.matchdict['schema'] = 'tests_persons'
         response = list(request)
 
@@ -140,7 +212,7 @@ class TestView(DatabaseTestCase):
         from c2cgeoform.views import grid
         _add_test_persons()
 
-        request = self.request
+        request = self._get_request()
         request.matchdict['schema'] = 'tests_persons'
         request.POST['current'] = '1'
         request.POST['rowCount'] = '5'
@@ -159,7 +231,7 @@ class TestView(DatabaseTestCase):
         from c2cgeoform.views import grid
         _add_test_persons()
 
-        request = self.request
+        request = self._get_request()
         request.matchdict['schema'] = 'tests_persons'
         request.POST['current'] = '1'
         request.POST['rowCount'] = '5'
@@ -178,7 +250,7 @@ class TestView(DatabaseTestCase):
         from c2cgeoform.views import grid
         _add_test_persons()
 
-        request = self.request
+        request = self._get_request()
         request.matchdict['schema'] = 'tests_persons'
         request.POST['current'] = '2'
         request.POST['rowCount'] = '5'
@@ -202,7 +274,7 @@ class TestView(DatabaseTestCase):
         from c2cgeoform.views import grid
         _add_test_persons()
 
-        request = self.request
+        request = self._get_request()
         request.matchdict['schema'] = 'tests_persons'
         request.POST['current'] = '1'
         request.POST['rowCount'] = '5'
@@ -234,7 +306,7 @@ class TestView(DatabaseTestCase):
         DBSession.add(person)
         DBSession.flush()
 
-        request = self.request
+        request = self._get_request()
         request.matchdict['schema'] = 'tests_persons'
         request.matchdict['id'] = str(person.id)
         response = edit(request)
@@ -256,7 +328,7 @@ class TestView(DatabaseTestCase):
         DBSession.add(person)
         DBSession.flush()
 
-        request = self.request
+        request = self._get_request()
         request.matchdict['schema'] = 'tests_persons'
         request.matchdict['id'] = str(person.id)
         request.POST['id'] = str(person.id)
@@ -281,7 +353,7 @@ class TestView(DatabaseTestCase):
         DBSession.flush()
         old_tag_for_person_id = tag_for_person.id
 
-        request = testing.DummyRequest(post=MultiDict())
+        request = self._get_request()
         request.matchdict['schema'] = 'tests_persons'
         request.matchdict['id'] = str(person.id)
         request.POST.add('id', str(person.id))
@@ -358,7 +430,7 @@ class TestView(DatabaseTestCase):
         DBSession.add(person)
         DBSession.flush()
 
-        request = self.request
+        request = self._get_request()
         request.matchdict['schema'] = 'tests_persons'
         request.matchdict['id'] = str(person.id)
         response = view(request)

@@ -157,7 +157,7 @@
           'cancel': '${_('Cancel')}',
           'current': '${_('current step:')}',
           'pagination': '${_('Pagination')}',
-          'finish': '${_('Finish')}',
+          'finish': '${_('Proceed')}',
           'next': '${_('Next')}',
           'previous': '${_('Previous')}',
           'loading': '${_('Loading ...')}'
