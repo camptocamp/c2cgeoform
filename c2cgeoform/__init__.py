@@ -56,6 +56,7 @@ def main(global_config, **settings):
         # override the title for a field in the user form
         overrides_user={'request_date': {'title': 'Date'}})
     model.setup_test_data()
+    register_schema('comment', model.Comment, show_confirmation=False)
 
     return config.make_wsgi_app()
 
