@@ -1,6 +1,6 @@
 from pyramid.view import view_config, notfound_view_config
 from pyramid.response import Response
-from pyramid.httpexceptions import HTTPNotFound, HTTPFound
+from pyramid.httpexceptions import HTTPNotFound, HTTPFound, HTTPBadRequest
 from deform import Form, ValidationFailure, ZPTRendererFactory
 from deform.form import Button
 import webhelpers.paginate as paginate
@@ -43,25 +43,18 @@ def notfound(request):
 def form(request):
     geo_form_schema = _get_schema(request)
     session = request.session
-
-    renderer = _get_renderer(geo_form_schema.templates_user)
-    form_action = request.route_url('form', schema=geo_form_schema.name)
-    submit_button = Button(name='formsubmit', title=_('Submit'))
-    form = Form(
-        geo_form_schema.schema_user, buttons=(submit_button,),
-        renderer=renderer, action=form_action)
-    _populate_widgets(form.schema, DBSession)
+    form = _get_form(geo_form_schema, request)
 
     submission_id = request.params.get('__submission_id__')
     if len(request.POST) > 0 or submission_id is not None:
-        store_form = request.params.get('__store_form__')
+        # there is form data either in the session or as POST data
 
         if submission_id is not None and submission_id in session:
             # restoring the form from the session when going back from the
-            # confirmation page, or when submitting on the confirmation page
+            # confirmation page
             form_data = session[submission_id]
             custom_data = None
-            only_validate = '0' if store_form == '1' else '1'
+            only_validate = '1'
         else:
             form_data = request.POST.items()
             custom_data = request.POST.get('__custom_data__')
@@ -75,42 +68,88 @@ def form(request):
                 e.field, e.cstruct, custom_data=custom_data, request=request)
         else:
             if only_validate == '1':
-                # even if the validation was successful, do not save the entity
+                # even if the validation was successful, show the form again
+                # (required for the wizzard)
                 rendered = form.render(obj_dict, custom_data=custom_data,
                                        request=request)
             else:
-                # the form data is valid, ready to be stored in the database
-                if store_form != '1':
-                    # but first show a confirmation page and store the form
-                    # data in a session, so that it can be restored
-                    submission_id = str(uuid.uuid4())
-                    session[submission_id] = form_data
-                    session.save()
-                    back_link = request.route_url(
-                        'form', schema=geo_form_schema.name,
-                        _query={'__submission_id__': submission_id})
-                    rendered = form.render(
-                        obj_dict, readonly=True,
-                        custom_data=custom_data, submission_id=submission_id,
-                        back_link=back_link)
-                else:
-                    obj = geo_form_schema.schema_user.objectify(obj_dict)
-                    hash = str(uuid.uuid4())
-                    setattr(obj, geo_form_schema.hash_column_name, hash)
-                    DBSession.add(obj)
-                    DBSession.flush()
+                # the form data is valid, redirect to confirmation page.
+                # store the form data in a session, so that it can be restored.
+                submission_id = str(uuid.uuid4())
+                session[submission_id] = form_data
+                session.save()
 
-                    url = request.route_url(
-                        'view_user',
-                        schema=geo_form_schema.name,
-                        hash=hash)
+                url = request.route_url(
+                    'confirm', schema=geo_form_schema.name,
+                    _query={'__submission_id__': submission_id})
+                return HTTPFound(url)
 
-                    return HTTPFound(url)
     else:
+        # empty form
         rendered = form.render(custom_data=None, request=request)
 
     return {'form': rendered,
             'deform_dependencies': form.get_widget_resources()}
+
+
+@view_config(route_name='confirm', renderer='templates/site/confirmation.pt')
+def confirmation(request):
+    geo_form_schema = _get_schema(request)
+    session = request.session
+    form = _get_form(geo_form_schema, request)
+
+    submission_id = request.params.get('__submission_id__')
+    if submission_id is None or submission_id not in session:
+        raise HTTPBadRequest()
+
+    store_form = request.params.get('__store_form__')
+    form_data = session[submission_id]
+
+    try:
+        obj_dict = form.validate(form_data)
+    except ValidationFailure:
+        # the confirmation page may not be called if the validation fails
+        raise HTTPBadRequest()
+
+    if store_form != '1':
+        # show confirmation page
+        back_link = request.route_url(
+            'form', schema=geo_form_schema.name,
+            _query={'__submission_id__': submission_id})
+        rendered = form.render(
+            obj_dict, readonly=True,
+            custom_data=None, submission_id=submission_id,
+            back_link=back_link)
+
+        return {'form': rendered,
+                'deform_dependencies': form.get_widget_resources()}
+    else:
+        # store in the database
+        obj = geo_form_schema.schema_user.objectify(obj_dict)
+        hash = str(uuid.uuid4())
+        setattr(obj, geo_form_schema.hash_column_name, hash)
+        DBSession.add(obj)
+        DBSession.flush()
+
+        url = request.route_url(
+            'view_user',
+            schema=geo_form_schema.name,
+            hash=hash)
+
+        return HTTPFound(url)
+
+
+def _get_form(geo_form_schema, request):
+    renderer = _get_renderer(geo_form_schema.templates_user)
+    form_action = request.route_url('form', schema=geo_form_schema.name)
+    submit_button = Button(name='formsubmit', title=_('Submit'))
+
+    form = Form(
+        geo_form_schema.schema_user, buttons=(submit_button,),
+        renderer=renderer, action=form_action)
+    _populate_widgets(form.schema, DBSession)
+
+    return form
 
 
 @view_config(route_name='view_user', renderer='templates/site/view_user.pt')

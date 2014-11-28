@@ -7,6 +7,8 @@ from c2cgeoform.models import DBSession
 
 class TestView(DatabaseTestCase):
 
+    BASE_URL = 'http://example.com/tests_persons'
+
     def _get_request(self):
         request = self.request
 
@@ -57,7 +59,7 @@ class TestView(DatabaseTestCase):
         self.assertTrue('class="errorMsgLbl"' in form_html)
 
     def test_form_submit_successful(self):
-        from c2cgeoform.views import form
+        from c2cgeoform.views import form, confirmation
         from models_test import Person
 
         request = self._get_request()
@@ -82,6 +84,21 @@ class TestView(DatabaseTestCase):
         response = form(request)
 
         # valid submission, confirmation page should be shown
+        self.assertTrue(isinstance(response, HTTPFound))
+        url = TestView.BASE_URL + '/form/confirm?__submission_id__='
+        self.assertTrue(response.location.startswith(url))
+
+        # get submission_id
+        matcher = re.search('__submission_id__=(.*)', response.location)
+        submission_id = matcher.group(1)
+
+        # simulate that the confirmation page is shown
+        request2 = self._get_request()
+        request2.session = request.session
+        request2.matchdict['schema'] = 'tests_persons'
+        request2.params['__submission_id__'] = submission_id
+
+        response = confirmation(request2)
         self.assertTrue('form' in response)
         form_html = response['form']
         self.assertTrue(
@@ -89,19 +106,14 @@ class TestView(DatabaseTestCase):
         self.assertTrue(
             '<input type="hidden" name="__store_form__"' in form_html)
 
-        # get submission_id
-        matcher = re.search(
-            'id="deform_submission_id" value="(.*)"', form_html)
-        submission_id = matcher.group(1)
-
         # now simulate that the confirmation page is submitted
-        request2 = self._get_request()
-        request2.session = request.session
-        request2.matchdict['schema'] = 'tests_persons'
-        request2.params['__store_form__'] = '1'
-        request2.params['__submission_id__'] = submission_id
+        request3 = self._get_request()
+        request3.session = request.session
+        request3.matchdict['schema'] = 'tests_persons'
+        request3.params['__submission_id__'] = submission_id
+        request3.params['__store_form__'] = '1'
 
-        response = form(request2)
+        response = confirmation(request3)
 
         person = DBSession.query(Person).one()
         self.assertIsNotNone(person.hash)
@@ -123,7 +135,7 @@ class TestView(DatabaseTestCase):
 
         self.assertTrue(isinstance(response, HTTPFound))
         self.assertEquals(
-            'http://example.com/tests_persons/form/' + person.hash,
+            TestView.BASE_URL + '/form/' + person.hash,
             response.location)
 
     def test_form_submit_confirmation_back(self):
@@ -139,16 +151,12 @@ class TestView(DatabaseTestCase):
         response = form(request)
 
         # valid submission, confirmation page should be shown
-        self.assertTrue('form' in response)
-        form_html = response['form']
-        self.assertTrue(
-            '<input type="hidden" name="__submission_id__"' in form_html)
-        self.assertTrue(
-            '<input type="hidden" name="__store_form__"' in form_html)
+        self.assertTrue(isinstance(response, HTTPFound))
+        url = TestView.BASE_URL + '/form/confirm?__submission_id__='
+        self.assertTrue(response.location.startswith(url))
 
         # get submission_id
-        matcher = re.search(
-            'id="deform_submission_id" value="(.*)"', form_html)
+        matcher = re.search('__submission_id__=(.*)', response.location)
         submission_id = matcher.group(1)
 
         # now simulate going back to the form
