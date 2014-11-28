@@ -1,4 +1,4 @@
-from pyramid.view import view_config, notfound_view_config
+from pyramid.view import notfound_view_config
 from pyramid.response import Response
 from pyramid.httpexceptions import HTTPNotFound, HTTPFound, HTTPBadRequest
 from deform import Form, ValidationFailure, ZPTRendererFactory
@@ -40,7 +40,6 @@ def notfound(request):
     return HTTPNotFound()
 
 
-@view_config(route_name='form', renderer='templates/site/form.pt')
 def form(request):
     geo_form_schema = _get_schema(request)
     session = request.session
@@ -93,7 +92,6 @@ def form(request):
             'deform_dependencies': form.get_widget_resources()}
 
 
-@view_config(route_name='confirm', renderer='templates/site/confirmation.pt')
 def confirmation(request):
     geo_form_schema = _get_schema(request)
     session = request.session
@@ -161,7 +159,6 @@ def _set_form_widget(form, schema, template):
             readonly_template='readonly/' + template, template=template)
 
 
-@view_config(route_name='view_user', renderer='templates/site/view_user.pt')
 def view_user(request):
     if 'hash' not in request.matchdict or not request.matchdict['hash']:
         return {'form': None}
@@ -190,14 +187,12 @@ def view_user(request):
         'deform_dependencies': form.get_widget_resources()}
 
 
-@view_config(route_name='list', renderer='templates/site/list.pt')
 def list(request):
     geo_form_schema = _get_schema(request)
     entities = DBSession.query(geo_form_schema.model).all()
     return {'entities': entities, 'schema': geo_form_schema}
 
 
-@view_config(route_name='grid', renderer='json', request_method='POST')
 def grid(request):
     """API method which serves the JSON data for the Bootgrid table
     in the admin view.
@@ -290,7 +285,6 @@ def _get_grid_rows(entities, schema):
     return rows
 
 
-@view_config(route_name='edit', renderer='templates/site/edit.pt')
 def edit(request):
     geo_form_schema = _get_schema(request)
 
@@ -332,7 +326,6 @@ def edit(request):
         'deform_dependencies': form.get_widget_resources()}
 
 
-@view_config(route_name='view_admin', renderer='templates/site/view_admin.pt')
 def view_admin(request):
     id_ = request.matchdict['id']
     geo_form_schema = _get_schema(request)
@@ -348,7 +341,6 @@ def view_admin(request):
         'deform_dependencies': form.get_widget_resources()}
 
 
-@view_config(route_name='locale')
 def set_locale_cookie(request):
     """ View to change the preferred language.
     """
