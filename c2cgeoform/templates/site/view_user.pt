@@ -1,6 +1,5 @@
 <metal:page tal:define="site load: site.pt" metal:use-macro="site">
   <metal:content metal:fill-slot="content">
-    <h3>${_("View")}</h3>
     <div tal:condition="form">${structure: form}</div>
   </metal:content>
 </metal:page>

@@ -3,6 +3,7 @@ from pyramid.response import Response
 from pyramid.httpexceptions import HTTPNotFound, HTTPFound, HTTPBadRequest
 from deform import Form, ValidationFailure, ZPTRendererFactory
 from deform.form import Button
+from deform.widget import FormWidget
 import webhelpers.paginate as paginate
 from sqlalchemy import desc, or_, types
 from sqlalchemy.orm.exc import NoResultFound
@@ -43,7 +44,7 @@ def notfound(request):
 def form(request):
     geo_form_schema = _get_schema(request)
     session = request.session
-    form = _get_form(geo_form_schema, request)
+    form = _get_form(geo_form_schema, 'form', request)
 
     submission_id = request.params.get('__submission_id__')
     if len(request.POST) > 0 or submission_id is not None:
@@ -96,7 +97,7 @@ def form(request):
 def confirmation(request):
     geo_form_schema = _get_schema(request)
     session = request.session
-    form = _get_form(geo_form_schema, request)
+    form = _get_form(geo_form_schema, 'form_confirmation', request)
 
     submission_id = request.params.get('__submission_id__')
     if submission_id is None or submission_id not in session:
@@ -139,7 +140,7 @@ def confirmation(request):
         return HTTPFound(url)
 
 
-def _get_form(geo_form_schema, request):
+def _get_form(geo_form_schema, template, request):
     renderer = _get_renderer(geo_form_schema.templates_user)
     form_action = request.route_url('form', schema=geo_form_schema.name)
     submit_button = Button(name='formsubmit', title=_('Submit'))
@@ -147,9 +148,17 @@ def _get_form(geo_form_schema, request):
     form = Form(
         geo_form_schema.schema_user, buttons=(submit_button,),
         renderer=renderer, action=form_action)
+    _set_form_widget(form, geo_form_schema.schema_user, template)
     _populate_widgets(form.schema, DBSession)
 
     return form
+
+
+def _set_form_widget(form, schema, template):
+    if getattr(schema, 'widget', None) is None:
+        # only change if the user did not provide a custom widget
+        form.widget = FormWidget(
+            readonly_template='readonly/' + template, template=template)
 
 
 @view_config(route_name='view_user', renderer='templates/site/view_user.pt')
@@ -161,6 +170,7 @@ def view_user(request):
     geo_form_schema = _get_schema(request)
     renderer = _get_renderer(geo_form_schema.templates_user)
     form = Form(geo_form_schema.schema_user, renderer=renderer)
+    _set_form_widget(form, geo_form_schema.schema_user, 'form_view_user')
 
     hash_field = getattr(
         geo_form_schema.model, geo_form_schema.hash_column_name)
