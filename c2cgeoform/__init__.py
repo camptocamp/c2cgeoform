@@ -8,6 +8,11 @@ from .models import DBSession
 
 
 def add_routes_and_views(config):
+    # FIXME the append_slash stuff does not work as expected. When
+    # using /{schema}/form instead /{schema}/form/ the route pattern
+    # /{schema/{id} ("view_admin") will match and cause an exception.
+    config.add_notfound_view('c2cgeoform.views.notfound',
+                             append_slash=True)
     config.add_route('form', '/{schema}/form/')
     config.add_view('c2cgeoform.views.form',
                     route_name='form',
