@@ -59,7 +59,6 @@ def includeme(config):
                     route_name='locale')
     config.add_translation_dirs('colander:locale', 'deform:locale', 'locale')
     config.add_directive('add_c2cgeoform_views', add_routes_and_views)
-    config.scan(ignore='c2cgeoform.tests')
     _set_widget_template_path()
 
 
@@ -124,6 +123,7 @@ def main(global_config, **settings):
     model.setup_test_data()
     register_schema('comment', model.Comment, show_confirmation=False)
 
+    config.scan('c2cgeoform.pully')
     config.add_c2cgeoform_views()
 
     return config.make_wsgi_app()
