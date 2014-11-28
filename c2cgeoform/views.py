@@ -111,7 +111,7 @@ def confirmation(request):
         # the confirmation page may not be called if the validation fails
         raise HTTPBadRequest()
 
-    if store_form != '1':
+    if geo_form_schema.show_confirmation and store_form != '1':
         # show confirmation page
         back_link = request.route_url(
             'form', schema=geo_form_schema.name,

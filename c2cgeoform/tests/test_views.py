@@ -138,6 +138,77 @@ class TestView(DatabaseTestCase):
             TestView.BASE_URL + '/form/' + person.hash,
             response.location)
 
+    def test_form_submit_successful_without_confirmation(self):
+        from c2cgeoform.views import form, confirmation
+        from c2cgeoform.schema import register_schema
+        from models_test import Person
+        register_schema(
+            'tests_persons_no_confirmation', Person,
+            show_confirmation=False)
+
+        request = self._get_request()
+        request.matchdict['schema'] = 'tests_persons_no_confirmation'
+        request.POST.add('submit', 'submit')
+        request.POST.add('name', 'Peter')
+        request.POST.add('first_name', 'Smith')
+
+        request.POST.add('__start__', 'phones:sequence')
+        request.POST.add('__start__', 'phones:mapping')
+        request.POST.add('id', '')
+        request.POST.add('number', '123456789')
+        request.POST.add('personId', '')
+        request.POST.add('__end__', 'phones:mapping')
+        request.POST.add('__end__', 'phones:sequence')
+
+        request.POST.add('__start__', 'tags:sequence')
+        request.POST.add('tags', u'0')
+        request.POST.add('tags', u'1')
+        request.POST.add('__end__', 'tags:sequence')
+
+        response = form(request)
+
+        # valid submission, redirect to confirmation view
+        self.assertTrue(isinstance(response, HTTPFound))
+        url = TestView.BASE_URL + '_no_confirmation' + \
+            '/form/confirm?__submission_id__='
+        self.assertTrue(response.location.startswith(url))
+
+        # get submission_id
+        matcher = re.search('__submission_id__=(.*)', response.location)
+        submission_id = matcher.group(1)
+
+        # simulate that the confirmation view is called,
+        # which directly persists the object
+        request2 = self._get_request()
+        request2.session = request.session
+        request2.matchdict['schema'] = 'tests_persons_no_confirmation'
+        request2.params['__submission_id__'] = submission_id
+
+        response = confirmation(request2)
+
+        person = DBSession.query(Person).one()
+        self.assertIsNotNone(person.hash)
+        self.assertEquals('Peter', person.name)
+        self.assertEquals('Smith', person.first_name)
+        self.assertEquals(1, len(person.phones))
+        phone = person.phones[0]
+        self.assertEquals('123456789', phone.number)
+        self.assertIsNotNone(phone.id)
+        self.assertEquals(2, len(person.tags))
+        tag_for_person1 = person.tags[0]
+        self.assertEquals(0, tag_for_person1.tag_id)
+        self.assertEquals(person.id, tag_for_person1.person_id)
+        self.assertIsNotNone(tag_for_person1.id)
+        tag_for_person2 = person.tags[1]
+        self.assertEquals(1, tag_for_person2.tag_id)
+        self.assertEquals(person.id, tag_for_person2.person_id)
+        self.assertIsNotNone(tag_for_person2.id)
+
+        self.assertTrue(isinstance(response, HTTPFound))
+        self.assertEquals(
+            TestView.BASE_URL + '_no_confirmation' + '/form/' + person.hash,
+            response.location)
+
     def test_form_submit_confirmation_back(self):
         from c2cgeoform.views import form
         from models_test import Person
