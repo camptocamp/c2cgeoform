@@ -42,6 +42,7 @@ class TestView(DatabaseTestCase):
         self.assertTrue('name="first_name"' in form_html)
         self.assertTrue('name="age"' in form_html)
         self.assertTrue('name="validated"' not in form_html)
+        self.assertTrue('verified' not in form_html)
 
         # check that the `overrides_user` property is used
         self.assertTrue('The Name' in form_html)

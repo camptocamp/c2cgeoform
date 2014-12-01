@@ -3,8 +3,10 @@ from sqlalchemy import engine_from_config
 from pkg_resources import resource_filename
 from pyramid.i18n import get_localizer
 from pyramid.threadlocal import get_current_request
+from pyramid.events import BeforeRender, NewRequest
 
 from .models import DBSession
+from .subscribers import add_renderer_globals, add_localizer
 
 
 def add_routes_and_views(config):
@@ -60,6 +62,9 @@ def includeme(config):
     config.add_translation_dirs('colander:locale', 'deform:locale', 'locale')
     config.add_directive('add_c2cgeoform_views', add_routes_and_views)
     _set_widget_template_path()
+
+    config.add_subscriber(add_renderer_globals, BeforeRender)
+    config.add_subscriber(add_localizer, NewRequest)
 
 
 """ Default search paths for the form templates.
@@ -118,8 +123,13 @@ def main(global_config, **settings):
         'fouille',
         model.ExcavationPermission,
         templates_user=resource_filename('c2cgeoform', 'pully/templates'),
-        # override the title for a field in the user form
-        overrides_user={'request_date': {'title': 'Date'}})
+        excludes_user=['reference_number', 'validated'],
+        overrides_user={
+            # override the title for a field in the user form
+            'request_date': {'title': 'Date'},
+            # do not show the 'verified' field of ContactPerson for the user
+            'contact_persons': {'excludes': ['verified']}
+        })
     model.setup_test_data()
     register_schema('comment', model.Comment, show_confirmation=False)
 

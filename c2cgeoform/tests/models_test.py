@@ -36,6 +36,7 @@ class Phone(Base):
         'colanderalchemy': {
             'widget': deform.widget.HiddenWidget()
         }})
+    verified = Column(Boolean)
 
 
 class Tag(Base):
@@ -107,10 +108,13 @@ class Person(Base):
     validated = Column(Boolean, info={
         'colanderalchemy': {
             'title': 'Validation',
-            'label': 'Validated',
-            'admin_only': True
+            'label': 'Validated'
         }})
 
 register_schema(
     'tests_persons', Person,
-    overrides_user={'name': {'title': 'The Name'}})
+    excludes_user=['validated'],
+    overrides_user={
+        'name': {'title': 'The Name'},
+        'phones': {'excludes': 'verified'}
+    })

@@ -7,8 +7,6 @@ from . import default_search_paths
 class GeoFormSchema():
 
     _COLANDERALCHEMY = 'colanderalchemy'
-    # key to indicate that a field should only be shown in the admin view
-    _ADMIN_ONLY = 'admin_only'
     # key to indicate that a field should be shown in the admin list
     _ADMIN_LIST = 'admin_list'
 
@@ -16,22 +14,31 @@ class GeoFormSchema():
             self, name, model,
             templates_user=None, templates_admin=None,
             overrides_user=None, overrides_admin=None,
+            includes_user=None, includes_admin=None,
+            excludes_user=None, excludes_admin=None,
             hash_column_name='hash', show_confirmation=True, **kw):
         self.name = name
         self.model = model
         self.hash_column_name = hash_column_name
         self.show_confirmation = show_confirmation
 
-        excludes_user = self._get_fields_with_property(self._ADMIN_ONLY)
+        if includes_user is not None:
+            excludes_user = None
+        else:
+            excludes_user = [] if excludes_user is None else excludes_user
+            excludes_user = excludes_user + [hash_column_name]
+
         self.schema_user = SQLAlchemySchemaNode(
             self.model,
-            excludes=(excludes_user + [hash_column_name]),
             overrides=overrides_user,
+            includes=includes_user,
+            excludes=excludes_user,
             **kw)
         self.schema_admin = SQLAlchemySchemaNode(
             self.model,
             overrides=overrides_admin,
-            excludes=[hash_column_name],
+            includes=includes_admin,
+            excludes=excludes_admin,
             **kw)
 
         self.templates_user = default_search_paths
@@ -76,8 +83,11 @@ def register_schema(
         name, model,
         templates_user=None, templates_admin=None,
         overrides_user=None, overrides_admin=None,
+        includes_user=None, includes_admin=None,
+        excludes_user=None, excludes_admin=None,
         hash_column_name='hash', show_confirmation=True):
     schema = GeoFormSchema(
         name, model, templates_user, templates_admin,
-        overrides_user, overrides_admin, hash_column_name, show_confirmation)
+        overrides_user, overrides_admin, includes_user, includes_admin,
+        excludes_user, excludes_admin, hash_column_name, show_confirmation)
     forms[name] = schema
