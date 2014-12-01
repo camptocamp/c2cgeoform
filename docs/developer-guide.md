@@ -6,38 +6,35 @@ developers working on `c2cgeoform`-based applications.
 
 ### Prequesites
 
-You need to install PostgreSQL and PostGIS, and create a PostGIS database for
-`c2cgeoform`. On Ubuntu, the packages `postgresql-server-dev-9.3` and
-`python-dev` are required.
+You need to install PostgreSQL and PostGIS. On Ubuntu, the packages
+`postgresql-server-dev-9.3` and `python-dev` are required.
 
-One option for PostGIS is to use Oslandia's [PostGIS Docker
-image](http://www.oslandia.com/full-spatial-database-power-in-2-lines-en.html).
-For that follow the steps below.
-
-### Use Docker for PostGIS
-
-First, install `docker` (`docker.io` for Debian) and add your Unix user
-to the `docker` group:
+You need to create a role. For example:
 
 ```shell
-$ usermod -a -G docker <username>
+$sudo su - postgres
+$ createuser --pwprompt c2cgeoform
+Enter password for new role: [c2cgeoform]
+Enter it again: [c2cgeoform]
 ```
 
-Now run the Docker image:
+You need to create a PostGIS database. For example:
 
 ```shell
-$ make rundb
+$ createdb --owner=c2cgeoform c2cgeoform
+$ psql -d c2cgeoform -c "CREATE EXTENSION postgis;"
 ```
-
-This will download the Docker image if it has not been downloaded yet.
-
-Now use `docker.io ps` to know what local port to use to access to
-the container's PostgreSQL database.
 
 ### Configuration
 
 Edit `development.ini` and modify the SQLAlchemy database connection string as
 appropriate.
+
+For example:
+
+```py
+sqlalchemy.url = postgresql://c2cgeoform:c2cgeoform@localhost:5432/c2cgeoform
+```
 
 ### Installation
 
@@ -48,6 +45,8 @@ $ make install
 ```
 
 (This creates the virtual env for you.)
+
+Just run `make` to know about the possible targets.
 
 ### Initialize the DB
 
@@ -63,6 +62,14 @@ Start the dev server:
 
 ```shell
 $ make serve
+```
+
+### Run the tests
+
+Run the tests:
+
+```shell
+$ make test
 ```
 
 ### Session management configuration
