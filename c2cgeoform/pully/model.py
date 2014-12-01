@@ -87,6 +87,7 @@ class SituationForPermission(Base):
         Integer, ForeignKey('excavations.id'))
 
 
+# This is the main model class which is used to register a schema.
 class ExcavationPermission(Base):
     __tablename__ = 'excavations'
     __colanderalchemy_config__ = {
@@ -95,11 +96,16 @@ class ExcavationPermission(Base):
     }
 
     id = Column(Integer, primary_key=True, info={
+        # the `colanderalchemy` property allows to set a custom title for the
+        # column or to use a specific widget.
         'colanderalchemy': {
             'title': _('Permission Number'),
             'widget': deform.widget.HiddenWidget(),
+            # if the `admin_list` property is enabled for a column on the main
+            # model, then this column will be shown in the admin list grid.
             'admin_list': True
         }})
+    # the hash column is required for all main models
     hash = Column(Text, unique=True)
     reference_number = Column(Text, nullable=True, info={
         'colanderalchemy': {
@@ -123,11 +129,15 @@ class ExcavationPermission(Base):
         }})
     situations = relationship(
         SituationForPermission,
-        # make sure rows are deleted when removed from the relation
+        # by setting the `cascade` property to 'delete-orphan', situation
+        # entities are deleted when they are removed from the relation.
         cascade="all, delete-orphan",
         info={
             'colanderalchemy': {
                 'title': _('Situation'),
+                # this widget type shows a select widget where the values are
+                # loaded from a database table. in this case the select options
+                # are generated from the Situation table.
                 'widget': deform_ext.RelationSelect2Widget(
                     Situation,
                     'id',
@@ -136,6 +146,8 @@ class ExcavationPermission(Base):
                     multiple=True
                 )
             }})
+    # by default a Deform sequence widget is used for relationship columns,
+    # which, for example, allows to create new contact persons in a sub-form.
     contact_persons = relationship(
         ContactPerson,
         # make sure persons are deleted when removed from the relation
@@ -150,8 +162,11 @@ class ExcavationPermission(Base):
             'widget': deform_ext.RelationSelect2Widget(
                 District,
                 'id',
-                # for i18n create columns like 'name_fr' in 'District'
-                # and set these column names in the translation files. then use
+                # if the name for the options should be internationalized, one
+                # can create columns like 'name_fr' and 'name_de' in the table
+                # 'District'. then in the translation files, the column name
+                # can be "translated" (e.g. the French "translation" for the
+                # column name would be 'name_fr'). to apply the translation use
                 # the label `_('name'))` instead of `name`.
                 'name',
                 order_by='name',
@@ -170,6 +185,8 @@ class ExcavationPermission(Base):
         'colanderalchemy': {
             'title': _('Town')
         }})
+    # to show a map for a geometry column, the column has to be defined as
+    # follows.
     location_position = Column(
         geoalchemy2.Geometry('POINT', 4326, management=True), info={
             'colanderalchemy': {

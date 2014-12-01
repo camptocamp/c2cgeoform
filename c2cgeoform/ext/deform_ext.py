@@ -8,6 +8,24 @@ import json
 
 
 class MapWidget(Widget):
+    """
+    A Deform widget for geometry columns which shows a map.
+
+    Example usage
+
+    .. code-block:: python
+
+        geom = Column(
+            geoalchemy2.Geometry('POLYGON', 4326, management=True), info={
+                'colanderalchemy': {
+                    'typ': colander_ext.Geometry(
+                        'POLYGON', srid=4326, map_srid=3857),
+                    'widget': deform_ext.MapWidget()
+                }})
+
+    To customize the map, the template file `map.pt` has to be overwritten.
+
+    """
     requirements = (
         ('openlayers', '3.0.0'),
         ('json2', None),

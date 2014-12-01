@@ -13,7 +13,32 @@ import os
 
 
 class Geometry(object):
-    """
+    """ A Colander type meant to be used with GeoAlchemy 2 geometry columns.
+
+    Example usage
+
+    .. code-block:: python
+
+        geom = Column(
+            geoalchemy2.Geometry('POLYGON', 4326, management=True), info={
+                'colanderalchemy': {
+                    'typ': colander_ext.Geometry(
+                        'POLYGON', srid=4326, map_srid=3857),
+                    'widget': deform_ext.MapWidget()
+                }})
+
+    **Attributes/Arguments**
+
+    geometry_type
+        The geometry type should match the column geometry type.
+
+    srid
+        The SRID of the geometry should also match the column definition.
+
+    map_srid
+        The projection used for the OpenLayers map. The geometries will be
+        reprojected to this projection.
+
     """
     def __init__(self, geometry_type='GEOMETRY', srid=-1, map_srid=-1):
         self.geometry_type = geometry_type.upper()
