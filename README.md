@@ -22,6 +22,12 @@ a form](http://mapfish-geoportal.demo-camptocamp.com/c2cgeoform/wsgi/fouille/for
 [list form
 submissions](http://mapfish-geoportal.demo-camptocamp.com/c2cgeoform/wsgi/fouille/).
 
+## Documentation
+
+This section provides links to various parts of the documentation.
+
+* [Guide for c2cgeoform developers](docs/developer-guide.md)
+
 ## Copyright
 
 c2cgeoform makes use of the icons by [GLYPHICONS](http://glyphicons.com).
