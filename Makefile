@@ -9,7 +9,6 @@ help:
 	@echo
 	@echo "- install                 Install c2cgeoform"
 	@echo "- initdb                  (Re-)initialize the database"
-	@echo "- rundb                   Run the PostGIS docker image"
 	@echo "- serve                   Run the dev server"
 	@echo "- check                   Check the code with flake8"
 	@echo "- modwsgi                 Create files for Apache mod_wsgi"
@@ -30,10 +29,6 @@ install: .build/venv
 .PHONY: initdb
 initdb:
 	.build/venv/bin/initialize_c2cgeoform_db development.ini
-
-.PHONY: rundb
-rundb:
-	docker.io run --rm -P --name pggis_test oslandia/pggis /sbin/my_init
 
 .PHONY: serve
 serve:
