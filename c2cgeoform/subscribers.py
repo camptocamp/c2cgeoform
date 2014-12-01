@@ -1,5 +1,4 @@
 from pyramid.i18n import get_localizer, TranslationStringFactory
-from pyramid.events import subscriber, BeforeRender, NewRequest
 from pyramid.threadlocal import get_current_request
 from pyramid.threadlocal import get_current_registry
 
@@ -7,7 +6,6 @@ from pyramid.threadlocal import get_current_registry
 _LOCALE_ = '_LOCALE_'
 
 
-@subscriber(BeforeRender)
 def add_renderer_globals(event):
     request = event.get('request')
     if request is None:
@@ -22,7 +20,6 @@ def add_renderer_globals(event):
 tsf = TranslationStringFactory('c2cgeoform')
 
 
-@subscriber(NewRequest)
 def add_localizer(event):
     _set_accepted_languages_locale(event)
     request = event.request
