@@ -45,9 +45,14 @@ class GeoFormSchema():
         meta_model = class_mapper(model)
         if len(meta_model.primary_key) != 1:
             raise RuntimeError(
-                'Model ' + meta_model.name + ' must have exactly ' +
+                'Model ' + name + ' must have exactly ' +
                 'one primary key column')
         self.id_field = meta_model.primary_key[0].name
+
+        if not self._has_hash_column():
+            raise RuntimeError(
+                'Model ' + name + ' does not contain a ' +
+                'hash-value column: ' + hash_column_name)
 
         self.list_fields = self._get_fields_with_property(self._ADMIN_LIST)
 
@@ -67,6 +72,16 @@ class GeoFormSchema():
                     info[self._COLANDERALCHEMY].get(property, False):
                 fields.append(column.key)
         return fields
+
+    def _has_hash_column(self):
+        """ Checks if the model contains the hash column.
+        """
+        mapper = inspect(self.model)
+        for column in mapper.attrs:
+            if isinstance(column, ColumnProperty):
+                if column.columns[0].name == self.hash_column_name:
+                    return True
+        return False
 
 
 forms = {}
