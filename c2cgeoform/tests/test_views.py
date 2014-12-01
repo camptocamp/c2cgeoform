@@ -1,4 +1,4 @@
-from pyramid.httpexceptions import HTTPNotFound
+from pyramid.httpexceptions import HTTPNotFound, HTTPFound
 import re
 
 from c2cgeoform.tests import DatabaseTestCase
@@ -6,6 +6,8 @@ from c2cgeoform.models import DBSession
 
 
 class TestView(DatabaseTestCase):
+
+    BASE_URL = 'http://example.com/tests_persons'
 
     def _get_request(self):
         request = self.request
@@ -57,7 +59,7 @@ class TestView(DatabaseTestCase):
         self.assertTrue('class="errorMsgLbl"' in form_html)
 
     def test_form_submit_successful(self):
-        from c2cgeoform.views import form
+        from c2cgeoform.views import form, confirmation
         from models_test import Person
 
         request = self._get_request()
@@ -82,6 +84,21 @@ class TestView(DatabaseTestCase):
         response = form(request)
 
         # valid submission, confirmation page should be shown
+        self.assertTrue(isinstance(response, HTTPFound))
+        url = TestView.BASE_URL + '/form/confirm?__submission_id__='
+        self.assertTrue(response.location.startswith(url))
+
+        # get submission_id
+        matcher = re.search('__submission_id__=(.*)', response.location)
+        submission_id = matcher.group(1)
+
+        # simulate that the confirmation page is shown
+        request2 = self._get_request()
+        request2.session = request.session
+        request2.matchdict['schema'] = 'tests_persons'
+        request2.params['__submission_id__'] = submission_id
+
+        response = confirmation(request2)
         self.assertTrue('form' in response)
         form_html = response['form']
         self.assertTrue(
@@ -89,21 +106,17 @@ class TestView(DatabaseTestCase):
         self.assertTrue(
             '<input type="hidden" name="__store_form__"' in form_html)
 
-        # get submission_id
-        matcher = re.search(
-            'id="deform_submission_id" value="(.*)"', form_html)
-        submission_id = matcher.group(1)
-
         # now simulate that the confirmation page is submitted
-        request2 = self._get_request()
-        request2.session = request.session
-        request2.matchdict['schema'] = 'tests_persons'
-        request2.params['__store_form__'] = '1'
-        request2.params['__submission_id__'] = submission_id
+        request3 = self._get_request()
+        request3.session = request.session
+        request3.matchdict['schema'] = 'tests_persons'
+        request3.params['__submission_id__'] = submission_id
+        request3.params['__store_form__'] = '1'
 
-        response = form(request2)
+        response = confirmation(request3)
 
         person = DBSession.query(Person).one()
+        self.assertIsNotNone(person.hash)
         self.assertEquals('Peter', person.name)
         self.assertEquals('Smith', person.first_name)
         self.assertEquals(1, len(person.phones))
@@ -120,18 +133,81 @@ class TestView(DatabaseTestCase):
         self.assertEquals(person.id, tag_for_person2.person_id)
         self.assertIsNotNone(tag_for_person2.id)
 
-        id = person.id
-        phone_id = phone.id
+        self.assertTrue(isinstance(response, HTTPFound))
+        self.assertEquals(
+            TestView.BASE_URL + '/form/' + person.hash,
+            response.location)
 
-        self.assertTrue('form' in response)
-        form_html = response['form']
-        self.assertTrue('name="id" value="' + str(id) + '"' in form_html)
-        self.assertTrue('name="id" value="' + str(phone_id) + '"' in form_html)
-        self.assertTrue(
-            'name="person_id" value="' + str(id) + '"' in form_html)
-        self.assertTrue('Tag A' in form_html)
-        self.assertTrue('Tag B' in form_html)
-        self.assertTrue('name="submit"' not in form_html)
+    def test_form_submit_successful_without_confirmation(self):
+        from c2cgeoform.views import form, confirmation
+        from c2cgeoform.schema import register_schema
+        from models_test import Person
+        register_schema(
+            'tests_persons_no_confirmation', Person,
+            show_confirmation=False)
+
+        request = self._get_request()
+        request.matchdict['schema'] = 'tests_persons_no_confirmation'
+        request.POST.add('submit', 'submit')
+        request.POST.add('name', 'Peter')
+        request.POST.add('first_name', 'Smith')
+
+        request.POST.add('__start__', 'phones:sequence')
+        request.POST.add('__start__', 'phones:mapping')
+        request.POST.add('id', '')
+        request.POST.add('number', '123456789')
+        request.POST.add('personId', '')
+        request.POST.add('__end__', 'phones:mapping')
+        request.POST.add('__end__', 'phones:sequence')
+
+        request.POST.add('__start__', 'tags:sequence')
+        request.POST.add('tags', u'0')
+        request.POST.add('tags', u'1')
+        request.POST.add('__end__', 'tags:sequence')
+
+        response = form(request)
+
+        # valid submission, redirect to confirmation view
+        self.assertTrue(isinstance(response, HTTPFound))
+        url = TestView.BASE_URL + '_no_confirmation' + \
+            '/form/confirm?__submission_id__='
+        self.assertTrue(response.location.startswith(url))
+
+        # get submission_id
+        matcher = re.search('__submission_id__=(.*)', response.location)
+        submission_id = matcher.group(1)
+
+        # simulate that the confirmation view is called,
+        # which directly persists the object
+        request2 = self._get_request()
+        request2.session = request.session
+        request2.matchdict['schema'] = 'tests_persons_no_confirmation'
+        request2.params['__submission_id__'] = submission_id
+
+        response = confirmation(request2)
+
+        person = DBSession.query(Person).one()
+        self.assertIsNotNone(person.hash)
+        self.assertEquals('Peter', person.name)
+        self.assertEquals('Smith', person.first_name)
+        self.assertEquals(1, len(person.phones))
+        phone = person.phones[0]
+        self.assertEquals('123456789', phone.number)
+        self.assertIsNotNone(phone.id)
+        self.assertEquals(2, len(person.tags))
+        tag_for_person1 = person.tags[0]
+        self.assertEquals(0, tag_for_person1.tag_id)
+        self.assertEquals(person.id, tag_for_person1.person_id)
+        self.assertIsNotNone(tag_for_person1.id)
+        tag_for_person2 = person.tags[1]
+        self.assertEquals(1, tag_for_person2.tag_id)
+        self.assertEquals(person.id, tag_for_person2.person_id)
+        self.assertIsNotNone(tag_for_person2.id)
+
+        self.assertTrue(isinstance(response, HTTPFound))
+        self.assertEquals(
+            TestView.BASE_URL + '_no_confirmation' + '/form/' + person.hash,
+            response.location)
 
     def test_form_submit_confirmation_back(self):
         from c2cgeoform.views import form
@@ -146,16 +222,12 @@ class TestView(DatabaseTestCase):
         response = form(request)
 
         # valid submission, confirmation page should be shown
-        self.assertTrue('form' in response)
-        form_html = response['form']
-        self.assertTrue(
-            '<input type="hidden" name="__submission_id__"' in form_html)
-        self.assertTrue(
-            '<input type="hidden" name="__store_form__"' in form_html)
+        self.assertTrue(isinstance(response, HTTPFound))
+        url = TestView.BASE_URL + '/form/confirm?__submission_id__='
+        self.assertTrue(response.location.startswith(url))
 
         # get submission_id
-        matcher = re.search(
-            'id="deform_submission_id" value="(.*)"', form_html)
+        matcher = re.search('__submission_id__=(.*)', response.location)
         submission_id = matcher.group(1)
 
         # now simulate going back to the form
@@ -423,8 +495,36 @@ class TestView(DatabaseTestCase):
         self.assertTrue('Tag A' in form_html)
         self.assertTrue('Tag B' in form_html)
 
-    def test_view(self):
-        from c2cgeoform.views import view
+    def test_view_user(self):
+        from c2cgeoform.views import view_user
+        from models_test import Person
+        person = Person(name="Peter", first_name="Smith", hash="123-456")
+        DBSession.add(person)
+        DBSession.flush()
+
+        request = self._get_request()
+        request.matchdict['schema'] = 'tests_persons'
+        request.matchdict['hash'] = "123-456"
+        response = view_user(request)
+
+        self.assertTrue('schema' in response)
+        self.assertTrue('form' in response)
+
+        form_html = response['form']
+        self.assertTrue('Peter' in form_html)
+        self.assertTrue('Smith' in form_html)
+
+    def test_view_user_fail(self):
+        from c2cgeoform.views import view_user
+
+        request = self._get_request()
+        request.matchdict['schema'] = 'tests_persons'
+        response = view_user(request)
+
+        self.assertIsNone(response['form'])
+
+    def test_view_admin(self):
+        from c2cgeoform.views import view_admin
         from models_test import Person
         person = Person(name="Peter", first_name="Smith")
         DBSession.add(person)
@@ -433,7 +533,7 @@ class TestView(DatabaseTestCase):
         request = self._get_request()
         request.matchdict['schema'] = 'tests_persons'
         request.matchdict['id'] = str(person.id)
-        response = view(request)
+        response = view_admin(request)
 
         self.assertTrue('schema' in response)
         self.assertTrue('form' in response)

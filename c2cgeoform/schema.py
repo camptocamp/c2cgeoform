@@ -15,19 +15,23 @@ class GeoFormSchema():
     def __init__(
             self, name, model,
             templates_user=None, templates_admin=None,
-            overrides_user=None, overrides_admin=None, **kw):
+            overrides_user=None, overrides_admin=None,
+            hash_column_name='hash', show_confirmation=True, **kw):
         self.name = name
         self.model = model
+        self.hash_column_name = hash_column_name
+        self.show_confirmation = show_confirmation
 
         excludes_user = self._get_fields_with_property(self._ADMIN_ONLY)
         self.schema_user = SQLAlchemySchemaNode(
             self.model,
-            excludes=excludes_user,
+            excludes=(excludes_user + [hash_column_name]),
             overrides=overrides_user,
             **kw)
         self.schema_admin = SQLAlchemySchemaNode(
             self.model,
             overrides=overrides_admin,
+            excludes=[hash_column_name],
             **kw)
 
         self.templates_user = default_search_paths
@@ -71,8 +75,9 @@ forms = {}
 def register_schema(
         name, model,
         templates_user=None, templates_admin=None,
-        overrides_user=None, overrides_admin=None):
+        overrides_user=None, overrides_admin=None,
+        hash_column_name='hash', show_confirmation=True):
     schema = GeoFormSchema(
         name, model, templates_user, templates_admin,
-        overrides_user, overrides_admin)
+        overrides_user, overrides_admin, hash_column_name, show_confirmation)
     forms[name] = schema

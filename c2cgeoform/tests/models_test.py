@@ -68,6 +68,7 @@ class Person(Base):
             'widget': deform.widget.HiddenWidget(),
             'admin_list': True
         }})
+    hash = Column(Text, unique=True)
     name = Column(Text, nullable=False, info={
         'colanderalchemy': {
             'title': 'Your name',

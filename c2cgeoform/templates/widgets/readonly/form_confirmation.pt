@@ -19,16 +19,10 @@
   accept-charset="utf-8"
   i18n:domain="deform"
   >
-  <tal:inputs tal:condition="submission_id">
   <input type="hidden" name="__submission_id__" id="${formid}_submission_id" value="${submission_id}"/>
   <input type="hidden" name="__store_form__" id="${formid}_store_form" value="1"/>
   <h2 i18n:domain="c2cgeoform" i18n:translate="">Confirmation</h2>
   <p i18n:domain="c2cgeoform" i18n:translate="">Please confirm your details and submit the form.</p>
-  </tal:inputs>
-  <tal:inputs tal:condition="not:submission_id">
-  <h2 i18n:domain="c2cgeoform" i18n:translate="">Submission successful</h2>
-  <p i18n:domain="c2cgeoform" i18n:translate="">Thank you for your submission. Please find below the information that was stored in our system.</p>
-  </tal:inputs>
 
   <fieldset class="deform-form-fieldset">
 
@@ -43,13 +37,11 @@
 
   </fieldset>
 
-  <tal:buttons tal:condition="submission_id">
   <div class="form-group">
     <button id="${formid}_submit" name="submit" type="submit" class="btn btn-primary"
       i18n:domain="c2cgeoform" i18n:translate="">Submit</button>
     <a class="btn btn-primary" href="${back_link}"
        i18n:domain="c2cgeoform" i18n:translate="">Back to form</a>
   </div>
-  </tal:buttons>
 
 </form>

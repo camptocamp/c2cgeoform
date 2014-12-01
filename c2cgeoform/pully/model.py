@@ -99,6 +99,7 @@ class ExcavationPermission(Base):
             'widget': deform.widget.HiddenWidget(),
             'admin_list': True
         }})
+    hash = Column(Text, unique=True)
     reference_number = Column(Text, nullable=True, info={
         'colanderalchemy': {
             'title': _('Reference Number'),
@@ -238,6 +239,29 @@ class ExcavationPermission(Base):
             'colanderalchemy': {
                 'title': _('Photo')
             }})
+
+
+class Comment(Base):
+    __tablename__ = 'comments'
+    __colanderalchemy_config__ = {
+        'title': 'A very simple form'
+    }
+
+    id = Column(Integer, primary_key=True, info={
+        'colanderalchemy': {
+            'widget': deform.widget.HiddenWidget(),
+            'admin_list': True
+        }})
+    hash = Column(Text, unique=True)
+    name = Column(Text, nullable=False, info={
+        'colanderalchemy': {
+            'title': 'Name'
+        }})
+    comment = Column(Text, nullable=True, info={
+        'colanderalchemy': {
+            'title': 'Comment',
+            'widget': deform.widget.TextAreaWidget(rows=3),
+        }})
 
 
 def setup_test_data():

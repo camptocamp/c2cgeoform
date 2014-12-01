@@ -1,10 +1,11 @@
-from pyramid.view import view_config, notfound_view_config
 from pyramid.response import Response
-from pyramid.httpexceptions import HTTPNotFound, HTTPFound
+from pyramid.httpexceptions import HTTPNotFound, HTTPFound, HTTPBadRequest
 from deform import Form, ValidationFailure, ZPTRendererFactory
 from deform.form import Button
+from deform.widget import FormWidget
 import webhelpers.paginate as paginate
 from sqlalchemy import desc, or_, types
+from sqlalchemy.orm.exc import NoResultFound
 from geoalchemy2.elements import WKBElement
 from translationstring import TranslationStringFactory
 import uuid
@@ -28,39 +29,25 @@ def _get_schema(request):
         raise HTTPNotFound('invalid schema \'' + schema_name + '\'')
 
 
-@notfound_view_config(append_slash=True)
 def notfound(request):
-    """ Automatically append a slash if no route can be found for a
-        request and try again.
-        This allows to make requests with ".../fouille/form/" and also
-        ".../fouille/form".
-    """
     return HTTPNotFound()
 
 
-@view_config(route_name='form', renderer='templates/site/form.pt')
 def form(request):
     geo_form_schema = _get_schema(request)
     session = request.session
-
-    renderer = _get_renderer(geo_form_schema.templates_user)
-    form_action = request.route_url('form', schema=geo_form_schema.name)
-    submit_button = Button(name='formsubmit', title=_('Submit'))
-    form = Form(
-        geo_form_schema.schema_user, buttons=(submit_button,),
-        renderer=renderer, action=form_action)
-    _populate_widgets(form.schema, DBSession)
+    form = _get_form(geo_form_schema, 'form', request)
 
     submission_id = request.params.get('__submission_id__')
     if len(request.POST) > 0 or submission_id is not None:
-        store_form = request.params.get('__store_form__')
+        # there is form data either in the session or as POST data
 
         if submission_id is not None and submission_id in session:
             # restoring the form from the session when going back from the
-            # confirmation page, or when submitting on the confirmation page
+            # confirmation page
             form_data = session[submission_id]
             custom_data = None
-            only_validate = '0' if store_form == '1' else '1'
+            only_validate = '1'
         else:
             form_data = request.POST.items()
             custom_data = request.POST.get('__custom_data__')
@@ -74,56 +61,131 @@ def form(request):
                 e.field, e.cstruct, custom_data=custom_data, request=request)
         else:
             if only_validate == '1':
-                # even if the validation was successful, do not save the entity
+                # even if the validation was successful, show the form again
+                # (required for the wizzard)
                 rendered = form.render(obj_dict, custom_data=custom_data,
                                        request=request)
             else:
-                # the form data is valid, ready to be stored in the database
-                if store_form != '1':
-                    # but first show a confirmation page and store the form
-                    # data in a session, so that it can be restored
-                    submission_id = str(uuid.uuid4())
-                    session[submission_id] = form_data
-                    session.save()
-                    back_link = request.route_url(
-                        'form', schema=geo_form_schema.name,
-                        _query={'__submission_id__': submission_id})
-                    rendered = form.render(
-                        obj_dict, readonly=True,
-                        custom_data=custom_data, submission_id=submission_id,
-                        back_link=back_link)
-                else:
-                    obj = geo_form_schema.schema_user.objectify(obj_dict)
-                    DBSession.add(obj)
-                    DBSession.flush()
+                # the form data is valid, redirect to confirmation page.
+                # store the form data in a session, so that it can be restored.
+                submission_id = str(uuid.uuid4())
+                session[submission_id] = form_data
+                session.save()
 
-                    # FIXME create a fresh form, otherwise the IDs of objects
-                    # in relationships will not be rendered
-                    # see https://github.com/Pylons/deform/issues/236
-                    form = Form(
-                        geo_form_schema.schema_user, buttons=(submit_button,),
-                        renderer=renderer)
+                url = request.route_url(
+                    'confirm', schema=geo_form_schema.name,
+                    _query={'__submission_id__': submission_id})
+                return HTTPFound(url)
 
-                    rendered = form.render(
-                        geo_form_schema.schema_user.dictify(obj),
-                        readonly=True,
-                        custom_data=custom_data,
-                        request=request)
     else:
+        # empty form
         rendered = form.render(custom_data=None, request=request)
 
     return {'form': rendered,
             'deform_dependencies': form.get_widget_resources()}
 
 
-@view_config(route_name='list', renderer='templates/site/list.pt')
+def confirmation(request):
+    geo_form_schema = _get_schema(request)
+    session = request.session
+    form = _get_form(geo_form_schema, 'form_confirmation', request)
+
+    submission_id = request.params.get('__submission_id__')
+    if submission_id is None or submission_id not in session:
+        raise HTTPBadRequest()
+
+    store_form = request.params.get('__store_form__')
+    form_data = session[submission_id]
+
+    try:
+        obj_dict = form.validate(form_data)
+    except ValidationFailure:
+        # the confirmation page may not be called if the validation fails
+        raise HTTPBadRequest()
+
+    if geo_form_schema.show_confirmation and store_form != '1':
+        # show confirmation page
+        back_link = request.route_url(
+            'form', schema=geo_form_schema.name,
+            _query={'__submission_id__': submission_id})
+        rendered = form.render(
+            obj_dict, readonly=True,
+            custom_data=None, submission_id=submission_id,
+            back_link=back_link)
+
+        return {'form': rendered,
+                'deform_dependencies': form.get_widget_resources()}
+    else:
+        # store in the database
+        obj = geo_form_schema.schema_user.objectify(obj_dict)
+        hash = str(uuid.uuid4())
+        setattr(obj, geo_form_schema.hash_column_name, hash)
+        DBSession.add(obj)
+        DBSession.flush()
+
+        url = request.route_url(
+            'view_user',
+            schema=geo_form_schema.name,
+            hash=hash)
+
+        return HTTPFound(url)
+
+
+def _get_form(geo_form_schema, template, request):
+    renderer = _get_renderer(geo_form_schema.templates_user)
+    form_action = request.route_url('form', schema=geo_form_schema.name)
+    submit_button = Button(name='formsubmit', title=_('Submit'))
+
+    form = Form(
+        geo_form_schema.schema_user, buttons=(submit_button,),
+        renderer=renderer, action=form_action)
+    _set_form_widget(form, geo_form_schema.schema_user, template)
+    _populate_widgets(form.schema, DBSession)
+
+    return form
+
+
+def _set_form_widget(form, schema, template):
+    if getattr(schema, 'widget', None) is None:
+        # only change if the user did not provide a custom widget
+        form.widget = FormWidget(
+            readonly_template='readonly/' + template, template=template)
+
+
+def view_user(request):
+    if 'hash' not in request.matchdict or not request.matchdict['hash']:
+        return {'form': None}
+
+    hash = request.matchdict['hash']
+    geo_form_schema = _get_schema(request)
+    renderer = _get_renderer(geo_form_schema.templates_user)
+    form = Form(geo_form_schema.schema_user, renderer=renderer)
+    _set_form_widget(form, geo_form_schema.schema_user, 'form_view_user')
+
+    hash_field = getattr(
+        geo_form_schema.model, geo_form_schema.hash_column_name)
+    try:
+        obj = DBSession \
+            .query(geo_form_schema.model) \
+            .filter(hash_field == hash) \
+            .one()
+    except NoResultFound:
+        return {'form': None}
+
+    rendered = form.render(geo_form_schema.schema_user.dictify(obj),
+                           readonly=True, request=request)
+    return {
+        'form': rendered,
+        'schema': geo_form_schema,
+        'deform_dependencies': form.get_widget_resources()}
+
+
 def list(request):
     geo_form_schema = _get_schema(request)
     entities = DBSession.query(geo_form_schema.model).all()
     return {'entities': entities, 'schema': geo_form_schema}
 
 
-@view_config(route_name='grid', renderer='json', request_method='POST')
 def grid(request):
     """API method which serves the JSON data for the Bootgrid table
     in the admin view.
@@ -216,7 +278,6 @@ def _get_grid_rows(entities, schema):
     return rows
 
 
-@view_config(route_name='edit', renderer='templates/site/edit.pt')
 def edit(request):
     geo_form_schema = _get_schema(request)
 
@@ -258,8 +319,7 @@ def edit(request):
         'deform_dependencies': form.get_widget_resources()}
 
 
-@view_config(route_name='view', renderer='templates/site/view.pt')
-def view(request):
+def view_admin(request):
     id_ = request.matchdict['id']
     geo_form_schema = _get_schema(request)
     renderer = _get_renderer(geo_form_schema.templates_admin)
@@ -274,7 +334,6 @@ def view(request):
         'deform_dependencies': form.get_widget_resources()}
 
 
-@view_config(route_name='locale')
 def set_locale_cookie(request):
     """ View to change the preferred language.
     """
