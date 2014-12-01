@@ -26,6 +26,7 @@ submissions](http://mapfish-geoportal.demo-camptocamp.com/c2cgeoform/wsgi/fouill
 
 This section provides links to various parts of the documentation.
 
+* [Create a c2cgeoform project](docs/create-project.md)
 * [Defining the model for a form](docs/model.md)
 * [Guide for c2cgeoform developers](docs/developer-guide.md)
 
