@@ -57,6 +57,7 @@ class ContactPerson(Base):
         'colanderalchemy': {
             'widget': deform.widget.HiddenWidget()
         }})
+    verified = Column(Boolean)
 
 
 class Photo(FileData, Base):
@@ -102,8 +103,7 @@ class ExcavationPermission(Base):
     hash = Column(Text, unique=True)
     reference_number = Column(Text, nullable=True, info={
         'colanderalchemy': {
-            'title': _('Reference Number'),
-            'admin_only': True
+            'title': _('Reference Number')
         }})
     request_date = Column(Date, nullable=True, info={
         'colanderalchemy': {
@@ -217,8 +217,7 @@ class ExcavationPermission(Base):
     validated = Column(Boolean, info={
         'colanderalchemy': {
             'title': _('Validation'),
-            'label': _('Validated'),
-            'admin_only': True
+            'label': _('Validated')
         }})
 
     # Work footprint

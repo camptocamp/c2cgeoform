@@ -118,8 +118,13 @@ def main(global_config, **settings):
         'fouille',
         model.ExcavationPermission,
         templates_user=resource_filename('c2cgeoform', 'pully/templates'),
-        # override the title for a field in the user form
-        overrides_user={'request_date': {'title': 'Date'}})
+        excludes_user=['reference_number', 'validated'],
+        overrides_user={
+            # override the title for a field in the user form
+            'request_date': {'title': 'Date'},
+            # do not show the 'verified' field of ContactPerson for the user
+            'contact_persons': {'excludes': ['verified']}
+        })
     model.setup_test_data()
     register_schema('comment', model.Comment, show_confirmation=False)
 
