@@ -19,7 +19,7 @@ requires = [
     'waitress',
     'colander',
     'colanderalchemy',
-    'deform',
+    'deform==2.0a2',
     'psycopg2',
     'geoalchemy2',
     'shapely',
