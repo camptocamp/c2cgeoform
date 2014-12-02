@@ -4,7 +4,7 @@ This page describes how to set up the development environment for working on
 `c2cgeoform`. It is for developers working on `c2cgeoform` itself, not for
 developers working on `c2cgeoform`-based applications.
 
-### Prequesites
+### Prerequisites
 
 You need to install PostgreSQL and PostGIS. On Ubuntu, the packages
 `postgresql-server-dev-9.3` and `python-dev` are required.

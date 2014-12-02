@@ -28,6 +28,7 @@ This section provides links to various parts of the documentation.
 
 * [Create a c2cgeoform project](docs/create-project.md)
 * [Defining the model for a form](docs/model.md)
+* [Using custom templates](docs/templates.md)
 * [Guide for c2cgeoform developers](docs/developer-guide.md)
 
 ## Copyright
