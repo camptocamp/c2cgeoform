@@ -1,9 +1,11 @@
 from translationstring import TranslationStringFactory
 from deform.widget import (
     Widget, SelectWidget, Select2Widget, RadioChoiceWidget)
-from deform.widget import FileUploadWidget as DeformFileUploadWidget
+from deform.widget import (FileUploadWidget as DeformFileUploadWidget,
+                           MappingWidget)
 from sqlalchemy.orm import ColumnProperty
-from colander import null
+from colander import null, Invalid
+import urllib, urllib2
 import json
 
 
@@ -470,3 +472,75 @@ class FileUploadWidget(DeformFileUploadWidget):
         if value != null and 'fp' in value:
             value['data'] = value['fp']
         return value
+
+
+class RecaptchaWidget(MappingWidget):
+    """
+    A Deform widget for google recaptcha
+
+    Parameters publickey, privatekey and request are mandatory.
+
+    Example usage
+
+    .. code-block:: python
+
+        class Schema(colander.Schema):
+            captcha = colander.SchemaNode(
+                colander.Mapping(),
+                name='captcha',
+                title='Some text here',
+                missing=colander.drop,
+                widget=RecaptchaWidget(public_key=recaptcha_public_key,
+                                       private_key=recaptcha_private_key,
+                                       request=request))
+        captcha_form = Form(Schema(), buttons=('submit',))
+    """
+
+    template = 'recaptcha'
+    readonly_template = 'recaptcha' # should not be used
+    requirements = ()
+    url = "https://www.google.com/recaptcha/api/siteverify"
+
+    def serialize(self, field, cstruct, **kw):
+        kw.update({'public_key': self.public_key,
+                   'locale_name': self.request.locale_name})
+        return MappingWidget.serialize(self, field, cstruct, **kw)
+
+    def deserialize(self, field, pstruct):
+        if pstruct is null:
+            return null
+
+        response = pstruct.get('g-recaptcha-response') or ''
+        if not response:
+            raise Invalid(field.schema, 'No input')
+        remoteip = self.request.remote_addr
+        data = urllib.urlencode({'secret': self.private_key,
+                                 'response': response,
+                                 'remoteip': remoteip})
+
+        resp = urllib2.urlopen(self.url, data)
+        if not resp.code == 200:
+            raise Invalid(field.schema,
+                          "There was an error talking to the recaptcha \
+                            server {0}".format(resp['code']), pstruct)
+
+        content = resp.read()
+        data = json.loads(content)
+        if not data['success'] == True:
+            error_msg = _("Recaptcha validation has failed")
+            if 'error-codes' in data:
+                for error_code in data['error-codes']:
+                    error_msg += "\n" + self.getErrorMessage(error_msg)
+            raise Invalid(field.schema, error_msg, pstruct)
+
+        return pstruct
+
+    def getErrorMessage(self, error_code):
+        if error_code == 'missing-input-secret':
+            return _("The secret parameter is missing")
+        elif error_code == 'invalid-input-secret':
+            return _("The secret parameter is invalid or malformed")
+        elif error_code == 'missing-input-response':
+            return _("The response parameter is missing")
+        elif error_code == 'missing-input-response':
+            return _("The response parameter is invalid or malformed")
