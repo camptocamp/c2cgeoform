@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2014-10-09 09:33+0200\n"
+"POT-Creation-Date: 2014-12-03 17:40+0100\n"
 "PO-Revision-Date: 2014-07-31 11:13+0200\n"
 "Last-Translator: Tobias Sauerwein <tobias.sauerwein@camptocamp.com>\n"
 "Language-Team: French\n"
@@ -15,14 +15,111 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
+#: c2cgeoform/ext/deform_ext.py:533
+msgid "Captcha validation has failed"
+msgstr "La validation du captcha a échouée"
+
+#: c2cgeoform/ext/deform_ext.py:543
+msgid "The secret parameter is missing"
+msgstr "Le paramètre secret est manquant"
+
+#: c2cgeoform/ext/deform_ext.py:518
+msgid "No input"
+msgstr "Aucune entrée"
+
+#: c2cgeoform/ext/deform_ext.py:545
+msgid "The secret parameter is invalid or malformed"
+msgstr "Le paramètre secret est invalide ou mal formé"
+
+#: c2cgeoform/ext/deform_ext.py:547
+msgid "The response parameter is missing"
+msgstr "Le paramètre response est manquant"
+
+#: c2cgeoform/ext/deform_ext.py:527
+#, python-format
+msgid "There was an error talking to the recaptcha server {0}"
+msgstr "La requête au serveur recaptcha a renvoyé une erreur {0}"
+
+#: c2cgeoform/ext/deform_ext.py:549
+msgid "The response parameter is invalid or malformed"
+msgstr "Le paramètre response est invalide ou mal formé"
+
+#: c2cgeoform/templates/widgets/map.pt:33
+msgid "Zoom In"
+msgstr "Zoomer"
+
+#: c2cgeoform/templates/widgets/map.pt:34
+msgid "Zoom Out"
+msgstr "Dézoomer"
+
+#: c2cgeoform/templates/widgets/map.pt:35
+msgid "Attributions"
+msgstr "Copyright"
+
+#: c2cgeoform/templates/widgets/map.pt:36
+msgid "Draw point"
+msgstr "Créer point"
+
+#: c2cgeoform/templates/widgets/map.pt:37
+msgid "Draw line"
+msgstr "Créer ligne"
+
+#: c2cgeoform/templates/widgets/map.pt:38
+msgid "Draw polygon"
+msgstr "Créer polygone"
+
+#: c2cgeoform/templates/widgets/map.pt:39
+msgid "Modify"
+msgstr "Modifier"
+
+#: c2cgeoform/templates/widgets/map.pt:40
+msgid "Remove all"
+msgstr "Effacer tous les objets"
+
+#: c2cgeoform/templates/widgets/readonly/form_view_user.pt:3
+msgid "Submission successful"
+msgstr "Formulaire envoyé avec succès"
+
+#: c2cgeoform/templates/widgets/readonly/form_view_user.pt:6
+msgid ""
+"Thank you for your submission. Please find below the information that was "
+"stored in our system."
+msgstr ""
+"Merci beaucoup ! Veuillez trouver ci-dessous les informations stockées dans "
+"notre système."
+
+#: c2cgeoform/templates/widgets/readonly/form_confirmation.pt:7
+msgid "Confirmation"
+msgstr "Confirmation"
+
+#: c2cgeoform/templates/widgets/readonly/form_confirmation.pt:10
+msgid "Please confirm your details and submit the form."
+msgstr ""
+"Pour finaliser votre dossier, veuillez vérifier les informations saisies et "
+"les soumettre après."
+
+#: c2cgeoform/templates/widgets/readonly/form_confirmation.pt:35
+#: c2cgeoform/views.py:137
+msgid "Submit"
+msgstr "Soumettre"
+
+#: c2cgeoform/templates/widgets/readonly/form_confirmation.pt:38
+msgid "Back to form"
+msgstr "Retourner au formulaire"
+
+#: c2cgeoform/templates/site/view_admin.pt:6
+#: c2cgeoform/templates/site/list.pt:52
+msgid "View"
+msgstr "Voir"
+
+#: c2cgeoform/templates/site/view_admin.pt:9
+#: c2cgeoform/templates/site/edit.pt:9
+msgid "Back to overview"
+msgstr "Retourner à l'index"
+
 #: c2cgeoform/templates/site/edit.pt:6 c2cgeoform/templates/site/list.pt:55
 msgid "Edit"
 msgstr "Modifier"
-
-#: c2cgeoform/templates/site/edit.pt:9 c2cgeoform/templates/site/list.pt:69
-#: c2cgeoform/templates/site/view.pt:9
-msgid "Back to overview"
-msgstr "Retourner à l'index"
 
 #: c2cgeoform/templates/site/list.pt:6
 msgid "All entities"
@@ -55,66 +152,3 @@ msgstr "Actualiser"
 #: c2cgeoform/templates/site/list.pt:42
 msgid "Search"
 msgstr "Rechercher"
-
-#: c2cgeoform/templates/site/list.pt:52 c2cgeoform/templates/site/list.pt:66
-#: c2cgeoform/templates/site/view.pt:6
-msgid "View"
-msgstr "Voir"
-
-#: c2cgeoform/templates/widgets/map.pt:29
-msgid "Zoom In"
-msgstr "Zoomer"
-
-#: c2cgeoform/templates/widgets/map.pt:30
-msgid "Zoom Out"
-msgstr "Dézoomer"
-
-#: c2cgeoform/templates/widgets/map.pt:31
-msgid "Attributions"
-msgstr "Copyright"
-
-#: c2cgeoform/templates/widgets/map.pt:32
-msgid "Draw point"
-msgstr "Créer point"
-
-#: c2cgeoform/templates/widgets/map.pt:33
-msgid "Draw line"
-msgstr "Créer ligne"
-
-#: c2cgeoform/templates/widgets/map.pt:34
-msgid "Draw polygon"
-msgstr "Créer polygone"
-
-#: c2cgeoform/templates/widgets/map.pt:35
-msgid "Modify"
-msgstr "Modifier"
-
-#: c2cgeoform/templates/widgets/map.pt:36
-msgid "Remove all"
-msgstr "Effacer tous les objets"
-
-#: c2cgeoform/templates/widgets/readonly/form.pt:9
-msgid "Confirmation"
-msgstr "Confirmation"
-
-#: c2cgeoform/templates/widgets/readonly/form.pt:12
-msgid "Please confirm your details and submit the form."
-msgstr "Pour finaliser votre dossier, veuillez vérifier les informations saisies et les soumettre après."
-
-#: c2cgeoform/templates/widgets/readonly/form.pt:19
-msgid "Submission successful"
-msgstr "Formulaire envoyé avec succès"
-
-#: c2cgeoform/templates/widgets/readonly/form.pt:22
-msgid ""
-"Thank you for your submission. Please find below the information that was "
-"stored in our system."
-msgstr "Merci beaucoup ! Veuillez trouver ci-dessous les informations stockées dans notre système."
-
-#: c2cgeoform/templates/widgets/readonly/form.pt:51 c2cgeoform/views.py:48
-msgid "Submit"
-msgstr "Soumettre"
-
-#: c2cgeoform/templates/widgets/readonly/form.pt:54
-msgid "Back to form"
-msgstr "Retourner au formulaire"

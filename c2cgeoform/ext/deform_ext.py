@@ -515,7 +515,7 @@ class RecaptchaWidget(MappingWidget):
 
         response = pstruct.get('g-recaptcha-response') or ''
         if not response:
-            raise Invalid(field.schema, 'No input')
+            raise Invalid(field.schema, _('No input'), pstruct)
         remoteip = self.request.remote_addr
         data = urllib.urlencode({'secret': self.private_key,
                                  'response': response,
@@ -524,8 +524,8 @@ class RecaptchaWidget(MappingWidget):
         resp = urllib2.urlopen(self.url, data)
         if not resp.code == 200:
             raise Invalid(field.schema,
-                          "There was an error talking to the recaptcha \
-                            server {0}".format(resp['code']), pstruct)
+                          _("There was an error talking to the recaptcha"
+                            " server {0}").format(resp['code']), pstruct)
 
         content = resp.read()
         data = json.loads(content)
@@ -533,7 +533,7 @@ class RecaptchaWidget(MappingWidget):
             error_msg = _("Recaptcha validation has failed")
             if 'error-codes' in data:
                 for error_code in data['error-codes']:
-                    error_msg += "\n" + self.getErrorMessage(error_msg)
+                    error_msg += "\n" + self.get_error_message(error_msg)
             raise Invalid(field.schema, error_msg, pstruct)
 
         return pstruct
