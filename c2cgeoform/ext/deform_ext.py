@@ -5,8 +5,11 @@ from deform.widget import (FileUploadWidget as DeformFileUploadWidget,
                            MappingWidget)
 from sqlalchemy.orm import ColumnProperty
 from colander import null, Invalid
-import urllib, urllib2
+import urllib
+import urllib2
 import json
+
+_ = TranslationStringFactory('c2cgeoform')
 
 
 class MapWidget(Widget):
@@ -40,7 +43,7 @@ class MapWidget(Widget):
         values['controls_definition'] = \
             self._get_controls_definition(field, readonly)
         # make `_` available in template for i18n messages
-        values['_'] = TranslationStringFactory('c2cgeoform')
+        values['_'] = _
         return field.renderer('map', **values)
 
     def deserialize(self, field, pstruct):
@@ -497,7 +500,7 @@ class RecaptchaWidget(MappingWidget):
     """
 
     template = 'recaptcha'
-    readonly_template = 'recaptcha' # should not be used
+    readonly_template = 'recaptcha'  # should not be used
     requirements = ()
     url = "https://www.google.com/recaptcha/api/siteverify"
 
@@ -526,7 +529,7 @@ class RecaptchaWidget(MappingWidget):
 
         content = resp.read()
         data = json.loads(content)
-        if not data['success'] == True:
+        if not data['success']:
             error_msg = _("Recaptcha validation has failed")
             if 'error-codes' in data:
                 for error_code in data['error-codes']:
@@ -535,7 +538,7 @@ class RecaptchaWidget(MappingWidget):
 
         return pstruct
 
-    def getErrorMessage(self, error_code):
+    def get_error_message(self, error_code):
         if error_code == 'missing-input-secret':
             return _("The secret parameter is missing")
         elif error_code == 'invalid-input-secret':
