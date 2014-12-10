@@ -11,6 +11,7 @@ from pyramid.paster import (
 from pyramid.scripts.common import parse_vars
 
 from ..models import Base
+from ..settings import apply_local_settings
 
 
 def usage(argv):
@@ -32,6 +33,7 @@ def main(argv=sys.argv):
     options = parse_vars(argv[2:])
     setup_logging(config_uri)
     settings = get_appsettings(config_uri, options=options)
+    apply_local_settings(settings)
     engine = engine_from_config(settings, 'sqlalchemy.')
 
     # FIXME this is needed for now so the "Pully" model is in the
