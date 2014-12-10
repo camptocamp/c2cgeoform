@@ -6,6 +6,7 @@ from pyramid.threadlocal import get_current_request
 from pyramid.events import BeforeRender, NewRequest
 
 from .models import DBSession
+from .settings import apply_local_settings
 from .subscribers import add_renderer_globals, add_localizer
 
 
@@ -109,6 +110,7 @@ def main(global_config, **settings):
     This a is test application for the model and templates defined in
     c2cgeoform/pully.
     """
+    apply_local_settings(settings)
     engine = engine_from_config(settings, 'sqlalchemy.')
     DBSession.configure(bind=engine)
     config = Configurator(settings=settings)
