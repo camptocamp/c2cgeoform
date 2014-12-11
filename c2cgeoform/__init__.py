@@ -135,6 +135,11 @@ def main(global_config, **settings):
     model.setup_test_data()
     register_schema('comment', model.Comment, show_confirmation=False)
 
+    config.add_route('bus_stops', '/bus_stops')
+    config.add_view('c2cgeoform.pully.views.bus_stops.bus_stops',
+                    route_name='bus_stops', renderer='json',
+                    request_method='GET')
+
     config.scan('c2cgeoform.pully')
     config.add_c2cgeoform_views()
 
