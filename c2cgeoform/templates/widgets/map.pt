@@ -88,7 +88,7 @@
           c2cgeoform.initializeToolbar(map, source, {
             controlsDefinition: controlsDefinition,
             updateField: function(newGeoJson) {
-              $('#'+oid).val(newGeoJson);
+              $('#' + oid).val(newGeoJson);
             }
           });
           c2cgeoform.maps[oid] = map;

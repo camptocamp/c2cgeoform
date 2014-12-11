@@ -1,3 +1,6 @@
+/* global c2cgeoform */
+/* global ol */
+/* global $ */
 
 /**
  * ToolBar control which acts as a container for further controls.
@@ -48,6 +51,7 @@ c2cgeoform.EditingControl = function(className, tooltipLabel) {
   var button = document.createElement('button');
   button.type = 'button';
   button.className = 'ol-has-tooltip edit-control ' + className;
+  button.title = tooltipLabel;
 
   this.handleAction = function(e) {};
   var this_ = this;
@@ -56,15 +60,6 @@ c2cgeoform.EditingControl = function(className, tooltipLabel) {
   };
 
   $(button).on('click', handleAction_);
-  $(button).on('mouseout focusout', function() {
-    // ensure that the tooltip is removed on mouseout
-    this.blur();
-  });
-
-  var tooltip = document.createElement('span');
-  tooltip.setAttribute('role', 'tooltip');
-  tooltip.innerHTML = tooltipLabel;
-  button.appendChild(tooltip);
 
   this.element_ = button;
   ol.control.Control.call(this, {
@@ -352,8 +347,8 @@ c2cgeoform.initializeToolbar = function(map, source, options) {
       }
     }
     var geoJson = '';
-    if (geometry != null) {
-      geoJson = JSON.stringify(geoJsonFormat.writeGeometry(geometry));
+    if (geometry !== null) {
+      geoJson = geoJsonFormat.writeGeometry(geometry);
     }
     options.updateField(geoJson);
   };
@@ -391,6 +386,63 @@ c2cgeoform.initializeToolbar = function(map, source, options) {
 
 
 /**
+ * Setup the map for a `RelationSelectMapWidget`.
+ */
+c2cgeoform.initializeSelectMap = function(map, options) {
+  var selectClick = new ol.interaction.Select({
+    condition: ol.events.condition.click,
+    toggleCondition: ol.events.condition.never
+  });
+  map.addInteraction(selectClick);
+
+  selectClick.getFeatures().on('add', function() {
+    var feature = selectClick.getFeatures().getArray()[0];
+    options.updateField(feature.get(options.id_field));
+    options.updateLabel(feature.get(options.label_field));
+  });
+
+  selectClick.getFeatures().on('remove', function() {
+    options.updateField('');
+    options.updateLabel(null);
+  });
+
+  options.source.once('change', function() {
+    // if the GeoJSON file is loaded, try to get the selected feature
+    if (options.source.getFeatures().length === 0) {
+      return;
+    }
+
+    var selectedFeature = null;
+    // select feature if available
+    if (options.featureId !== '') {
+      var features = $.grep(options.source.getFeatures(), function(feature) {
+        return feature.get(options.id_field) == options.featureId;
+      });
+      if (features.length > 0) {
+        selectClick.getFeatures().push(features[0]);
+        selectedFeature = features[0];
+      }
+    }
+
+    if (selectedFeature !== null) {
+      // zoom on the selected feature
+      c2cgeoform.zoomToGeometry_(map, selectedFeature.getGeometry(), options.maxZoom);
+      options.updateLabel(selectedFeature.get(options.label_field));
+    } else {
+      // zoom on all features
+      var extent = ol.geom.Polygon.fromExtent(options.source.getExtent());
+      c2cgeoform.zoomToGeometry_(map, extent, options.maxZoom);
+      options.updateLabel(null);
+    }
+  });
+
+  if (options.readonly) {
+    selectClick.setActive(false);
+  }
+};
+
+
+/**
  * All maps on a page {deform field oid: ol.Map}.
  */
 c2cgeoform.maps = {};
@@ -403,10 +455,10 @@ c2cgeoform.maps = {};
  * be called to fix the map.
  */
 c2cgeoform.reinitMaps = function() {
-  jQuery.each(c2cgeoform.maps, function(_i, map) {
+  $.each(c2cgeoform.maps, function(_i, map) {
     var initialWidth = map.getSize()[0];
     map.updateSize();
-    if (initialWidth == 0) {
+    if (initialWidth === 0) {
       c2cgeoform.zoomToGeometry_(map);
     }
   });
