@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2014-10-09 09:33+0200\n"
+"POT-Creation-Date: 2014-12-11 11:40+0100\n"
 "PO-Revision-Date: 2014-07-31 11:14+0200\n"
 "Last-Translator: Tobias Sauerwein <tobias.sauerwein@camptocamp.com>\n"
 "Language-Team: German\n"
@@ -19,8 +19,8 @@ msgstr ""
 msgid "Edit"
 msgstr "Editieren"
 
-#: c2cgeoform/templates/site/edit.pt:9 c2cgeoform/templates/site/list.pt:69
-#: c2cgeoform/templates/site/view.pt:9
+#: c2cgeoform/templates/site/edit.pt:9
+#: c2cgeoform/templates/site/view_admin.pt:9
 msgid "Back to overview"
 msgstr "Zurück zur Übersicht"
 
@@ -58,65 +58,81 @@ msgstr "Aktualisieren"
 msgid "Search"
 msgstr "Suchen"
 
-#: c2cgeoform/templates/site/list.pt:52 c2cgeoform/templates/site/list.pt:66
-#: c2cgeoform/templates/site/view.pt:6
+#: c2cgeoform/templates/site/list.pt:52
+#: c2cgeoform/templates/site/view_admin.pt:6
 msgid "View"
 msgstr "Anzeigen"
 
-#: c2cgeoform/templates/widgets/map.pt:29
+#: c2cgeoform/templates/widgets/map.pt:33
+#: c2cgeoform/templates/widgets/map_select.pt:35
 msgid "Zoom In"
 msgstr "Vergrößern"
 
-#: c2cgeoform/templates/widgets/map.pt:30
+#: c2cgeoform/templates/widgets/map.pt:34
+#: c2cgeoform/templates/widgets/map_select.pt:36
 msgid "Zoom Out"
 msgstr "Verkleinern"
 
-#: c2cgeoform/templates/widgets/map.pt:31
+#: c2cgeoform/templates/widgets/map.pt:35
+#: c2cgeoform/templates/widgets/map_select.pt:37
 msgid "Attributions"
 msgstr "Copyright"
 
-#: c2cgeoform/templates/widgets/map.pt:32
+#: c2cgeoform/templates/widgets/map.pt:36
 msgid "Draw point"
 msgstr "Punkt zeichnen"
 
-#: c2cgeoform/templates/widgets/map.pt:33
+#: c2cgeoform/templates/widgets/map.pt:37
 msgid "Draw line"
 msgstr "Linie zeichnen"
 
-#: c2cgeoform/templates/widgets/map.pt:34
+#: c2cgeoform/templates/widgets/map.pt:38
 msgid "Draw polygon"
 msgstr "Polygon zeichnen"
 
-#: c2cgeoform/templates/widgets/map.pt:35
+#: c2cgeoform/templates/widgets/map.pt:39
 msgid "Modify"
 msgstr "Editieren"
 
-#: c2cgeoform/templates/widgets/map.pt:36
+#: c2cgeoform/templates/widgets/map.pt:40
 msgid "Remove all"
 msgstr "Alles löschen"
 
-#: c2cgeoform/templates/widgets/readonly/form.pt:9
-msgid "Confirmation"
-msgstr "Bestätigung"
+#: c2cgeoform/templates/widgets/map_select.pt:38
+msgid "Selected:"
+msgstr "Selektiert:"
 
-#: c2cgeoform/templates/widgets/readonly/form.pt:12
-msgid "Please confirm your details and submit the form."
-msgstr "Bitte überprüfen Sie Ihre Eingabe und senden Sie abschließend das Formular ab."
+#: c2cgeoform/templates/widgets/map_select.pt:39
+msgid "Please select an item on the map!"
+msgstr "Bitte Objekt auf der Karte selektieren!"
 
-#: c2cgeoform/templates/widgets/readonly/form.pt:19
+#: c2cgeoform/templates/widgets/readonly/form_view_user.pt:3
 msgid "Submission successful"
 msgstr "Übertragung erfolgreich"
 
-#: c2cgeoform/templates/widgets/readonly/form.pt:22
+#: c2cgeoform/templates/widgets/readonly/form_view_user.pt:6
 msgid ""
 "Thank you for your submission. Please find below the information that was "
 "stored in our system."
-msgstr "Vielen Dank für Ihre Einsendung! Nachfolgend finden Sie zur Kontrolle die Daten, die in unserem System gespeichert wurden."
+msgstr ""
+"Vielen Dank für Ihre Einsendung! Nachfolgend finden Sie zur Kontrolle die "
+"Daten, die in unserem System gespeichert wurden."
 
-#: c2cgeoform/templates/widgets/readonly/form.pt:51 c2cgeoform/views.py:48
+#: c2cgeoform/templates/widgets/readonly/form_confirmation.pt:7
+msgid "Confirmation"
+msgstr "Bestätigung"
+
+#: c2cgeoform/templates/widgets/readonly/form_confirmation.pt:10
+msgid "Please confirm your details and submit the form."
+msgstr ""
+"Bitte überprüfen Sie Ihre Eingabe und senden Sie abschließend das Formular "
+"ab."
+
+#: c2cgeoform/templates/widgets/readonly/form_confirmation.pt:35
+#: c2cgeoform/views.py:136
 msgid "Submit"
 msgstr "Absenden"
 
-#: c2cgeoform/templates/widgets/readonly/form.pt:54
+#: c2cgeoform/templates/widgets/readonly/form_confirmation.pt:38
 msgid "Back to form"
 msgstr "Zurück zum Formular"
