@@ -107,6 +107,9 @@ def _set_widget_template_path():
     registry.set_css_resources(
         'typeahead', '0.10.5',
         'c2cgeoform:static/js/typeaheadjs.css')
+    registry.set_js_resources(
+        'c2cgeoform.deform_search', None,
+        'c2cgeoform:static/deform_search/search.js')
     Form.set_default_resource_registry(registry)
 
 

@@ -177,3 +177,8 @@ p {
   display: inline;
   padding: 0;
 }
+
+/* Typeahead's dropdown meny */
+.tt-dropdown-menu {
+  color: black;
+}
