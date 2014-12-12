@@ -1,3 +1,7 @@
+C2CGEOFORM_MO_FILES = $(addprefix c2cgeoform/locale/, fr/LC_MESSAGES/c2cgeoform.mo de/LC_MESSAGES/c2cgeoform.mo)
+PULLY_MO_FILES = $(addprefix c2cgeoform/pully/locale/, fr/LC_MESSAGES/pully.mo)
+
+
 .PHONY: all
 all: help
 
@@ -13,18 +17,15 @@ help:
 	@echo "- check                   Check the code with flake8"
 	@echo "- modwsgi                 Create files for Apache mod_wsgi"
 	@echo "- test                    Run the unit tests"
+	@echo "- compile-catalog         Compile message catalog"
 	@echo
 
 .PHONY: install
-install: .build/venv
+install: setup compile-catalog
+	
+.PHONY: setup
+setup: .build/venv
 	.build/venv/bin/python setup.py develop
-	# compile i18n messages
-	msgfmt c2cgeoform/pully/locale/fr/LC_MESSAGES/pully.po \
-			--output-file=c2cgeoform/pully/locale/fr/LC_MESSAGES/pully.mo
-	msgfmt c2cgeoform/locale/fr/LC_MESSAGES/c2cgeoform.po \
-			--output-file=c2cgeoform/locale/fr/LC_MESSAGES/c2cgeoform.mo
-	msgfmt c2cgeoform/locale/de/LC_MESSAGES/c2cgeoform.po \
-			--output-file=c2cgeoform/locale/de/LC_MESSAGES/c2cgeoform.mo
 
 .PHONY: initdb
 initdb:
@@ -48,6 +49,12 @@ modwsgi: install .build/venv/c2cgeoform.wsgi .build/apache.conf
 test:
 	.build/venv/bin/python setup.py test
 
+.PHONY: compile-catolg
+compile-catalog: $(C2CGEOFORM_MO_FILES) $(PULLY_MO_FILES)
+
+%.mo: %.po
+	msgfmt $< --output-file=$@
+
 .build/venv:
 	mkdir -p $(dir $@)
 	virtualenv --no-site-packages .build/venv
@@ -67,6 +74,8 @@ test:
 clean:
 	rm -f .build/venv/c2cgeoform.wsgi
 	rm -f .build/apache.conf
+	rm -f $(C2CGEOFORM_MO_FILES)
+	rm -f $(PULLY_MO_FILES)
 
 .PHONY: cleanall
 cleanall:
