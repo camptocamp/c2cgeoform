@@ -36,6 +36,13 @@ class District(Base):
     name = Column(Text, nullable=False)
 
 
+class Address(Base):
+    __tablename__ = 'address'
+
+    id = Column(Integer, primary_key=True)
+    label = Column(Text, nullable=False)
+
+
 class ContactPerson(Base):
     __tablename__ = 'contact_person'
     __colanderalchemy_config__ = {
@@ -186,6 +193,18 @@ class ExcavationPermission(Base):
         'colanderalchemy': {
             'title': _('Town')
         }})
+    # this is a search field to search for an address
+    address_id = Column(Integer, ForeignKey('address.id'), info={
+        'colanderalchemy': {
+            'title': _('Address'),
+            'widget': deform_ext.RelationSearchWidget(
+                url=lambda request: request.route_url('addresses'),
+                model=Address,
+                min_length=1,
+                id_field='id',
+                label_field='label'
+            )
+        }})
     # to show a map for a geometry column, the column has to be defined as
     # follows.
     location_position = Column(
@@ -321,6 +340,13 @@ def setup_test_data():
 
     if DBSession.query(BusStop).count() == 0:
         _add_bus_stops(DBSession)
+
+    if DBSession.query(Address).get(0) is None:
+        DBSession.add(Address(id=0, label="Bern"))
+        DBSession.add(Address(id=1, label="Lausanne"))
+        DBSession.add(Address(id=2, label="Genève"))
+        DBSession.add(Address(id=3, label="Zurich"))
+        DBSession.add(Address(id=4, label="Lugano"))
 
     transaction.commit()
 
