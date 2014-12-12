@@ -4,6 +4,14 @@ This page describes how to create a `c2cgeoform` project. A `c2cgeoform`
 project is basically a Pyramid project with `c2cgeoform` enabled in the
 project.
 
+### System requirements
+
+The following system packages must be installed on your system:
+
+* `python-virtualenv`
+* `libpq-dev` (header files for PostgreSQL)
+* `gettext`
+
 ### Create a Pyramid project
 
 Creating a `c2cgeoform` project requires creating a Pyramid project. So
@@ -26,10 +34,7 @@ $ ./venv/bin/pcreate -s alchemy MyProject
 Remove files you won't need:
 
 ```shell
-$ rm MyProject/myproject/models.py
-$ rm MyProject/myproject/tests.py
-$ rm MyProject/myproject/views.py
-$ rm MyProject/myproject/templates/mytemplate.pt
+$ rm MyProject/myproject/models.py MyProject/myproject/tests.py MyProject/myproject/views.py MyProject/myproject/templates/mytemplate.pt
 ```
 
 ### Make `c2cgeoform` a dependency of the project
@@ -97,6 +102,29 @@ to
 _ = TranslationStringFactory('myproject')
 ```
 
+And change the line
+
+```py
+file = open('c2cgeoform/pully/data/osm-lausanne-bus-stops.geojson')
+```
+
+to
+
+```py
+file = open('myproject/data/osm-lausanne-bus-stops.geojson')
+```
+
+This model example uses widgets, namely the `RelationMapWidget` and the
+`RelationSearchWidget`, that rely on specific web services. So the
+corresponding Pyramid views should also be copied from the demo project:
+
+```shell
+mkdir -p myproject/views
+cp ../venv/src/c2cgeoform/c2cgeoform/pully/views/*.py myproject/views/
+mkdir -p myproject/data
+cp ../venv/src/c2cgeoform/c2cgeoform/pully/data/*.geojson myproject/data/
+```
+
 ### Create form template
 
 As a `c2cgeoform` application developer you also need to define a *form
@@ -122,7 +150,7 @@ should be changed to:
 _ TranslationStringFactory('myproject');"
 ```
 
-And
+And every occurence of
 
 ```
 i18n:domain="pully"
@@ -164,14 +192,23 @@ $ msginit -l fr -o fr/LC_MESSAGES/myproject.po
 Update the catalog files with:
 
 ```shell
-$ cd myproject/locale
 $ msgmerge --update fr/LC_MESSAGES/myproject.po myproject.pot
 ```
 
 Compile catalog (from the root of the project):
 
 ```shell
+$ cd ../..
 $ msgfmt myproject/locale/fr/LC_MESSAGES/myproject.po --output-file=myproject/locale/fr/LC_MESSAGES/myproject.mo
+```
+
+`c2cgeoform` is installed from source (as opposed to being installed as an
+egg). For that reason it is required to manually compile the `c2cgeoform`
+catalog:
+
+```shell
+$ msgfmt ../venv/src/c2cgeoform/c2cgeoform/locale/fr/LC_MESSAGES/c2cgeoform.po --output-file=../venv/src/c2cgeoform/c2cgeoform/locale/fr/LC_MESSAGES/c2cgeoform.mo
+$ msgfmt ../venv/src/c2cgeoform/c2cgeoform/locale/de/LC_MESSAGES/c2cgeoform.po --output-file=../venv/src/c2cgeoform/c2cgeoform/locale/de/LC_MESSAGES/c2cgeoform.mo
 ```
 
 ### Enable `c2cgeoform` in the project
@@ -219,11 +256,21 @@ def main(global_config, **settings):
         })
 
     # insert test data into the database. To be removed in the final
-    application.
+    # application.
     model.setup_test_data()
 
     # register the "comment" schema on the Comment model
     register_schema('comment', model.Comment, show_confirmation=False)
+
+    config.add_route('bus_stops', '/bus_stops')
+    config.add_view('myproject.views.bus_stops.bus_stops',
+                    route_name='bus_stops', renderer='json',
+                    request_method='GET')
+
+    config.add_route('addresses', '/addresses')
+    config.add_view('myproject.views.addresses.addresses',
+                    route_name='addresses', renderer='json',
+                    request_method='GET')
 
     config.scan('myproject')
 
