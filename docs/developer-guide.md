@@ -71,11 +71,3 @@ Run the tests:
 ```shell
 $ make test
 ```
-
-### Session management configuration
-
-FIXME: should go elsewhere!
-
-By default c2cgeoform uses [pyramid_beaker](https://pypi.python.org/pypi/pyramid_beaker)
-to manage its sessions. Please refer to the [documentation](http://beaker.readthedocs.org)
-to adapt the configuration to your project setup.

@@ -301,3 +301,9 @@ $ ../venv/bin/pserve development.ini
 Visit the following ULRs to verify that the application works correctly:
 [http://localhost:6543/fouille/form/](http://localhost:6543/fouille/form/) and
 [http://localhost:6543/fouille/](http://localhost:6543/fouille/).
+
+### Session management configuration
+
+By default `c2cgeoform` uses [pyramid_beaker](https://pypi.python.org/pypi/pyramid_beaker)
+to manage its sessions. Please refer to the [documentation](http://beaker.readthedocs.org)
+to adapt the configuration to your project setup.
