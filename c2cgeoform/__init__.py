@@ -146,6 +146,11 @@ def main(global_config, **settings):
                     route_name='bus_stops', renderer='json',
                     request_method='GET')
 
+    config.add_route('addresses', '/addresses')
+    config.add_view('c2cgeoform.pully.views.addresses.addresses',
+                    route_name='addresses', renderer='json',
+                    request_method='GET')
+
     config.scan('c2cgeoform.pully')
     config.add_c2cgeoform_views()
 
