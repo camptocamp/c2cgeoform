@@ -160,6 +160,7 @@ def view_user(request):
     renderer = _get_renderer(geo_form_schema.templates_user)
     form = Form(geo_form_schema.schema_user, renderer=renderer)
     _set_form_widget(form, geo_form_schema.schema_user, 'form_view_user')
+    _populate_widgets(form.schema, DBSession, request)
 
     hash_field = getattr(
         geo_form_schema.model, geo_form_schema.hash_column_name)
