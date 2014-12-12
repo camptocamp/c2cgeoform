@@ -238,11 +238,13 @@ class RelationSelectWidget(RelationMultiSelectMixin, SelectWidget):
     model (required)
         The SQLAlchemy model that is used to generate the list of values.
 
-    id_field (required)
+    id_field
         The property of the model that is used as value.
+        Default: ``id``.
 
-    label_field (required)
+    label_field
         The property of the model that is used as label.
+        Default: ``label``.
 
     order_by
         The property of the model that is used for the ``order_by`` clause of
@@ -266,7 +268,7 @@ class RelationSelectWidget(RelationMultiSelectMixin, SelectWidget):
     """
 
     def __init__(
-            self, model, id_field, label_field,
+            self, model, id_field='id', label_field='label',
             default_value=None, order_by=None, **kw):
         RelationMultiSelectMixin.__init__(
             self, model, id_field, label_field, default_value, order_by)
@@ -334,11 +336,13 @@ class RelationSelect2Widget(RelationMultiSelectMixin, Select2Widget):
     model (required)
         The SQLAlchemy model that is used to generate the list of values.
 
-    id_field (required)
+    id_field
         The property of the model that is used as value.
+        Default: ``id``.
 
-    label_field (required)
+    label_field
         The property of the model that is used as label.
+        Default: ``label``.
 
     order_by
         The property of the model that is used for the ``order_by`` clause of
@@ -362,7 +366,7 @@ class RelationSelect2Widget(RelationMultiSelectMixin, Select2Widget):
     """
 
     def __init__(
-            self, model, id_field, label_field,
+            self, model, id_field='id', label_field='label',
             default_value=None, order_by=None, **kw):
         RelationMultiSelectMixin.__init__(
             self, model, id_field, label_field, default_value, order_by)
@@ -409,11 +413,13 @@ class RelationRadioChoiceWidget(RelationSelectMixin, RadioChoiceWidget):
     model (required)
         The SQLAlchemy model that is used to generate the list of values.
 
-    id_field (required)
+    id_field
         The property of the model that is used as value.
+        Default: ``id``.
 
-    label_field (required)
+    label_field
         The property of the model that is used as label.
+        Default: ``label``.
 
     order_by
         The property of the model that is used for the ``order_by`` clause of
@@ -427,7 +433,8 @@ class RelationRadioChoiceWidget(RelationSelectMixin, RadioChoiceWidget):
     """
 
     def __init__(
-            self, model, id_field, label_field, order_by=None, **kw):
+            self, model, id_field='id', label_field='label',
+            order_by=None, **kw):
         RelationSelectMixin.__init__(
             self, model, id_field, label_field, None, order_by)
         RadioChoiceWidget.__init__(self, **kw)
@@ -486,7 +493,7 @@ class RelationSelectMapWidget(Widget):
             'colanderalchemy': {
                 'title': 'Bus stop',
                 'widget': deform_ext.RelationSelectMapWidget(
-                    'name', url='/bus_stops'
+                    label_field='name', url='/bus_stops'
                 )
             }})
 
@@ -500,9 +507,6 @@ class RelationSelectMapWidget(Widget):
 
     **Attributes/Arguments**
 
-    label_field (required)
-        The property of the GeoJSON features that is used as label.
-
     url (required)
         The URL to the web-service which returns the GeoJSON features or a
         callback function `function(request) -> string` which returns the URL
@@ -511,23 +515,28 @@ class RelationSelectMapWidget(Widget):
         .. code-block:: python
 
             'widget': deform_ext.RelationSelectMapWidget(
-                'id', 'name',
+                label_field='name',
                 url=lambda request: request.route_url('bus_stops')
             )
+
+    label_field
+        The property of the GeoJSON features that is used as label.
+        Default: ``label``.
 
     """
     requirements = (
         ('openlayers', '3.0.0'),
         ('c2cgeoform.deform_map', None),)
 
-    def __init__(self, label_field, url, **kw):
+    def __init__(self, url, label_field='label', **kw):
+        Widget.__init__(self, **kw)
         self.label_field = label_field
         self.get_url = url if callable(url) else lambda request: url
         self.url = None
-        Widget.__init__(self, **kw)
 
     def populate(self, session, request):
-        self.url = self.get_url(request)
+        if self.url is None:
+            self.url = self.get_url(request)
 
     def serialize(self, field, cstruct, readonly=False, **kw):
         if cstruct is null:

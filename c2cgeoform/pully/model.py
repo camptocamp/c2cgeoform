@@ -291,7 +291,7 @@ class Comment(Base):
         'colanderalchemy': {
             'title': 'Bus stop',
             'widget': deform_ext.RelationSelectMapWidget(
-                'name',
+                label_field='name',
                 url=lambda request: request.route_url('bus_stops')
             )
         }})
