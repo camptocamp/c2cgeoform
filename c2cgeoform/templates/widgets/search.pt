@@ -1,0 +1,57 @@
+<span tal:define="name name|field.name;
+                  css_class css_class|field.widget.css_class;
+                  oid oid|field.oid;
+                  style style|field.widget.style"
+      tal:omit-tag="">
+    <input type="hidden"
+           name="${name}"
+           value="${cstruct}"
+           id="${oid}" />
+    <input type="text"
+           value="${label or ''}"
+           data-provide="typeahead"
+           tal:attributes="class string: form-control ${css_class or ''};
+                           style style"
+           id="typeahead-${oid}"/>
+    <script type="text/javascript">
+        deform.addCallback(
+          '${field.oid}',
+          function (oid) {
+              // Because of jQuery steps this function may be called multiple
+              // times. We don't want to typeahead'ify the input element
+              // multiples times so we return immediately if that input
+              // element was already typeahead'ified.
+              if (oid in c2cgeoform.searchfields) {
+                return;
+              }
+              c2cgeoform.searchfields[oid] = true;
+
+              var hiddenInputSelector = '#' + oid;
+              var typeaheadSelector = '#typeahead-' + oid;
+
+              var options = ${options};
+              var idField = options.idField;
+              var labelField = options.labelField;
+
+              var bloodhoundOptions = ${bloodhound_options};
+              bloodhoundOptions.datumTokenizer = function(data) {
+                  return Bloodhound.tokenizers.whitespace(data[labelField]);
+              };
+              bloodhoundOptions.queryTokenizer = Bloodhound.tokenizers.whitespace;
+              var engine = new Bloodhound(bloodhoundOptions);
+              engine.initialize();
+
+              var typeaheadOptions = ${typeahead_options};
+
+              var typeaheadDatasets = {};
+              typeaheadDatasets.source = engine.ttAdapter();
+              typeaheadDatasets.displayKey = labelField;
+
+              $(typeaheadSelector).typeahead(typeaheadOptions, typeaheadDatasets);
+              $(typeaheadSelector).on('typeahead:selected', function(event, data) {
+                   $(hiddenInputSelector).val(data[idField]);
+              });
+          }
+        );
+    </script>
+</span>

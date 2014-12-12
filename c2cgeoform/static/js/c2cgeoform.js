@@ -1,4 +1,4 @@
-var c2cgeoform = {};
+window.c2cgeoform = {};
 
 /**
  * This module provides convenience methods to make it easier to use

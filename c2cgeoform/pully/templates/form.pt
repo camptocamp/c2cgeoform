@@ -54,7 +54,6 @@
     <h3 i18n:domain="pully" i18n:translate="">Location</h3>
     <section>
       <div tal:replace="structure field['location_district_id'].render_template(item_template)"/>
-
       <div tal:replace="structure field['location_street'].render_template(item_template)"/>
       <div class="row">
         <div class="col-xs-2">
@@ -64,6 +63,7 @@
           <div tal:replace="structure field['location_town'].render_template(item_template)"/>
         </div>
       </div>
+      <div tal:replace="structure field['address_id'].render_template(item_template)"/>
       <div tal:replace="structure field['location_position'].render_template(item_template)"/>
     </section>
 

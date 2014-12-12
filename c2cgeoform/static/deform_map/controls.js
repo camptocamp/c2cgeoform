@@ -2,6 +2,10 @@
 /* global ol */
 /* global $ */
 
+if (!window.c2cgeoform) {
+  c2cgeoform = {};
+}
+
 /**
  * ToolBar control which acts as a container for further controls.
  */

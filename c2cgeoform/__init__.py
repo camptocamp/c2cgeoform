@@ -101,6 +101,15 @@ def _set_widget_template_path():
     registry.set_css_resources(
         'c2cgeoform.deform_map', None,
         'c2cgeoform:static/deform_map/style.css')
+    registry.set_js_resources(
+        'typeahead', '0.10.5',
+        'c2cgeoform:static/js/typeahead.bundle-0.10.5.min.js')
+    registry.set_css_resources(
+        'typeahead', '0.10.5',
+        'c2cgeoform:static/js/typeaheadjs.css')
+    registry.set_js_resources(
+        'c2cgeoform.deform_search', None,
+        'c2cgeoform:static/deform_search/search.js')
     Form.set_default_resource_registry(registry)
 
 
@@ -138,6 +147,11 @@ def main(global_config, **settings):
     config.add_route('bus_stops', '/bus_stops')
     config.add_view('c2cgeoform.pully.views.bus_stops.bus_stops',
                     route_name='bus_stops', renderer='json',
+                    request_method='GET')
+
+    config.add_route('addresses', '/addresses')
+    config.add_view('c2cgeoform.pully.views.addresses.addresses',
+                    route_name='addresses', renderer='json',
                     request_method='GET')
 
     config.scan('c2cgeoform.pully')

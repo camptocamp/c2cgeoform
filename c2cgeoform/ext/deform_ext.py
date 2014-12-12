@@ -1,9 +1,10 @@
 from translationstring import TranslationStringFactory
 from deform.widget import (
     Widget, SelectWidget, Select2Widget, RadioChoiceWidget)
+from deform.compat import string_types
 from deform.widget import FileUploadWidget as DeformFileUploadWidget
 from sqlalchemy.orm import ColumnProperty
-from colander import null
+from colander import (Invalid, null)
 import json
 
 
@@ -553,3 +554,132 @@ class RelationSelectMapWidget(Widget):
 
     def deserialize(self, field, pstruct):
         return pstruct
+
+
+class RelationSearchWidget(Widget):
+    """
+    A deform widget to select an item via a search field. This widget is
+    similar to the ``RelationSelectWidget``, but instead of a select-box
+    a Twitter Typeahead search field is shown.
+
+    Example usage:
+
+    .. code-block:: python
+
+        address_id = Column(Integer, ForeignKey('address.id'), info={
+            'colanderalchemy': {
+                'title': _('Address'),
+                'widget': deform_ext.RelationSearchWidget(
+                    url=lambda request: request.route_url('addresses'),
+                    model=Address,
+                    min_length=1,
+                    id_field='id',
+                    label_field='label'
+                )
+            }})
+
+    The user is responsible for providing a web-service at the given URL.  The
+    web service should expect requests of the form ``?term=<search_terms>``.
+    And it should return responses of this form:
+
+    .. code-block:: json
+
+        [{"id": 0, "label": "foo"}, {"id": 1, "label": "bar"}]
+
+    The name of the id and label keys are configurable. See below.
+
+    **Attributes/arguments**
+
+    url (required)
+        The search service URL, or a function that takes a request a return the
+        search service URL.
+
+    model (required)
+        The SQLAlchemy model class associated to the linked table.
+
+    min_length
+        The minimum character length needed before suggestions start getting
+        rendered. Default: ``1``.
+
+    id_field
+        The name of the "id" property in JSON responses. Default: ``"id"``.
+
+    label_field
+        The name of the "label" property in JSON responses.
+        Default: ``"label"``.
+
+    limit
+        The maximum number of suggestions. Default: 8.
+
+    """
+    id_field = 'id'
+    label_field = 'label'
+    limit = 8
+    min_length = 1
+    readonly_template = 'readonly/textinput'
+    strip = True
+    template = 'search'
+    requirements = (('typeahead', '0.10.5'),
+                    ('c2cgeoform.deform_search', None))
+
+    def __init__(self, url, **kw):
+        Widget.__init__(self, **kw)
+        self.get_url = url if callable(url) else lambda request: url
+        self.url = None
+        self.session = None
+
+    def populate(self, session, request):
+        if self.url is None:
+            self.url = self.get_url(request)
+        self.session = session
+
+    def serialize(self, field, cstruct, **kw):
+        if cstruct in (null, None):
+            cstruct = ''
+            label = ''
+        else:
+            obj = self.session.query(self.model).get(cstruct)
+            label = getattr(obj, kw.get('label_field', self.label_field))
+
+        kw['label'] = label
+
+        options = {
+            'idField': kw.pop('id_field', self.id_field),
+            'labelField': kw.pop('label_field', self.label_field)
+        }
+        kw['options'] = json.dumps(options)
+
+        bloodhound_options = {
+            'limit':  kw.pop('limit', self.limit),
+            'remote': '%s?term=%%QUERY' % self.url
+        }
+        kw['bloodhound_options'] = json.dumps(bloodhound_options)
+
+        typeahead_options = {
+            'minLength': kw.pop('min_length', self.min_length)
+        }
+        kw['typeahead_options'] = json.dumps(typeahead_options)
+
+        readonly = kw.get('readonly', self.readonly)
+
+        # If "readonly" is set then deform's readonly "textinput" template will
+        # be used. That template will diplay the value set in "cstruct" so we
+        # just set cstruct to label here.
+        if readonly:
+            cstruct = label
+
+        tmpl_values = self.get_template_values(field, cstruct, kw)
+        template = readonly and self.readonly_template or self.template
+
+        return field.renderer(template, **tmpl_values)
+
+    def deserialize(self, field, pstruct):
+        if pstruct is null:
+            return null
+        elif not isinstance(pstruct, string_types):
+            raise Invalid(field.schema, "Pstruct is not a string")
+        if self.strip:
+            pstruct = pstruct.strip()
+            if not pstruct:
+                return null
+            return pstruct
