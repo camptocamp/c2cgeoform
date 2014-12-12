@@ -12,7 +12,6 @@ import uuid
 
 from .models import DBSession
 from .schema import forms
-from .ext import deform_ext
 
 _ = TranslationStringFactory('c2cgeoform')
 
@@ -140,7 +139,7 @@ def _get_form(geo_form_schema, template, request):
         geo_form_schema.schema_user, buttons=(submit_button,),
         renderer=renderer, action=form_action)
     _set_form_widget(form, geo_form_schema.schema_user, template)
-    _populate_widgets(form.schema, DBSession)
+    _populate_widgets(form.schema, DBSession, request)
 
     return form
 
@@ -284,7 +283,7 @@ def edit(request):
     renderer = _get_renderer(geo_form_schema.templates_admin)
     form = Form(
         geo_form_schema.schema_admin, buttons=('submit',), renderer=renderer)
-    _populate_widgets(form.schema, DBSession)
+    _populate_widgets(form.schema, DBSession, request)
 
     if 'submit' in request.POST:
         form_data = request.POST.items()
@@ -347,14 +346,14 @@ def set_locale_cookie(request):
                      headers=response.headers)
 
 
-def _populate_widgets(node, session):
+def _populate_widgets(node, session, request):
     """ Populate ``deform_ext.RelationSelectMixin`` widgets.
     """
-    if isinstance(node.widget, deform_ext.RelationSelectMixin):
-        node.widget.populate(session)
+    if hasattr(node.widget, 'populate'):
+        node.widget.populate(session, request)
 
     for child in node:
-        _populate_widgets(child, session)
+        _populate_widgets(child, session, request)
 
 
 def _get_renderer(search_paths):

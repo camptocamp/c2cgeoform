@@ -1,0 +1,117 @@
+<span tal:define="name name|field.name;
+                  css_class css_class|field.widget.css_class;
+                  oid oid|field.oid;
+                  style style|field.widget.style;"
+      tal:omit-tag="" i18n:domain="c2cgeoform">
+    <input type="hidden" name="${name}" value="${cstruct}"
+           tal:attributes="class string: form-control ${css_class or ''};
+                           style style"
+           id="${oid}"/>
+    <div id="label_${oid}"></div>
+    <div id="map_select_${oid}" class="map"></div>
+    <style>
+      .map {
+        height: 400px;
+        width: 100%;
+      }
+    </style>
+    <script type="text/javascript">
+      deform.addCallback(
+        '${oid}',
+        function (oid) {
+          if (oid in c2cgeoform.maps) return true;
+
+          var featureId = '${cstruct}';
+          var options = ${widget_config};
+
+          /** Default center and zoom as long data is not yet loaded */
+          var defaultCenter = [732244, 5864730];
+          var defaultZoom = 14;
+          /** Maximum zoom when data is loaded. */
+          var maxZoom = 18;
+
+          /** Translations */
+          var i18n = {};
+          i18n.zoomInTipLabel = '${_('Zoom In')}';
+          i18n.zoomOutTipLabel = '${_('Zoom Out')}';
+          i18n.attributionTipLabel = '${_('Attributions')}';
+          i18n.selected = '${_('Selected:')}';
+          i18n.hint = '${_('Please select an item on the map!')}';
+
+          var source = new ol.source.GeoJSON({
+            url: options.url,
+            projection: 'EPSG:3857'
+          });
+          var layer = new ol.layer.Vector({
+            source: source,
+            style: new ol.style.Style({
+              fill: new ol.style.Fill({
+                color: 'rgba(255, 255, 255, 0.2)'
+              }),
+              stroke: new ol.style.Stroke({
+                color: '#ffcc33',
+                width: 2
+              }),
+              image: new ol.style.Circle({
+                radius: 7,
+                fill: new ol.style.Fill({
+                  color: '#ffcc33'
+                }),
+                stroke: new ol.style.Stroke({
+                  color: '#786823',
+                  width: 1
+                })
+              })
+            })
+          });
+
+          var map = new ol.Map({
+            target: 'map_select_' + oid,
+            layers: [
+              new ol.layer.Tile({
+                source: new ol.source.MapQuest({layer: 'osm'})
+              }),
+              layer
+            ],
+            view: new ol.View({
+              center: defaultCenter,
+              zoom: defaultZoom
+            }),
+            controls: ol.control.defaults({
+              zoomOptions: {
+                zoomInTipLabel: i18n.zoomInTipLabel,
+                zoomOutTipLabel: i18n.zoomOutTipLabel
+              },
+              attributionOptions: {
+                tipLabel: i18n.attributionTipLabel,
+                collapsible: false
+              }
+            })
+          });
+
+          var updateField = function(id) {
+            $('#' + oid).val(id);
+          };
+          var updateLabel = function(label) {
+            if (label !== null) {
+              $('#label_' + oid).text(i18n.selected + ' ' + label);
+            } else {
+              $('#label_' + oid).text(i18n.hint);
+            }
+          };
+
+          c2cgeoform.initializeSelectMap(map, {
+            source: source,
+            updateField: updateField,
+            updateLabel: updateLabel,
+            labelField: options.labelField,
+            readonly: options.readonly,
+            maxZoom: maxZoom,
+            featureId: featureId
+          });
+
+          c2cgeoform.maps[oid] = map;
+        }
+      );
+    </script>
+</span>

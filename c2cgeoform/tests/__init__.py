@@ -6,6 +6,7 @@ from sqlalchemy import engine_from_config
 from webob.multidict import MultiDict
 
 from c2cgeoform.models import (DBSession, Base)
+from c2cgeoform.settings import apply_local_settings
 from c2cgeoform import default_search_paths
 
 
@@ -15,6 +16,7 @@ class DatabaseTestCase(unittest.TestCase):
         configfile = os.path.realpath(
             os.path.join(curdir, '../../development.ini'))
         settings = get_appsettings(configfile)
+        apply_local_settings(settings)
         engine = engine_from_config(settings, 'sqlalchemy.')
         DBSession.configure(bind=engine)
 

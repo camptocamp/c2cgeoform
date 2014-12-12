@@ -90,7 +90,7 @@ class RelationSelectMixin(object):
         self.default_value = default_value
         self.order_by = order_by
 
-    def populate(self, session):
+    def populate(self, session, request):
         self.values = self._get_select_values(session)
 
     def _get_select_values(self, session):
@@ -235,14 +235,16 @@ class RelationSelectWidget(RelationMultiSelectMixin, SelectWidget):
 
     **Attributes/Arguments**
 
-    model
+    model (required)
         The SQLAlchemy model that is used to generate the list of values.
 
     id_field
         The property of the model that is used as value.
+        Default: ``id``.
 
     label_field
         The property of the model that is used as label.
+        Default: ``label``.
 
     order_by
         The property of the model that is used for the ``order_by`` clause of
@@ -266,7 +268,7 @@ class RelationSelectWidget(RelationMultiSelectMixin, SelectWidget):
     """
 
     def __init__(
-            self, model, id_field, label_field,
+            self, model, id_field='id', label_field='label',
             default_value=None, order_by=None, **kw):
         RelationMultiSelectMixin.__init__(
             self, model, id_field, label_field, default_value, order_by)
@@ -331,14 +333,16 @@ class RelationSelect2Widget(RelationMultiSelectMixin, Select2Widget):
 
     **Attributes/Arguments**
 
-    model
+    model (required)
         The SQLAlchemy model that is used to generate the list of values.
 
     id_field
         The property of the model that is used as value.
+        Default: ``id``.
 
     label_field
         The property of the model that is used as label.
+        Default: ``label``.
 
     order_by
         The property of the model that is used for the ``order_by`` clause of
@@ -362,7 +366,7 @@ class RelationSelect2Widget(RelationMultiSelectMixin, Select2Widget):
     """
 
     def __init__(
-            self, model, id_field, label_field,
+            self, model, id_field='id', label_field='label',
             default_value=None, order_by=None, **kw):
         RelationMultiSelectMixin.__init__(
             self, model, id_field, label_field, default_value, order_by)
@@ -406,14 +410,16 @@ class RelationRadioChoiceWidget(RelationSelectMixin, RadioChoiceWidget):
 
     **Attributes/Arguments**
 
-    model
+    model (required)
         The SQLAlchemy model that is used to generate the list of values.
 
     id_field
         The property of the model that is used as value.
+        Default: ``id``.
 
     label_field
         The property of the model that is used as label.
+        Default: ``label``.
 
     order_by
         The property of the model that is used for the ``order_by`` clause of
@@ -427,7 +433,8 @@ class RelationRadioChoiceWidget(RelationSelectMixin, RadioChoiceWidget):
     """
 
     def __init__(
-            self, model, id_field, label_field, order_by=None, **kw):
+            self, model, id_field='id', label_field='label',
+            order_by=None, **kw):
         RelationSelectMixin.__init__(
             self, model, id_field, label_field, None, order_by)
         RadioChoiceWidget.__init__(self, **kw)
@@ -470,3 +477,79 @@ class FileUploadWidget(DeformFileUploadWidget):
         if value != null and 'fp' in value:
             value['data'] = value['fp']
         return value
+
+
+class RelationSelectMapWidget(Widget):
+    """
+    A Deform widget to select an item on a map. From the idea, this widget
+    is similar to the ``RelationSelectWidget``, but instead of a select-box
+    a map is shown.
+
+    Example usage
+
+    .. code-block:: python
+
+        bus_stop = Column(Integer, ForeignKey('bus_stops.id'), info={
+            'colanderalchemy': {
+                'title': 'Bus stop',
+                'widget': deform_ext.RelationSelectMapWidget(
+                    label_field='name', url='/bus_stops'
+                )
+            }})
+
+    The user is responsible for providing a web-service under the given URL,
+    which returns a list of features as GeoJSON. The features must contain the
+    two properties specified with `id_field` and `label_field`. The geometries
+    are expected to use the CRS `EPSG:4326`.
+
+    To customize the map, the template file `map_select.pt` has to be
+    overwritten.
+
+    **Attributes/Arguments**
+
+    url (required)
+        The URL to the web-service which returns the GeoJSON features or a
+        callback function `function(request) -> string` which returns the URL
+        to the web-service. Example usage:
+
+        .. code-block:: python
+
+            'widget': deform_ext.RelationSelectMapWidget(
+                label_field='name',
+                url=lambda request: request.route_url('bus_stops')
+            )
+
+    label_field
+        The property of the GeoJSON features that is used as label.
+        Default: ``label``.
+
+    """
+    requirements = (
+        ('openlayers', '3.0.0'),
+        ('c2cgeoform.deform_map', None),)
+
+    def __init__(self, url, label_field='label', **kw):
+        Widget.__init__(self, **kw)
+        self.label_field = label_field
+        self.get_url = url if callable(url) else lambda request: url
+        self.url = None
+
+    def populate(self, session, request):
+        if self.url is None:
+            self.url = self.get_url(request)
+
+    def serialize(self, field, cstruct, readonly=False, **kw):
+        if cstruct is null:
+            cstruct = u''
+        values = self.get_template_values(field, cstruct, kw)
+        # make `_` available in template for i18n messages
+        values['_'] = TranslationStringFactory('c2cgeoform')
+        values['widget_config'] = json.dumps({
+            'labelField': self.label_field,
+            'url': self.url,
+            'readonly': readonly
+        })
+        return field.renderer('map_select', **values)
+
+    def deserialize(self, field, pstruct):
+        return pstruct

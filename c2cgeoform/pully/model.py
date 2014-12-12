@@ -2,6 +2,7 @@
 from sqlalchemy import (
     Column,
     Integer,
+    BigInteger,
     Text,
     Boolean,
     Date,
@@ -257,6 +258,14 @@ class ExcavationPermission(Base):
             }})
 
 
+class BusStop(Base):
+    __tablename__ = 'bus_stops'
+
+    id = Column(BigInteger, primary_key=True)
+    name = Column(Text)
+    geom = Column(geoalchemy2.Geometry('POINT', 4326, management=True))
+
+
 class Comment(Base):
     __tablename__ = 'comments'
     __colanderalchemy_config__ = {
@@ -277,6 +286,14 @@ class Comment(Base):
         'colanderalchemy': {
             'title': 'Comment',
             'widget': deform.widget.TextAreaWidget(rows=3),
+        }})
+    bus_stop_id = Column(BigInteger, ForeignKey('bus_stops.id'), info={
+        'colanderalchemy': {
+            'title': 'Bus stop',
+            'widget': deform_ext.RelationSelectMapWidget(
+                label_field='name',
+                url=lambda request: request.route_url('bus_stops')
+            )
         }})
 
 
@@ -302,4 +319,33 @@ def setup_test_data():
         DBSession.add(Situation(id=4, name="Green zone", name_fr="Zone verte"))
         DBSession.add(Situation(id=5, name="Cobblestone", name_fr="Pavés"))
 
+    if DBSession.query(BusStop).count() == 0:
+        _add_bus_stops(DBSession)
+
     transaction.commit()
+
+
+def _add_bus_stops(session):
+    """
+    Load test data from a GeoJSON file.
+    """
+    import json
+    from shapely.geometry import shape
+
+    file = open('c2cgeoform/pully/data/osm-lausanne-bus-stops.geojson')
+    geojson = json.load(file)
+    file.close()
+
+    bus_stops = []
+    for feature in geojson['features']:
+        id = feature['id'].replace('node/', '')
+        geometry = shape(feature['geometry'])
+        name = feature['properties']['name'] \
+            if 'name' in feature['properties'] else ''
+        bus_stop = BusStop(
+            id=long(float(id)),
+            geom='SRID=4326;' + geometry.wkt,
+            name=name)
+        bus_stops.append(bus_stop)
+
+    session.add_all(bus_stops)
