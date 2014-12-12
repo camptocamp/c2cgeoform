@@ -397,8 +397,8 @@ c2cgeoform.initializeSelectMap = function(map, options) {
 
   selectClick.getFeatures().on('add', function() {
     var feature = selectClick.getFeatures().getArray()[0];
-    options.updateField(feature.get(options.id_field));
-    options.updateLabel(feature.get(options.label_field));
+    options.updateField(feature.getId());
+    options.updateLabel(feature.get(options.labelField));
   });
 
   selectClick.getFeatures().on('remove', function() {
@@ -406,7 +406,12 @@ c2cgeoform.initializeSelectMap = function(map, options) {
     options.updateLabel(null);
   });
 
-  options.source.once('change', function() {
+  var listenerKey = options.source.on('change', function() {
+    if (options.source.getState() !== 'ready') {
+      return;
+    }
+    ol.Observable.unByKey(listenerKey);
+
     // if the GeoJSON file is loaded, try to get the selected feature
     if (options.source.getFeatures().length === 0) {
       return;
@@ -415,19 +420,17 @@ c2cgeoform.initializeSelectMap = function(map, options) {
     var selectedFeature = null;
     // select feature if available
     if (options.featureId !== '') {
-      var features = $.grep(options.source.getFeatures(), function(feature) {
-        return feature.get(options.id_field) == options.featureId;
-      });
-      if (features.length > 0) {
-        selectClick.getFeatures().push(features[0]);
-        selectedFeature = features[0];
+      var feature = options.source.getFeatureById(options.featureId);
+      if (feature !== null) {
+        selectClick.getFeatures().push(feature);
+        selectedFeature = feature;
       }
     }
 
     if (selectedFeature !== null) {
       // zoom on the selected feature
       c2cgeoform.zoomToGeometry_(map, selectedFeature.getGeometry(), options.maxZoom);
-      options.updateLabel(selectedFeature.get(options.label_field));
+      options.updateLabel(selectedFeature.get(options.labelField));
     } else {
       // zoom on all features
       var extent = ol.geom.Polygon.fromExtent(options.source.getExtent());

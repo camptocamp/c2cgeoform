@@ -287,13 +287,12 @@ class Comment(Base):
             'title': 'Comment',
             'widget': deform.widget.TextAreaWidget(rows=3),
         }})
-    bus_stop = Column(BigInteger, ForeignKey('bus_stops.id'), info={
+    bus_stop_id = Column(BigInteger, ForeignKey('bus_stops.id'), info={
         'colanderalchemy': {
             'title': 'Bus stop',
             'widget': deform_ext.RelationSelectMapWidget(
-                'id',
                 'name',
-                create_url=lambda request: request.route_url('bus_stops')
+                url=lambda request: request.route_url('bus_stops')
             )
         }})
 

@@ -235,13 +235,13 @@ class RelationSelectWidget(RelationMultiSelectMixin, SelectWidget):
 
     **Attributes/Arguments**
 
-    model
+    model (required)
         The SQLAlchemy model that is used to generate the list of values.
 
-    id_field
+    id_field (required)
         The property of the model that is used as value.
 
-    label_field
+    label_field (required)
         The property of the model that is used as label.
 
     order_by
@@ -331,13 +331,13 @@ class RelationSelect2Widget(RelationMultiSelectMixin, Select2Widget):
 
     **Attributes/Arguments**
 
-    model
+    model (required)
         The SQLAlchemy model that is used to generate the list of values.
 
-    id_field
+    id_field (required)
         The property of the model that is used as value.
 
-    label_field
+    label_field (required)
         The property of the model that is used as label.
 
     order_by
@@ -406,13 +406,13 @@ class RelationRadioChoiceWidget(RelationSelectMixin, RadioChoiceWidget):
 
     **Attributes/Arguments**
 
-    model
+    model (required)
         The SQLAlchemy model that is used to generate the list of values.
 
-    id_field
+    id_field (required)
         The property of the model that is used as value.
 
-    label_field
+    label_field (required)
         The property of the model that is used as label.
 
     order_by
@@ -486,7 +486,7 @@ class RelationSelectMapWidget(Widget):
             'colanderalchemy': {
                 'title': 'Bus stop',
                 'widget': deform_ext.RelationSelectMapWidget(
-                    'id', 'name', url='/bus_stops'
+                    'name', url='/bus_stops'
                 )
             }})
 
@@ -500,25 +500,19 @@ class RelationSelectMapWidget(Widget):
 
     **Attributes/Arguments**
 
-    id_field
-        The property of the GeoJSON features that is used as value.
-
-    label_field
+    label_field (required)
         The property of the GeoJSON features that is used as label.
 
-    url
-        The URL to the web-service which returns the GeoJSON features. If not
-        given `create_url` has to be provided instead.
-
-    url_create
-        A callback function `function(request) -> string` which returns the URL
+    url (required)
+        The URL to the web-service which returns the GeoJSON features or a
+        callback function `function(request) -> string` which returns the URL
         to the web-service. Example usage:
 
         .. code-block:: python
 
             'widget': deform_ext.RelationSelectMapWidget(
                 'id', 'name',
-                create_url=lambda request: request.route_url('bus_stops')
+                url=lambda request: request.route_url('bus_stops')
             )
 
     """
@@ -526,20 +520,14 @@ class RelationSelectMapWidget(Widget):
         ('openlayers', '3.0.0'),
         ('c2cgeoform.deform_map', None),)
 
-    def __init__(
-            self, id_field, label_field, url=None, create_url=None, **kw):
-        self.id_field = id_field
+    def __init__(self, label_field, url, **kw):
         self.label_field = label_field
-        self.url = url
-        self.create_url = create_url
-        if url is None and create_url is None:
-            raise RuntimeError(
-                'Either `url` or `create_url` has to be provided')
+        self.get_url = url if callable(url) else lambda request: url
+        self.url = None
         Widget.__init__(self, **kw)
 
     def populate(self, session, request):
-        if self.url is None:
-            self.url = self.create_url(request)
+        self.url = self.get_url(request)
 
     def serialize(self, field, cstruct, readonly=False, **kw):
         if cstruct is null:
@@ -548,8 +536,7 @@ class RelationSelectMapWidget(Widget):
         # make `_` available in template for i18n messages
         values['_'] = TranslationStringFactory('c2cgeoform')
         values['widget_config'] = json.dumps({
-            'id_field': self.id_field,
-            'label_field': self.label_field,
+            'labelField': self.label_field,
             'url': self.url,
             'readonly': readonly
         })

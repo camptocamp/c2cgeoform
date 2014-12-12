@@ -11,8 +11,8 @@ def bus_stops(request):
         'type': 'FeatureCollection',
         'features': [{
                 'type': 'Feature',
+                'id': stop.id,
                 'properties': {
-                    'id': stop.id,
                     'name': stop.name},
                 'geometry': mapping(to_shape(stop.geom))
         } for stop in stops]

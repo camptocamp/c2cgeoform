@@ -104,8 +104,7 @@
             source: source,
             updateField: updateField,
             updateLabel: updateLabel,
-            id_field: options.id_field,
-            label_field: options.label_field,
+            labelField: options.labelField,
             readonly: options.readonly,
             maxZoom: maxZoom,
             featureId: featureId
