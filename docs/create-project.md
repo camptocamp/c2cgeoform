@@ -9,11 +9,11 @@ project.
 Creating a `c2cgeoform` project requires creating a Pyramid project. So
 creating a Pyramid project is the first step.
 
-Let's install Pyramid in a virtual environment first:
+Let's install Pyramid and Babel in a virtual environment first:
 
 ```shell
 $ virtualenv venv
-$ ./venv/bin/pip install "pyramid==1.5.2"
+$ ./venv/bin/pip install "pyramid==1.5.2" babel
 ```
 
 Now create the Pyramid project using Pyramid's `alchemy` scaffold. For
