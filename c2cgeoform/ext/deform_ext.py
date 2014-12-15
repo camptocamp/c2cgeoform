@@ -9,8 +9,10 @@ from deform.widget import (FileUploadWidget as DeformFileUploadWidget,
 import urllib
 import urllib2
 import json
+import logging
 
 _ = TranslationStringFactory('c2cgeoform')
+log = logging.getLogger(__name__)
 
 
 class MapWidget(Widget):
@@ -713,9 +715,11 @@ class RecaptchaWidget(MappingWidget):
     """
 
     template = 'recaptcha'
-    readonly_template = 'recaptcha'  # should not be used
-    requirements = ()
+    readonly_template = 'recaptcha'
     url = "https://www.google.com/recaptcha/api/siteverify"
+
+    def populate(self, session, request):
+        self.request = request
 
     def serialize(self, field, cstruct, **kw):
         kw.update({'public_key': self.public_key,
@@ -728,35 +732,32 @@ class RecaptchaWidget(MappingWidget):
 
         response = pstruct.get('g-recaptcha-response') or ''
         if not response:
-            raise Invalid(field.schema, _('No input'), pstruct)
+            raise Invalid(
+                field.schema,
+                _('Please verify that you are a human!'), pstruct)
         remoteip = self.request.remote_addr
         data = urllib.urlencode({'secret': self.private_key,
                                  'response': response,
                                  'remoteip': remoteip})
 
-        resp = urllib2.urlopen(self.url, data)
+        try:
+            resp = urllib2.urlopen(self.url, data)
+        except urllib2.URLError, e:
+            log.error('reCaptcha connection problem: %s', e.reason)
+            raise Invalid(field.schema, _("Connection problem"), pstruct)
+
+        error_msg = _("Verification has failed")
         if not resp.code == 200:
-            raise Invalid(field.schema,
-                          _("There was an error talking to the recaptcha"
-                            " server {0}").format(resp['code']), pstruct)
+            log.error('reCaptcha validation error: %s', resp.code)
+            raise Invalid(field.schema, error_msg, pstruct)
 
         content = resp.read()
         data = json.loads(content)
         if not data['success']:
-            error_msg = _("Recaptcha validation has failed")
+            error_reason = ''
             if 'error-codes' in data:
-                for error_code in data['error-codes']:
-                    error_msg += "\n" + self.get_error_message(error_msg)
+                error_reason = ','.join(data['error-codes'])
+            log.error('reCaptcha validation error: %s', error_reason)
             raise Invalid(field.schema, error_msg, pstruct)
 
         return pstruct
-
-    def get_error_message(self, error_code):
-        if error_code == 'missing-input-secret':
-            return _("The secret parameter is missing")
-        elif error_code == 'invalid-input-secret':
-            return _("The secret parameter is invalid or malformed")
-        elif error_code == 'missing-input-response':
-            return _("The response parameter is missing")
-        elif error_code == 'missing-input-response':
-            return _("The response parameter is invalid or malformed")
