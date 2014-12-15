@@ -17,14 +17,14 @@
            >
       ${title}
     </label>
-    
+
   <input type="hidden" name="__start__" value="${field.name}:mapping"/>
-  
+
   <div class="g-recaptcha" data-sitekey="${public_key}"></div>
   <script src="https://www.google.com/recaptcha/api.js?hl=${locale_name}" async defer></script>
-  
+
   <input type="hidden" name="__end__" value="${field.name}:mapping"/>
-  
+
   <p class="help-block"
      tal:define="errstr 'error-%s' % field.oid"
      tal:repeat="msg field.error.messages()"

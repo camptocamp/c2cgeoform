@@ -140,9 +140,15 @@ def main(global_config, **settings):
             'request_date': {'title': 'Date'},
             # do not show the 'verified' field of ContactPerson for the user
             'contact_persons': {'excludes': ['verified']}
-        })
+        },
+        show_captcha=True,
+        recaptcha_public_key=settings.get('recaptcha_public_key'),
+        recaptcha_private_key=settings.get('recaptcha_private_key'))
     model.setup_test_data()
-    register_schema('comment', model.Comment, show_confirmation=False)
+    register_schema(
+        'comment', model.Comment, show_confirmation=False, show_captcha=True,
+        recaptcha_public_key=settings.get('recaptcha_public_key'),
+        recaptcha_private_key=settings.get('recaptcha_private_key'))
 
     config.add_route('bus_stops', '/bus_stops')
     config.add_view('c2cgeoform.pully.views.bus_stops.bus_stops',
