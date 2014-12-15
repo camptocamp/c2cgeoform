@@ -2,7 +2,7 @@ from geoalchemy2.shape import to_shape
 from shapely.geometry import mapping
 from c2cgeoform.models import DBSession
 
-from c2cgeoform.pully.model import BusStop
+from ..model import BusStop
 
 
 def bus_stops(request):

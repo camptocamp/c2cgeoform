@@ -11,7 +11,7 @@ Update catalog files:
 
 Compile translations to *.mo files:
 
-    make install
+    make compile-catalog
 
 Or:
 
