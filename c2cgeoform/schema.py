@@ -16,11 +16,14 @@ class GeoFormSchema():
             overrides_user=None, overrides_admin=None,
             includes_user=None, includes_admin=None,
             excludes_user=None, excludes_admin=None,
-            hash_column_name='hash', show_confirmation=True, **kw):
+            hash_column_name='hash', show_confirmation=True,
+            show_captcha=False, recaptcha_public_key=None,
+            recaptcha_private_key=None, **kw):
         self.name = name
         self.model = model
         self.hash_column_name = hash_column_name
         self.show_confirmation = show_confirmation
+        self.show_captcha = show_captcha
 
         if includes_user is not None:
             excludes_user = None
@@ -63,6 +66,15 @@ class GeoFormSchema():
 
         self.list_fields = self._get_fields_with_property(self._ADMIN_LIST)
 
+        if show_captcha and (
+                recaptcha_public_key is None or
+                recaptcha_private_key is None):
+            raise RuntimeError(
+                '`recaptcha_public_key` and `recaptcha_private_key` must be ' +
+                'set when using a captcha')
+        self.recaptcha_public_key = recaptcha_public_key
+        self.recaptcha_private_key = recaptcha_private_key
+
     def _get_fields_with_property(self, property):
         """ Search the columns where the given property is set to True.
         """
@@ -100,9 +112,11 @@ def register_schema(
         overrides_user=None, overrides_admin=None,
         includes_user=None, includes_admin=None,
         excludes_user=None, excludes_admin=None,
-        hash_column_name='hash', show_confirmation=True):
+        hash_column_name='hash', show_confirmation=True, show_captcha=False,
+        recaptcha_public_key=None, recaptcha_private_key=None):
     schema = GeoFormSchema(
         name, model, templates_user, templates_admin,
         overrides_user, overrides_admin, includes_user, includes_admin,
-        excludes_user, excludes_admin, hash_column_name, show_confirmation)
+        excludes_user, excludes_admin, hash_column_name, show_confirmation,
+        show_captcha, recaptcha_public_key, recaptcha_private_key)
     forms[name] = schema
