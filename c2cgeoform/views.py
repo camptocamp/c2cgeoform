@@ -7,11 +7,13 @@ import webhelpers.paginate as paginate
 from sqlalchemy import desc, or_, types
 from sqlalchemy.orm.exc import NoResultFound
 from geoalchemy2.elements import WKBElement
+from colander import SchemaNode, Mapping
 from translationstring import TranslationStringFactory
 import uuid
 
 from .models import DBSession
 from .schema import forms
+from .ext.deform_ext import RecaptchaWidget
 
 _ = TranslationStringFactory('c2cgeoform')
 
@@ -35,7 +37,9 @@ def notfound(request):
 def form(request):
     geo_form_schema = _get_schema(request)
     session = request.session
-    form = _get_form(geo_form_schema, 'form', request)
+    with_captcha = \
+        geo_form_schema.show_captcha and not geo_form_schema.show_confirmation
+    form = _get_form(geo_form_schema, 'form', request, with_captcha)
 
     submission_id = request.params.get('__submission_id__')
     if len(request.POST) > 0 or submission_id is not None:
@@ -87,7 +91,10 @@ def form(request):
 def confirmation(request):
     geo_form_schema = _get_schema(request)
     session = request.session
-    form = _get_form(geo_form_schema, 'form_confirmation', request)
+    with_captcha = \
+        geo_form_schema.show_captcha and geo_form_schema.show_confirmation
+    form = _get_form(
+        geo_form_schema, 'form_confirmation', request, False)
 
     submission_id = request.params.get('__submission_id__')
     if submission_id is None or submission_id not in session:
@@ -96,52 +103,111 @@ def confirmation(request):
     store_form = request.params.get('__store_form__')
     form_data = session[submission_id]
 
-    try:
-        obj_dict = form.validate(form_data)
-    except ValidationFailure:
-        # the confirmation page may not be called if the validation fails
-        raise HTTPBadRequest()
-
-    if geo_form_schema.show_confirmation and store_form != '1':
-        # show confirmation page
+    if geo_form_schema.show_confirmation:
         back_link = request.route_url(
             'form', schema=geo_form_schema.name,
             _query={'__submission_id__': submission_id})
-        rendered = form.render(
-            obj_dict, readonly=True,
-            custom_data=None, submission_id=submission_id,
-            back_link=back_link)
+        if store_form != '1':
+            return _show_confirmation_page(
+                geo_form_schema, form, form_data, with_captcha, submission_id,
+                back_link, request)
+        else:
+            return _validate_and_store(
+                geo_form_schema, form, form_data, with_captcha,
+                back_link, request)
+    else:
+        # directly store without showing a confirmation page
+        try:
+            obj_dict = form.validate(form_data)
+        except ValidationFailure:
+            # something went wrong: the form data in the session is invalid
+            raise HTTPBadRequest()
+        return _store_in_db(geo_form_schema, obj_dict, request)
 
+
+def _show_confirmation_page(
+        geo_form_schema, form, form_data, with_captcha, submission_id,
+        back_link, request):
+    try:
+        obj_dict = form.validate(form_data)
+    except ValidationFailure:
+        # something went wrong: the form data in the session is invalid
+        raise HTTPBadRequest()
+    if with_captcha:
+        # get a form with a captcha widget
+        form = _get_form(
+            geo_form_schema, 'form_confirmation', request, True)
+
+    rendered = form.render(
+        obj_dict, readonly=True,
+        custom_data=None, submission_id=submission_id,
+        back_link=back_link)
+
+    return {'form': rendered,
+            'deform_dependencies': form.get_widget_resources()}
+
+
+def _validate_and_store(
+        geo_form_schema, form, form_data, with_captcha,
+        back_link, request):
+    if with_captcha:
+        form = _get_form(
+            geo_form_schema, 'form_confirmation', request, True)
+        form_data = form_data + request.POST.items()
+    try:
+        obj_dict = form.validate(form_data)
+    except ValidationFailure, e:
+        # FIXME see https://github.com/Pylons/deform/pull/243
+        rendered = e.field.widget.serialize(
+            e.field, e.cstruct, readonly=True, request=request,
+            back_link=back_link)
         return {'form': rendered,
                 'deform_dependencies': form.get_widget_resources()}
     else:
-        # store in the database
-        obj = geo_form_schema.schema_user.objectify(obj_dict)
-        hash = str(uuid.uuid4())
-        setattr(obj, geo_form_schema.hash_column_name, hash)
-        DBSession.add(obj)
-        DBSession.flush()
-
-        url = request.route_url(
-            'view_user',
-            schema=geo_form_schema.name,
-            hash=hash)
-
-        return HTTPFound(url)
+        return _store_in_db(geo_form_schema, obj_dict, request)
 
 
-def _get_form(geo_form_schema, template, request):
+def _store_in_db(geo_form_schema, obj_dict, request):
+    # store in the database
+    obj = geo_form_schema.schema_user.objectify(obj_dict)
+    hash = str(uuid.uuid4())
+    setattr(obj, geo_form_schema.hash_column_name, hash)
+    DBSession.add(obj)
+
+    url = request.route_url(
+        'view_user',
+        schema=geo_form_schema.name,
+        hash=hash)
+
+    return HTTPFound(url)
+
+
+def _get_form(geo_form_schema, template, request, with_captcha=False):
     renderer = _get_renderer(geo_form_schema.templates_user)
+    schema = geo_form_schema.schema_user
+    if with_captcha:
+        schema = _add_captcha(geo_form_schema, schema)
     form_action = request.route_url('form', schema=geo_form_schema.name)
     submit_button = Button(name='formsubmit', title=_('Submit'))
 
     form = Form(
-        geo_form_schema.schema_user, buttons=(submit_button,),
+        schema, buttons=(submit_button,),
         renderer=renderer, action=form_action)
     _set_form_widget(form, geo_form_schema.schema_user, template)
     _populate_widgets(form.schema, DBSession, request)
 
     return form
+
+
+def _add_captcha(geo_form_schema, schema):
+    schema = schema.clone()
+    schema.add(SchemaNode(
+        Mapping(),
+        name='captcha',
+        widget=RecaptchaWidget(
+            public_key=geo_form_schema.recaptcha_public_key,
+            private_key=geo_form_schema.recaptcha_private_key)))
+    return schema
 
 
 def _set_form_widget(form, schema, template):

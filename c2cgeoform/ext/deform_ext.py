@@ -2,10 +2,17 @@ from translationstring import TranslationStringFactory
 from deform.widget import (
     Widget, SelectWidget, Select2Widget, RadioChoiceWidget)
 from deform.compat import string_types
-from deform.widget import FileUploadWidget as DeformFileUploadWidget
 from sqlalchemy.orm import ColumnProperty
 from colander import (Invalid, null)
+from deform.widget import (FileUploadWidget as DeformFileUploadWidget,
+                           MappingWidget)
+import urllib
+import urllib2
 import json
+import logging
+
+_ = TranslationStringFactory('c2cgeoform')
+log = logging.getLogger(__name__)
 
 
 class MapWidget(Widget):
@@ -39,7 +46,7 @@ class MapWidget(Widget):
         values['controls_definition'] = \
             self._get_controls_definition(field, readonly)
         # make `_` available in template for i18n messages
-        values['_'] = TranslationStringFactory('c2cgeoform')
+        values['_'] = _
         return field.renderer('map', **values)
 
     def deserialize(self, field, pstruct):
@@ -558,7 +565,7 @@ class RelationSelectMapWidget(Widget):
 
 class RelationSearchWidget(Widget):
     """
-    A deform widget to select an item via a search field. This widget is
+    A Deform widget to select an item via a search field. This widget is
     similar to the ``RelationSelectWidget``, but instead of a select-box
     a Twitter Typeahead search field is shown.
 
@@ -650,7 +657,7 @@ class RelationSearchWidget(Widget):
         kw['options'] = json.dumps(options)
 
         bloodhound_options = {
-            'limit':  kw.pop('limit', self.limit),
+            'limit': kw.pop('limit', self.limit),
             'remote': '%s?term=%%QUERY' % self.url
         }
         kw['bloodhound_options'] = json.dumps(bloodhound_options)
@@ -683,3 +690,82 @@ class RelationSearchWidget(Widget):
             if not pstruct:
                 return null
             return pstruct
+
+
+class RecaptchaWidget(MappingWidget):
+    """
+    A Deform widget for Google reCaptcha.
+
+    In `c2cgeoform` this widget can be used by setting the `show_captcha`
+    flag when calling `register_schema()`.
+
+    Example usage:
+
+    .. code-block:: python
+
+        register_schema(
+            'comment', model.Comment, show_confirmation=False,
+            show_captcha=True,
+            recaptcha_public_key=settings.get('recaptcha_public_key'),
+            recaptcha_private_key=settings.get('recaptcha_private_key'))
+
+    **Attributes/arguments**
+
+    public_key (required)
+        The Google reCaptcha site key.
+
+    private_key (required)
+        The Google reCaptcha secret key.
+
+    """
+
+    template = 'recaptcha'
+    readonly_template = 'recaptcha'
+    url = "https://www.google.com/recaptcha/api/siteverify"
+
+    def populate(self, session, request):
+        self.request = request
+
+    def serialize(self, field, cstruct, **kw):
+        kw.update({'public_key': self.public_key,
+                   'locale_name': self.request.locale_name})
+        return MappingWidget.serialize(self, field, cstruct, **kw)
+
+    def deserialize(self, field, pstruct):
+        if pstruct is null:
+            return null
+
+        # get the verification token that is inserted into a hidden input
+        # field created by the reCaptcha script. the value is available in
+        # `pstruct` because we are inheriting from `MappingWidget`.
+        response = pstruct.get('g-recaptcha-response') or ''
+        if not response:
+            raise Invalid(
+                field.schema,
+                _('Please verify that you are a human!'), pstruct)
+        remoteip = self.request.remote_addr
+        data = urllib.urlencode({'secret': self.private_key,
+                                 'response': response,
+                                 'remoteip': remoteip})
+
+        try:
+            resp = urllib2.urlopen(self.url, data)
+        except urllib2.URLError, e:
+            log.error('reCaptcha connection problem: %s', e.reason)
+            raise Invalid(field.schema, _("Connection problem"), pstruct)
+
+        error_msg = _("Verification has failed")
+        if not resp.code == 200:
+            log.error('reCaptcha validation error: %s', resp.code)
+            raise Invalid(field.schema, error_msg, pstruct)
+
+        content = resp.read()
+        data = json.loads(content)
+        if not data['success']:
+            error_reason = ''
+            if 'error-codes' in data:
+                error_reason = ','.join(data['error-codes'])
+            log.error('reCaptcha validation error: %s', error_reason)
+            raise Invalid(field.schema, error_msg, pstruct)
+
+        return pstruct

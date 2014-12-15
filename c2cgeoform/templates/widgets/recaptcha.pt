@@ -1,0 +1,37 @@
+<div tal:define="error_class error_class|field.widget.error_class;
+                 description description|field.description;
+                 title title|field.title;
+                 oid oid|field.oid;
+                 hidden hidden|field.widget.hidden;
+                 category category|field.widget.category;
+                 structural hidden or category == 'structural';
+                 required required|field.required;"
+     class="form-group ${field.error and 'has-error' or ''} ${field.widget.item_css_class or ''}"
+     title="${description}"
+     id="item-${oid}"
+     i18n:domain="c2cgeoform">
+  <label for="${oid}"
+           class="control-label ${required and 'required' or ''}"
+           tal:condition="not structural"
+           id="req-${oid}"
+           >
+      ${title}
+    </label>
+
+  <input type="hidden" name="__start__" value="${field.name}:mapping"/>
+
+  <div class="g-recaptcha" data-sitekey="${public_key}"></div>
+  <script src="https://www.google.com/recaptcha/api.js?hl=${locale_name}" async defer></script>
+
+  <input type="hidden" name="__end__" value="${field.name}:mapping"/>
+
+  <p class="help-block"
+     tal:define="errstr 'error-%s' % field.oid"
+     tal:repeat="msg field.error.messages()"
+     i18n:translate=""
+     tal:attributes="id repeat.msg.index==0 and errstr or
+     ('%s-%s' % (errstr, repeat.msg.index))"
+     tal:condition="field.error and not field.widget.hidden">
+    ${msg}
+  </p>
+</div>
