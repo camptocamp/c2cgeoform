@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2014-12-11 11:40+0100\n"
+"POT-Creation-Date: 2014-12-15 11:36+0100\n"
 "PO-Revision-Date: 2014-07-31 11:13+0200\n"
 "Last-Translator: Tobias Sauerwein <tobias.sauerwein@camptocamp.com>\n"
 "Language-Team: French\n"
@@ -14,6 +14,18 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: c2cgeoform/ext/deform_ext.py:619
+msgid "Verification has failed"
+msgstr "La vérification a échouée"
+
+#: c2cgeoform/ext/deform_ext.py:607
+msgid "Please verify that you are a human!"
+msgstr "Veuillez vérifier que vous êtes humain !"
+
+#: c2cgeoform/ext/deform_ext.py:617
+msgid "Connection problem"
+msgstr "Problème de connexion"
 
 #: c2cgeoform/templates/site/edit.pt:6 c2cgeoform/templates/site/list.pt:55
 msgid "Edit"
@@ -127,7 +139,7 @@ msgstr ""
 "les soumettre après."
 
 #: c2cgeoform/templates/widgets/readonly/form_confirmation.pt:35
-#: c2cgeoform/views.py:136
+#: c2cgeoform/views.py:192
 msgid "Submit"
 msgstr "Soumettre"
 
