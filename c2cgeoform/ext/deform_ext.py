@@ -492,7 +492,6 @@ class RecaptchaWidget(MappingWidget):
                 colander.Mapping(),
                 name='captcha',
                 title='Some text here',
-                missing=colander.drop,
                 widget=RecaptchaWidget(public_key=recaptcha_public_key,
                                        private_key=recaptcha_private_key,
                                        request=request))
