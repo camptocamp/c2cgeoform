@@ -50,7 +50,7 @@ modwsgi: install .build/venv/c2cgeoform.wsgi .build/apache.conf
 test:
 	.build/venv/bin/python setup.py test
 
-.PHONY: compile-catolg
+.PHONY: compile-catalog
 compile-catalog: $(C2CGEOFORM_MO_FILES) $(PULLY_MO_FILES)
 
 .PHONY: dist
