@@ -173,7 +173,6 @@ def _store_in_db(geo_form_schema, obj_dict, request):
     hash = str(uuid.uuid4())
     setattr(obj, geo_form_schema.hash_column_name, hash)
     DBSession.add(obj)
-    DBSession.flush()
 
     url = request.route_url(
         'view_user',
