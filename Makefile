@@ -17,14 +17,15 @@ help:
 	@echo "- check                   Check the code with flake8"
 	@echo "- modwsgi                 Create files for Apache mod_wsgi"
 	@echo "- test                    Run the unit tests"
+	@echo "- dist                    Build a source distribution"
 	@echo "- compile-catalog         Compile message catalog"
 	@echo
 
 .PHONY: install
-install: setup compile-catalog
+install: setup-develop compile-catalog
 	
-.PHONY: setup
-setup: .build/venv
+.PHONY: setup-develop
+setup-develop: .build/venv
 	.build/venv/bin/python setup.py develop
 
 .PHONY: initdb
@@ -51,6 +52,10 @@ test:
 
 .PHONY: compile-catolg
 compile-catalog: $(C2CGEOFORM_MO_FILES) $(PULLY_MO_FILES)
+
+.PHONY: dist
+dist: .build/venv compile-catalog
+	.build/venv/bin/python setup.py sdist
 
 %.mo: %.po
 	msgfmt $< --output-file=$@
