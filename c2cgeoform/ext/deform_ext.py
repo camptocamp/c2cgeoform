@@ -565,7 +565,7 @@ class RelationSelectMapWidget(Widget):
 
 class RelationSearchWidget(Widget):
     """
-    A deform widget to select an item via a search field. This widget is
+    A Deform widget to select an item via a search field. This widget is
     similar to the ``RelationSelectWidget``, but instead of a select-box
     a Twitter Typeahead search field is shown.
 
@@ -657,7 +657,7 @@ class RelationSearchWidget(Widget):
         kw['options'] = json.dumps(options)
 
         bloodhound_options = {
-            'limit':  kw.pop('limit', self.limit),
+            'limit': kw.pop('limit', self.limit),
             'remote': '%s?term=%%QUERY' % self.url
         }
         kw['bloodhound_options'] = json.dumps(bloodhound_options)
@@ -694,24 +694,29 @@ class RelationSearchWidget(Widget):
 
 class RecaptchaWidget(MappingWidget):
     """
-    A Deform widget for google recaptcha
+    A Deform widget for Google reCaptcha.
 
-    Parameters publickey, privatekey and request are mandatory.
+    In `c2cgeoform` this widget can be used by setting the `show_captcha`
+    flag when calling `register_schema()`.
 
-    Example usage
+    Example usage:
 
     .. code-block:: python
 
-        class Schema(colander.Schema):
-            captcha = colander.SchemaNode(
-                colander.Mapping(),
-                name='captcha',
-                title='Some text here',
-                missing=colander.drop,
-                widget=RecaptchaWidget(public_key=recaptcha_public_key,
-                                       private_key=recaptcha_private_key,
-                                       request=request))
-        captcha_form = Form(Schema(), buttons=('submit',))
+        register_schema(
+            'comment', model.Comment, show_confirmation=False,
+            show_captcha=True,
+            recaptcha_public_key=settings.get('recaptcha_public_key'),
+            recaptcha_private_key=settings.get('recaptcha_private_key'))
+
+    **Attributes/arguments**
+
+    public_key (required)
+        The Google reCaptcha site key.
+
+    private_key (required)
+        The Google reCaptcha secret key.
+
     """
 
     template = 'recaptcha'
@@ -730,6 +735,9 @@ class RecaptchaWidget(MappingWidget):
         if pstruct is null:
             return null
 
+        # get the verification token that is inserted into a hidden input
+        # field created by the reCaptcha script. the value is available in
+        # `pstruct` because we are inheriting from `MappingWidget`.
         response = pstruct.get('g-recaptcha-response') or ''
         if not response:
             raise Invalid(
