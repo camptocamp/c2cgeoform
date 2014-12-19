@@ -144,7 +144,7 @@ def main(global_config, **settings):
         show_captcha=True,
         recaptcha_public_key=settings.get('recaptcha_public_key'),
         recaptcha_private_key=settings.get('recaptcha_private_key'))
-    model.setup_test_data()
+    model.setup_test_data(settings)
     register_schema(
         'comment', model.Comment, show_confirmation=False, show_captcha=True,
         recaptcha_public_key=settings.get('recaptcha_public_key'),
