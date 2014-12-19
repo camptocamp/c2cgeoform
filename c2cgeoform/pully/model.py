@@ -316,7 +316,7 @@ class Comment(Base):
         }})
 
 
-def setup_test_data():
+def setup_test_data(settings):
     from c2cgeoform.models import DBSession
     import transaction
 
@@ -339,7 +339,7 @@ def setup_test_data():
         DBSession.add(Situation(id=5, name="Cobblestone", name_fr="Pavés"))
 
     if DBSession.query(BusStop).count() == 0:
-        _add_bus_stops(DBSession)
+        _add_bus_stops(DBSession, settings['bus_stops_file'])
 
     if DBSession.query(Address).get(0) is None:
         DBSession.add(Address(id=0, label="Bern"))
@@ -351,14 +351,14 @@ def setup_test_data():
     transaction.commit()
 
 
-def _add_bus_stops(session):
+def _add_bus_stops(session, filepath):
     """
     Load test data from a GeoJSON file.
     """
     import json
     from shapely.geometry import shape
 
-    file = open('c2cgeoform/pully/data/osm-lausanne-bus-stops.geojson')
+    file = open(filepath)
     geojson = json.load(file)
     file.close()
 
