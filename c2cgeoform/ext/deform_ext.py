@@ -475,13 +475,36 @@ class FileUploadWidget(DeformFileUploadWidget):
                 'widget': deform_ext.FileUploadWidget(file_upload_temp_store)
             }
             permission_id = Column(Integer, ForeignKey('excavations.id'))
+
+    **Attributes/Arguments**
+
+    get_url (optional)
+        A callback function `function(request, id) -> string` which returns
+        the URL to get the file. Example usage:
+
+        .. code-block:: python
+
+            'widget': deform_ext.FileUploadWidget(
+                _file_upload_temp_store,
+                get_url=lambda request, id: request.route_url('file', id=id)
+            )
     """
+
+    def __init__(self, tmpstore, get_url=None, **kw):
+        DeformFileUploadWidget.__init__(self, tmpstore, **kw)
+        self.get_url = get_url
+
+    def populate(self, session, request):
+        self.request = request
 
     def serialize(self, field, cstruct, **kw):
         if cstruct in (null, None):
             cstruct = {}
+        kw['url'] = None
         if 'uid' not in cstruct and 'id' in cstruct:
             cstruct['uid'] = cstruct['id']
+            if cstruct['id'] != null and self.get_url:
+                kw['url'] = self.get_url(self.request, cstruct['id'])
         return DeformFileUploadWidget.serialize(self, field, cstruct, **kw)
 
     def deserialize(self, field, pstruct):
