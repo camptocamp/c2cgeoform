@@ -70,8 +70,11 @@ class ContactPerson(Base):
 
 class Photo(FileData, Base):
     __tablename__ = 'photo'
+    # Setting unknown to 'preserve' is required in classes used as a
+    # FileUpload field.
     __colanderalchemy_config__ = {
         'title': _('Photo'),
+        'unknown': 'preserve',
         'widget': deform_ext.FileUploadWidget(_file_upload_temp_store)
     }
     permission_id = Column(Integer, ForeignKey('excavations.id'))
