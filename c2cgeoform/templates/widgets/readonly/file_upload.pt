@@ -1,0 +1,3 @@
+<p id="${oid|field.oid}" class="form-control-static deform-readonly-text">
+  <a href="${url}" tal:omit-tag="not:url" tal:content="cstruct.get('filename') or ''"></a>
+</p>
