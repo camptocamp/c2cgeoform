@@ -18,7 +18,7 @@ requires = [
     'zope.sqlalchemy',
     'waitress',
     'colander',
-    'colanderalchemy',
+    'ColanderAlchemy>=0.3.2',
     'deform==2.0a2',
     'psycopg2',
     'geoalchemy2',
