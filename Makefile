@@ -22,11 +22,11 @@ help:
 	@echo
 
 .PHONY: install
-install: setup-develop compile-catalog
+install: pip-install compile-catalog
 	
-.PHONY: setup-develop
-setup-develop: .build/venv
-	.build/venv/bin/python setup.py develop
+.PHONY: pip-install
+pip-install: .build/venv
+	.build/venv/bin/pip install -r requirements.txt
 
 .PHONY: initdb
 initdb:
@@ -65,7 +65,7 @@ dist: .build/venv compile-catalog
 	virtualenv --no-site-packages .build/venv
 
 .build/venv/bin/flake8: .build/venv
-	.build/venv/bin/pip install -r requirements.txt > /dev/null 2>&1
+	.build/venv/bin/pip install -r requirements-dev.txt > /dev/null 2>&1
 
 .build/venv/c2cgeoform.wsgi: c2cgeoform.wsgi
 	sed 's#{{DIR}}#$(CURDIR)#' $< > $@
