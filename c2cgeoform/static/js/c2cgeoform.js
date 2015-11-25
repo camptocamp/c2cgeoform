@@ -58,6 +58,10 @@ c2cgeoform.steps.init = function(options) {
         }
       }
       silent = false;
+
+      if (options.postInit != undefined) {
+          options.postInit(event, currentIndex);
+      }
     },
 
     onStepChanging: function (event, currentIndex, newIndex) {
