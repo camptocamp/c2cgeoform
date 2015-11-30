@@ -230,7 +230,7 @@ c2cgeoform.zoomToGeometry_ = function(map, geometry, zoomForGeometry) {
   zoomForGeometry = (zoomForGeometry === undefined) ?
     map.get('zoomForGeometry') : zoomForGeometry;
 
-  map.getView().fitGeometry(geometry, map.getSize(),
+  map.getView().fit(geometry, map.getSize(),
     {maxZoom: zoomForGeometry});
 
   map.set('geometry', geometry);
