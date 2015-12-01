@@ -103,6 +103,8 @@ c2cgeoform.steps.init = function(options) {
     },
 
     onFinishing: function (event, currentIndex) {
+      jQuery(options.customDataFieldId).val(
+        '{"previousStep":' + currentIndex + ', "requestedStep":' + currentIndex + '}');
       jQuery(options.onlyValidateFieldId).val(0);
       return true;
     },
