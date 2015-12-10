@@ -361,7 +361,6 @@ c2cgeoform.initializeToolbar = function(map, source, options) {
       // if the geometry type is not a collection type (like MultiPoint),
       // make sure that there is always only one geometry
       source.clear();
-      source.addFeature(event.feature);
     }
   };
 
