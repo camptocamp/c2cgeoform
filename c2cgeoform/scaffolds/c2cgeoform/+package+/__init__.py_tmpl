@@ -1,0 +1,62 @@
+from pyramid.config import Configurator
+from sqlalchemy import engine_from_config
+
+from c2cgeoform.settings import apply_local_settings
+from c2cgeoform.schema import register_schema
+from pkg_resources import resource_filename
+
+from .models import (
+    DBSession,
+    Base,
+    Comment,
+    ExcavationPermission,
+    )
+
+
+def main(global_config, **settings):
+    """ This function returns a Pyramid WSGI application.
+    """
+    apply_local_settings(settings)
+    engine = engine_from_config(settings, 'sqlalchemy.')
+    DBSession.configure(bind=engine)
+    Base.metadata.bind = engine
+    config = Configurator(settings=settings)
+
+    config.include('pyramid_chameleon')
+    config.include('pyramid_mako')
+    config.include('c2cgeoform')
+
+    config.add_translation_dirs('locale')
+
+    config.add_static_view('static', 'static', cache_max_age=3600)
+    config.add_c2cgeoform_views()
+
+    register_schema(
+        'fouille',
+        ExcavationPermission,
+        templates_user=resource_filename('{{package}}', 'templates'),
+        excludes_user=['reference_number', 'validated'],
+        overrides_user={
+            # override the title for a field in the user form
+            'request_date': {'title': 'Date'},
+            # do not show the 'verified' field of ContactPerson for the user
+            'contact_persons': {'excludes': ['verified']}
+        },
+        show_captcha='recaptcha_public_key' in settings,
+        recaptcha_public_key=settings.get('recaptcha_public_key'),
+        recaptcha_private_key=settings.get('recaptcha_private_key'))
+
+    register_schema(
+        'comment',
+        Comment,
+        show_confirmation=False,
+        show_captcha='recaptcha_public_key' in settings,
+        recaptcha_public_key=settings.get('recaptcha_public_key'),
+        recaptcha_private_key=settings.get('recaptcha_private_key'))
+
+    config.add_route('bus_stops', '/bus_stops')
+    config.add_route('addresses', '/addresses')
+
+    config.scan()
+
+    return config.make_wsgi_app()

@@ -2,10 +2,10 @@ from translationstring import TranslationStringFactory
 from deform.widget import (
     Widget, SelectWidget, Select2Widget, RadioChoiceWidget)
 from deform.compat import string_types
-from sqlalchemy.orm import ColumnProperty
 from colander import (Invalid, null)
 from deform.widget import (FileUploadWidget as DeformFileUploadWidget,
                            MappingWidget)
+from sqlalchemy.inspection import inspect
 import urllib
 import urllib2
 import json
@@ -187,13 +187,12 @@ class RelationMultiSelectMixin(RelationSelectMixin):
         """ Loop through the columns of the relation table A_B and
         find the foreign key for table B.
         """
-        for mapped_column in relation_table.attrs:
-            if isinstance(mapped_column, ColumnProperty):
-                column = mapped_column.columns[0]
-                foreign_keys = list(column.foreign_keys)
-                for foreign_key in foreign_keys:
-                    if foreign_key.column.table == self.model.__table__:
-                        return column.name
+        mapper = inspect(relation_table)
+        for column in mapper.columns:
+            foreign_keys = list(column.foreign_keys)
+            for foreign_key in foreign_keys:
+                if foreign_key.column.table == self.model.__table__:
+                    return column.name
         return None
 
 

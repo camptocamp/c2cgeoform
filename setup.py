@@ -11,22 +11,7 @@ with open(os.path.join(here, 'CHANGES.txt')) as f:
 requires = [
     'pyramid',
     'pyramid_chameleon',
-    'pyramid_debugtoolbar',
-    'pyramid_tm',
-    'SQLAlchemy',
-    'transaction',
-    'zope.sqlalchemy',
-    'waitress',
-    'colander',
-    'ColanderAlchemy>=0.3.2',
     'deform==2.0a2',
-    'psycopg2',
-    'geoalchemy2',
-    'shapely',
-    'pyproj',
-    'lingua>=2.4',
-    'babel',
-    'webhelpers',
     'pyramid_beaker']
 
 setup(name='c2cgeoform',
@@ -49,9 +34,7 @@ setup(name='c2cgeoform',
       test_suite='c2cgeoform',
       install_requires=requires,
       entry_points="""\
-      [paste.app_factory]
-      main = c2cgeoform:main
-      [console_scripts]
-      initialize_c2cgeoform_db = c2cgeoform.scripts.initializedb:main
+      [pyramid.scaffold]
+        c2cgeoform=c2cgeoform.scaffolds:C2cgeoformTemplate
       """,
       )

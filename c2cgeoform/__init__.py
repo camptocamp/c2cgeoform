@@ -1,12 +1,8 @@
-from pyramid.config import Configurator
-from sqlalchemy import engine_from_config
 from pkg_resources import resource_filename
 from pyramid.i18n import get_localizer
 from pyramid.threadlocal import get_current_request
 from pyramid.events import BeforeRender, NewRequest
 
-from .models import DBSession
-from .settings import apply_local_settings
 from .subscribers import add_renderer_globals, add_localizer
 
 
@@ -113,6 +109,7 @@ def _set_widget_template_path():
     Form.set_default_resource_registry(registry)
 
 
+'''
 def main(global_config, **settings):
     """ This function returns a Pyramid WSGI application.
 
@@ -164,3 +161,4 @@ def main(global_config, **settings):
     config.add_c2cgeoform_views()
 
     return config.make_wsgi_app()
+'''

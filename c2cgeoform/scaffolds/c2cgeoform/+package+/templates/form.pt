@@ -142,7 +142,7 @@
   <script type="text/javascript">
     jQuery(document).ready(function() {
       c2cgeoform.steps.init({
-        
+
         // c2cgeoform.steps specific properties (mandatory)
         formId: '#${formid}',
         stepsContainerId: '#steps-${formid}',

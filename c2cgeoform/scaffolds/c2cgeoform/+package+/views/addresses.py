@@ -1,8 +1,10 @@
+from pyramid.view import view_config
+
 from pyramid.httpexceptions import HTTPBadRequest
-from c2cgeoform.models import DBSession
-from ..model import Address
+from ..models import DBSession, Address
 
 
+@view_config(route_name='addresses', request_method='GET', renderer='json')
 def addresses(request):
     if 'term' not in request.params:
         return HTTPBadRequest()
