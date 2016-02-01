@@ -50,7 +50,7 @@ Create the database :
 
 ```shell
 sudo -u postgres createdb myproject -T template_postgis
-sudo -u postgres psql -c "GRANT ALL ON DATABASE myproject TO "www-data";'
+sudo -u postgres psql -c 'GRANT ALL ON DATABASE myproject TO "www-data";'
 ```
 
 When you do have a Postgres role and a PostGIS database edit the
