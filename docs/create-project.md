@@ -15,25 +15,29 @@ The following system packages must be installed on your system:
 ### Install c2cgeoform
 
 ```shell
-$ git clone git@github.com:camptocamp/c2cgeoform.git
-$ cd c2cgeoform
-$ git checkout scaffold  # until scaffold branch is merged into master
-$ make install
+git clone git@github.com:camptocamp/c2cgeoform.git
+cd c2cgeoform
+git checkout scaffold  # until scaffold branch is merged into master
+make install
 ```
 
 ### Create a Pyramid project using c2cgeoform scaffold
 
 Creating a `c2cgeoform` is creating a pyramid project using the c2cgeoform scaffold.
 
+Note that if PYTHONPATH does not exists as an environment variable,
+template files (*_tmpl) do not render in new project folder.
+
 ```shell
-$ .build/venv/bin/pcreate -s c2cgeoform ../MyProject
+export PYTHONPATH=$PYTHONPATH
+.build/venv/bin/pcreate -s c2cgeoform ../MyProject
 ```
 
 ### Install the project and its dependencies
 
 ```shell
-$ cd ../MyProject
-$ make install
+cd ../MyProject
+make install
 ```
 
 ### Set up database
@@ -45,8 +49,8 @@ know how to do that.
 Create the database :
 
 ```shell
-$ sudo -u postgres createdb myproject -T template_postgis
-$ sudo -u postgres psql -c "GRANT ALL ON DATABASE myproject TO "www-data";'
+sudo -u postgres createdb myproject -T template_postgis
+sudo -u postgres psql -c "GRANT ALL ON DATABASE myproject TO "www-data";'
 ```
 
 When you do have a Postgres role and a PostGIS database edit the
@@ -59,7 +63,7 @@ sqlalchemy.url = postgresql://myproject:myproject@localhost:5432/myproject
 Now create the tables:
 
 ```shell
-$ make initdb
+make initdb
 ```
 
 Note that this execute the python script `myproject/scripts/initializedb.py`.
@@ -70,7 +74,7 @@ You will have to customize this thereafter.
 You're now ready to run the application:
 
 ```shell
-$ make serve
+make serve
 ```
 
 Visit the following ULRs to verify that the application works correctly:
@@ -98,7 +102,7 @@ Edit the file `myproject/templates/form.pt`.
 Update the catalogue files :
 
 ```shell
-$ make update-catalog
+make update-catalog
 ```
 
 Now you can edit translation catalogues with `.po` extension
@@ -109,8 +113,8 @@ egg). For that reason it is required to manually compile the `c2cgeoform`
 catalog:
 
 ```shell
-$ msgfmt ../venv/src/c2cgeoform/c2cgeoform/locale/fr/LC_MESSAGES/c2cgeoform.po --output-file=../venv/src/c2cgeoform/c2cgeoform/locale/fr/LC_MESSAGES/c2cgeoform.mo
-$ msgfmt ../venv/src/c2cgeoform/c2cgeoform/locale/de/LC_MESSAGES/c2cgeoform.po --output-file=../venv/src/c2cgeoform/c2cgeoform/locale/de/LC_MESSAGES/c2cgeoform.mo
+msgfmt ../venv/src/c2cgeoform/c2cgeoform/locale/fr/LC_MESSAGES/c2cgeoform.po  --output-file=../venv/src/c2cgeoform/c2cgeoform/locale/fr/LC_MESSAGES/c2cgeoform.mo
+msgfmt ../venv/src/c2cgeoform/c2cgeoform/locale/de/LC_MESSAGES/c2cgeoform.po  --output-file=../venv/src/c2cgeoform/c2cgeoform/locale/de/LC_MESSAGES/c2cgeoform.mo
 ```
 
 ### Session management configuration
