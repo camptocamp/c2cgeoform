@@ -1,9 +1,13 @@
 from pyramid.config import Configurator
 from sqlalchemy import engine_from_config
+from pkg_resources import resource_filename
 
+import c2cgeoform
+search_paths = ((resource_filename('{{package}}', 'templates/widgets'),)
+                + c2cgeoform.default_search_paths)
+c2cgeoform.default_search_paths = search_paths
 from c2cgeoform.settings import apply_local_settings
 from c2cgeoform.schema import register_schema
-from pkg_resources import resource_filename
 
 from .models import (
     DBSession,
