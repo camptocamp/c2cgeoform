@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2014-12-15 11:36+0100\n"
+"POT-Creation-Date: 2016-02-17 10:50+0100\n"
 "PO-Revision-Date: 2014-07-31 11:13+0200\n"
 "Last-Translator: Tobias Sauerwein <tobias.sauerwein@camptocamp.com>\n"
 "Language-Team: French\n"
@@ -15,19 +15,12 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: c2cgeoform/ext/deform_ext.py:619
-msgid "Verification has failed"
-msgstr "La vérification a échouée"
+#: c2cgeoform/views.py:191
+#: c2cgeoform/templates/widgets/readonly/form_confirmation.pt:42
+msgid "Submit"
+msgstr "Soumettre"
 
-#: c2cgeoform/ext/deform_ext.py:607
-msgid "Please verify that you are a human!"
-msgstr "Veuillez vérifier que vous êtes humain !"
-
-#: c2cgeoform/ext/deform_ext.py:617
-msgid "Connection problem"
-msgstr "Problème de connexion"
-
-#: c2cgeoform/templates/site/edit.pt:6 c2cgeoform/templates/site/list.pt:55
+#: c2cgeoform/templates/site/edit.pt:7 c2cgeoform/templates/site/list.pt:75
 msgid "Edit"
 msgstr "Modifier"
 
@@ -36,50 +29,50 @@ msgstr "Modifier"
 msgid "Back to overview"
 msgstr "Retourner à l'index"
 
-#: c2cgeoform/templates/site/list.pt:6
+#: c2cgeoform/templates/site/list.pt:7
 msgid "All entities"
 msgstr "Toutes données"
 
-#: c2cgeoform/templates/site/list.pt:20
+#: c2cgeoform/templates/site/list.pt:23
 msgid "Commands"
 msgstr "Actions"
 
-#: c2cgeoform/templates/site/list.pt:37
+#: c2cgeoform/templates/site/list.pt:35
 msgid "All"
 msgstr "Tous"
 
-#: c2cgeoform/templates/site/list.pt:38
+#: c2cgeoform/templates/site/list.pt:35
 msgid "Showing ((ctx.start)) to ((ctx.end)) of ((ctx.total)) entries"
 msgstr "((ctx.start)) à ((ctx.end)) sur ((ctx.total)) entrées"
 
-#: c2cgeoform/templates/site/list.pt:39
+#: c2cgeoform/templates/site/list.pt:35
 msgid "Loading..."
 msgstr "Chargement..."
 
-#: c2cgeoform/templates/site/list.pt:40
+#: c2cgeoform/templates/site/list.pt:35
 msgid "No results found!"
 msgstr "Aucun résultat trouvé!"
 
-#: c2cgeoform/templates/site/list.pt:41
+#: c2cgeoform/templates/site/list.pt:35
 msgid "Refresh"
 msgstr "Actualiser"
 
-#: c2cgeoform/templates/site/list.pt:42
+#: c2cgeoform/templates/site/list.pt:35
 msgid "Search"
 msgstr "Rechercher"
 
-#: c2cgeoform/templates/site/list.pt:52
-#: c2cgeoform/templates/site/view_admin.pt:6
+#: c2cgeoform/templates/site/list.pt:73
+#: c2cgeoform/templates/site/view_admin.pt:7
 msgid "View"
 msgstr "Voir"
 
-#: c2cgeoform/templates/widgets/map.pt:33
-#: c2cgeoform/templates/widgets/map_select.pt:35
+#: c2cgeoform/templates/widgets/map.pt:35
+#: c2cgeoform/templates/widgets/map_select.pt:37
 msgid "Zoom In"
 msgstr "Zoomer"
 
-#: c2cgeoform/templates/widgets/map.pt:34
-#: c2cgeoform/templates/widgets/map_select.pt:36
+#: c2cgeoform/templates/widgets/map.pt:35
+#: c2cgeoform/templates/widgets/map_select.pt:37
 msgid "Zoom Out"
 msgstr "Dézoomer"
 
@@ -88,39 +81,53 @@ msgstr "Dézoomer"
 msgid "Attributions"
 msgstr "Copyright"
 
-#: c2cgeoform/templates/widgets/map.pt:36
+#: c2cgeoform/templates/widgets/map.pt:35
 msgid "Draw point"
 msgstr "Créer point"
 
-#: c2cgeoform/templates/widgets/map.pt:37
+#: c2cgeoform/templates/widgets/map.pt:35
 msgid "Draw line"
 msgstr "Créer ligne"
 
-#: c2cgeoform/templates/widgets/map.pt:38
+#: c2cgeoform/templates/widgets/map.pt:35
 msgid "Draw polygon"
 msgstr "Créer polygone"
 
-#: c2cgeoform/templates/widgets/map.pt:39
+#: c2cgeoform/templates/widgets/map.pt:35
 msgid "Modify"
 msgstr "Modifier"
 
-#: c2cgeoform/templates/widgets/map.pt:40
+#: c2cgeoform/templates/widgets/map.pt:35
 msgid "Remove all"
 msgstr "Effacer tous les objets"
 
-#: c2cgeoform/templates/widgets/map_select.pt:38
+#: c2cgeoform/templates/widgets/map_select.pt:37
 msgid "Selected:"
 msgstr "Choisi:"
 
-#: c2cgeoform/templates/widgets/map_select.pt:39
+#: c2cgeoform/templates/widgets/map_select.pt:37
 msgid "Please select an item on the map!"
 msgstr "Veuillez choisir un objet sur la carte !"
 
-#: c2cgeoform/templates/widgets/readonly/form_view_user.pt:3
+#: c2cgeoform/templates/widgets/readonly/form_confirmation.pt:24
+msgid "Confirmation"
+msgstr "Confirmation"
+
+#: c2cgeoform/templates/widgets/readonly/form_confirmation.pt:25
+msgid "Please confirm your details and submit the form."
+msgstr ""
+"Pour finaliser votre dossier, veuillez vérifier les informations saisies et "
+"les soumettre après."
+
+#: c2cgeoform/templates/widgets/readonly/form_confirmation.pt:44
+msgid "Back to form"
+msgstr "Retourner au formulaire"
+
+#: c2cgeoform/templates/widgets/readonly/form_view_user.pt:22
 msgid "Submission successful"
 msgstr "Formulaire envoyé avec succès"
 
-#: c2cgeoform/templates/widgets/readonly/form_view_user.pt:6
+#: c2cgeoform/templates/widgets/readonly/form_view_user.pt:23
 msgid ""
 "Thank you for your submission. Please find below the information that was "
 "stored in our system."
@@ -128,21 +135,11 @@ msgstr ""
 "Merci beaucoup ! Veuillez trouver ci-dessous les informations stockées dans "
 "notre système."
 
-#: c2cgeoform/templates/widgets/readonly/form_confirmation.pt:7
-msgid "Confirmation"
-msgstr "Confirmation"
+#~ msgid "Verification has failed"
+#~ msgstr "La vérification a échouée"
 
-#: c2cgeoform/templates/widgets/readonly/form_confirmation.pt:10
-msgid "Please confirm your details and submit the form."
-msgstr ""
-"Pour finaliser votre dossier, veuillez vérifier les informations saisies et "
-"les soumettre après."
+#~ msgid "Please verify that you are a human!"
+#~ msgstr "Veuillez vérifier que vous êtes humain !"
 
-#: c2cgeoform/templates/widgets/readonly/form_confirmation.pt:35
-#: c2cgeoform/views.py:192
-msgid "Submit"
-msgstr "Soumettre"
-
-#: c2cgeoform/templates/widgets/readonly/form_confirmation.pt:38
-msgid "Back to form"
-msgstr "Retourner au formulaire"
+#~ msgid "Connection problem"
+#~ msgstr "Problème de connexion"
