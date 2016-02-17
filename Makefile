@@ -23,7 +23,7 @@ install: pip-install compile-catalog
 	
 .PHONY: pip-install
 pip-install: .build/venv
-	.build/venv/bin/pip install --upgrade .
+	.build/venv/bin/pip install -U -e .
 
 .PHONY: initdb
 initdb:

@@ -1,2 +1,2 @@
--e git+https://github.com/camptocamp/c2cgeoform@scaffold#egg=c2cgeoform
+git+https://github.com/camptocamp/c2cgeoform@scaffold#egg=c2cgeoform
 -e .
