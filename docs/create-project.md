@@ -33,6 +33,16 @@ export PYTHONPATH=$PYTHONPATH
 .build/venv/bin/pcreate -s c2cgeoform ../MyProject
 ```
 
+### Initialize a git repository
+
+Make your new project folder a git repository.
+
+```shell
+git init
+git add .
+git commit -m 'Initial commit'
+```
+
 ### Install the project and its dependencies
 
 ```shell
