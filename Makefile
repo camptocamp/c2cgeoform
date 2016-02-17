@@ -23,7 +23,7 @@ install: pip-install compile-catalog
 	
 .PHONY: pip-install
 pip-install: .build/venv
-	.build/venv/bin/pip install .
+	.build/venv/bin/pip install --upgrade .
 
 .PHONY: initdb
 initdb:
@@ -46,13 +46,12 @@ test:
 
 .PHONY: update-catalog
 update-catalog:
-	.build/venv/bin/pot-create -c lingua.cfg -o $@ \
+	.build/venv/bin/pot-create -c lingua.cfg -o c2cgeoform/locale/c2cgeoform.pot \
 	    c2cgeoform/models.py \
-	    c2cgeoform/views/ \
+	    c2cgeoform/views.py \
 	    c2cgeoform/templates/
-	cd {{package}}/locale
-	msgmerge --update fr/LC_MESSAGES/c2cgeoform.po c2cgeoform.pot
-	msgmerge --update de/LC_MESSAGES/c2cgeoform.po c2cgeoform.pot
+	msgmerge --update c2cgeoform/locale/fr/LC_MESSAGES/c2cgeoform.po c2cgeoform/locale/c2cgeoform.pot
+	msgmerge --update c2cgeoform/locale/de/LC_MESSAGES/c2cgeoform.po c2cgeoform/locale/c2cgeoform.pot
 
 .PHONY: compile-catalog
 compile-catalog: $(MO_FILES)

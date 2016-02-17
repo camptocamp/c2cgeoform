@@ -12,7 +12,8 @@ requires = [
     'pyramid',
     'pyramid_chameleon',
     'deform==2.0a2',
-    'pyramid_beaker']
+    'pyramid_beaker',
+    'lingua>=2.4']
 
 setup(name='c2cgeoform',
       version='0.0',
