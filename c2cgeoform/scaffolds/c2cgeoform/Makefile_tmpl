@@ -67,7 +67,12 @@ dist: .build/venv compile-catalog
 
 .build/venv:
 	mkdir -p $(dir $@)
-	virtualenv --no-site-packages .build/venv
+	# make a first virtualenv to get a recent version of virtualenv
+	virtualenv venv
+	venv/bin/pip install virtualenv
+	venv/bin/virtualenv --no-site-packages .build/venv
+	# remove the temporary virtualenv
+	rm -rf venv
 
 .build/venv/bin/flake8: .build/venv
 	.build/venv/bin/pip install -r requirements-dev.txt > /dev/null 2>&1
