@@ -38,6 +38,7 @@ export PYTHONPATH=$PYTHONPATH
 Make your new project folder a git repository.
 
 ```shell
+cd ../MyProject
 git init
 git add .
 git commit -m 'Initial commit'
@@ -46,7 +47,6 @@ git commit -m 'Initial commit'
 ### Install the project and its dependencies
 
 ```shell
-cd ../MyProject
 make install
 ```
 
