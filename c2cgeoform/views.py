@@ -30,10 +30,6 @@ def _get_schema(request):
         raise HTTPNotFound('invalid schema \'' + schema_name + '\'')
 
 
-def notfound(request):
-    return HTTPNotFound()
-
-
 def form(request):
     geo_form_schema = _get_schema(request)
     session = request.session

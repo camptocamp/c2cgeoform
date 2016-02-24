@@ -88,8 +88,8 @@ make serve
 ```
 
 Visit the following ULRs to verify that the application works correctly:
-[http://localhost:6543/fouille/form/](http://localhost:6543/fouille/form/) and
-[http://localhost:6543/fouille/](http://localhost:6543/fouille/).
+[http://localhost:6543/fouille/form](http://localhost:6543/fouille/form) and
+[http://localhost:6543/admin/fouille](http://localhost:6543/admin/fouille).
 
 
 ### Customise the model

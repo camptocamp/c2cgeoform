@@ -7,39 +7,42 @@ from .subscribers import add_renderer_globals, add_localizer
 
 
 def add_routes_and_views(config):
-    # FIXME the append_slash stuff does not work as expected. When
-    # using /{schema}/form instead /{schema}/form/ the route pattern
-    # /{schema/{id} ("view_admin") will match and cause an exception.
-    config.add_notfound_view('c2cgeoform.views.notfound',
-                             append_slash=True)
-    config.add_route('form', '/{schema}/form/')
+    # User routes
+    config.add_route('form', '/{schema}/form')
     config.add_view('c2cgeoform.views.form',
                     route_name='form',
                     renderer='c2cgeoform:templates/site/form.pt')
+
     config.add_route('confirm', '/{schema}/form/confirm')
     config.add_view('c2cgeoform.views.confirmation',
                     route_name='confirm',
                     renderer='c2cgeoform:templates/site/confirmation.pt')
+
     config.add_route('view_user', '/{schema}/form/{hash}')
     config.add_view('c2cgeoform.views.view_user',
                     route_name='view_user',
                     renderer='c2cgeoform:templates/site/view_user.pt')
-    config.add_route('list', '/{schema}/')
+
+    # Admin routes
+    config.add_route('list', '/admin/{schema}')
     config.add_view('c2cgeoform.views.list',
                     route_name='list',
                     renderer='c2cgeoform:templates/site/list.pt')
-    config.add_route('grid', '/{schema}/grid/')
+
+    config.add_route('grid', '/admin/{schema}/grid')
     config.add_view('c2cgeoform.views.grid',
                     route_name='grid', renderer='json',
                     request_method='POST')
-    config.add_route('edit', '/{schema}/{id}/form')
-    config.add_view('c2cgeoform.views.edit',
-                    route_name='edit',
-                    renderer='c2cgeoform:templates/site/edit.pt')
-    config.add_route('view_admin', '/{schema}/{id}')
+
+    config.add_route('view_admin', '/admin/{schema}/{id}')
     config.add_view('c2cgeoform.views.view_admin',
                     route_name='view_admin',
                     renderer='c2cgeoform:templates/site/view_admin.pt')
+
+    config.add_route('edit', '/admin/{schema}/{id}/edit')
+    config.add_view('c2cgeoform.views.edit',
+                    route_name='edit',
+                    renderer='c2cgeoform:templates/site/edit.pt')
 
 
 def includeme(config):
