@@ -8,15 +8,6 @@ mkdir myproject/templates/widgets
 cp ../.build/venv/src/c2cgeoform/c2cgeoform/templates/widgets/map.pt myproject/templates/widgets/
 ```
 
-Add this lines in imports lines of main __init__.py file :
-
-```python
-import c2cgeoform
-search_paths = ((resource_filename('myproject', 'templates/widgets'),)
-                + c2cgeoform.default_search_paths)
-c2cgeoform.default_search_paths = search_paths
-```
-
 Customize the file, for example, replace :
 
 ```javascript
