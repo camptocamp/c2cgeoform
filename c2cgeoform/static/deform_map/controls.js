@@ -161,7 +161,8 @@ ol.inherits(c2cgeoform.DrawLineControl, c2cgeoform.InteractionControl);
 c2cgeoform.DrawLineControl.prototype.createInteractions = function(source) {
   var drawInteraction = new ol.interaction.Draw({
     source: source,
-    type: 'LineString'
+    type: 'LineString',
+    style: c2cgeoform.measureStyle(c2cgeoform.createDefaultEditingStyles(), 'LineString')
   });
   drawInteraction.on('drawend', this.callback);
   return [drawInteraction];
@@ -179,8 +180,10 @@ ol.inherits(c2cgeoform.DrawPolygonControl, c2cgeoform.InteractionControl);
 c2cgeoform.DrawPolygonControl.prototype.createInteractions = function(source) {
   var drawInteraction = new ol.interaction.Draw({
     source: source,
-    type: 'Polygon'
+    type: 'Polygon',
+    style: c2cgeoform.measureStyle(c2cgeoform.createDefaultEditingStyles(), 'Polygon')
   });
+
   drawInteraction.on('drawend', this.callback);
   return [drawInteraction];
 };
@@ -195,9 +198,18 @@ c2cgeoform.ModifyControl = function(source, onChangeCallback, tooltip) {
 ol.inherits(c2cgeoform.ModifyControl, c2cgeoform.InteractionControl);
 
 c2cgeoform.ModifyControl.prototype.createInteractions = function(source) {
-  var selectInteraction = new ol.interaction.Select();
+  var styles = c2cgeoform.createDefaultEditingStyles();
+  styles[c2cgeoform.GeometryType.POLYGON] = styles[c2cgeoform.GeometryType.POLYGON].concat(
+      styles[c2cgeoform.GeometryType.LINE_STRING]);
+  styles[c2cgeoform.GeometryType.GEOMETRY_COLLECTION] = styles[c2cgeoform.GeometryType.GEOMETRY_COLLECTION].concat(
+      styles[c2cgeoform.GeometryType.LINE_STRING]);
+
+  var selectInteraction = new ol.interaction.Select({
+    style: c2cgeoform.measureStyle(styles)
+  });
   var modifyInteraction = new ol.interaction.Modify({
-    features: selectInteraction.getFeatures()
+    features: selectInteraction.getFeatures(),
+    style: c2cgeoform.measureStyle(c2cgeoform.createDefaultEditingStyles())
   });
   source.on('change', function() {
     // reset the select interaction when the source was emptied
@@ -468,4 +480,139 @@ c2cgeoform.reinitMaps = function() {
       c2cgeoform.zoomToGeometry_(map);
     }
   });
+};
+
+/* need it but not exported in ol3 API */
+c2cgeoform.GeometryType = {
+  POINT: 'Point',
+  LINE_STRING: 'LineString',
+  LINEAR_RING: 'LinearRing',
+  POLYGON: 'Polygon',
+  MULTI_POINT: 'MultiPoint',
+  MULTI_LINE_STRING: 'MultiLineString',
+  MULTI_POLYGON: 'MultiPolygon',
+  GEOMETRY_COLLECTION: 'GeometryCollection',
+  CIRCLE: 'Circle'
+};
+
+/* need it but not exported in ol3 API */
+
+c2cgeoform.createDefaultEditingStyles = function() {
+  var styles = {};
+  var white = [255, 255, 255, 1];
+  var blue = [0, 153, 255, 1];
+  var width = 3;
+  styles[c2cgeoform.GeometryType.POLYGON] = [
+    new ol.style.Style({
+      fill: new ol.style.Fill({
+        color: [255, 255, 255, 0.5]
+      })
+    })
+  ];
+  styles[c2cgeoform.GeometryType.MULTI_POLYGON] =
+      styles[c2cgeoform.GeometryType.POLYGON];
+
+  styles[c2cgeoform.GeometryType.LINE_STRING] = [
+    new ol.style.Style({
+      stroke: new ol.style.Stroke({
+        color: white,
+        width: width + 2
+      })
+    }),
+    new ol.style.Style({
+      stroke: new ol.style.Stroke({
+        color: blue,
+        width: width
+      })
+    })
+  ];
+  styles[c2cgeoform.GeometryType.MULTI_LINE_STRING] =
+      styles[c2cgeoform.GeometryType.LINE_STRING];
+
+  styles[c2cgeoform.GeometryType.CIRCLE] =
+      styles[c2cgeoform.GeometryType.POLYGON].concat(
+          styles[c2cgeoform.GeometryType.LINE_STRING]
+      );
+
+
+  styles[c2cgeoform.GeometryType.POINT] = [
+    new ol.style.Style({
+      image: new ol.style.Circle({
+        radius: width * 2,
+        fill: new ol.style.Fill({
+          color: blue
+        }),
+        stroke: new ol.style.Stroke({
+          color: white,
+          width: width / 2
+        })
+      }),
+      zIndex: Infinity
+    })
+  ];
+  styles[c2cgeoform.GeometryType.MULTI_POINT] =
+      styles[c2cgeoform.GeometryType.POINT];
+
+  styles[c2cgeoform.GeometryType.GEOMETRY_COLLECTION] =
+      styles[c2cgeoform.GeometryType.POLYGON].concat(
+          styles[c2cgeoform.GeometryType.LINE_STRING],
+          styles[c2cgeoform.GeometryType.POINT]
+      );
+
+  return styles;
+};
+
+
+c2cgeoform.measureStyle = function(base_style, for_type) {
+
+  var create_linestring_style = function(linestring) {
+    var styles = [];
+    linestring.getCoordinates().forEach(function(coordinates, index) {
+      if (index > linestring.getCoordinates().length - 2) {
+        return;
+      }
+      var geom = new ol.geom.LineString([linestring.getCoordinates()[index],
+                                         linestring.getCoordinates()[index+1]]);
+      var length = geom.getLength();
+      var style = new ol.style.Style({
+        geometry: geom,
+        text: new ol.style.Text({
+          text: (Math.round(length * 100) / 100) + ' m',
+          stroke: new ol.style.Stroke({
+            color: [255,255,255,1.0],
+            width: 2
+          }),
+        })
+      });
+      styles.push(style);
+    });
+    return styles;
+  }
+
+  return function(feature, resolution) {
+    var style = base_style;
+    var type = feature.getGeometry().getType();
+    if (type in style) {
+      style = style[type];
+    }
+    if (style instanceof ol.style.Style) {
+      style = [style];
+    }
+
+    var measure_style = [];
+    if (for_type == undefined || type == for_type) {
+
+      if (type == 'Polygon') {
+        feature.getGeometry().getLinearRings().forEach(function(linear_ring) {
+          measure_style = measure_style.concat(create_linestring_style(linear_ring));
+        });
+      }
+
+      if (type == 'LineString') {
+        measure_style = measure_style.concat(create_linestring_style(feature.getGeometry()));
+      }
+    }
+
+    return measure_style.concat(style);
+  }
 };
