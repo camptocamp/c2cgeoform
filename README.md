@@ -18,9 +18,9 @@ database it uses [SQLAlchemy](http://www.sqlalchemy.org/) and
 [GeoAlchemy 2](https://geoalchemy-2.readthedocs.org/en/latest/).
 
 Demo links: [fill in
-a form](http://mapfish-geoportal.demo-camptocamp.com/c2cgeoform/wsgi/fouille/form/),
+a form](https://geomapfish-demo.camptocamp.net/c2cgeoform/wsgi/fouille/form/),
 [list form
-submissions](http://mapfish-geoportal.demo-camptocamp.com/c2cgeoform/wsgi/fouille/).
+submissions](https://geomapfish-demo.camptocamp.net/c2cgeoform/wsgi/fouille/).
 
 ## Documentation
 
