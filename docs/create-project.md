@@ -17,7 +17,6 @@ The following system packages must be installed on your system:
 ```shell
 git clone git@github.com:camptocamp/c2cgeoform.git
 cd c2cgeoform
-git checkout scaffold  # until scaffold branch is merged into master
 make install
 ```
 
