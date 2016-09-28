@@ -8,16 +8,21 @@ from sqlalchemy import (
     Date,
     ForeignKey)
 from sqlalchemy.orm import relationship
-import geoalchemy2
 
+import geoalchemy2
 import colander
 import deform
-from translationstring import TranslationStringFactory
 
 from c2cgeoform.ext import colander_ext, deform_ext
-from c2cgeoform.models import Base, FileData
+from c2cgeoform.models import DBSession  # noqa
+from c2cgeoform.models import (
+    Base,
+    FileData,
+    )
 
-_ = TranslationStringFactory('pully')
+
+from translationstring import TranslationStringFactory
+_ = TranslationStringFactory('{{package}}')
 
 
 # FIXME a file upload memory store is not appropriate for production
@@ -317,64 +322,3 @@ class Comment(Base):
                 url=lambda request: request.route_url('bus_stops')
             )
         }})
-
-
-def setup_test_data(settings):
-    from c2cgeoform.models import DBSession
-    import transaction
-
-    if DBSession.query(District).get(0) is None:
-        DBSession.add(District(id=0, name="Pully"))
-        DBSession.add(District(id=1, name="Paudex"))
-        DBSession.add(District(id=2, name="Belmont-sur-Lausanne"))
-        DBSession.add(District(id=3, name="Trois-Chasseurs"))
-        DBSession.add(District(id=4, name="La Claie-aux-Moines"))
-        DBSession.add(District(id=5, name="Savigny"))
-        DBSession.add(District(id=6, name="Mollie-Margot"))
-
-    if DBSession.query(Situation).get(0) is None:
-        DBSession.add(Situation(id=0, name="Road", name_fr="Route"))
-        DBSession.add(Situation(id=1, name="Sidewalk", name_fr="Trottoir"))
-        DBSession.add(Situation(id=2, name="Berm", name_fr="Berme"))
-        DBSession.add(Situation(
-            id=3, name="Vegetated berm", name_fr="Berme végétalisée"))
-        DBSession.add(Situation(id=4, name="Green zone", name_fr="Zone verte"))
-        DBSession.add(Situation(id=5, name="Cobblestone", name_fr="Pavés"))
-
-    if DBSession.query(BusStop).count() == 0:
-        _add_bus_stops(DBSession, settings['bus_stops_file'])
-
-    if DBSession.query(Address).get(0) is None:
-        DBSession.add(Address(id=0, label="Bern"))
-        DBSession.add(Address(id=1, label="Lausanne"))
-        DBSession.add(Address(id=2, label="Genève"))
-        DBSession.add(Address(id=3, label="Zurich"))
-        DBSession.add(Address(id=4, label="Lugano"))
-
-    transaction.commit()
-
-
-def _add_bus_stops(session, filepath):
-    """
-    Load test data from a GeoJSON file.
-    """
-    import json
-    from shapely.geometry import shape
-
-    file = open(filepath)
-    geojson = json.load(file)
-    file.close()
-
-    bus_stops = []
-    for feature in geojson['features']:
-        id = feature['id'].replace('node/', '')
-        geometry = shape(feature['geometry'])
-        name = feature['properties']['name'] \
-            if 'name' in feature['properties'] else ''
-        bus_stop = BusStop(
-            id=long(float(id)),
-            geom='SRID=4326;' + geometry.wkt,
-            name=name)
-        bus_stops.append(bus_stop)
-
-    session.add_all(bus_stops)

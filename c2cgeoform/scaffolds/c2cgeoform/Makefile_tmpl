@@ -1,8 +1,5 @@
-MO_FILES = $(addprefix c2cgeoform/locale/, fr/LC_MESSAGES/c2cgeoform.mo de/LC_MESSAGES/c2cgeoform.mo)
+MO_FILES = $(addprefix {{package}}/locale/, fr/LC_MESSAGES/{{package}}.mo de/LC_MESSAGES/{{package}}.mo)
 
-
-.PHONY: all
-all: help
 
 .PHONY: help
 help:
@@ -10,9 +7,11 @@ help:
 	@echo
 	@echo "Possible targets:"
 	@echo
-	@echo "- install                 Install c2cgeoform"
+	@echo "- install                 Install {{project}}"
 	@echo "- initdb                  (Re-)initialize the database"
+	@echo "- serve                   Run the dev server"
 	@echo "- check                   Check the code with flake8"
+	@echo "- modwsgi                 Create files for Apache mod_wsgi"
 	@echo "- test                    Run the unit tests"
 	@echo "- dist                    Build a source distribution"
 	@echo "- compile-catalog         Compile message catalog"
@@ -20,14 +19,14 @@ help:
 
 .PHONY: install
 install: pip-install compile-catalog
-	
+
 .PHONY: pip-install
 pip-install: .build/venv
-	.build/venv/bin/pip install -U -e .
+	.build/venv/bin/pip install -U -r requirements.txt
 
 .PHONY: initdb
 initdb:
-	.build/venv/bin/initialize_c2cgeoform_db development.ini
+	.build/venv/bin/initialize_{{package}}_db development.ini
 
 .PHONY: serve
 serve:
@@ -38,7 +37,10 @@ check: flake8
 
 .PHONY: flake8
 flake8: .build/venv/bin/flake8
-	.build/venv/bin/flake8 c2cgeoform
+	.build/venv/bin/flake8 {{package}}
+
+.PHONY: modwsgi
+modwsgi: install .build/venv/{{package}}.wsgi .build/apache.conf
 
 .PHONY: test
 test:
@@ -46,12 +48,12 @@ test:
 
 .PHONY: update-catalog
 update-catalog:
-	.build/venv/bin/pot-create -c lingua.cfg -o c2cgeoform/locale/c2cgeoform.pot \
-	    c2cgeoform/models.py \
-	    c2cgeoform/views.py \
-	    c2cgeoform/templates/
-	msgmerge --update c2cgeoform/locale/fr/LC_MESSAGES/c2cgeoform.po c2cgeoform/locale/c2cgeoform.pot
-	msgmerge --update c2cgeoform/locale/de/LC_MESSAGES/c2cgeoform.po c2cgeoform/locale/c2cgeoform.pot
+	.build/venv/bin/pot-create -c lingua.cfg -o {{package}}/locale/{{package}}.pot \
+	    {{package}}/models.py \
+	    {{package}}/views/ \
+	    {{package}}/templates/
+	msgmerge --update {{package}}/locale/fr/LC_MESSAGES/{{package}}.po {{package}}/locale/{{package}}.pot
+	msgmerge --update {{package}}/locale/de/LC_MESSAGES/{{package}}.po {{package}}/locale/{{package}}.pot
 
 .PHONY: compile-catalog
 compile-catalog: $(MO_FILES)
@@ -75,9 +77,18 @@ dist: .build/venv compile-catalog
 .build/venv/bin/flake8: .build/venv
 	.build/venv/bin/pip install -r requirements-dev.txt > /dev/null 2>&1
 
+.build/venv/{{package}}.wsgi: {{package}}.wsgi
+	sed 's#[DIR]#$(CURDIR)#' $< > $@
+	chmod 755 $@
+
+.build/apache.conf: apache.conf .build/venv
+	sed -e 's#[PYTHONPATH]#$(shell .build/venv/bin/python -c "import distutils; print(distutils.sysconfig.get_python_lib())")#' \
+        -e 's#[WSGISCRIPT]#$(abspath .build/venv/{{package}}.wsgi)#' $< > $@
 
 .PHONY: clean
 clean:
+	rm -f .build/venv/{{package}}.wsgi
+	rm -f .build/apache.conf
 	rm -f $(MO_FILES)
 
 .PHONY: cleanall
