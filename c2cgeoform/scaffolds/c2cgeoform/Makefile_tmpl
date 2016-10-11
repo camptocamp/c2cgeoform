@@ -78,12 +78,12 @@ dist: .build/venv compile-catalog
 	.build/venv/bin/pip install -r requirements-dev.txt > /dev/null 2>&1
 
 .build/venv/{{package}}.wsgi: {{package}}.wsgi
-	sed 's#[DIR]#$(CURDIR)#' $< > $@
+	sed 's#\[DIR\]#$(CURDIR)#' $< > $@
 	chmod 755 $@
 
 .build/apache.conf: apache.conf .build/venv
-	sed -e 's#[PYTHONPATH]#$(shell .build/venv/bin/python -c "import distutils; print(distutils.sysconfig.get_python_lib())")#' \
-        -e 's#[WSGISCRIPT]#$(abspath .build/venv/{{package}}.wsgi)#' $< > $@
+	sed -e 's#\[PYTHONPATH\]#$(shell .build/venv/bin/python -c "import distutils.sysconfig; print(distutils.sysconfig.get_python_lib())")#' \
+        -e 's#\[WSGISCRIPT\]#$(abspath .build/venv/{{package}}.wsgi)#' $< > $@
 
 .PHONY: clean
 clean:
