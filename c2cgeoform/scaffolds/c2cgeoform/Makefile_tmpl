@@ -25,11 +25,11 @@ pip-install: .build/venv
 	.build/venv/bin/pip install -U -r requirements.txt
 
 .PHONY: initdb
-initdb:
+initdb: .build/venv
 	.build/venv/bin/initialize_{{package}}_db development.ini
 
 .PHONY: serve
-serve:
+serve: .build/venv
 	.build/venv/bin/pserve --reload development.ini
 
 .PHONY: check
@@ -43,7 +43,7 @@ flake8: .build/venv/bin/flake8
 modwsgi: install .build/venv/{{package}}.wsgi .build/apache.conf
 
 .PHONY: test
-test:
+test: .build/venv
 	.build/venv/bin/python setup.py test
 
 .PHONY: update-catalog
