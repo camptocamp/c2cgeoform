@@ -20,17 +20,17 @@ help:
 
 .PHONY: install
 install: pip-install compile-catalog
-	
+
 .PHONY: pip-install
 pip-install: .build/venv
 	.build/venv/bin/pip install -U -e .
 
 .PHONY: initdb
-initdb:
+initdb: .build/venv
 	.build/venv/bin/initialize_c2cgeoform_db development.ini
 
 .PHONY: serve
-serve:
+serve: .build/venv
 	.build/venv/bin/pserve --reload development.ini
 
 .PHONY: check
@@ -41,11 +41,11 @@ flake8: .build/venv/bin/flake8
 	.build/venv/bin/flake8 c2cgeoform
 
 .PHONY: test
-test:
+test: .build/venv
 	.build/venv/bin/python setup.py test
 
 .PHONY: update-catalog
-update-catalog:
+update-catalog: .build/venv
 	.build/venv/bin/pot-create -c lingua.cfg -o c2cgeoform/locale/c2cgeoform.pot \
 	    c2cgeoform/models.py \
 	    c2cgeoform/views.py \
