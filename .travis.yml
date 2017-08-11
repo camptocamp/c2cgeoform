@@ -1,0 +1,20 @@
+language: python
+python:
+  - "2.7"
+  - "3.4"
+
+dist: trusty
+
+install: make install
+
+before_script:
+  - sudo apt-get update
+  - sudo apt-get autoremove postgis*
+  - sudo apt-get autoremove postgresql*
+  - sudo apt-get install postgresql-9.3-postgis-2.1
+
+  - psql -c "CREATE USER c2cgeoform WITH PASSWORD 'c2cgeoform';" -U postgres
+  - psql -c "CREATE DATABASE c2cgeoform WITH OWNER c2cgeoform;" -U postgres
+  - psql -d c2cgeoform -c "CREATE EXTENSION postgis;" -U postgres
+
+script: make check && make test
