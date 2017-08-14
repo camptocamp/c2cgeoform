@@ -11,9 +11,9 @@ from colander import SchemaNode, Mapping
 from translationstring import TranslationStringFactory
 import uuid
 
-from .models import DBSession
-from .schema import forms
-from .ext.deform_ext import RecaptchaWidget
+from c2cgeoform.models import DBSession
+from c2cgeoform.schema import forms
+from c2cgeoform.ext.deform_ext import RecaptchaWidget
 
 _ = TranslationStringFactory('c2cgeoform')
 
