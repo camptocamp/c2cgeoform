@@ -11,7 +11,8 @@ with open(os.path.join(here, 'CHANGES.txt')) as f:
 requires = [
     'pyramid',
     'pyramid_chameleon',
-    'deform==2.0a2',
+    'deform==2.0.4',
+    'webhelpers>=1.3',
     'pyramid_beaker',
     'lingua>=2.4']
 
@@ -35,6 +36,8 @@ setup(name='c2cgeoform',
       test_suite='c2cgeoform',
       install_requires=requires,
       entry_points="""\
+      [paste.app_factory]
+        main=c2cgeoform:main
       [pyramid.scaffold]
         c2cgeoform=c2cgeoform.scaffolds:C2cgeoformTemplate
       """,

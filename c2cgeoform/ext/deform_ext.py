@@ -180,7 +180,7 @@ class RelationMultiSelectMixin(RelationSelectMixin):
         raise RuntimeError(
             'The foreign key column for table "' + self.model.__table__.name +
             '" can not be found in the ' + 'relation table "' +
-            relation_table.local_table.name + '" for field "' +
+            relation_table.__table__.name + '" for field "' +
             field.name + '".')
 
     def _get_mapped_id_field_name(self, relation_table):

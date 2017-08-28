@@ -1,5 +1,14 @@
 #
 # This file defines the requirements.txt for development.
 #
+sqlalchemy==1.1.13
+geoalchemy2==0.4.0
+shapely==1.5.17.post1
+pyproj==1.9.5.1
+zope.sqlalchemy==0.7.7
+psycopg2==2.7.3
+colanderalchemy==0.3.3
+
 flake8==2.2.2
 pep8-naming==0.2.2
+nose==1.3.7

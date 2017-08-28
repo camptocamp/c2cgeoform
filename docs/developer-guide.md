@@ -27,7 +27,7 @@ $ psql -d c2cgeoform -c "CREATE EXTENSION postgis;"
 
 ### Configuration
 
-Edit `development.ini` and modify the SQLAlchemy database connection string as
+Edit `tests.ini` and modify the SQLAlchemy database connection string as
 appropriate.
 
 For example:
@@ -54,14 +54,6 @@ Initialize the database:
 
 ```shell
 $ make initdb
-```
-
-### Start the dev server
-
-Start the dev server:
-
-```shell
-$ make serve
 ```
 
 ### Run the tests

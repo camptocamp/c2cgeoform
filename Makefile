@@ -19,30 +19,18 @@ help:
 	@echo
 
 .PHONY: install
-install: pip-install compile-catalog
-
-.PHONY: pip-install
-pip-install: .build/venv
-	.build/venv/bin/pip install -U -e .
-
-.PHONY: initdb
-initdb: .build/venv
-	.build/venv/bin/initialize_c2cgeoform_db development.ini
-
-.PHONY: serve
-serve: .build/venv
-	.build/venv/bin/pserve --reload development.ini
+build: .build/requirements.timestamp compile-catalog
 
 .PHONY: check
 check: flake8
 
 .PHONY: flake8
-flake8: .build/venv/bin/flake8
+flake8: .build/requirements-dev.timestamp
 	.build/venv/bin/flake8 c2cgeoform
 
 .PHONY: test
-test: .build/venv
-	.build/venv/bin/python setup.py test
+test: .build/requirements.timestamp .build/requirements-dev.timestamp
+	.build/venv/bin/nosetests --ignore-files=test_views.py
 
 .PHONY: update-catalog
 update-catalog: .build/venv
@@ -72,9 +60,13 @@ dist: .build/venv compile-catalog
 	# remove the temporary virtualenv
 	rm -rf venv
 
-.build/venv/bin/flake8: .build/venv
-	.build/venv/bin/pip install -r requirements-dev.txt > /dev/null 2>&1
+.build/requirements.timestamp: .build/venv setup.py
+	.build/venv/bin/pip install -U -e .
+	touch .build/requirements.timestamp
 
+.build/requirements-dev.timestamp: .build/venv requirements-dev.txt
+	.build/venv/bin/pip install -r requirements-dev.txt > /dev/null 2>&1
+	touch .build/requirements-dev.timestamp
 
 .PHONY: clean
 clean:

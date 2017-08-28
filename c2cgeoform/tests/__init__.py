@@ -14,7 +14,7 @@ class DatabaseTestCase(unittest.TestCase):
     def setUp(self):  # noqa
         curdir = os.path.dirname(os.path.abspath(__file__))
         configfile = os.path.realpath(
-            os.path.join(curdir, '../../development.ini'))
+            os.path.join(curdir, '../../tests.ini'))
         settings = get_appsettings(configfile)
         apply_local_settings(settings)
         engine = engine_from_config(settings, 'sqlalchemy.')
