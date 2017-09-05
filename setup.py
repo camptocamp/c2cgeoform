@@ -12,7 +12,7 @@ requires = [
     'pyramid',
     'pyramid_chameleon',
     'deform==2.0.4',
-    'webhelpers>=1.3',
+    'paginate',
     'pyramid_beaker',
     'lingua>=2.4']
 

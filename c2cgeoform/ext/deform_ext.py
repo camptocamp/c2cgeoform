@@ -7,7 +7,6 @@ from deform.widget import (FileUploadWidget as DeformFileUploadWidget,
                            MappingWidget)
 from sqlalchemy.inspection import inspect
 import urllib
-import urllib2
 import json
 import logging
 
@@ -776,7 +775,7 @@ class RecaptchaWidget(MappingWidget):
 
         try:
             resp = urllib2.urlopen(self.url, data)
-        except urllib2.URLError, e:
+        except urllib2.URLError as e:
             log.error('reCaptcha connection problem: %s', e.reason)
             raise Invalid(field.schema, _("Connection problem"), pstruct)
 

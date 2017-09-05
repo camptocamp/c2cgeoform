@@ -1,6 +1,4 @@
-
-from exceptions import NotImplementedError
-from webhelpers import paginate
+import paginate
 
 from sqlalchemy import desc, or_, types
 from geoalchemy2.elements import WKBElement
@@ -30,7 +28,7 @@ class AbstractViews():
         sort = self._get_sort_param(self._request.POST)
 
         query = self._get_query(sort, search_phrase)
-        page = paginate.Page(query,
+        page = paginate.Page(query.all(),
                              page=current_page,
                              items_per_page=row_count)
 
