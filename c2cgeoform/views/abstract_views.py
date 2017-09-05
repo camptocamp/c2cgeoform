@@ -1,9 +1,16 @@
+
 import paginate
 
-from sqlalchemy import desc, or_, types
+from deform import Form, ValidationFailure, ZPTRendererFactory
+from deform.form import Button
 from geoalchemy2.elements import WKBElement
+from pyramid.httpexceptions import HTTPFound
+from sqlalchemy import desc, or_, types
+from translationstring import TranslationStringFactory
 
 from c2cgeoform.models import DBSession
+
+_ = TranslationStringFactory('c2cgeoform')
 
 
 class AbstractViews():
@@ -11,6 +18,7 @@ class AbstractViews():
     _model = None  # sqlalchemy model
     _list_fields = []  # Fields in list
     _id_field = None  # Primary key
+    _base_schema = None  # base colander schema
 
     def __init__(self, request):
         self._request = request
@@ -106,8 +114,52 @@ class AbstractViews():
 
         return query
 
-    def create(self):
-        raise NotImplementedError()
+    def _form(self):
+        form = Form(
+            self._base_schema.clone(),
+            buttons=(Button(name='formsubmit', title=_('Submit')),),
+            #renderer=renderer,
+            action=self._request.route_url(self._request.matched_route.name))
+
+        #_set_form_widget(form, geo_form_schema.schema_user, template)
+        self._populate_widgets(form.schema)
+        return form
+
+    def _populate_widgets(self, schema):
+        pass
+
+    def new(self):
+        form = self._form()
+
+        if len(self._request.POST) > 0:
+            form_data = self._request.POST.items()
+            try:
+                obj_dict = form.validate(form_data)
+                obj = form.schema.objectify(obj_dict)
+                self._request.session.add(obj)
+                self._request.session.flush()
+
+                # Update server side calculated fields
+                # self._request.session.expire(obj)
+
+                return obj
+
+            except ValidationFailure as e:
+                # FIXME see https://github.com/Pylons/deform/pull/243
+                rendered = e.field.widget.serialize(
+                    e.field, e.cstruct, request=self._request)
+
+        else:
+            # empty form
+            rendered = form.render(form.schema.dictify(self._new_object()),
+                                   request=self._request)
+
+        return {
+            'form': rendered,
+            'deform_dependencies': form.get_widget_resources()}
+
+    def _new_object(self):
+        return self._model()
 
     def view(self):
         raise NotImplementedError()

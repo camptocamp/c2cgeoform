@@ -1,4 +1,7 @@
 
+from colanderalchemy import SQLAlchemySchemaNode
+from unittest.mock import Mock
+
 from c2cgeoform.models import DBSession
 from c2cgeoform.tests import DatabaseTestCase
 from c2cgeoform.tests.models_test import Person
@@ -35,6 +38,7 @@ class ConcreteViews(AbstractViews):
     _model = Person
     _id_field = 'id'
     _list_fields = ['name', 'first_name']
+    _base_schema = SQLAlchemySchemaNode(Person, title='Person')
 
 
 class TestAbstractViews(DatabaseTestCase):
@@ -63,3 +67,43 @@ class TestAbstractViews(DatabaseTestCase):
         self.assertEquals(5, len(rows))
         self.assertTrue('_id_' in rows[0])
         self.assertEquals('Smith', rows[0]['name'])
+
+    def test_new_get(self):
+        self.request.matched_route = Mock(name='person_new')
+        self.request.route_url = Mock(return_value='person_new')
+
+        views = ConcreteViews(self.request)
+        response = views.new()
+
+        self.assertIn('form', response)
+        self.assertIn('deform_dependencies', response)
+
+    def test_new_post_validation_error(self):
+        self.request.matched_route = Mock(name='person_new')
+        self.request.route_url = Mock(return_value='person_new')
+
+        self.request.POST['first_name'] = 'arnaud'
+        self.request.POST['age'] = '37'
+
+        views = ConcreteViews(self.request)
+        response = views.new()
+
+        self.assertIn('form', response)
+        self.assertIn('deform_dependencies', response)
+
+    def test_new_post_success(self):
+        self.request.matched_route = Mock(name='person_new')
+        self.request.route_url = Mock(return_value='person_new')
+        self.request.session.add = Mock()
+        self.request.session.flush = Mock()
+
+        self.request.POST['name'] = 'morvan'
+        self.request.POST['first_name'] = 'arnaud'
+        self.request.POST['age'] = '37'
+
+        views = ConcreteViews(self.request)
+        response = views.new()
+
+        self.assertIsInstance(response, Person)
+        self.request.session.add.assert_called_once_with(response)
+        self.request.session.flush.assert_called_once_with()
