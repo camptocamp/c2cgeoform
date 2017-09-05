@@ -20,7 +20,7 @@ class DatabaseTestCase(unittest.TestCase):
         engine = engine_from_config(settings, 'sqlalchemy.')
         DBSession.configure(bind=engine)
 
-        from models_test import Person, EmploymentStatus, Tag  # noqa
+        from .models_test import Person, EmploymentStatus, Tag  # noqa
         Base.metadata.create_all(engine)
         self.cleanup()
 
@@ -54,7 +54,7 @@ class DatabaseTestCase(unittest.TestCase):
         testing.tearDown()
 
     def cleanup(self):
-        from models_test import Person, EmploymentStatus, Phone,\
+        from .models_test import Person, EmploymentStatus, Phone, \
             Tag, TagsForPerson
         DBSession.query(TagsForPerson).delete()
         DBSession.query(Tag).delete()

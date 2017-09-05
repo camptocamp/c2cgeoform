@@ -1,3 +1,5 @@
+BUILD_DIR?=.build
+VENV?=${BUILD_DIR}/venv
 MO_FILES = $(addprefix c2cgeoform/locale/, fr/LC_MESSAGES/c2cgeoform.mo de/LC_MESSAGES/c2cgeoform.mo)
 
 
@@ -54,11 +56,7 @@ dist: .build/venv compile-catalog
 .build/venv:
 	mkdir -p $(dir $@)
 	# make a first virtualenv to get a recent version of virtualenv
-	virtualenv venv
-	venv/bin/pip install virtualenv
-	venv/bin/virtualenv --no-site-packages .build/venv
-	# remove the temporary virtualenv
-	rm -rf venv
+	python3 -m venv ${VENV}
 
 .build/requirements.timestamp: .build/venv setup.py
 	.build/venv/bin/pip install -U -e .
