@@ -21,8 +21,8 @@ class TestGeometry(DatabaseTestCase):
         from shapely.geometry.point import Point
         wkb = from_shape(Point(1.0, 2.0))
         self.assertEquals(
-            '{"type": "Point", "coordinates": [1.0, 2.0]}',
-            geom_schema.serialize({}, wkb))
+            {"type": "Point", "coordinates": [1.0, 2.0]},
+            json.loads(geom_schema.serialize({}, wkb)))
 
     def test_serialize_reproject(self):
         from c2cgeoform.ext.colander_ext import Geometry
