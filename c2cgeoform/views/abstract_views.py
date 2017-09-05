@@ -80,8 +80,11 @@ class AbstractViews():
 
         return rows
 
+    def _get_base_query(self):
+        return DBSession.query(self._model)
+
     def _get_query(self, sort, search_phrase):
-        query = DBSession.query(self._model)
+        query = self._get_base_query()
 
         # order by
         if sort is not None and hasattr(self._model, sort[0]):
