@@ -94,7 +94,7 @@ def _add_bus_stops():
         name = feature['properties']['name'] \
             if 'name' in feature['properties'] else ''
         bus_stop = BusStop(
-            id=long(float(id)),
+            id=int(float(id)),
             geom='SRID=4326;' + geometry.wkt,
             name=name)
         bus_stops.append(bus_stop)

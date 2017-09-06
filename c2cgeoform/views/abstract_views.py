@@ -1,14 +1,15 @@
 
 import paginate
 
-from deform import Form, ValidationFailure, ZPTRendererFactory
+from deform import Form, ValidationFailure  # , ZPTRendererFactory
 from deform.form import Button
 from geoalchemy2.elements import WKBElement
-from pyramid.httpexceptions import HTTPFound
+# from pyramid.httpexceptions import HTTPFound
 from sqlalchemy import desc, or_, types
 from translationstring import TranslationStringFactory
 
 from c2cgeoform.models import DBSession
+import functools
 
 _ = TranslationStringFactory('c2cgeoform')
 
@@ -109,7 +110,7 @@ class AbstractViews():
             # then join the filters into one `or` condition
             if len(filters) > 0:
                 filter_expr = filters.pop()
-                filter_expr = reduce(
+                filter_expr = functools.reduce(
                     lambda filter_expr, filter: or_(filter_expr, filter),
                     filters,
                     filter_expr)
@@ -121,10 +122,10 @@ class AbstractViews():
         form = Form(
             self._base_schema.clone(),
             buttons=(Button(name='formsubmit', title=_('Submit')),),
-            #renderer=renderer,
+            # renderer=renderer,
             action=self._request.route_url(self._request.matched_route.name))
 
-        #_set_form_widget(form, geo_form_schema.schema_user, template)
+        # _set_form_widget(form, geo_form_schema.schema_user, template)
         self._populate_widgets(form.schema)
         return form
 
