@@ -774,8 +774,8 @@ class RecaptchaWidget(MappingWidget):
                                  'remoteip': remoteip})
 
         try:
-            resp = urllib2.urlopen(self.url, data)
-        except urllib2.URLError as e:
+            resp = urllib.request.urlopen(self.url, data)
+        except urllib.error.URLError as e:
             log.error('reCaptcha connection problem: %s', e.reason)
             raise Invalid(field.schema, _("Connection problem"), pstruct)
 
