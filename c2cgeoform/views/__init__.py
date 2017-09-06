@@ -14,6 +14,7 @@ import uuid
 from c2cgeoform.models import DBSession
 from c2cgeoform.schema import forms
 from c2cgeoform.ext.deform_ext import RecaptchaWidget
+import functools
 
 _ = TranslationStringFactory('c2cgeoform')
 
@@ -306,7 +307,7 @@ def _get_query(geo_form_schema, sort, search_phrase):
         # then join the filters into one `or` condition
         if len(filters) > 0:
             filter_expr = filters.pop()
-            filter_expr = reduce(
+            filter_expr = functools.reduce(
                 lambda filter_expr, filter: or_(filter_expr, filter),
                 filters,
                 filter_expr)
