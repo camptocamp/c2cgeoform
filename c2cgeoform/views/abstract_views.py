@@ -10,7 +10,6 @@ from translationstring import TranslationStringFactory
 from sqlalchemy.exc import DBAPIError
 from pyramid.response import Response
 
-from c2cgeoform.models import DBSession
 import functools
 
 _ = TranslationStringFactory('c2cgeoform')
@@ -43,14 +42,17 @@ class AbstractViews():
         self._request = request
 
     def column_label(self, id):
-        if not 'colanderalchemy' in self._model.__getattribute__(self._model, id).info:
-            return id;
-        if not 'title' in self._model.__getattribute__(self._model, id).info['colanderalchemy']:
+        col_info = self._model.__getattribute__(self._model, id).info
+        if 'colanderalchemy' not in col_info:
             return id
-        return self._request.localizer.translate(self._model.__getattribute__(self._model, id).info['colanderalchemy']['title'])
+        if 'title' not in col_info['colanderalchemy']:
+            return id
+        to_translate = col_info['colanderalchemy']['title']
+        return self._request.localizer.translate(to_translate)
 
     def index(self):
-        return {'list_fields' : [(id, self.column_label(id)) for id in self._list_fields]}
+        list_fields = [(id, self.column_label(id)) for id in self._list_fields]
+        return {'list_fields': list_fields}
 
     def grid(self):
         """API method which serves the JSON data for the Bootgrid table
@@ -76,8 +78,6 @@ class AbstractViews():
             }
         except DBAPIError:
             return Response(db_err_msg, content_type='text/plain', status=500)
-
-
 
     def _get_sort_param(self, params):
         for key in params:

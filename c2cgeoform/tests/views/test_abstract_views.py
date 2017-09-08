@@ -47,7 +47,10 @@ class TestAbstractViews(DatabaseTestCase):
         views = ConcreteViews(self.request)
         views._model = Person
         response = views.index()
-        self.assertEquals(response, {'list_fields': [('name', 'Your name'), ('first_name', 'Your first name')]})
+        expected = {'list_fields':
+                    [('name', 'Your name'),
+                     ('first_name', 'Your first name')]}
+        self.assertEquals(response, expected)
 
     def test_grid(self):
         _add_test_persons()
