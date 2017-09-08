@@ -7,11 +7,29 @@ from geoalchemy2.elements import WKBElement
 # from pyramid.httpexceptions import HTTPFound
 from sqlalchemy import desc, or_, types
 from translationstring import TranslationStringFactory
+from sqlalchemy.exc import DBAPIError
+from pyramid.response import Response
 
 from c2cgeoform.models import DBSession
 import functools
 
 _ = TranslationStringFactory('c2cgeoform')
+
+db_err_msg = """\
+Pyramid is having a problem using your SQL database.  The problem
+might be caused by one of the following things:
+
+1.  You may need to run the "initialize_c2cgeoportal_admin_db" script
+    to initialize your database tables.  Check your virtual
+    environment's "bin" directory for this script and try to run it.
+
+2.  Your database server may not be running.  Check that the
+    database server referred to by the "sqlalchemy.url" setting in
+    your "development.ini" file is running.
+
+After you fix the problem, please restart the Pyramid application to
+try it again.
+"""
 
 
 class AbstractViews():
@@ -24,29 +42,42 @@ class AbstractViews():
     def __init__(self, request):
         self._request = request
 
+    def column_label(self, id):
+        if not 'colanderalchemy' in self._model.__getattribute__(self._model, id).info:
+            return id;
+        if not 'title' in self._model.__getattribute__(self._model, id).info['colanderalchemy']:
+            return id
+        return self._request.localizer.translate(self._model.__getattribute__(self._model, id).info['colanderalchemy']['title'])
+
     def index(self):
-        return {}
+        return {'list_fields' : [(id, self.column_label(id)) for id in self._list_fields]}
 
     def grid(self):
         """API method which serves the JSON data for the Bootgrid table
         in the admin view.
         """
-        current_page = int(self._request.POST.get('current'))
-        row_count = int(self._request.POST.get('rowCount'))
-        search_phrase = self._request.POST.get('searchPhrase', '').strip()
-        sort = self._get_sort_param(self._request.POST)
+        try:
+            current_page = int(self._request.POST.get('current'))
+            row_count = int(self._request.POST.get('rowCount'))
+            search_phrase = self._request.POST.get('searchPhrase', '').strip()
+            sort = self._get_sort_param(self._request.POST)
 
-        query = self._get_query(sort, search_phrase)
-        page = paginate.Page(query.all(),
-                             page=current_page,
-                             items_per_page=row_count)
+            query = self._get_query(sort, search_phrase)
 
-        return {
-            "current": page.page,
-            "rowCount": page.items_per_page,
-            "rows": self._get_grid_rows(page.items),
-            "total": page.item_count
-        }
+            page = paginate.Page(query.all(),
+                                 page=current_page,
+                                 items_per_page=row_count)
+
+            return {
+                "current": page.page,
+                "rowCount": page.items_per_page,
+                "rows": self._get_grid_rows(page.items),
+                "total": page.item_count
+            }
+        except DBAPIError:
+            return Response(db_err_msg, content_type='text/plain', status=500)
+
+
 
     def _get_sort_param(self, params):
         for key in params:
@@ -82,7 +113,7 @@ class AbstractViews():
         return rows
 
     def _get_base_query(self):
-        return DBSession.query(self._model)
+        return self._request.dbsession.query(self._model)
 
     def _get_query(self, sort, search_phrase):
         query = self._get_base_query()
