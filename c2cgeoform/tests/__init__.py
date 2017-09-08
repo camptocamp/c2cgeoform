@@ -38,7 +38,7 @@ class DatabaseTestCase(unittest.TestCase):
         DBSession.add(Tag(id=3, name='Tag D'))
         DBSession.add(Tag(id=4, name='Tag E'))
 
-        self.request = testing.DummyRequest(post=MultiDict())
+        self.request = testing.DummyRequest(post=MultiDict(), dbsession=DBSession)
         testing.setUp(request=self.request)
 
         config = testing.setUp()
