@@ -3,6 +3,9 @@
     <h3>${_("All entities")}</h3>
 
     <div class="list-grid">
+
+      <a class='btn btn-primary btn-new' href="${request.route_url('c2cgeoform_new')}">${_("New")}</a>
+
       <table id="grid" data-toggle="bootgrid" class="table table-condensed table-hover table-striped">
         <thead>
           <tr>
