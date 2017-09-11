@@ -6,6 +6,14 @@ Getting Started
 
 - cd <directory containing this file>
 
+- sudo su postgres
+
+- psql -c "CREATE USER \"www-data\" WITH PASSWORD 'www-data';"
+
+- export DATABASE={{project}}
+- psql -d postgres -c "CREATE DATABASE $DATABASE OWNER \"www-data\";"
+- psql -d $DATABASE -c "CREATE EXTENSION postgis;"
+
 - $VENV/bin/python setup.py develop
 
 - $VENV/bin/initialize_{{project}}_db development.ini
