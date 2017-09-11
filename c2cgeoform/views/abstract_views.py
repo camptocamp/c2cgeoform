@@ -207,7 +207,7 @@ class AbstractViews():
     def edit(self):
         form = self._form()
 
-        if len(self._request.POST) > 0:
+        if self._request.method == 'POST':
             form_data = self._request.POST.items()
             try:
                 obj_dict = form.validate(form_data)
