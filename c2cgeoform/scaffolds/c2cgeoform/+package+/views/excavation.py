@@ -26,3 +26,9 @@ class ExcavationViews(AbstractViews):
                  renderer='json')
     def grid(self):
         return super().grid()
+
+    @view_config(route_name='c2cgeoform_new',
+                 match_param=('table=excavation'),
+                 renderer='c2cgeoform:templates/site/new.pt')
+    def new(self):
+        return super().new()
