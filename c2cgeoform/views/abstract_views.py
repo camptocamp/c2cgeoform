@@ -41,7 +41,7 @@ class AbstractViews():
     def __init__(self, request):
         self._request = request
 
-    def column_label(self, id):
+    def _col_label(self, id):
         col_info = self._model.__getattribute__(self._model, id).info
         if 'colanderalchemy' not in col_info:
             return id
@@ -51,7 +51,7 @@ class AbstractViews():
         return self._request.localizer.translate(to_translate)
 
     def index(self):
-        list_fields = [(id, self.column_label(id)) for id in self._list_fields]
+        list_fields = [(id, self._col_label(id)) for id in self._list_fields]
         return {'list_fields': list_fields}
 
     def grid(self):
@@ -154,8 +154,8 @@ class AbstractViews():
             self._base_schema.clone(),
             buttons=(Button(name='formsubmit', title=_('Submit')),),
             # renderer=renderer,
-            action=self._request.route_url(self._request.matched_route.name))
-
+            # action=self._request.route_url(self._request.matched_route.name))
+            )
         # _set_form_widget(form, geo_form_schema.schema_user, template)
         self._populate_widgets(form.schema)
         return form
@@ -196,11 +196,37 @@ class AbstractViews():
     def _new_object(self):
         return self._model()
 
+    def _get_object(self):
+        pk = self._request.matchdict.get('id')
+        return self._get_base_query() \
+            .filter("{0}='{1}'".format(self._id_field, pk)).all()[0]
+
     def view(self):
         raise NotImplementedError()
 
     def edit(self):
-        raise NotImplementedError()
+        form = self._form()
+
+        if len(self._request.POST) > 0:
+            form_data = self._request.POST.items()
+            try:
+                obj_dict = form.validate(form_data)
+                obj = form.schema.objectify(obj_dict)
+                self._request.dbsession.begin_nested()
+                self._request.dbsession.merge(obj)
+                self._request.dbsession.commit()
+
+                # Update server side calculated fields
+                # self._request.session.expire(obj)
+
+            except ValidationFailure as e:
+                # FIXME see https://github.com/Pylons/deform/pull/243
+                rendered = e.field.widget.serialize(
+                    e.field, e.cstruct, request=self._request)
+
+        obj = self._get_object()
+        rendered = form.render(form.schema.dictify(obj), request=self._request)
+        return({'form': rendered})
 
     def delete(self):
         raise NotImplementedError()
