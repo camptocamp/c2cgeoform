@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2017-09-11 16:39+0200\n"
+"POT-Creation-Date: 2017-09-12 11:08+0200\n"
 "PO-Revision-Date: 2014-07-31 11:14+0200\n"
 "Last-Translator: Tobias Sauerwein <tobias.sauerwein@camptocamp.com>\n"
 "Language-Team: German\n"
@@ -19,41 +19,45 @@ msgstr ""
 msgid "All entities"
 msgstr "Alle Einträge"
 
-#: c2cgeoform/templates/site/index.pt:23
+#: c2cgeoform/templates/site/index.pt:15
+msgid "New"
+msgstr "Neu"
+
+#: c2cgeoform/templates/site/index.pt:29
 msgid "Commands"
 msgstr "Aktionen"
 
-#: c2cgeoform/templates/site/index.pt:35
+#: c2cgeoform/templates/site/index.pt:41
 msgid "All"
 msgstr "Alle"
 
-#: c2cgeoform/templates/site/index.pt:35
+#: c2cgeoform/templates/site/index.pt:41
 msgid "Showing ((ctx.start)) to ((ctx.end)) of ((ctx.total)) entries"
 msgstr ""
 "Zeige Eintrag ((ctx.start)) bis ((ctx.end)) von insgesamt ((ctx.total)) "
 "Einträgen."
 
-#: c2cgeoform/templates/site/index.pt:35
+#: c2cgeoform/templates/site/index.pt:41
 msgid "Loading..."
 msgstr "Lade..."
 
-#: c2cgeoform/templates/site/index.pt:35
+#: c2cgeoform/templates/site/index.pt:41
 msgid "No results found!"
 msgstr "Keine Einträge gefunden!"
 
-#: c2cgeoform/templates/site/index.pt:35
+#: c2cgeoform/templates/site/index.pt:41
 msgid "Refresh"
 msgstr "Aktualisieren"
 
-#: c2cgeoform/templates/site/index.pt:35
+#: c2cgeoform/templates/site/index.pt:41
 msgid "Search"
 msgstr "Suchen"
 
-#: c2cgeoform/templates/site/index.pt:75
+#: c2cgeoform/templates/site/index.pt:81
 msgid "View"
 msgstr "Anzeigen"
 
-#: c2cgeoform/templates/site/index.pt:77
+#: c2cgeoform/templates/site/index.pt:83
 msgid "Edit"
 msgstr "Editieren"
 
