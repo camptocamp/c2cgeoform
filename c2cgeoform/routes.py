@@ -1,11 +1,14 @@
 def includeme(config):
 
     def table_pregenerator(request, elements, kw):
-        if not 'table' in kw:
+        if 'table' not in kw:
             kw['table'] = request.matchdict['table']
         return elements, kw
 
-    config.add_route('c2cgeoform_index', '/{table}/', pregenerator=table_pregenerator)
-    config.add_route('c2cgeoform_grid', '/{table}/grid.json', pregenerator=table_pregenerator)
-    config.add_route('c2cgeoform_new', '/{table}/new', pregenerator=table_pregenerator)
-    config.add_route('c2cgeoform_action', '/{table}/{id}/{action}', pregenerator=table_pregenerator)
+    def rec_with_pregenerator(route, pattern):
+        config.add_route(route, pattern, pregenerator=table_pregenerator)
+
+    rec_with_pregenerator('c2cgeoform_index', '/{table}/')
+    rec_with_pregenerator('c2cgeoform_grid', '/{table}/grid.json')
+    rec_with_pregenerator('c2cgeoform_new', '/{table}/new')
+    rec_with_pregenerator('c2cgeoform_action', '/{table}/{id}/{action}')

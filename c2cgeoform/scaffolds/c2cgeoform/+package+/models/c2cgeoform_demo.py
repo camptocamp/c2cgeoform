@@ -12,7 +12,10 @@ from sqlalchemy.orm import relationship
 import geoalchemy2
 import colander
 import deform
-
+from deform.widget import HiddenWidget
+from deform_ext import RelationSelect2Widget
+from deform_ext import RelationSearchWidget
+from deform_ext import RelationSelectMapWidget
 from c2cgeoform.ext import colander_ext, deform_ext
 from c2cgeoform.models import FileData
 
@@ -23,6 +26,8 @@ _ = TranslationStringFactory('{{package}}')
 
 
 schema = 'c2cgeoform_demo'
+
+EXCAV_ID = 'c2cgeoform_demo.excavation.id'
 
 
 # FIXME a file upload memory store is not appropriate for production
@@ -65,7 +70,7 @@ class ContactPerson(Base):
 
     id = Column(Integer, primary_key=True, info={
         'colanderalchemy': {
-            'widget': deform.widget.HiddenWidget()
+            'widget': HiddenWidget()
         }})
     first_name = Column(Text, nullable=False, info={
         'colanderalchemy': {
@@ -75,10 +80,10 @@ class ContactPerson(Base):
         'colanderalchemy': {
             'title': _('Last name')
         }})
-    permission_id = Column(Integer, ForeignKey('c2cgeoform_demo.excavation.id'), info={
-        'colanderalchemy': {
-            'widget': deform.widget.HiddenWidget()
-        }})
+    permission_id = Column(Integer,
+                           ForeignKey(EXCAV_ID),
+                           info={'colanderalchemy':
+                                 {'widget': HiddenWidget()}})
     verified = Column(Boolean)
 
 
@@ -94,7 +99,7 @@ class Photo(FileData, Base):
         'unknown': 'preserve',
         'widget': deform_ext.FileUploadWidget(_file_upload_temp_store)
     }
-    permission_id = Column(Integer, ForeignKey('c2cgeoform_demo.excavation.id'))
+    permission_id = Column(Integer, ForeignKey(EXCAV_ID))
 
 
 class Situation(Base):
@@ -118,7 +123,7 @@ class SituationForPermission(Base):
     situation_id = Column(
         Integer, ForeignKey('c2cgeoform_demo.situation.id'))
     permission_id = Column(
-        Integer, ForeignKey('c2cgeoform_demo.excavation.id'))
+        Integer, ForeignKey(EXCAV_ID))
 
 
 # This is the main model class which is used to register a schema.
@@ -137,7 +142,7 @@ class Excavation(Base):
         # column or to use a specific widget.
         'colanderalchemy': {
             'title': _('Permission Number'),
-            'widget': deform.widget.HiddenWidget(),
+            'widget': HiddenWidget(),
             # if the `admin_list` property is enabled for a column on the main
             # model, then this column will be shown in the admin list grid.
             'admin_list': True
@@ -175,7 +180,7 @@ class Excavation(Base):
                 # this widget type shows a select widget where the values are
                 # loaded from a database table. in this case the select options
                 # are generated from the Situation table.
-                'widget': deform_ext.RelationSelect2Widget(
+                'widget': RelationSelect2Widget(
                     Situation,
                     'id',
                     'name',
@@ -193,23 +198,24 @@ class Excavation(Base):
             'colanderalchemy': {
                 'title': _('Contact Persons')
             }})
-    location_district_id = Column(Integer, ForeignKey('c2cgeoform_demo.district.id'), info={
-        'colanderalchemy': {
-            'title': _('District'),
-            'widget': deform_ext.RelationSelect2Widget(
-                District,
-                'id',
-                # if the name for the options should be internationalized, one
-                # can create columns like 'name_fr' and 'name_de' in the table
-                # 'District'. then in the translation files, the column name
-                # can be "translated" (e.g. the French "translation" for the
-                # column name would be 'name_fr'). to apply the translation use
-                # the label `_('name'))` instead of `name`.
-                'name',
-                order_by='name',
-                default_value=('', _('- Select -')),
-            )
-        }})
+    location_district_id = Column(Integer,
+                                  ForeignKey('c2cgeoform_demo.district.id'),
+                                  info={'colanderalchemy': {
+                                      'title': _('District'),
+                                      'widget': RelationSelect2Widget(
+                                          District,
+                                          'id',
+                                          'name',
+                                          order_by='name',
+                                          default_value=('', _('- Select -')))
+                                                            }})
+    # if the name for the options should be internationalized, one
+    # can create columns like 'name_fr' and 'name_de' in the table
+    # 'District'. then in the translation files, the column name
+    # can be "translated" (e.g. the French "translation" for the
+    # column name would be 'name_fr'). to apply the translation use
+    # the label `_('name'))` instead of `name`.
+
     location_street = Column(Text, nullable=False, info={
         'colanderalchemy': {
             'title': _('Street')
@@ -223,17 +229,17 @@ class Excavation(Base):
             'title': _('Town')
         }})
     # this is a search field to search for an address
-    address_id = Column(Integer, ForeignKey('c2cgeoform_demo.address.id'), info={
-        'colanderalchemy': {
-            'title': _('Address'),
-            'widget': deform_ext.RelationSearchWidget(
-                url=lambda request: request.route_url('addresses'),
-                model=Address,
-                min_length=1,
-                id_field='id',
-                label_field='label'
-            )
-        }})
+    address_id = Column(Integer,
+                        ForeignKey('c2cgeoform_demo.address.id'),
+                        info={'colanderalchemy': {
+                                'title': _('Address'),
+                                'widget': RelationSearchWidget(
+                                    url=lambda request:
+                                        request.route_url('addresses'),
+                                    model=Address,
+                                    min_length=1,
+                                    id_field='id',
+                                    label_field='label')}})
     # to show a map for a geometry column, the column has to be defined as
     # follows.
     location_position = Column(
@@ -328,7 +334,7 @@ class Comment(Base):
 
     id = Column(Integer, primary_key=True, info={
         'colanderalchemy': {
-            'widget': deform.widget.HiddenWidget(),
+            'widget': HiddenWidget(),
             'admin_list': True
         }})
     hash = Column(Text, unique=True)
@@ -341,11 +347,11 @@ class Comment(Base):
             'title': 'Comment',
             'widget': deform.widget.TextAreaWidget(rows=3),
         }})
-    bus_stop_id = Column(BigInteger, ForeignKey('c2cgeoform_demo.bus_stops.id'), info={
-        'colanderalchemy': {
-            'title': 'Bus stop',
-            'widget': deform_ext.RelationSelectMapWidget(
-                label_field='name',
-                url=lambda request: request.route_url('bus_stops')
-            )
-        }})
+    bus_stop_id = Column(BigInteger,
+                         ForeignKey('c2cgeoform_demo.bus_stops.id'),
+                         info={'colanderalchemy': {
+                             'title': 'Bus stop',
+                             'widget': RelationSelectMapWidget(
+                                 label_field='name',
+                                 url=lambda request:
+                                     request.route_url('bus_stops'))}})
