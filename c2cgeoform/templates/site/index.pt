@@ -3,10 +3,13 @@
     <h3>${_("All entities")}</h3>
 
     <div class="list-grid">
+
+      <a class='btn btn-primary btn-new' href="${request.route_url('c2cgeoform_new')}">${_("New")}</a>
+
       <table id="grid" data-toggle="bootgrid" class="table table-condensed table-hover table-striped">
         <thead>
           <tr>
-            <th tal:repeat="field schema.list_fields" tal:attributes="data-column-id field" tal-content="schema.schema_admin[field].title"></th>
+            <th tal:repeat="field list_fields" tal:attributes="data-column-id field[0]" tal:content="field[1]"></th> 
             <th data-column-id="_id_" data-searchable="false" data-sortable="false"
                 data-converter="commands">${_('Commands')}</th>
           </tr>
@@ -17,7 +20,8 @@
       <script type="text/javascript">
         $('#grid').bootgrid({
             ajax: true,
-            url: '${request.route_url('grid', schema=schema.name)}',
+            multiSort: true,
+            url: "${request.route_url('c2cgeoform_grid')}",
             labels: {
                 all: '${_('All')}',
                 infos: '${_('Showing ((ctx.start)) to ((ctx.end)) of ((ctx.total)) entries')}'.replace(/\(\(/g, '{{').replace(/\)\)/g, '}}'),
@@ -33,8 +37,8 @@
                     },
                     to: function(value) {
                         return '' +
-                            '<a href="${request.route_url('view_admin', schema=schema.name, id='_id_')}">${_("View")}</a> '.replace('_id_', value) +
-                            '<a href="${request.route_url('edit', schema=schema.name, id='_id_')}">${_("Edit")}</a>'.replace('_id_', value);
+                            '<a href="${request.route_url('c2cgeoform_action', action='view', id='_id_')}">${_("View")}</a> '.replace('_id_', value) +
+                            '<a href="${request.route_url('c2cgeoform_action', action='edit', id='_id_')}">${_("Edit")}</a>'.replace('_id_', value);
                     },
                 }
             }

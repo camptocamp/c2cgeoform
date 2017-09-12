@@ -1,7 +1,7 @@
 from colander import null
 
 from c2cgeoform.tests import DatabaseTestCase
-from models_test import EmploymentStatus, Person, Tag
+from .models_test import EmploymentStatus, Person, Tag
 from c2cgeoform.models import DBSession
 
 

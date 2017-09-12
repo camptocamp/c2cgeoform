@@ -21,8 +21,8 @@ class TestGeometry(DatabaseTestCase):
         from shapely.geometry.point import Point
         wkb = from_shape(Point(1.0, 2.0))
         self.assertEquals(
-            '{"type": "Point", "coordinates": [1.0, 2.0]}',
-            geom_schema.serialize({}, wkb))
+            {"type": "Point", "coordinates": [1.0, 2.0]},
+            json.loads(geom_schema.serialize({}, wkb)))
 
     def test_serialize_reproject(self):
         from c2cgeoform.ext.colander_ext import Geometry
@@ -129,7 +129,7 @@ class TestBinaryData(DatabaseTestCase):
         import os
         from c2cgeoform.ext.colander_ext import BinaryData
         dirpath = os.path.dirname(os.path.realpath(__file__))
-        file_ = open(os.path.join(dirpath, 'data', '1x1.png'), 'r')
+        file_ = open(os.path.join(dirpath, 'data', '1x1.png'), 'br')
         binary = BinaryData()
         self.assertIsInstance(binary.deserialize({}, file_), memoryview)
 

@@ -3,7 +3,7 @@ from pyramid.httpexceptions import HTTPNotFound, HTTPFound, HTTPBadRequest
 from deform import Form, ValidationFailure, ZPTRendererFactory
 from deform.form import Button
 from deform.widget import FormWidget
-import webhelpers.paginate as paginate
+import paginate
 from sqlalchemy import desc, or_, types
 from sqlalchemy.orm.exc import NoResultFound
 from geoalchemy2.elements import WKBElement
@@ -11,9 +11,10 @@ from colander import SchemaNode, Mapping
 from translationstring import TranslationStringFactory
 import uuid
 
-from .models import DBSession
-from .schema import forms
-from .ext.deform_ext import RecaptchaWidget
+from c2cgeoform.models import DBSession
+from c2cgeoform.schema import forms
+from c2cgeoform.ext.deform_ext import RecaptchaWidget
+import functools
 
 _ = TranslationStringFactory('c2cgeoform')
 
@@ -54,7 +55,7 @@ def form(request):
 
         try:
             obj_dict = form.validate(form_data)
-        except ValidationFailure, e:
+        except ValidationFailure as e:
             # FIXME see https://github.com/Pylons/deform/pull/243
             rendered = e.field.widget.serialize(
                 e.field, e.cstruct, custom_data=custom_data, request=request)
@@ -152,7 +153,7 @@ def _validate_and_store(
         form_data = form_data + request.POST.items()
     try:
         obj_dict = form.validate(form_data)
-    except ValidationFailure, e:
+    except ValidationFailure as e:
         # FIXME see https://github.com/Pylons/deform/pull/243
         rendered = e.field.widget.serialize(
             e.field, e.cstruct, readonly=True, request=request,
@@ -306,7 +307,7 @@ def _get_query(geo_form_schema, sort, search_phrase):
         # then join the filters into one `or` condition
         if len(filters) > 0:
             filter_expr = filters.pop()
-            filter_expr = reduce(
+            filter_expr = functools.reduce(
                 lambda filter_expr, filter: or_(filter_expr, filter),
                 filters,
                 filter_expr)
@@ -353,7 +354,7 @@ def edit(request):
 
         try:
             obj_dict = form.validate(form_data)
-        except ValidationFailure, e:
+        except ValidationFailure as e:
             rendered = e.render()
         else:
             obj = geo_form_schema.schema_admin.objectify(obj_dict)

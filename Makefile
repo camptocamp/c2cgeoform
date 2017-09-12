@@ -1,3 +1,5 @@
+BUILD_DIR?=.build
+VENV?=${BUILD_DIR}/venv
 MO_FILES = $(addprefix c2cgeoform/locale/, fr/LC_MESSAGES/c2cgeoform.mo de/LC_MESSAGES/c2cgeoform.mo)
 
 
@@ -33,7 +35,7 @@ test: .build/requirements.timestamp .build/requirements-dev.timestamp
 	.build/venv/bin/nosetests --ignore-files=test_views.py
 
 .PHONY: update-catalog
-update-catalog: .build/venv
+update-catalog: .build/requirements-dev.timestamp
 	.build/venv/bin/pot-create -c lingua.cfg -o c2cgeoform/locale/c2cgeoform.pot \
 	    c2cgeoform/models.py \
 	    c2cgeoform/views.py \
@@ -45,27 +47,24 @@ update-catalog: .build/venv
 compile-catalog: $(MO_FILES)
 
 .PHONY: dist
-dist: .build/venv compile-catalog
+dist: .build/requirements-dev.timestamp compile-catalog
 	.build/venv/bin/python setup.py sdist
 
 %.mo: %.po
 	msgfmt $< --output-file=$@
 
-.build/venv:
+.build/venv.timestamp:
 	mkdir -p $(dir $@)
 	# make a first virtualenv to get a recent version of virtualenv
-	virtualenv venv
-	venv/bin/pip install virtualenv
-	venv/bin/virtualenv --no-site-packages .build/venv
-	# remove the temporary virtualenv
-	rm -rf venv
+	python3 -m venv ${VENV}
+	touch .build/venv.timestamp
 
-.build/requirements.timestamp: .build/venv setup.py
+.build/requirements.timestamp: .build/venv.timestamp setup.py
 	.build/venv/bin/pip install -U -e .
 	touch .build/requirements.timestamp
 
-.build/requirements-dev.timestamp: .build/venv requirements-dev.txt
-	.build/venv/bin/pip install -r requirements-dev.txt > /dev/null 2>&1
+.build/requirements-dev.timestamp: .build/venv.timestamp requirements-dev.txt
+	.build/venv/bin/pip install -r requirements-dev.txt
 	touch .build/requirements-dev.timestamp
 
 .PHONY: clean
