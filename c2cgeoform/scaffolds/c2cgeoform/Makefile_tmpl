@@ -18,32 +18,28 @@ help:
 	@echo
 
 .PHONY: install
-install: pip-install compile-catalog
-
-.PHONY: pip-install
-pip-install: .build/venv
-	.build/venv/bin/pip install -U -r requirements.txt
+install: .build/requirements.timestamp compile-catalog
 
 .PHONY: initdb
-initdb: .build/venv
+initdb: .build/requirements.timestamp
 	.build/venv/bin/initialize_{{package}}_db development.ini
 
 .PHONY: serve
-serve: .build/venv
+serve: .build/requirements.timestamp
 	.build/venv/bin/pserve --reload development.ini
 
 .PHONY: check
 check: flake8
 
 .PHONY: flake8
-flake8: .build/venv/bin/flake8
+flake8: .build/requirements-dev.timestamp
 	.build/venv/bin/flake8 {{package}}
 
 .PHONY: modwsgi
 modwsgi: install .build/venv/{{package}}.wsgi .build/apache.conf
 
 .PHONY: test
-test: .build/venv
+test: .build/requirements.timestamp .build/venv/requirements-dev.timestamp
 	.build/venv/bin/python setup.py test
 
 .PHONY: update-catalog
@@ -59,29 +55,35 @@ update-catalog:
 compile-catalog: $(MO_FILES)
 
 .PHONY: dist
-dist: .build/venv compile-catalog
+dist: .build/venv.timestamp compile-catalog
 	.build/venv/bin/python setup.py sdist
 
 %.mo: %.po
 	msgfmt $< --output-file=$@
 
-.build/venv:
+.build/venv.timestamp:
 	mkdir -p $(dir $@)
 	# make a first virtualenv to get a recent version of virtualenv
-	virtualenv venv
-	venv/bin/pip install virtualenv
-	venv/bin/virtualenv --no-site-packages .build/venv
+	# virtualenv venv
+	#venv/bin/pip install virtualenv
+	virtualenv -p python3 .build/venv
 	# remove the temporary virtualenv
 	rm -rf venv
+	touch $@
 
-.build/venv/bin/flake8: .build/venv
+.build/requirements.timestamp: .build/venv.timestamp requirements.txt
+	.build/venv/bin/pip install -U -r requirements.txt
+	touch $@
+
+.build/requirements-dev.timestamp: .build/venv.timestamp requirements-dev.txt
 	.build/venv/bin/pip install -r requirements-dev.txt > /dev/null 2>&1
+	touch $@
 
 .build/venv/{{package}}.wsgi: {{package}}.wsgi
 	sed 's#\[DIR\]#$(CURDIR)#' $< > $@
 	chmod 755 $@
 
-.build/apache.conf: apache.conf .build/venv
+.build/apache.conf: apache.conf .build/venv.timestamp
 	sed -e 's#\[PYTHONPATH\]#$(shell .build/venv/bin/python -c "import distutils.sysconfig; print(distutils.sysconfig.get_python_lib())")#' \
         -e 's#\[WSGISCRIPT\]#$(abspath .build/venv/{{package}}.wsgi)#' $< > $@
 
