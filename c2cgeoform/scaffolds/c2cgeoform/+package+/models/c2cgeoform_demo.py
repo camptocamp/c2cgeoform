@@ -15,12 +15,11 @@ import geoalchemy2
 import colander
 import deform
 from deform.widget import HiddenWidget
-
 from c2cgeoform.ext.deform_ext import (
     RelationSelect2Widget,
     RelationSearchWidget,
     RelationSelectMapWidget,
-    )
+)
 from c2cgeoform.ext import colander_ext, deform_ext
 from c2cgeoform.models import FileData
 
