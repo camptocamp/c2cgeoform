@@ -9,6 +9,7 @@ from sqlalchemy import desc, or_, types
 from translationstring import TranslationStringFactory
 from sqlalchemy.exc import DBAPIError
 from pyramid.httpexceptions import HTTPNotFound
+from pyramid.httpexceptions import HTTPFound
 from pyramid.response import Response
 
 import functools
@@ -155,7 +156,7 @@ class AbstractViews():
             self._base_schema.clone(),
             buttons=(Button(name='formsubmit', title=_('Submit')),),
             # renderer=renderer,
-            # action=self._request.route_url(self._request.matched_route.name))
+                # action=self._request.route_url('c2cgeoform_action',))
             )
         # _set_form_widget(form, geo_form_schema.schema_user, template)
         self._populate_widgets(form.schema)
@@ -164,69 +165,36 @@ class AbstractViews():
     def _populate_widgets(self, schema):
         pass
 
-    def new(self):
-        form = self._form()
-
-        if len(self._request.POST) > 0:
-            form_data = self._request.POST.items()
-            try:
-                obj_dict = form.validate(form_data)
-                obj = form.schema.objectify(obj_dict)
-                self._request.session.add(obj)
-                self._request.session.flush()
-
-                # Update server side calculated fields
-                # self._request.session.expire(obj)
-
-                return obj
-
-            except ValidationFailure as e:
-                # FIXME see https://github.com/Pylons/deform/pull/243
-                rendered = e.field.widget.serialize(
-                    e.field, e.cstruct, request=self._request)
-
-        else:
-            # empty form
-            rendered = form.render(form.schema.dictify(self._new_object()),
-                                   request=self._request)
-
-        return {
-            'form': rendered,
-            'deform_dependencies': form.get_widget_resources()}
-
     def _new_object(self):
         return self._model()
 
     def _get_object(self):
         pk = self._request.matchdict.get('id')
+        if pk == "new" :
+            return self._model()
         obj = self._get_base_query() \
             .filter("{0}='{1}'".format(self._id_field, pk)).one_or_none()
         if obj is None:
             raise HTTPNotFound()
         return obj
 
-    def view(self):
-        raise NotImplementedError()
-
-    def edit(self):
-        form = self._form()
-
-        if self._request.method == 'POST':
+    def save(self):
+        try:
+            form = self._form()
             form_data = self._request.POST.items()
-            try:
-                obj_dict = form.validate(form_data)
-                obj = form.schema.objectify(obj_dict)
-                self._request.dbsession.merge(obj)
-                self._request.dbsession.flush()
+            obj_dict = form.validate(form_data)
+            obj = form.schema.objectify(obj_dict)
+            obj = self._request.dbsession.merge(obj)
+            self._request.dbsession.flush()
+            return HTTPFound(self._request.route_url('c2cgeoform_action', action='edit', id=obj.__getattribute__(self._id_field)))
+        except ValidationFailure as e:
+            # FIXME see https://github.com/Pylons/deform/pull/243
+            return({
+                'form': e.field.widget.serialize(e.field, e.cstruct, request=self._request),
+                'deform_dependencies': form.get_widget_resources()})
 
-                # Update server side calculated fields
-                # self._request.session.expire(obj)
-
-            except ValidationFailure as e:
-                # FIXME see https://github.com/Pylons/deform/pull/243
-                rendered = e.field.widget.serialize(
-                    e.field, e.cstruct, request=self._request)
-
+    def view(self):
+        form = self._form()
         obj = self._get_object()
         rendered = form.render(form.schema.dictify(obj), request=self._request)
         return({
