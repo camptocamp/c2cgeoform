@@ -203,6 +203,7 @@ class AbstractViews():
             .filter("{0}='{1}'".format(self._id_field, pk)).one_or_none()
         if obj is None:
             raise HTTPNotFound()
+        return obj
 
     def view(self):
         raise NotImplementedError()

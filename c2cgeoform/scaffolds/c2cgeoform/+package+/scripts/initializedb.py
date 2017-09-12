@@ -61,7 +61,8 @@ def init_db(connection, force=False):
     session_factory = get_session_factory(connection)
 
     with transaction.manager:
-        dbsession = get_tm_session(session_factory, transaction.manager)
+        # dbsession =   of no use ???
+        get_tm_session(session_factory, transaction.manager)
         setup_test_data
 
 
