@@ -156,7 +156,7 @@ class AbstractViews():
             self._base_schema.clone(),
             buttons=(Button(name='formsubmit', title=_('Submit')),),
             # renderer=renderer,
-                # action=self._request.route_url('c2cgeoform_action',))
+            # action=self._request.route_url('c2cgeoform_action',))
             )
         # _set_form_widget(form, geo_form_schema.schema_user, template)
         self._populate_widgets(form.schema)
@@ -170,7 +170,7 @@ class AbstractViews():
 
     def _get_object(self):
         pk = self._request.matchdict.get('id')
-        if pk == "new" :
+        if pk == "new":
             return self._model()
         obj = self._get_base_query() \
             .filter("{0}='{1}'".format(self._id_field, pk)).one_or_none()
@@ -186,11 +186,19 @@ class AbstractViews():
             obj = form.schema.objectify(obj_dict)
             obj = self._request.dbsession.merge(obj)
             self._request.dbsession.flush()
-            return HTTPFound(self._request.route_url('c2cgeoform_action', action='edit', id=obj.__getattribute__(self._id_field)))
+            route_to_edit = self._request.route_url(
+                'c2cgeoform_action',
+                action='edit',
+                id=obj.__getattribute__(self._id_field))
+            return HTTPFound(route_to_edit)
         except ValidationFailure as e:
             # FIXME see https://github.com/Pylons/deform/pull/243
+            form = e.field.widget.serialize(
+                e.field,
+                e.cstruct,
+                request=self._request)
             return({
-                'form': e.field.widget.serialize(e.field, e.cstruct, request=self._request),
+                'form': form,
                 'deform_dependencies': form.get_widget_resources()})
 
     def view(self):
