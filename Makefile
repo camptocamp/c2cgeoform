@@ -56,7 +56,7 @@ dist: .build/venv compile-catalog
 .build/venv:
 	mkdir -p $(dir $@)
 	# make a first virtualenv to get a recent version of virtualenv
-	python3 -m venv ${VENV}
+	virtualenv -p python3 ${VENV}
 
 .build/requirements.timestamp: .build/venv setup.py
 	.build/venv/bin/pip install -U -e .
