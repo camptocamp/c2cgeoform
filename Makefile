@@ -21,7 +21,7 @@ help:
 	@echo
 
 .PHONY: install
-build: .build/requirements.timestamp compile-catalog
+install: .build/requirements.timestamp compile-catalog
 
 .PHONY: check
 check: flake8
