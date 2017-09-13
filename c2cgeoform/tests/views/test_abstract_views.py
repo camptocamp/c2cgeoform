@@ -117,9 +117,12 @@ class TestAbstractViews(DatabaseTestCase):
         response = views.save()
 
         self.assertIsInstance(response, HTTPFound)
+
         class Matcher():
             def __eq__(self, other):
-                return other.name == 'morvan' and other.first_name == 'arnaud' and other.age == 37
+                return other.name == 'morvan' \
+                    and other.first_name == 'arnaud' \
+                    and other.age == 37
         self.request.dbsession.merge.assert_called_once_with(Matcher())
         self.request.dbsession.flush.assert_called_once_with()
 
