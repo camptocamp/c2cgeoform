@@ -4,7 +4,6 @@ import paginate
 from deform import Form, ValidationFailure  # , ZPTRendererFactory
 from deform.form import Button
 from geoalchemy2.elements import WKBElement
-# from pyramid.httpexceptions import HTTPFound
 from sqlalchemy import desc, or_, types
 from translationstring import TranslationStringFactory
 from sqlalchemy.exc import DBAPIError
