@@ -75,7 +75,7 @@ class TestAbstractViews(DatabaseTestCase):
 
     def test_new_get(self):
         self.request.matched_route = Mock(name='person_action')
-        self.request.route_url = Mock(return_value='person/new/view')
+        self.request.route_url = Mock(return_value='person/new/edit')
 
         self.request.matchdict = {'id': 'new'}
         views = ConcreteViews(self.request)
@@ -98,10 +98,14 @@ class TestAbstractViews(DatabaseTestCase):
         self.assertIn('form', response)
         self.assertIn('deform_dependencies', response)
 
-    def failing_est_new_post_success(self):
+    def test_new_post_success(self):
         self.request.matched_route = Mock(name='person_action')
         self.request.route_url = Mock(return_value='person/new/save')
-        self.request.dbsession.merge = Mock()
+        self.request.dbsession.merge = Mock(return_value=Person(
+            name='...',
+            first_name='...'),
+            age='...',
+            id=7869)
         self.request.dbsession.flush = Mock()
 
         self.request.matchdict = {'id': 'new'}
@@ -113,7 +117,13 @@ class TestAbstractViews(DatabaseTestCase):
         response = views.save()
 
         self.assertIsInstance(response, HTTPFound)
-        self.request.dbsession.merge.assert_called_once_with(response)
+
+        class Matcher():
+            def __eq__(self, other):
+                return other.name == 'morvan' \
+                    and other.first_name == 'arnaud' \
+                    and other.age == 37
+        self.request.dbsession.merge.assert_called_once_with(Matcher())
         self.request.dbsession.flush.assert_called_once_with()
 
     def test_edit_get_not_found(self):
