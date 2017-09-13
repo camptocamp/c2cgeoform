@@ -192,12 +192,12 @@ class AbstractViews():
             return HTTPFound(route_to_edit)
         except ValidationFailure as e:
             # FIXME see https://github.com/Pylons/deform/pull/243
-            form = e.field.widget.serialize(
+            to_return = e.field.widget.serialize(
                 e.field,
                 e.cstruct,
                 request=self._request)
             return({
-                'form': form,
+                'form': to_return,
                 'deform_dependencies': form.get_widget_resources()})
 
     def view(self):
