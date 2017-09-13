@@ -56,7 +56,7 @@ dist: .build/requirements-dev.timestamp compile-catalog
 .build/venv.timestamp:
 	mkdir -p $(dir $@)
 	# make a first virtualenv to get a recent version of virtualenv
-	virtualenv -p python3
+	virtualenv -p python3 ${VENV}
 	touch .build/venv.timestamp
 
 .build/requirements.timestamp: .build/venv.timestamp setup.py
