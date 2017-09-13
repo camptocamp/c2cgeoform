@@ -1,7 +1,6 @@
 from deform import Form, ValidationFailure  # , ZPTRendererFactory
 from deform.form import Button
 from geoalchemy2.elements import WKBElement
-# from pyramid.httpexceptions import HTTPFound
 from pyramid.httpexceptions import HTTPNotFound
 from pyramid.httpexceptions import HTTPFound
 from pyramid.response import Response
