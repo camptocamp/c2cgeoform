@@ -3,8 +3,6 @@ import os
 import sys
 import transaction
 
-from sqlalchemy import engine_from_config
-
 from pyramid.paster import (
     get_appsettings,
     setup_logging,
@@ -12,9 +10,16 @@ from pyramid.paster import (
 
 from pyramid.scripts.common import parse_vars
 
+
+from ..models.meta import Base
 from ..models import (
-    Base,
-    DBSession,
+    get_engine,
+    get_session_factory,
+    get_tm_session,
+    )
+
+from ..models.c2cgeoform_demo import (
+    schema,
     Address,
     District,
     Situation,
@@ -36,44 +41,73 @@ def main(argv=sys.argv):
     options = parse_vars(argv[2:])
     setup_logging(config_uri)
     settings = get_appsettings(config_uri, options=options)
-    engine = engine_from_config(settings, 'sqlalchemy.')
-    DBSession.configure(bind=engine)
-    Base.metadata.create_all(engine)
+
+    engine = get_engine(settings)
+
+    with engine.begin() as connection:
+        init_db(connection, force='--force' in options)
+
+
+def init_db(connection, force=False):
+    if force:
+        if schema_exists(connection, schema):
+            connection.execute("DROP SCHEMA {} CASCADE;".format(schema))
+
+    if not schema_exists(connection, schema):
+        connection.execute("CREATE SCHEMA \"{}\";".format(schema))
+
+    Base.metadata.create_all(connection)
+
+    session_factory = get_session_factory(connection)
+
     with transaction.manager:
+        # dbsession =   of no use ???
+        get_tm_session(session_factory, transaction.manager)
         setup_test_data
 
 
-def setup_test_data():
-    if DBSession.query(District).count() == 0:
-        DBSession.add(District(id=0, name="Pully"))
-        DBSession.add(District(id=1, name="Paudex"))
-        DBSession.add(District(id=2, name="Belmont-sur-Lausanne"))
-        DBSession.add(District(id=3, name="Trois-Chasseurs"))
-        DBSession.add(District(id=4, name="La Claie-aux-Moines"))
-        DBSession.add(District(id=5, name="Savigny"))
-        DBSession.add(District(id=6, name="Mollie-Margot"))
+def schema_exists(connection, schema_name):
+    sql = '''
+SELECT count(*) AS count
+FROM information_schema.schemata
+WHERE schema_name = '{}';
+'''.format(schema_name)
+    result = connection.execute(sql)
+    row = result.first()
+    return row[0] == 1
 
-    if DBSession.query(Situation).count() == 0:
-        DBSession.add(Situation(id=0, name="Road", name_fr="Route"))
-        DBSession.add(Situation(id=1, name="Sidewalk", name_fr="Trottoir"))
-        DBSession.add(Situation(id=2, name="Berm", name_fr="Berme"))
-        DBSession.add(Situation(
+
+def setup_test_data(dbsession):
+    if dbsession.query(District).count() == 0:
+        dbsession.add(District(id=0, name="Pully"))
+        dbsession.add(District(id=1, name="Paudex"))
+        dbsession.add(District(id=2, name="Belmont-sur-Lausanne"))
+        dbsession.add(District(id=3, name="Trois-Chasseurs"))
+        dbsession.add(District(id=4, name="La Claie-aux-Moines"))
+        dbsession.add(District(id=5, name="Savigny"))
+        dbsession.add(District(id=6, name="Mollie-Margot"))
+
+    if dbsession.query(Situation).count() == 0:
+        dbsession.add(Situation(id=0, name="Road", name_fr="Route"))
+        dbsession.add(Situation(id=1, name="Sidewalk", name_fr="Trottoir"))
+        dbsession.add(Situation(id=2, name="Berm", name_fr="Berme"))
+        dbsession.add(Situation(
             id=3, name="Vegetated berm", name_fr=u"Berme végétalisée"))
-        DBSession.add(Situation(id=4, name="Green zone", name_fr="Zone verte"))
-        DBSession.add(Situation(id=5, name="Cobblestone", name_fr="Pavés"))
+        dbsession.add(Situation(id=4, name="Green zone", name_fr="Zone verte"))
+        dbsession.add(Situation(id=5, name="Cobblestone", name_fr="Pavés"))
 
-    if DBSession.query(BusStop).count() == 0:
+    if dbsession.query(BusStop).count() == 0:
         _add_bus_stops()
 
-    if DBSession.query(Address).count() == 0:
-        DBSession.add(Address(id=0, label="Bern"))
-        DBSession.add(Address(id=1, label="Lausanne"))
-        DBSession.add(Address(id=2, label="Genève"))
-        DBSession.add(Address(id=3, label="Zurich"))
-        DBSession.add(Address(id=4, label="Lugano"))
+    if dbsession.query(Address).count() == 0:
+        dbsession.add(Address(id=0, label="Bern"))
+        dbsession.add(Address(id=1, label="Lausanne"))
+        dbsession.add(Address(id=2, label="Genève"))
+        dbsession.add(Address(id=3, label="Zurich"))
+        dbsession.add(Address(id=4, label="Lugano"))
 
 
-def _add_bus_stops():
+def _add_bus_stops(dbsession):
     """
     Load test data from a GeoJSON file.
     """
@@ -99,4 +133,4 @@ def _add_bus_stops():
             name=name)
         bus_stops.append(bus_stop)
 
-    DBSession.add_all(bus_stops)
+    dbsession.add_all(bus_stops)
