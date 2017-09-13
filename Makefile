@@ -54,9 +54,9 @@ dist: .build/requirements-dev.timestamp compile-catalog
 	msgfmt $< --output-file=$@
 
 .build/venv.timestamp:
-	mkdir -p $(dir $@)
+	mkdir -p ${VENV}
 	# make a first virtualenv to get a recent version of virtualenv
-	python3 -m venv ${VENV}
+	virtualenv -p python3 ${VENV}
 	touch .build/venv.timestamp
 
 .build/requirements.timestamp: .build/venv.timestamp setup.py
