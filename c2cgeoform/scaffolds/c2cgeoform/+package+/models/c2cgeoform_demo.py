@@ -1,4 +1,6 @@
 # coding=utf-8
+from uuid import uuid4
+
 from sqlalchemy import (
     Column,
     Integer,
@@ -151,7 +153,7 @@ class Excavation(Base):
             'admin_list': True
         }})
     # the hash column is required for all main models
-    hash = Column(Text, unique=True)
+    hash = Column(Text, unique=True, default=lambda: str(uuid4()))
     reference_number = Column(Text, nullable=True, info={
         'colanderalchemy': {
             'title': _('Reference Number')
@@ -340,7 +342,7 @@ class Comment(Base):
             'widget': HiddenWidget(),
             'admin_list': True
         }})
-    hash = Column(Text, unique=True)
+    hash = Column(Text, unique=True, default=lambda: str(uuid4()))
     name = Column(Text, nullable=False, info={
         'colanderalchemy': {
             'title': 'Name'
