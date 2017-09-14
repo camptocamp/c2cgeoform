@@ -47,7 +47,6 @@ class TestAbstractViews(DatabaseTestCase):
 
     def test_index(self):
         views = ConcreteViews(self.request)
-        views._model = Person
         response = views.index()
         expected = {'list_fields':
                     [('name', 'Your name'),
