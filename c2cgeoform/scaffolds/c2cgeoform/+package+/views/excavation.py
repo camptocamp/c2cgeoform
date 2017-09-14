@@ -11,7 +11,10 @@ class ExcavationViews(AbstractViews):
     _model = Excavation
     _list_fields = [
         'reference_number',
-        'request_date'
+        'request_date',
+        'description',
+        'location_town',
+        'responsible_company',
     ]
     _base_schema = SQLAlchemySchemaNode(Excavation, title='Person')
 
