@@ -38,7 +38,7 @@ test: .build/requirements.timestamp .build/requirements-dev.timestamp
 update-catalog: .build/requirements-dev.timestamp
 	.build/venv/bin/pot-create -c lingua.cfg -o c2cgeoform/locale/c2cgeoform.pot \
 	    c2cgeoform/models.py \
-	    c2cgeoform/views.py \
+	    c2cgeoform/views/abstract_views.py \
 	    c2cgeoform/templates/
 	msgmerge --update c2cgeoform/locale/fr/LC_MESSAGES/c2cgeoform.po c2cgeoform/locale/c2cgeoform.pot
 	msgmerge --update c2cgeoform/locale/de/LC_MESSAGES/c2cgeoform.po c2cgeoform/locale/c2cgeoform.pot
