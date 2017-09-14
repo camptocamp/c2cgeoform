@@ -152,8 +152,10 @@ class Excavation(Base):
             # model, then this column will be shown in the admin list grid.
             'admin_list': True
         }})
-    # the hash column is required for all main models
-    hash = Column(Text, unique=True, default=lambda: str(uuid4()))
+    hash = Column(Text, unique=True, default=lambda: str(uuid4()), info={
+        'colanderalchemy': {
+            'widget': HiddenWidget()
+        }})
     reference_number = Column(Text, nullable=True, info={
         'colanderalchemy': {
             'title': _('Reference Number')
@@ -342,7 +344,10 @@ class Comment(Base):
             'widget': HiddenWidget(),
             'admin_list': True
         }})
-    hash = Column(Text, unique=True, default=lambda: str(uuid4()))
+    hash = Column(Text, unique=True, default=lambda: str(uuid4()), info={
+        'colanderalchemy': {
+            'widget': HiddenWidget()
+        }})
     name = Column(Text, nullable=False, info={
         'colanderalchemy': {
             'title': 'Name'
