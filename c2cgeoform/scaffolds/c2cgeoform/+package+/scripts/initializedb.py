@@ -2,6 +2,7 @@
 import os
 import sys
 import transaction
+from datetime import date, timedelta
 
 from pyramid.paster import (
     get_appsettings,
@@ -21,9 +22,10 @@ from ..models import (
 from ..models.c2cgeoform_demo import (
     schema,
     Address,
-    District,
-    Situation,
     BusStop,
+    District,
+    Excavation,
+    Situation,
     )
 
 
@@ -61,9 +63,8 @@ def init_db(connection, force=False):
     session_factory = get_session_factory(connection)
 
     with transaction.manager:
-        # dbsession =   of no use ???
-        get_tm_session(session_factory, transaction.manager)
-        setup_test_data
+        dbsession = get_tm_session(session_factory, transaction.manager)
+        setup_test_data(dbsession)
 
 
 def schema_exists(connection, schema_name):
@@ -97,7 +98,7 @@ def setup_test_data(dbsession):
         dbsession.add(Situation(id=5, name="Cobblestone", name_fr="Pavés"))
 
     if dbsession.query(BusStop).count() == 0:
-        _add_bus_stops()
+        _add_bus_stops(dbsession)
 
     if dbsession.query(Address).count() == 0:
         dbsession.add(Address(id=0, label="Bern"))
@@ -105,6 +106,36 @@ def setup_test_data(dbsession):
         dbsession.add(Address(id=2, label="Genève"))
         dbsession.add(Address(id=3, label="Zurich"))
         dbsession.add(Address(id=4, label="Lugano"))
+
+    if dbsession.query(Excavation).count() == 0:
+        for i in range(100):
+            dbsession.add(_excavation(i))
+
+
+def _excavation(i):
+    return Excavation(
+        reference_number='ref{:04d}'.format(i),
+        request_date=date.today() - timedelta(days=100-i),
+        description="Installation d'un réseau AEP",
+        motif="Création d'un lotissement",
+        # situations = relationship(SituationForPermission,
+        # contact_persons = relationship(ContactPerson,
+        location_district_id=0,
+        location_street="48 avenue du Lac du Bourget",
+        location_postal_code="73370",
+        location_town="LE BOURGET DU LAC",
+        # address_id=ForeignKey('c2cgeoform_demo.address.id'),
+        # location_position = Column(geoalchemy2.Geometry('POINT'
+        responsible_title="mr",
+        responsible_name="Morvan",
+        responsible_first_name="Arnaud",
+        responsible_mobile="555-55555",
+        responsible_mail="arnaud.morvan@camptocamp.com",
+        responsible_company="Camptocamp",
+        validated=True,
+        # work_footprint=geoalchemy2.Geometry('MULTIPOLYGON'
+        # photos = relationship(Photo,
+    )
 
 
 def _add_bus_stops(dbsession):
