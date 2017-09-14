@@ -17,6 +17,7 @@ class ExcavationViews(AbstractViews):
         'responsible_company',
     ]
     _base_schema = SQLAlchemySchemaNode(Excavation, title='Person')
+    _id_field = 'hash'
 
     @view_config(route_name='c2cgeoform_index',
                  match_param=('table=excavation'),
