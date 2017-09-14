@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2017-09-11 16:39+0200\n"
+"POT-Creation-Date: 2017-09-12 11:08+0200\n"
 "PO-Revision-Date: 2014-07-31 11:13+0200\n"
 "Last-Translator: Tobias Sauerwein <tobias.sauerwein@camptocamp.com>\n"
 "Language-Team: French\n"
@@ -19,39 +19,43 @@ msgstr ""
 msgid "All entities"
 msgstr "Toutes données"
 
-#: c2cgeoform/templates/site/index.pt:23
+#: c2cgeoform/templates/site/index.pt:15
+msgid "New"
+msgstr "Nouveau"
+
+#: c2cgeoform/templates/site/index.pt:29
 msgid "Commands"
 msgstr "Actions"
 
-#: c2cgeoform/templates/site/index.pt:35
+#: c2cgeoform/templates/site/index.pt:41
 msgid "All"
 msgstr "Tous"
 
-#: c2cgeoform/templates/site/index.pt:35
+#: c2cgeoform/templates/site/index.pt:41
 msgid "Showing ((ctx.start)) to ((ctx.end)) of ((ctx.total)) entries"
 msgstr "((ctx.start)) à ((ctx.end)) sur ((ctx.total)) entrées"
 
-#: c2cgeoform/templates/site/index.pt:35
+#: c2cgeoform/templates/site/index.pt:41
 msgid "Loading..."
 msgstr "Chargement..."
 
-#: c2cgeoform/templates/site/index.pt:35
+#: c2cgeoform/templates/site/index.pt:41
 msgid "No results found!"
 msgstr "Aucun résultat trouvé!"
 
-#: c2cgeoform/templates/site/index.pt:35
+#: c2cgeoform/templates/site/index.pt:41
 msgid "Refresh"
 msgstr "Actualiser"
 
-#: c2cgeoform/templates/site/index.pt:35
+#: c2cgeoform/templates/site/index.pt:41
 msgid "Search"
 msgstr "Rechercher"
 
-#: c2cgeoform/templates/site/index.pt:75
+#: c2cgeoform/templates/site/index.pt:81
 msgid "View"
 msgstr "Voir"
 
-#: c2cgeoform/templates/site/index.pt:77
+#: c2cgeoform/templates/site/index.pt:83
 msgid "Edit"
 msgstr "Modifier"
 

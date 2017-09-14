@@ -8,6 +8,7 @@ from geoalchemy2.elements import WKBElement
 from sqlalchemy import desc, or_, types
 from translationstring import TranslationStringFactory
 from sqlalchemy.exc import DBAPIError
+from pyramid.httpexceptions import HTTPNotFound
 from pyramid.response import Response
 
 import functools
@@ -198,8 +199,11 @@ class AbstractViews():
 
     def _get_object(self):
         pk = self._request.matchdict.get('id')
-        return self._get_base_query() \
-            .filter("{0}='{1}'".format(self._id_field, pk)).all()[0]
+        obj = self._get_base_query() \
+            .filter("{0}='{1}'".format(self._id_field, pk)).one_or_none()
+        if obj is None:
+            raise HTTPNotFound()
+        return obj
 
     def view(self):
         raise NotImplementedError()
@@ -212,9 +216,8 @@ class AbstractViews():
             try:
                 obj_dict = form.validate(form_data)
                 obj = form.schema.objectify(obj_dict)
-                self._request.dbsession.begin_nested()
                 self._request.dbsession.merge(obj)
-                self._request.dbsession.commit()
+                self._request.dbsession.flush()
 
                 # Update server side calculated fields
                 # self._request.session.expire(obj)
@@ -226,7 +229,9 @@ class AbstractViews():
 
         obj = self._get_object()
         rendered = form.render(form.schema.dictify(obj), request=self._request)
-        return({'form': rendered})
+        return({
+            'form': rendered,
+            'deform_dependencies': form.get_widget_resources()})
 
     def delete(self):
         raise NotImplementedError()

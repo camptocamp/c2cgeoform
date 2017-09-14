@@ -1,36 +1,12 @@
 
 from colanderalchemy import SQLAlchemySchemaNode
+from pyramid.httpexceptions import HTTPNotFound
 from unittest.mock import Mock
 
 from c2cgeoform.models import DBSession
 from c2cgeoform.tests import DatabaseTestCase
 from c2cgeoform.tests.models_test import Person
 from c2cgeoform.views.abstract_views import AbstractViews
-
-
-def _add_test_persons():
-    DBSession.add(Person(name="Smith", first_name="Peter"))
-    DBSession.add(Person(name="Wayne", first_name="John"))
-    DBSession.add(Person(name="Elda", first_name="Hasbrouck"))
-    DBSession.add(Person(name="Lashaun", first_name="Brasel"))
-    DBSession.add(Person(name="Lashawna", first_name="Ashford"))
-    DBSession.add(Person(name="Lesha", first_name="Snellgrove"))
-    DBSession.add(Person(name="Sulema", first_name="Page"))
-    DBSession.add(Person(name="Derek", first_name="Boroughs"))
-    DBSession.add(Person(name="Odis", first_name="Bateman"))
-    DBSession.add(Person(name="Venetta", first_name="Briganti"))
-    DBSession.add(Person(name="Monte", first_name="Quill"))
-    DBSession.add(Person(name="Daniel", first_name="Ruth"))
-    DBSession.add(Person(name="Eloise", first_name="Hellickson"))
-    DBSession.add(Person(name="Hee", first_name="Deloney"))
-    DBSession.add(Person(name="Sharee", first_name="Warf"))
-    DBSession.add(Person(name="Delpha", first_name="Philip"))
-    DBSession.add(Person(name="Claudio", first_name="Campfield"))
-    DBSession.add(Person(name="Janessa", first_name="Beatty"))
-    DBSession.add(Person(name="Hollis", first_name="Richmond"))
-    DBSession.add(Person(name="Karoline", first_name="Carew"))
-    DBSession.add(Person(name="Bess", first_name="Papp"))
-    DBSession.add(Person(name="Vada", first_name="Infantino"))
 
 
 class ConcreteViews(AbstractViews):
@@ -43,6 +19,32 @@ class ConcreteViews(AbstractViews):
 
 class TestAbstractViews(DatabaseTestCase):
 
+    def _add_test_persons(self):
+        self.person1 = Person(name="Smith", first_name="Peter")
+        DBSession.add(self.person1)
+        DBSession.add(Person(name="Wayne", first_name="John"))
+        DBSession.add(Person(name="Elda", first_name="Hasbrouck"))
+        DBSession.add(Person(name="Lashaun", first_name="Brasel"))
+        DBSession.add(Person(name="Lashawna", first_name="Ashford"))
+        DBSession.add(Person(name="Lesha", first_name="Snellgrove"))
+        DBSession.add(Person(name="Sulema", first_name="Page"))
+        DBSession.add(Person(name="Derek", first_name="Boroughs"))
+        DBSession.add(Person(name="Odis", first_name="Bateman"))
+        DBSession.add(Person(name="Venetta", first_name="Briganti"))
+        DBSession.add(Person(name="Monte", first_name="Quill"))
+        DBSession.add(Person(name="Daniel", first_name="Ruth"))
+        DBSession.add(Person(name="Eloise", first_name="Hellickson"))
+        DBSession.add(Person(name="Hee", first_name="Deloney"))
+        DBSession.add(Person(name="Sharee", first_name="Warf"))
+        DBSession.add(Person(name="Delpha", first_name="Philip"))
+        DBSession.add(Person(name="Claudio", first_name="Campfield"))
+        DBSession.add(Person(name="Janessa", first_name="Beatty"))
+        DBSession.add(Person(name="Hollis", first_name="Richmond"))
+        DBSession.add(Person(name="Karoline", first_name="Carew"))
+        DBSession.add(Person(name="Bess", first_name="Papp"))
+        DBSession.add(Person(name="Vada", first_name="Infantino"))
+        DBSession.flush()
+
     def test_index(self):
         views = ConcreteViews(self.request)
         views._model = Person
@@ -53,7 +55,7 @@ class TestAbstractViews(DatabaseTestCase):
         self.assertEquals(response, expected)
 
     def test_grid(self):
-        _add_test_persons()
+        self._add_test_persons()
 
         self.request.POST['current'] = '1'
         self.request.POST['rowCount'] = '5'
@@ -95,7 +97,7 @@ class TestAbstractViews(DatabaseTestCase):
 
     def test_new_post_success(self):
         self.request.matched_route = Mock(name='person_new')
-        self.request.route_url = Mock(return_value='person_new')
+        self.request.route_url = Mock(return_value='person/new')
         self.request.session.add = Mock()
         self.request.session.flush = Mock()
 
@@ -109,3 +111,34 @@ class TestAbstractViews(DatabaseTestCase):
         self.assertIsInstance(response, Person)
         self.request.session.add.assert_called_once_with(response)
         self.request.session.flush.assert_called_once_with()
+
+    def test_edit_get_not_found(self):
+        self.request.matched_route = Mock(name='person_edit')
+        self.request.matchdict = {'id': 99999}
+        self.request.route_url = Mock(return_value='person/1/edit')
+
+        views = ConcreteViews(self.request)
+        with self.assertRaises(HTTPNotFound):
+            views.edit()
+
+    def test_edit_get_success(self):
+        self._add_test_persons()
+        self.request.matched_route = Mock(name='person_edit')
+        self.request.matchdict = {'id': self.person1.id}
+        self.request.route_url = Mock(return_value='person/1/edit')
+
+        views = ConcreteViews(self.request)
+        response = views.edit()
+
+        self.assertIn('form', response)
+        self.assertIn('deform_dependencies', response)
+
+    def test_edit_post_notfound(self):
+        self.request.matched_route = Mock(name='person_edit')
+        self.request.matchdict = {'id': 99999}
+        self.request.route_url = Mock(return_value='person/1/edit')
+        self.request.method = 'POST'
+
+        views = ConcreteViews(self.request)
+        with self.assertRaises(HTTPNotFound):
+            views.edit()

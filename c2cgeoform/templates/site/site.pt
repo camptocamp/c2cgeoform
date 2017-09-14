@@ -44,25 +44,16 @@
   </head>
 
   <body>
-    <div class="starter-template">
-      <div class="container">
-        <div class="row">
-          <div class="col-md-11"></div>
-          <div class="col-md-1">
-            <a href="${request.route_url('locale', _query=(('language', 'en'),))}">en</a>
-            <a href="${request.route_url('locale', _query=(('language', 'fr'),))}">fr</a>
-          </div>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-11"></div>
+        <div class="col-md-1">
+          <a href="${request.route_url('locale', _query=(('language', 'en'),))}">en</a>
+          <a href="${request.route_url('locale', _query=(('language', 'fr'),))}">fr</a>
         </div>
-        <div class="row">
-          <div class="col-md-2">
-            <img class="logo img-responsive" src="${request.static_url('c2cgeoform:static/pyramid.png')}" alt="pyramid web framework">
-          </div>
-          <div class="col-md-10">
-            <div class="content">
-              <metal:content define-slot="content"></metal:content>
-            </div>
-          </div>
-        </div>
+      </div>
+      <div class="content">
+        <metal:content define-slot="content"></metal:content>
       </div>
     </div>
   </body>
