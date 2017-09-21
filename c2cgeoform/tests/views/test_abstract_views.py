@@ -56,8 +56,8 @@ class TestAbstractViews(DatabaseTestCase):
     def test_grid(self):
         self._add_test_persons()
 
-        self.request.POST['current'] = '1'
-        self.request.POST['rowCount'] = '5'
+        self.request.params['current'] = '1'
+        self.request.params['rowCount'] = '5'
 
         views = ConcreteViews(self.request)
         response = views.grid()

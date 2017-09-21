@@ -1,6 +1,4 @@
 
-import paginate
-
 from deform import Form, ValidationFailure  # , ZPTRendererFactory
 from deform.form import Button
 from geoalchemy2.elements import WKBElement
@@ -10,8 +8,6 @@ from translationstring import TranslationStringFactory
 from sqlalchemy.exc import DBAPIError
 from pyramid.httpexceptions import HTTPNotFound
 from pyramid.response import Response
-
-import functools
 
 _ = TranslationStringFactory('c2cgeoform')
 
@@ -60,73 +56,39 @@ class AbstractViews():
         in the admin view.
         """
         try:
-            current_page = int(self._request.POST.get('current'))
-            row_count = int(self._request.POST.get('rowCount'))
-            search_phrase = self._request.POST.get('searchPhrase', '').strip()
-            sort = self._get_sort_param(self._request.POST)
+            params = self._request.params
+            current_page = int(params.get('current'))
+            row_count = int(params.get('rowCount'))
+            search_phrase = params.get('searchPhrase', '').strip()
+            sort_columns = self._sort_columns()
 
-            query = self._get_query(sort, search_phrase)
-
-            page = paginate.Page(query.all(),
-                                 page=current_page,
-                                 items_per_page=row_count)
+            query = self._base_query()
+            query = self._filter_query(query, search_phrase)
+            query = self._sort_query(query, sort_columns)
 
             return {
-                "current": page.page,
-                "rowCount": page.items_per_page,
-                "rows": self._get_grid_rows(page.items),
-                "total": page.item_count
+                "current": current_page,
+                "rowCount": row_count,
+                "rows": self._grid_rows(query, current_page, row_count),
+                "total": query.count()
             }
         except DBAPIError:
             return Response(db_err_msg, content_type='text/plain', status=500)
 
-    def _get_sort_param(self, params):
-        for key in params:
-            # Bootgrid sends the sort field as "sort[first_name]: asc"
+    def _sort_columns(self):
+        sort_columns = []
+        for key, value in self._request.params.items():
+            # Bootgrid sends the sort fields as "sort[col_name]: asc"
             if key.startswith('sort'):
-                field = key.replace('sort[', '').replace(']', '')
-                sort_order = 'asc' if params[key] == 'asc' else 'desc'
-                return (field, sort_order)
-        return None
+                col_name = key.replace('sort[', '').replace(']', '')
+                sort_order = 'asc' if value == 'asc' else 'desc'
+                sort_columns.append((col_name, sort_order))
+        return sort_columns
 
-    def _get_grid_rows(self, entities):
-        """Creates plain objects for the given entities containing
-        only those properties flagged with `admin_list`.
-        """
-        rows = []
-
-        for entity in entities:
-            obj = {}
-            for field in self._list_fields:
-                value = getattr(entity, field)
-                if value is None:
-                    value = ''
-                else:
-                    if isinstance(value, WKBElement):
-                        value = 'Geometry'
-                    else:
-                        value = str(value)
-                obj[field] = value
-            # set the entity id on a special property
-            obj['_id_'] = str(getattr(entity, self._id_field))
-            rows.append(obj)
-
-        return rows
-
-    def _get_base_query(self):
+    def _base_query(self):
         return self._request.dbsession.query(self._model)
 
-    def _get_query(self, sort, search_phrase):
-        query = self._get_base_query()
-
-        # order by
-        if sort is not None and hasattr(self._model, sort[0]):
-            sort_field = getattr(self._model, sort[0])
-            if sort[1] == 'desc':
-                sort_field = desc(sort_field)
-            query = query.order_by(sort_field)
-
-        # search
+    def _filter_query(self, query, search_phrase):
         if search_phrase != '':
             search_expr = '%' + '%'.join(search_phrase.split()) + '%'
 
@@ -141,14 +103,46 @@ class AbstractViews():
 
             # then join the filters into one `or` condition
             if len(filters) > 0:
-                filter_expr = filters.pop()
-                filter_expr = functools.reduce(
-                    lambda filter_expr, filter: or_(filter_expr, filter),
-                    filters,
-                    filter_expr)
-                query = query.filter(filter_expr)
+                query = query.filter(or_(*filters))
 
         return query
+
+    def _sort_query(self, query, sort_columns):
+        sorts = []
+        for col_name, sort_order in sort_columns:
+            if hasattr(self._model, col_name):
+                sort = getattr(self._model, col_name)
+                if sort_order == 'desc':
+                    sort = desc(sort)
+                sorts.append(sort)
+        if len(sorts) > 0:
+            query = query.order_by(*sorts)
+        return query
+
+    def _grid_rows(self, query, current_page, row_count):
+        """Creates plain objects for the given entities containing
+        only those properties flagged with `admin_list`.
+        """
+        rows = []
+
+        for entity in query.limit(row_count). \
+                offset((current_page - 1) * row_count):
+            row = {}
+            for field in self._list_fields:
+                value = getattr(entity, field)
+                if value is None:
+                    value = ''
+                else:
+                    if isinstance(value, WKBElement):
+                        value = 'Geometry'
+                    else:
+                        value = str(value)
+                row[field] = value
+            # set the entity id on a special property
+            row['_id_'] = str(getattr(entity, self._id_field))
+            rows.append(row)
+
+        return rows
 
     def _form(self):
         form = Form(
