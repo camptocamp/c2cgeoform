@@ -205,9 +205,6 @@ class AbstractViews():
             raise HTTPNotFound()
         return obj
 
-    def view(self):
-        raise NotImplementedError()
-
     def edit(self):
         form = self._form()
 
@@ -232,6 +229,3 @@ class AbstractViews():
         return({
             'form': rendered,
             'deform_dependencies': form.get_widget_resources()})
-
-    def delete(self):
-        raise NotImplementedError()
