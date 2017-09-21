@@ -42,12 +42,12 @@ class AbstractViews():
     def __init__(self, request):
         self._request = request
 
-    def _col_label(self, id):
-        col_info = self._model.__getattribute__(self._model, id).info
+    def _col_label(self, col_name):
+        col_info = self._model.__getattribute__(self._model, col_name).info
         if 'colanderalchemy' not in col_info:
-            return id
+            return col_name
         if 'title' not in col_info['colanderalchemy']:
-            return id
+            return col_name
         to_translate = col_info['colanderalchemy']['title']
         return self._request.localizer.translate(to_translate)
 
