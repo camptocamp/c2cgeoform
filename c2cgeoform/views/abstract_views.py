@@ -193,7 +193,7 @@ class AbstractViews():
 
     def _get_object(self):
         pk = self._request.matchdict.get('id')
-        obj = self._get_base_query() \
+        obj = self._request.dbsession.query(self._model) \
             .filter("{0}='{1}'".format(self._id_field, pk)).one_or_none()
         if obj is None:
             raise HTTPNotFound()
