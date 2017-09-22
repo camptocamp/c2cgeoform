@@ -11,7 +11,7 @@
     <!-- Bootstrap core CSS -->
     <link href="${request.static_url('{{package}}:node_modules/bootstrap/dist/css/bootstrap.min.css')}" rel="stylesheet">
     <link href="${request.static_url('{{package}}:node_modules/jquery-bootgrid/dist/jquery.bootgrid.min.css')}" rel="stylesheet">
-    <link href="${request.static_url('{{package}}:node_modules/jquery-steps/dist/js/jquery.steps.css')}" rel="stylesheet">
+    <link href="${request.static_url('{{package}}:node_modules/jquery-steps/demo/css/jquery.steps.css')}" rel="stylesheet">
     <link href="${request.static_url('c2cgeoform:static/theme.css')}" rel="stylesheet">
     <link href="${request.static_url('{{package}}:static/theme.css')}" rel="stylesheet">
 
@@ -31,7 +31,7 @@
     <script type="text/javascript" src="${request.static_url('{{package}}:node_modules/jquery/dist/jquery.min.js')}"></script>
     <script type="text/javascript" src="${request.static_url('{{package}}:node_modules/bootstrap/dist/js/bootstrap.min.js')}"></script>
     <script type="text/javascript" src="${request.static_url('{{package}}:node_modules/jquery-bootgrid/dist/jquery.bootgrid.min.js')}"></script>
-    <script type="text/javascript" src="${request.static_url('{{package}}:node_modules/jquery-steps/dist/jquery.steps.min.js')}"></script>
+    <script type="text/javascript" src="${request.static_url('{{package}}:node_modules/jquery-steps/build/jquery.steps.min.js')}"></script>
     <script type="text/javascript" src="${request.static_url('c2cgeoform:static/js/c2cgeoform.js')}"></script>
 
     <!-- Deform JavaScript -->
