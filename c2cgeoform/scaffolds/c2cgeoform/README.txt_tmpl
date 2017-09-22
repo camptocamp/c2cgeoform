@@ -14,9 +14,7 @@ Getting Started
 - psql -d postgres -c "CREATE DATABASE $DATABASE OWNER \"www-data\";"
 - psql -d $DATABASE -c "CREATE EXTENSION postgis;"
 
-- $VENV/bin/python setup.py develop
+Manually update sqlalchemy.url in development.ini
 
-- $VENV/bin/initialize_{{project}}_db development.ini
-
-- $VENV/bin/pserve development.ini
-
+- make initdb
+- make serve

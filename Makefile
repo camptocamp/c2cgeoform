@@ -12,7 +12,7 @@ help:
 	@echo
 	@echo "Possible targets:"
 	@echo
-	@echo "- install                 Install c2cgeoform"
+	@echo "- build                   Install c2cgeoform"
 	@echo "- initdb                  (Re-)initialize the database"
 	@echo "- check                   Check the code with flake8"
 	@echo "- test                    Run the unit tests"
@@ -20,8 +20,8 @@ help:
 	@echo "- compile-catalog         Compile message catalog"
 	@echo
 
-.PHONY: install
-install: .build/requirements.timestamp compile-catalog
+.PHONY: build
+build: .build/requirements.timestamp compile-catalog
 
 .PHONY: check
 check: flake8
@@ -56,15 +56,15 @@ dist: .build/requirements-dev.timestamp compile-catalog
 .build/venv.timestamp:
 	mkdir -p ${VENV}
 	virtualenv -p python3 ${VENV}
-	touch .build/venv.timestamp
+	touch $@
 
 .build/requirements.timestamp: .build/venv.timestamp setup.py
 	.build/venv/bin/pip install -U -e .
-	touch .build/requirements.timestamp
+	touch $@
 
 .build/requirements-dev.timestamp: .build/venv.timestamp requirements-dev.txt
 	.build/venv/bin/pip install -r requirements-dev.txt
-	touch .build/requirements-dev.timestamp
+	touch $@
 
 .PHONY: clean
 clean:

@@ -7,7 +7,7 @@ help:
 	@echo
 	@echo "Possible targets:"
 	@echo
-	@echo "- install                 Install {{project}}"
+	@echo "- build                   Install {{project}}"
 	@echo "- initdb                  (Re-)initialize the database"
 	@echo "- serve                   Run the dev server"
 	@echo "- check                   Check the code with flake8"
@@ -17,15 +17,15 @@ help:
 	@echo "- compile-catalog         Compile message catalog"
 	@echo
 
-.PHONY: install
-install: .build/requirements.timestamp compile-catalog
+.PHONY: build
+build: .build/requirements.timestamp compile-catalog
 
 .PHONY: initdb
 initdb: .build/requirements.timestamp
 	.build/venv/bin/initialize_{{package}}_db development.ini
 
 .PHONY: serve
-serve: .build/requirements.timestamp
+serve: build
 	.build/venv/bin/pserve --reload development.ini
 
 .PHONY: check
