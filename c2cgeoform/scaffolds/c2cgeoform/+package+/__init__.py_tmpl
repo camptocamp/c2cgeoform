@@ -24,9 +24,6 @@ def main(global_config, **settings):
     config.include('.routes')
 
     config.add_translation_dirs('locale')
-    config.add_static_view('static', 'static', cache_max_age=3600)
-    config.add_route('bus_stops', '/bus_stops')
-    config.add_route('addresses', '/addresses')
 
     config.scan()
 

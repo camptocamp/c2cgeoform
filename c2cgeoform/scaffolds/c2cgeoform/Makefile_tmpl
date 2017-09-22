@@ -18,7 +18,7 @@ help:
 	@echo
 
 .PHONY: build
-build: .build/requirements.timestamp compile-catalog
+build: .build/requirements.timestamp node_modules compile-catalog
 
 .PHONY: initdb
 initdb: .build/requirements.timestamp
@@ -58,6 +58,10 @@ compile-catalog: $(MO_FILES)
 dist: .build/venv.timestamp compile-catalog
 	.build/venv/bin/python setup.py sdist
 
+.PHONY: node_modules
+node_modules: package.json
+	npm install
+
 %.mo: %.po
 	msgfmt $< --output-file=$@
 
@@ -96,3 +100,4 @@ clean:
 .PHONY: cleanall
 cleanall:
 	rm -rf .build
+	rm -rf node_modules

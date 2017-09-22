@@ -21,7 +21,7 @@ class ExcavationViews(AbstractViews):
 
     @view_config(route_name='c2cgeoform_index',
                  match_param=('table=excavation'),
-                 renderer='c2cgeoform:templates/site/index.pt')
+                 renderer='../templates/index.pt')
     def index(self):
         return super().index()
 
@@ -33,7 +33,7 @@ class ExcavationViews(AbstractViews):
 
     @view_config(route_name='c2cgeoform_action',
                  match_param=('table=excavation', 'action=edit', 'id=new'),
-                 renderer='c2cgeoform:templates/site/new.pt')
+                 renderer='../templates/new.pt')
     def new(self):
         return super().edit()
 
