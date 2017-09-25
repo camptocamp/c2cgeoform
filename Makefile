@@ -1,3 +1,5 @@
+BUILD_DIR?=.build
+VENV?=${BUILD_DIR}/venv
 MO_FILES = $(addprefix c2cgeoform/locale/, fr/LC_MESSAGES/c2cgeoform.mo de/LC_MESSAGES/c2cgeoform.mo)
 
 
@@ -10,7 +12,7 @@ help:
 	@echo
 	@echo "Possible targets:"
 	@echo
-	@echo "- install                 Install c2cgeoform"
+	@echo "- build                   Install c2cgeoform"
 	@echo "- initdb                  (Re-)initialize the database"
 	@echo "- check                   Check the code with flake8"
 	@echo "- test                    Run the unit tests"
@@ -18,7 +20,7 @@ help:
 	@echo "- compile-catalog         Compile message catalog"
 	@echo
 
-.PHONY: install
+.PHONY: build
 build: .build/requirements.timestamp compile-catalog
 
 .PHONY: check
@@ -33,10 +35,10 @@ test: .build/requirements.timestamp .build/requirements-dev.timestamp
 	.build/venv/bin/nosetests --ignore-files=test_views.py
 
 .PHONY: update-catalog
-update-catalog: .build/venv
+update-catalog: .build/requirements-dev.timestamp
 	.build/venv/bin/pot-create -c lingua.cfg -o c2cgeoform/locale/c2cgeoform.pot \
 	    c2cgeoform/models.py \
-	    c2cgeoform/views.py \
+	    c2cgeoform/views/abstract_views.py \
 	    c2cgeoform/templates/
 	msgmerge --update c2cgeoform/locale/fr/LC_MESSAGES/c2cgeoform.po c2cgeoform/locale/c2cgeoform.pot
 	msgmerge --update c2cgeoform/locale/de/LC_MESSAGES/c2cgeoform.po c2cgeoform/locale/c2cgeoform.pot
@@ -45,28 +47,24 @@ update-catalog: .build/venv
 compile-catalog: $(MO_FILES)
 
 .PHONY: dist
-dist: .build/venv compile-catalog
+dist: .build/requirements-dev.timestamp compile-catalog
 	.build/venv/bin/python setup.py sdist
 
 %.mo: %.po
 	msgfmt $< --output-file=$@
 
-.build/venv:
-	mkdir -p $(dir $@)
-	# make a first virtualenv to get a recent version of virtualenv
-	virtualenv venv
-	venv/bin/pip install virtualenv
-	venv/bin/virtualenv --no-site-packages .build/venv
-	# remove the temporary virtualenv
-	rm -rf venv
+.build/venv.timestamp:
+	mkdir -p ${VENV}
+	virtualenv -p python3 ${VENV}
+	touch $@
 
-.build/requirements.timestamp: .build/venv setup.py
+.build/requirements.timestamp: .build/venv.timestamp setup.py
 	.build/venv/bin/pip install -U -e .
-	touch .build/requirements.timestamp
+	touch $@
 
-.build/requirements-dev.timestamp: .build/venv requirements-dev.txt
-	.build/venv/bin/pip install -r requirements-dev.txt > /dev/null 2>&1
-	touch .build/requirements-dev.timestamp
+.build/requirements-dev.timestamp: .build/venv.timestamp requirements-dev.txt
+	.build/venv/bin/pip install -r requirements-dev.txt
+	touch $@
 
 .PHONY: clean
 clean:

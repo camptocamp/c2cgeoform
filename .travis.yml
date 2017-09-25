@@ -5,7 +5,6 @@ sudo: false
 dist: trusty
 
 python:
-  - "2.7"
   - "3.4"
 
 addons:
@@ -17,7 +16,7 @@ addons:
 git:
   depth: 1
 
-install: make install
+install: make build
 
 before_script:
   - psql -c "CREATE USER c2cgeoform WITH PASSWORD 'c2cgeoform';" -U postgres
