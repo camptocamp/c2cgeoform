@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2017-09-12 11:08+0200\n"
+"POT-Creation-Date: 2017-09-25 11:36+0200\n"
 "PO-Revision-Date: 2014-07-31 11:13+0200\n"
 "Last-Translator: Tobias Sauerwein <tobias.sauerwein@camptocamp.com>\n"
 "Language-Team: French\n"
@@ -15,11 +15,95 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
+#: c2cgeoform/views/abstract_views.py:150
+#: c2cgeoform/templates/widgets/readonly/form_confirmation.pt:42
+msgid "Submit"
+msgstr "Soumettre"
+
+#: c2cgeoform/templates/widgets/map_select.pt:37
+#: c2cgeoform/templates/widgets/map.pt:35
+msgid "Zoom In"
+msgstr "Zoomer"
+
+#: c2cgeoform/templates/widgets/map_select.pt:37
+#: c2cgeoform/templates/widgets/map.pt:35
+msgid "Zoom Out"
+msgstr "Dézoomer"
+
+#: c2cgeoform/templates/widgets/map_select.pt:37
+#: c2cgeoform/templates/widgets/map.pt:35
+msgid "Attributions"
+msgstr "Copyright"
+
+#: c2cgeoform/templates/widgets/map_select.pt:37
+msgid "Selected:"
+msgstr "Choisi:"
+
+#: c2cgeoform/templates/widgets/map_select.pt:37
+msgid "Please select an item on the map!"
+msgstr "Veuillez choisir un objet sur la carte !"
+
+#: c2cgeoform/templates/widgets/map.pt:35
+msgid "Draw point"
+msgstr "Créer point"
+
+#: c2cgeoform/templates/widgets/map.pt:35
+msgid "Draw line"
+msgstr "Créer ligne"
+
+#: c2cgeoform/templates/widgets/map.pt:35
+msgid "Draw polygon"
+msgstr "Créer polygone"
+
+#: c2cgeoform/templates/widgets/map.pt:35
+msgid "Modify"
+msgstr "Modifier"
+
+#: c2cgeoform/templates/widgets/map.pt:35
+msgid "Remove all"
+msgstr "Effacer tous les objets"
+
+#: c2cgeoform/templates/widgets/readonly/form_view_user.pt:22
+msgid "Submission successful"
+msgstr "Formulaire envoyé avec succès"
+
+#: c2cgeoform/templates/widgets/readonly/form_view_user.pt:23
+msgid ""
+"Thank you for your submission. Please find below the information that was "
+"stored in our system."
+msgstr ""
+"Merci beaucoup ! Veuillez trouver ci-dessous les informations stockées dans "
+"notre système."
+
+#: c2cgeoform/templates/widgets/readonly/form_confirmation.pt:24
+msgid "Confirmation"
+msgstr "Confirmation"
+
+#: c2cgeoform/templates/widgets/readonly/form_confirmation.pt:25
+msgid "Please confirm your details and submit the form."
+msgstr ""
+"Pour finaliser votre dossier, veuillez vérifier les informations saisies et "
+"les soumettre après."
+
+#: c2cgeoform/templates/widgets/readonly/form_confirmation.pt:44
+msgid "Back to form"
+msgstr "Retourner au formulaire"
+
+#: c2cgeoform/templates/site/view_admin.pt:7
+#: c2cgeoform/templates/site/index.pt:81
+msgid "View"
+msgstr "Voir"
+
+#: c2cgeoform/templates/site/view_admin.pt:9 c2cgeoform/templates/site/new.pt:9
+#: c2cgeoform/templates/site/edit.pt:9
+msgid "Back to overview"
+msgstr "Retourner à l'index"
+
 #: c2cgeoform/templates/site/index.pt:7
 msgid "All entities"
 msgstr "Toutes données"
 
-#: c2cgeoform/templates/site/index.pt:15
+#: c2cgeoform/templates/site/index.pt:15 c2cgeoform/templates/site/new.pt:7
 msgid "New"
 msgstr "Nouveau"
 
@@ -51,70 +135,9 @@ msgstr "Actualiser"
 msgid "Search"
 msgstr "Rechercher"
 
-#: c2cgeoform/templates/site/index.pt:81
-msgid "View"
-msgstr "Voir"
-
-#: c2cgeoform/templates/site/index.pt:83
+#: c2cgeoform/templates/site/index.pt:83 c2cgeoform/templates/site/edit.pt:7
 msgid "Edit"
 msgstr "Modifier"
-
-#~ msgid "Submit"
-#~ msgstr "Soumettre"
-
-#~ msgid "Back to overview"
-#~ msgstr "Retourner à l'index"
-
-#~ msgid "Zoom In"
-#~ msgstr "Zoomer"
-
-#~ msgid "Zoom Out"
-#~ msgstr "Dézoomer"
-
-#~ msgid "Attributions"
-#~ msgstr "Copyright"
-
-#~ msgid "Draw point"
-#~ msgstr "Créer point"
-
-#~ msgid "Draw line"
-#~ msgstr "Créer ligne"
-
-#~ msgid "Draw polygon"
-#~ msgstr "Créer polygone"
-
-#~ msgid "Modify"
-#~ msgstr "Modifier"
-
-#~ msgid "Remove all"
-#~ msgstr "Effacer tous les objets"
-
-#~ msgid "Selected:"
-#~ msgstr "Choisi:"
-
-#~ msgid "Please select an item on the map!"
-#~ msgstr "Veuillez choisir un objet sur la carte !"
-
-#~ msgid "Confirmation"
-#~ msgstr "Confirmation"
-
-#~ msgid "Please confirm your details and submit the form."
-#~ msgstr ""
-#~ "Pour finaliser votre dossier, veuillez vérifier les informations saisies "
-#~ "et les soumettre après."
-
-#~ msgid "Back to form"
-#~ msgstr "Retourner au formulaire"
-
-#~ msgid "Submission successful"
-#~ msgstr "Formulaire envoyé avec succès"
-
-#~ msgid ""
-#~ "Thank you for your submission. Please find below the information that was "
-#~ "stored in our system."
-#~ msgstr ""
-#~ "Merci beaucoup ! Veuillez trouver ci-dessous les informations stockées "
-#~ "dans notre système."
 
 #~ msgid "Verification has failed"
 #~ msgstr "La vérification a échouée"
