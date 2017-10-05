@@ -31,8 +31,22 @@ class ExcavationViews(AbstractViews):
     def grid(self):
         return super().grid()
 
-    @view_config(route_name='c2cgeoform_new',
-                 match_param=('table=excavation'),
+    @view_config(route_name='c2cgeoform_action',
+                 match_param=('table=excavation', 'action=edit', 'id=new'),
                  renderer='c2cgeoform:templates/site/new.pt')
     def new(self):
-        return super().new()
+        return super().edit()
+
+    @view_config(route_name='c2cgeoform_action',
+                 match_param=('table=excavation', 'action=edit'),
+                 request_method='GET',
+                 renderer='c2cgeoform:templates/site/edit.pt')
+    def edit(self):
+        return super().edit()
+
+    @view_config(route_name='c2cgeoform_action',
+                 match_param=('table=excavation', 'action=edit'),
+                 request_method='POST',
+                 renderer='c2cgeoform:templates/site/edit.pt')
+    def save(self):
+        return super().save()

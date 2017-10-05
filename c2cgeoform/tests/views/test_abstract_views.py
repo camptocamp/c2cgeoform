@@ -1,6 +1,7 @@
 
 from colanderalchemy import SQLAlchemySchemaNode
 from pyramid.httpexceptions import HTTPNotFound
+from pyramid.httpexceptions import HTTPFound
 from unittest.mock import Mock
 
 from c2cgeoform.models import DBSession
@@ -72,49 +73,62 @@ class TestAbstractViews(DatabaseTestCase):
         self.assertEquals('Smith', rows[0]['name'])
 
     def test_new_get(self):
-        self.request.matched_route = Mock(name='person_new')
-        self.request.route_url = Mock(return_value='person_new')
+        self.request.matched_route = Mock(name='c2cgeoform_action')
+        self.request.route_url = Mock(return_value='person/new/edit')
 
+        self.request.matchdict = {'id': 'new'}
         views = ConcreteViews(self.request)
-        response = views.new()
+        response = views.edit()
 
         self.assertIn('form', response)
         self.assertIn('deform_dependencies', response)
 
     def test_new_post_validation_error(self):
-        self.request.matched_route = Mock(name='person_new')
-        self.request.route_url = Mock(return_value='person_new')
+        self.request.matched_route = Mock(name='c2cgeoform_action')
+        self.request.route_url = Mock(return_value='person/new/save')
 
+        self.request.matchdict = {'id': 'new'}
         self.request.POST['first_name'] = 'arnaud'
         self.request.POST['age'] = '37'
 
         views = ConcreteViews(self.request)
-        response = views.new()
+        response = views.save()
 
         self.assertIn('form', response)
         self.assertIn('deform_dependencies', response)
 
     def test_new_post_success(self):
-        self.request.matched_route = Mock(name='person_new')
-        self.request.route_url = Mock(return_value='person/new')
-        self.request.session.add = Mock()
-        self.request.session.flush = Mock()
+        self.request.matched_route = Mock(name='person_action')
+        self.request.route_url = Mock(return_value='person/new/save')
+        self.request.dbsession.merge = Mock(return_value=Person(
+            name='...',
+            first_name='...'),
+            age='...',
+            id=7869)
+        self.request.dbsession.flush = Mock()
 
+        self.request.matchdict = {'id': 'new'}
         self.request.POST['name'] = 'morvan'
         self.request.POST['first_name'] = 'arnaud'
         self.request.POST['age'] = '37'
 
         views = ConcreteViews(self.request)
-        response = views.new()
+        response = views.save()
 
-        self.assertIsInstance(response, Person)
-        self.request.session.add.assert_called_once_with(response)
-        self.request.session.flush.assert_called_once_with()
+        self.assertIsInstance(response, HTTPFound)
+
+        class Matcher():
+            def __eq__(self, other):
+                return other.name == 'morvan' \
+                    and other.first_name == 'arnaud' \
+                    and other.age == 37
+        self.request.dbsession.merge.assert_called_once_with(Matcher())
+        self.request.dbsession.flush.assert_called_once_with()
 
     def test_edit_get_not_found(self):
-        self.request.matched_route = Mock(name='person_edit')
+        self.request.matched_route = Mock(name='person_action')
         self.request.matchdict = {'id': 99999}
-        self.request.route_url = Mock(return_value='person/1/edit')
+        self.request.route_url = Mock(return_value='person/99999/edit')
 
         views = ConcreteViews(self.request)
         with self.assertRaises(HTTPNotFound):
@@ -122,7 +136,7 @@ class TestAbstractViews(DatabaseTestCase):
 
     def test_edit_get_success(self):
         self._add_test_persons()
-        self.request.matched_route = Mock(name='person_edit')
+        self.request.matched_route = Mock(name='person_action')
         self.request.matchdict = {'id': self.person1.id}
         self.request.route_url = Mock(return_value='person/1/edit')
 
@@ -133,11 +147,10 @@ class TestAbstractViews(DatabaseTestCase):
         self.assertIn('deform_dependencies', response)
 
     def test_edit_post_notfound(self):
-        self.request.matched_route = Mock(name='person_edit')
+        self.request.matched_route = Mock(name='person_action')
         self.request.matchdict = {'id': 99999}
-        self.request.route_url = Mock(return_value='person/1/edit')
+        self.request.route_url = Mock(return_value='person/99999/edit')
         self.request.method = 'POST'
 
         views = ConcreteViews(self.request)
-        with self.assertRaises(HTTPNotFound):
-            views.edit()
+        views.save()
