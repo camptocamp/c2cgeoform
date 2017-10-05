@@ -151,11 +151,16 @@ class AbstractViews():
             # action=self._request.route_url('c2cgeoform_action',))
             )
         # _set_form_widget(form, geo_form_schema.schema_user, template)
-        self._populate_widgets(form.schema)
         return form
 
-    def _populate_widgets(self, schema):
-        pass
+    def _populate_widgets(self, node):
+        """ Populate ``deform_ext.RelationSelectMixin`` widgets.
+        """
+        if hasattr(node.widget, 'populate'):
+            node.widget.populate(self._request.dbsession, self._request)
+
+        for child in node:
+            self._populate_widgets(child)
 
     def _new_object(self):
         return self._model()
@@ -173,6 +178,7 @@ class AbstractViews():
     def edit(self):
         obj = self._get_object()
         form = self._form()
+        self._populate_widgets(form.schema)
         rendered = form.render(form.schema.dictify(obj), request=self._request)
         return({
             'form': rendered,
@@ -193,6 +199,7 @@ class AbstractViews():
                     id=obj.__getattribute__(self._id_field)))
         except ValidationFailure as e:
             # FIXME see https://github.com/Pylons/deform/pull/243
+            self._populate_widgets(form.schema)
             rendered = e.field.widget.serialize(
                 e.field,
                 e.cstruct,
