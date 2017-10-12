@@ -1,6 +1,7 @@
 from translationstring import TranslationStringFactory
 from deform.widget import (
-    Widget, SelectWidget, Select2Widget, RadioChoiceWidget)
+    Widget, SelectWidget, Select2Widget, RadioChoiceWidget,
+    CheckboxChoiceWidget)
 from deform.compat import string_types
 from colander import (Invalid, null)
 from deform.widget import (FileUploadWidget as DeformFileUploadWidget,
@@ -389,6 +390,23 @@ class RelationSelect2Widget(RelationMultiSelectMixin, Select2Widget):
             cstruct = RelationMultiSelectMixin.serialize(
                 self, field, cstruct, **kw)
         return Select2Widget.serialize(self, field, cstruct, **kw)
+
+
+class RelationCheckBoxListWidget(RelationMultiSelectMixin, CheckboxChoiceWidget):
+    def __init__(
+            self, model, id_field='id', label_field='label',
+            default_value=None, order_by=None, **kw):
+        RelationMultiSelectMixin.__init__(
+            self, model, id_field, label_field, default_value, order_by)
+        CheckboxChoiceWidget.__init__(self, **kw)
+
+    def deserialize(self, field, pstruct):
+        return RelationMultiSelectMixin.deserialize(self, field, pstruct)
+
+    def serialize(self, field, cstruct, **kw):
+        cstruct = RelationMultiSelectMixin.serialize(
+            self, field, cstruct, **kw)
+        return CheckboxChoiceWidget.serialize(self, field, cstruct, **kw)
 
 
 class RelationRadioChoiceWidget(RelationSelectMixin, RadioChoiceWidget):
