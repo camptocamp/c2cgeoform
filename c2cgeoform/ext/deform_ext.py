@@ -1,6 +1,7 @@
 from translationstring import TranslationStringFactory
 from deform.widget import (
-    Widget, SelectWidget, Select2Widget, RadioChoiceWidget)
+    Widget, SelectWidget, Select2Widget, RadioChoiceWidget,
+    CheckboxChoiceWidget)
 from deform.compat import string_types
 from colander import (Invalid, null)
 from deform.widget import (FileUploadWidget as DeformFileUploadWidget,
@@ -301,7 +302,7 @@ class RelationSelect2Widget(RelationMultiSelectMixin, Select2Widget):
 
     .. code-block:: python
 
-        ssituations = relationship(
+        situations = relationship(
             "Situation",
             secondary=situation_for_permission,
             cascade="save-update,merge,refresh-expire",
@@ -371,6 +372,72 @@ class RelationSelect2Widget(RelationMultiSelectMixin, Select2Widget):
             cstruct = RelationMultiSelectMixin.serialize(
                 self, field, cstruct, **kw)
         return Select2Widget.serialize(self, field, cstruct, **kw)
+
+
+class RelationCheckBoxListWidget(RelationMultiSelectMixin,
+                                 CheckboxChoiceWidget):
+    """
+    Extension of the widget ````deform.widget.CheckboxChoiceWidget`` which
+    loads the values from the database using a SQLAlchemy model.
+
+    For n:m relations the widget can be used like so:
+
+    .. code-block:: python
+
+        situations = relationship(
+            "Situation",
+            secondary=situation_for_permission,
+            cascade="save-update,merge,refresh-expire",
+            info={
+                'colanderalchemy': {
+                    'title': _('Situations'),
+                    'widget': RelationCheckBoxListWidget(
+                        Situation,
+                        'id',
+                        'name',
+                        order_by='name'
+                    ),
+                    'includes': ['id']
+                }
+            })
+
+    **Attributes/Arguments**
+
+    model (required)
+        The SQLAlchemy model that is used to generate the list of values.
+
+    id_field
+        The property of the model that is used as value.
+        Default: ``id``.
+
+    label_field
+        The property of the model that is used as label.
+        Default: ``label``.
+
+    order_by
+        The property of the model that is used for the ``order_by`` clause of
+        the SQL query.
+        Default: ``None``.
+
+    For further attributes, please refer to the documentation of
+    ``deform.widget.Select2Widget`` in the deform documentation:
+    <http://deform.readthedocs.org/en/latest/api.html>
+
+    """
+    def __init__(
+            self, model, id_field='id', label_field='label',
+            order_by=None, **kw):
+        RelationMultiSelectMixin.__init__(
+            self, model, id_field, label_field, None, order_by)
+        CheckboxChoiceWidget.__init__(self, multiple=True, **kw)
+
+    def deserialize(self, field, pstruct):
+        return RelationMultiSelectMixin.deserialize(self, field, pstruct)
+
+    def serialize(self, field, cstruct, **kw):
+        cstruct = RelationMultiSelectMixin.serialize(
+            self, field, cstruct, **kw)
+        return CheckboxChoiceWidget.serialize(self, field, cstruct, **kw)
 
 
 class RelationRadioChoiceWidget(RelationSelectMixin, RadioChoiceWidget):

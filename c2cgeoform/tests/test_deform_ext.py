@@ -100,7 +100,81 @@ class TestRelationRadioChoiceWidget(DatabaseTestCase):
         self.assertEqual('Worker', first_value[1])
 
 
-class RelationMultiSelect2Widget(DatabaseTestCase):
+class TestRelationCheckBoxListWidget(DatabaseTestCase):
+
+    def test_serialize_empty(self):
+        from c2cgeoform.ext.deform_ext import RelationCheckBoxListWidget
+        widget = RelationCheckBoxListWidget(Tag, 'id', 'name')
+        renderer = DummyRenderer()
+
+        field = _get_field('tags', renderer)
+        widget.populate(DBSession, None)
+        widget.serialize(field, null)
+        self.assertEqual(renderer.kw['values'], _convert_values(widget.values))
+        self.assertEqual(renderer.kw['cstruct'], [])
+
+        first_value = renderer.kw['values'][0]
+        self.assertEqual('0', first_value[0])
+        self.assertEqual('Tag A', first_value[1])
+
+    def test_serialize(self):
+        from c2cgeoform.ext.deform_ext import RelationCheckBoxListWidget
+        widget = RelationCheckBoxListWidget(Tag, 'id', 'name')
+        renderer = DummyRenderer()
+
+        field = _get_field('tags', renderer)
+        widget.populate(DBSession, None)
+        objs = [
+            {'id': '0'},
+            {'id': '2'}]
+
+        widget.serialize(field, objs)
+        self.assertEqual(renderer.kw['values'], _convert_values(widget.values))
+        self.assertEqual(renderer.kw['cstruct'], ['0', '2'])
+
+        first_value = renderer.kw['values'][0]
+        self.assertEqual('0', first_value[0])
+        self.assertEqual('Tag A', first_value[1])
+
+    def test_serialize_wrong_mapping(self):
+        from c2cgeoform.ext.deform_ext import RelationCheckBoxListWidget
+        widget = RelationCheckBoxListWidget(
+            EmploymentStatus, 'id', 'name')
+        renderer = DummyRenderer()
+
+        field = _get_field('tags', renderer)
+        widget.populate(DBSession, None)
+        objs = [
+            {'bad_column': '101'},
+            {'bad_column': '102'}]
+
+        with self.assertRaises(KeyError):
+            widget.serialize(field, objs)
+
+    def test_deserialize_empty(self):
+        from c2cgeoform.ext.deform_ext import RelationCheckBoxListWidget
+        widget = RelationCheckBoxListWidget(Tag, 'id', 'name')
+        renderer = DummyRenderer()
+
+        field = _get_field('tags', renderer)
+        widget.populate(DBSession, None)
+        result = widget.deserialize(field, null)
+        self.assertEqual(result, [])
+
+    def test_deserialize(self):
+        from c2cgeoform.ext.deform_ext import RelationCheckBoxListWidget
+        widget = RelationCheckBoxListWidget(Tag, 'id', 'name')
+        renderer = DummyRenderer()
+
+        field = _get_field('tags', renderer)
+        widget.populate(DBSession, None)
+        result = widget.deserialize(field, ['1', '2'])
+        self.assertEqual(
+            result,
+            [{'id': '1'}, {'id': '2'}])
+
+
+class TestRelationMultiSelect2Widget(DatabaseTestCase):
 
     def test_serialize_empty(self):
         from c2cgeoform.ext.deform_ext import RelationSelect2Widget
