@@ -169,8 +169,9 @@ class AbstractViews():
         pk = self._request.matchdict.get('id')
         if pk == "new":
             return self._new_object()
-        obj = self._request.dbsession.query(self._model) \
-            .filter("{0}='{1}'".format(self._id_field, pk)).one_or_none()
+        obj = self._request.dbsession.query(self._model). \
+            filter(getattr(self._model, self._id_field) == pk). \
+            one_or_none()
         if obj is None:
             raise HTTPNotFound()
         return obj
