@@ -35,8 +35,7 @@ class MapWidget(Widget):
     """
     requirements = (
         ('openlayers', '3.0.0'),
-        ('json2', None),
-        ('c2cgeoform.deform_map', None),)
+        ('c2cgeoform.deform_map', None))
 
     def serialize(self, field, cstruct, readonly=False, **kw):
         if cstruct is null:

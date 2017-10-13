@@ -6,15 +6,14 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>c2cgeoform</title>
+    <title>{{project}}</title>
     <link rel="icon" href="data:;base64,=">
     <!-- Bootstrap core CSS -->
-    <link href="${request.static_url('c2cgeoform:static/js/bootstrap/css/bootstrap.min.css')}" rel="stylesheet">
-    <link href="${request.static_url('c2cgeoform:static/js/jquery.bootgrid.css')}" rel="stylesheet">
-    <link href="${request.static_url('c2cgeoform:static/js/jquery.steps.css')}" rel="stylesheet">
-
-    <!-- Custom styles for this scaffold -->
+    <link href="${request.static_url('{{package}}:node_modules/bootstrap/dist/css/bootstrap.min.css')}" rel="stylesheet">
+    <link href="${request.static_url('{{package}}:node_modules/jquery-bootgrid/dist/jquery.bootgrid.min.css')}" rel="stylesheet">
+    <link href="${request.static_url('{{package}}:node_modules/jquery-steps/demo/css/jquery.steps.css')}" rel="stylesheet">
     <link href="${request.static_url('c2cgeoform:static/theme.css')}" rel="stylesheet">
+    <link href="${request.static_url('{{package}}:static/theme.css')}" rel="stylesheet">
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -23,18 +22,16 @@
     <![endif]-->
 
     <!-- Deform CSS -->
-
     <tal:link tal:condition="deform_dependencies">
     <link rel="stylesheet" href="${request.static_url('deform:static/css/form.css')}" type="text/css" />
     <link tal:repeat="css deform_dependencies['css']" rel="stylesheet" type="text/css" tal:attributes="href request.static_url(css)"/>
     </tal:link>
 
-
     <!-- Bootstrap core JavaScript -->
-    <script type="text/javascript" src="${request.static_url('deform:static/scripts/jquery-2.0.3.min.js')}"></script>
-    <script src="${request.static_url('c2cgeoform:static/js/bootstrap/js/bootstrap.min.js')}"></script>
-    <script type="text/javascript" src="${request.static_url('c2cgeoform:static/js/jquery.bootgrid.min.js')}"></script>
-    <script type="text/javascript" src="${request.static_url('c2cgeoform:static/js/jquery.steps.min.js')}"></script>
+    <script type="text/javascript" src="${request.static_url('{{package}}:node_modules/jquery/dist/jquery.min.js')}"></script>
+    <script type="text/javascript" src="${request.static_url('{{package}}:node_modules/bootstrap/dist/js/bootstrap.min.js')}"></script>
+    <script type="text/javascript" src="${request.static_url('{{package}}:node_modules/jquery-bootgrid/dist/jquery.bootgrid.min.js')}"></script>
+    <script type="text/javascript" src="${request.static_url('{{package}}:node_modules/jquery-steps/build/jquery.steps.min.js')}"></script>
     <script type="text/javascript" src="${request.static_url('c2cgeoform:static/js/c2cgeoform.js')}"></script>
 
     <!-- Deform JavaScript -->

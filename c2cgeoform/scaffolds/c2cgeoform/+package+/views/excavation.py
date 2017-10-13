@@ -21,7 +21,7 @@ class ExcavationViews(AbstractViews):
 
     @view_config(route_name='c2cgeoform_index',
                  match_param=('table=excavation'),
-                 renderer='c2cgeoform:templates/site/index.pt')
+                 renderer='../templates/index.jinja2')
     def index(self):
         return super().index()
 
@@ -33,20 +33,21 @@ class ExcavationViews(AbstractViews):
 
     @view_config(route_name='c2cgeoform_action',
                  match_param=('table=excavation', 'action=edit', 'id=new'),
-                 renderer='c2cgeoform:templates/site/new.pt')
+                 request_method='GET',
+                 renderer='../templates/new.jinja2')
     def new(self):
         return super().edit()
 
     @view_config(route_name='c2cgeoform_action',
                  match_param=('table=excavation', 'action=edit'),
                  request_method='GET',
-                 renderer='c2cgeoform:templates/site/edit.pt')
+                 renderer='../templates/edit.jinja2')
     def edit(self):
         return super().edit()
 
     @view_config(route_name='c2cgeoform_action',
                  match_param=('table=excavation', 'action=edit'),
                  request_method='POST',
-                 renderer='c2cgeoform:templates/site/edit.pt')
+                 renderer='../templates/edit.jinja2')
     def save(self):
         return super().save()

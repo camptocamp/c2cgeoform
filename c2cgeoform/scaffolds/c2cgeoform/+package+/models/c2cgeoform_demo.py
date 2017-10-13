@@ -335,7 +335,7 @@ class Comment(Base):
         {"schema": schema}
     )
     __colanderalchemy_config__ = {
-        'title': 'A very simple form'
+        'title': _('A very simple form')
     }
 
     id = Column(Integer, primary_key=True, info={

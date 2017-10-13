@@ -39,7 +39,8 @@ def includeme(config):
     config.add_view('c2cgeoform.views.set_locale_cookie',
                     route_name='locale')
     config.add_translation_dirs('colander:locale', 'deform:locale', 'locale')
-    _set_widget_template_path()
+
+    _set_widget_template_path(config.root_package.__name__)
 
     config.add_subscriber(add_renderer_globals, BeforeRender)
     config.add_subscriber(add_localizer, NewRequest)
@@ -53,16 +54,18 @@ def translator(term):
         return get_localizer(request).translate(term)
 
 
-def _set_widget_template_path():
+def _set_widget_template_path(root_package):
     Form.set_zpt_renderer(default_search_paths, translator=translator)
+
+    node_modules_root = '{}:node_modules'.format(root_package)
 
     registry = widget.ResourceRegistry()
     registry.set_js_resources(
-        'json2', None, 'c2cgeoform:static/js/json2.min.js')
-    registry.set_js_resources(
-        'openlayers', '3.0.0', 'c2cgeoform:static/js/ol.js')
+        'openlayers', '3.0.0',
+        '{}/openlayers/dist/ol.js'.format(node_modules_root))
     registry.set_css_resources(
-        'openlayers', '3.0.0', 'c2cgeoform:static/js/ol.css')
+        'openlayers', '3.0.0',
+        '{}/openlayers/dist/ol.css'.format(node_modules_root))
     registry.set_js_resources(
         'c2cgeoform.deform_map', None,
         'c2cgeoform:static/deform_map/controls.js')
@@ -71,7 +74,8 @@ def _set_widget_template_path():
         'c2cgeoform:static/deform_map/style.css')
     registry.set_js_resources(
         'typeahead', '0.10.5',
-        'c2cgeoform:static/js/typeahead.bundle-0.10.5.min.js')
+        '{}/typeahead.js/dist/typeahead.bundle.min.js'.
+        format(node_modules_root))
     registry.set_css_resources(
         'typeahead', '0.10.5',
         'c2cgeoform:static/js/typeaheadjs.css')
