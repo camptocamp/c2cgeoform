@@ -10,5 +10,4 @@ def includeme(config):
 
     rec_with_pregenerator('c2cgeoform_index', '/{table}/')
     rec_with_pregenerator('c2cgeoform_grid', '/{table}/grid.json')
-    rec_with_pregenerator('c2cgeoform_delete', '/{table}/{id}/delete')
     rec_with_pregenerator('c2cgeoform_action', '/{table}/{id}/{action}')
