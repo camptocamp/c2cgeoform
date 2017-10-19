@@ -20,33 +20,33 @@ class ExcavationViews(AbstractViews):
     _id_field = 'hash'
 
     @view_config(route_name='c2cgeoform_index',
-                 match_param=('table=excavation'),
+                 match_param=('table=excavations'),
                  renderer='../templates/index.jinja2')
     def index(self):
         return super().index()
 
     @view_config(route_name='c2cgeoform_grid',
-                 match_param=('table=excavation'),
+                 match_param=('table=excavations'),
                  renderer='json')
     def grid(self):
         return super().grid()
 
     @view_config(route_name='c2cgeoform_action',
-                 match_param=('table=excavation', 'action=edit', 'id=new'),
+                 match_param=('table=excavations', 'action=edit', 'id=new'),
                  request_method='GET',
                  renderer='../templates/new.jinja2')
     def new(self):
         return super().edit()
 
     @view_config(route_name='c2cgeoform_action',
-                 match_param=('table=excavation', 'action=edit'),
+                 match_param=('table=excavations', 'action=edit'),
                  request_method='GET',
                  renderer='../templates/edit.jinja2')
     def edit(self):
         return super().edit()
 
     @view_config(route_name='c2cgeoform_action',
-                 match_param=('table=excavation', 'action=edit'),
+                 match_param=('table=excavations', 'action=edit'),
                  request_method='POST',
                  renderer='../templates/edit.jinja2')
     def save(self):

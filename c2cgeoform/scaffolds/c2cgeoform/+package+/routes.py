@@ -1,5 +1,11 @@
 import os
 
+from c2cgeoform.routes import register_models
+from .models.c2cgeoform_demo import (
+    Comment,
+    Excavation,
+)
+
 
 def includeme(config):
     config.add_static_view('static', 'static', cache_max_age=3600)
@@ -12,4 +18,6 @@ def includeme(config):
     config.add_route('bus_stops', '/bus_stops')
     config.add_route('addresses', '/addresses')
 
-    config.include('c2cgeoform.routes')
+    register_models(config, [
+        ('excavations', Excavation),
+        ('comments', Comment)])
