@@ -136,7 +136,8 @@ class Excavation(Base):
     )
     __colanderalchemy_config__ = {
         'title':
-        _('Application form for permission to carry out excavation work')
+        _('Application form for permission to carry out excavation work'),
+        'plural': _('Excavation forms')
     }
 
     id = Column(Integer, primary_key=True, info={
@@ -336,7 +337,8 @@ class Comment(Base):
         {"schema": schema}
     )
     __colanderalchemy_config__ = {
-        'title': _('A very simple form')
+        'title': _('A very simple form'),
+        'plural': _('Comments')
     }
 
     id = Column(Integer, primary_key=True, info={
