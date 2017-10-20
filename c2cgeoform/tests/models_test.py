@@ -9,7 +9,6 @@ from sqlalchemy.orm import relationship
 import colander
 import deform
 
-from c2cgeoform.schema import register_schema
 from c2cgeoform.models import Base
 from c2cgeoform.ext.deform_ext import RelationSelect2Widget
 
@@ -110,11 +109,3 @@ class Person(Base):
             'title': 'Validation',
             'label': 'Validated'
         }})
-
-register_schema(
-    'tests_persons', Person,
-    excludes_user=['validated'],
-    overrides_user={
-        'name': {'title': 'The Name'},
-        'phones': {'excludes': 'verified'}
-    })
