@@ -1,4 +1,5 @@
 #-e git+https://github.com/camptocamp/c2cgeoform#egg=c2cgeoform
+https://github.com/arnaud-morvan/ColanderAlchemy/archive/f61482e426a6ca97c31a254647aa77f5419f31f3.zip
 plaster_pastedeploy
 pyramid >= 1.9a
 pyramid_debugtoolbar

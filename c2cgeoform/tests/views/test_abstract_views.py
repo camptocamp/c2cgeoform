@@ -1,5 +1,3 @@
-
-from colanderalchemy import SQLAlchemySchemaNode
 from pyramid.httpexceptions import HTTPNotFound
 from pyramid.httpexceptions import HTTPFound
 from unittest.mock import Mock
@@ -7,6 +5,7 @@ from unittest.mock import Mock
 from c2cgeoform.models import DBSession
 from c2cgeoform.tests import DatabaseTestCase
 from c2cgeoform.tests.models_test import Person
+from c2cgeoform.schema import GeoFormSchemaNode
 from c2cgeoform.views.abstract_views import AbstractViews
 
 
@@ -15,7 +14,7 @@ class ConcreteViews(AbstractViews):
     _model = Person
     _id_field = 'id'
     _list_fields = ['name', 'first_name']
-    _base_schema = SQLAlchemySchemaNode(Person, title='Person')
+    _base_schema = GeoFormSchemaNode(Person, title='Person')
 
 
 class TestAbstractViews(DatabaseTestCase):
@@ -122,7 +121,7 @@ class TestAbstractViews(DatabaseTestCase):
                 return other.name == 'morvan' \
                     and other.first_name == 'arnaud' \
                     and other.age == 37
-        self.request.dbsession.merge.assert_called_once_with(Matcher())
+        self.request.dbsession.merge.assert_called_with(Matcher())
         self.request.dbsession.flush.assert_called_once_with()
 
     def test_edit_get_not_found(self):
@@ -153,7 +152,8 @@ class TestAbstractViews(DatabaseTestCase):
         self.request.method = 'POST'
 
         views = ConcreteViews(self.request)
-        views.save()
+        with self.assertRaises(HTTPNotFound):
+            views.save()
 
     def test_delete_person(self):
         dbsession = self.request.dbsession

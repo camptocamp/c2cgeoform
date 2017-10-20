@@ -144,8 +144,12 @@ class AbstractViews():
         return rows
 
     def _form(self):
+        schema = self._base_schema.bind(
+            request=self._request,
+            dbsession=self._request.dbsession)
+
         form = Form(
-            self._base_schema.clone(),
+            schema,
             buttons=(Button(name='formsubmit', title=_('Submit')),),
             # renderer=renderer,
             # action=self._request.route_url('c2cgeoform_action',))
@@ -186,12 +190,12 @@ class AbstractViews():
             'deform_dependencies': form.get_widget_resources()})
 
     def save(self):
+        obj = self._get_object()
         try:
             form = self._form()
             form_data = self._request.POST.items()
             obj_dict = form.validate(form_data)
-            obj = form.schema.objectify(obj_dict)
-            obj = self._request.dbsession.merge(obj)
+            obj = form.schema.objectify(obj_dict, obj)
             self._request.dbsession.flush()
             return HTTPFound(
                 self._request.route_url(
