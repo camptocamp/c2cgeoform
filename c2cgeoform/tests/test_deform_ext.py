@@ -125,8 +125,8 @@ class RelationMultiSelect2Widget(DatabaseTestCase):
         field = _get_field('tags', renderer)
         widget.populate(DBSession, None)
         objs = [
-            {'tag_id': '0', 'personId': '1', 'id': '101'},
-            {'tag_id': '2', 'personId': '1', 'id': '102'}]
+            {'id': '0'},
+            {'id': '2'}]
 
         widget.serialize(field, objs)
         self.assertEqual(renderer.kw['values'], _convert_values(widget.values))
@@ -145,14 +145,11 @@ class RelationMultiSelect2Widget(DatabaseTestCase):
         field = _get_field('tags', renderer)
         widget.populate(DBSession, None)
         objs = [
-            {'tag_id': '0', 'personId': '1', 'id': '101'},
-            {'tag_id': '2', 'personId': '1', 'id': '102'}]
+            {'bad_column': '101'},
+            {'bad_column': '102'}]
 
-        self.assertRaises(
-            RuntimeError,
-            widget.serialize,
-            field,
-            objs)
+        with self.assertRaises(KeyError):
+            widget.serialize(field, objs)
 
     def test_deserialize_empty(self):
         from c2cgeoform.ext.deform_ext import RelationSelect2Widget
@@ -174,7 +171,7 @@ class RelationMultiSelect2Widget(DatabaseTestCase):
         result = widget.deserialize(field, ['1', '2'])
         self.assertEqual(
             result,
-            [{'tag_id': '1'}, {'tag_id': '2'}])
+            [{'id': '1'}, {'id': '2'}])
 
 
 def _convert_values(values_tuple):

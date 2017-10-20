@@ -107,13 +107,17 @@ def setup_test_data(dbsession):
         dbsession.add(Address(id=3, label="Zurich"))
         dbsession.add(Address(id=4, label="Lugano"))
 
+    dbsession.flush()
+
     if dbsession.query(Excavation).count() == 0:
         for i in range(100):
-            dbsession.add(_excavation(i))
+            dbsession.add(_excavation(i, dbsession))
 
 
-def _excavation(i):
-    return Excavation(
+def _excavation(i, dbsession):
+    situations = dbsession.query(Situation).all()
+
+    excavation = Excavation(
         reference_number='ref{:04d}'.format(i),
         request_date=date.today() - timedelta(days=100-i),
         description="Installation d'un réseau AEP",
@@ -136,6 +140,9 @@ def _excavation(i):
         # work_footprint=geoalchemy2.Geometry('MULTIPOLYGON'
         # photos = relationship(Photo,
     )
+    for j in range(0, 3):
+        excavation.situations.append(situations[(i + j) % len(situations)])
+    return excavation
 
 
 def _add_bus_stops(dbsession):

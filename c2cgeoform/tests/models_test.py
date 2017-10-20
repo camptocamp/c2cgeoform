@@ -3,7 +3,8 @@ from sqlalchemy import (
     Integer,
     Text,
     Boolean,
-    ForeignKey)
+    ForeignKey,
+    Table)
 from sqlalchemy.orm import relationship
 
 import colander
@@ -45,14 +46,14 @@ class Tag(Base):
     name = Column(Text, nullable=False)
 
 
-class TagsForPerson(Base):
-    __tablename__ = 'tests_tags_for_person'
-
-    id = Column(Integer, primary_key=True)
-    tag_id = Column(
-        Integer, ForeignKey('tests_tags.id'))
-    person_id = Column(
-        Integer, ForeignKey('tests_persons.id'))
+person_tag = Table(
+    "person_tag",
+    Base.metadata,
+    Column("tag_id", Integer, ForeignKey('tests_tags.id'),
+           primary_key=True),
+    Column("person_id", Integer, ForeignKey('tests_persons.id'),
+           primary_key=True),
+)
 
 
 class Person(Base):
@@ -91,8 +92,9 @@ class Person(Base):
                 'title': 'Phone numbers',
             }})
     tags = relationship(
-        TagsForPerson,
-        cascade="all, delete-orphan",
+        "Tag",
+        secondary=person_tag,
+        cascade="save-update,merge,refresh-expire",
         info={
             'colanderalchemy': {
                 'title': 'Tags',
@@ -102,8 +104,10 @@ class Person(Base):
                     'name',
                     order_by='name',
                     multiple=True
-                )
+                ),
+                'includes': ['id']
             }})
+
     validated = Column(Boolean, info={
         'colanderalchemy': {
             'title': 'Validation',

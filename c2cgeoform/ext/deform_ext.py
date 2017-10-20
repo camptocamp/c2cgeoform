@@ -5,7 +5,6 @@ from deform.compat import string_types
 from colander import (Invalid, null)
 from deform.widget import (FileUploadWidget as DeformFileUploadWidget,
                            MappingWidget)
-from sqlalchemy.inspection import inspect
 import urllib
 import json
 import logging
@@ -119,18 +118,18 @@ class RelationSelectMixin(object):
 
 class RelationMultiSelectMixin(RelationSelectMixin):
     """
-    Mixin class to support n:m relations for select fields.
+    Mixin class to support n:m relations for multi select fields.
     """
 
     def deserialize(self, field, pstruct):
         """
         Deserialize the field input for a n:m relation.
 
-        For example for a n:m relation between table A and B and a relation
-        table A_B: Let's assume this widget is used in model A, so that
-        you can select entries of B. Then this method will receive a list of
-        ids of table B. For each id it will create an object containing the id.
-        These objects will be inserted in the relation table A_B.
+        For example for a n:m relation between mapper A and mapper B and a
+        relation table A_B: Let's assume this widget is used in model A, so
+        that you can select entries of B. Then this method will receive a list
+        of ids of table B. For each id it will create an object containing the
+        id. These objects will be inserted in the relation table A_B.
         """
         if pstruct in (null, None):
             return []
@@ -167,31 +166,9 @@ class RelationMultiSelectMixin(RelationSelectMixin):
         """
         relation_field = field.children[0]
 
-        relation_table = relation_field.schema.class_
-        mapped_id_field_name = self._get_mapped_id_field_name(relation_table)
-
-        # get the Deform field for the found foreign key column
         for subfield in relation_field.children:
-            if subfield.name == mapped_id_field_name:
+            if subfield.name == self.id_field:
                 return subfield
-
-        raise RuntimeError(
-            'The foreign key column for table "' + self.model.__table__.name +
-            '" can not be found in the ' + 'relation table "' +
-            relation_table.__table__.name + '" for field "' +
-            field.name + '".')
-
-    def _get_mapped_id_field_name(self, relation_table):
-        """ Loop through the columns of the relation table A_B and
-        find the foreign key for table B.
-        """
-        mapper = inspect(relation_table)
-        for column in mapper.columns:
-            foreign_keys = list(column.foreign_keys)
-            for foreign_key in foreign_keys:
-                if foreign_key.column.table == self.model.__table__:
-                    return column.name
-        return None
 
 
 class RelationSelectWidget(RelationMultiSelectMixin, SelectWidget):
@@ -224,19 +201,22 @@ class RelationSelectWidget(RelationMultiSelectMixin, SelectWidget):
     .. code-block:: python
 
         situations = relationship(
-            SituationForPermission,
-            cascade="all, delete-orphan",
+            "Situation",
+            secondary=situation_for_permission,
+            cascade="save-update,merge,refresh-expire",
             info={
                 'colanderalchemy': {
-                    'title': 'Situation',
-                    'widget': deform_ext.RelationSelectWidget(
+                    'title': _('Situations'),
+                    'widget': RelationSelectWidget(
                         Situation,
                         'id',
                         'name',
                         order_by='name',
                         multiple=True
-                    )
-                }})
+                    ),
+                    'includes': ['id']
+                }
+            })
 
     **Attributes/Arguments**
 
@@ -321,20 +301,23 @@ class RelationSelect2Widget(RelationMultiSelectMixin, Select2Widget):
 
     .. code-block:: python
 
-        situations = relationship(
-            SituationForPermission,
-            cascade="all, delete-orphan",
+        ssituations = relationship(
+            "Situation",
+            secondary=situation_for_permission,
+            cascade="save-update,merge,refresh-expire",
             info={
                 'colanderalchemy': {
-                    'title': 'Situation',
-                    'widget': deform_ext.RelationSelect2Widget(
+                    'title': _('Situations'),
+                    'widget': RelationSelect2Widget(
                         Situation,
                         'id',
                         'name',
                         order_by='name',
                         multiple=True
-                    )
-                }})
+                    ),
+                    'includes': ['id']
+                }
+            })
 
     **Attributes/Arguments**
 
