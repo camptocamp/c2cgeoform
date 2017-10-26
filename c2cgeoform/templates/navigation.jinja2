@@ -1,0 +1,7 @@
+<ul class="nav nav-pills nav-stacked">
+  {% for table in tables %}
+  <li role="presentation" class="{{'active' if request.matchdict and request.matchdict.get('table') == table['key'] else ''}}">
+    <a href="{{request.route_url('c2cgeoform_index', table=table['key'])}}">{{table['plural']}}</a>
+  </li>
+  {% endfor %}
+</ul>
