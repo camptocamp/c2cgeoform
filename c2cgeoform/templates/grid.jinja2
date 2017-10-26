@@ -16,6 +16,11 @@
   </table>
 
   <script type="text/javascript">
+  function confirmation(href) {
+      if (window.confirm('{{_("Are your sure ?")}}')) {
+          window.location.href = href;
+      }
+  }
   $('#grid').bootgrid({
       ajax: true,
       multiSort: true,
@@ -34,9 +39,10 @@
                   return '_id_';
               },
               to: function(value) {
+                  var delete_url = "{{request.route_url('c2cgeoform_action', action='delete', id='_id_')}}".replace('_id_', value);             
                   return '' +
-                      '<a href="{{request.route_url('c2cgeoform_action', action='view', id='_id_')}}">{{_("View")}}</a> '.replace('_id_', value) +
-                      '<a href="{{request.route_url('c2cgeoform_action', action='edit', id='_id_')}}">{{_("Edit")}}</a>'.replace('_id_', value);
+                      '<a href="{{request.route_url('c2cgeoform_action', action='edit', id='_id_')}}">{{_("Edit")}}</a>'.replace('_id_', value) +
+                      '<a href="#delete" onclick=confirmation("'+delete_url+'");>{{_("Delete")}}</a>';
               },
           }
       }

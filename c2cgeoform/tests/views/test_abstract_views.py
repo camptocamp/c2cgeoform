@@ -154,3 +154,32 @@ class TestAbstractViews(DatabaseTestCase):
 
         views = ConcreteViews(self.request)
         views.save()
+
+    def test_delete_person(self):
+        dbsession = self.request.dbsession
+
+        self._add_test_persons()
+        self.request.matched_route = Mock(name='person_action')
+        self.request.matchdict = {'id': self.person1.id}
+        self.request.route_url = Mock(return_value='person/1/delete')
+        self.request.referer = 'this is a test'
+        dbsession.delete = Mock()
+        flush_which_has_to_be_back_for_teardown = dbsession.flush
+        try:
+            dbsession.flush = Mock()
+
+            views = ConcreteViews(self.request)
+            response = views.delete()
+
+            class Matcher():
+                def __init__(self, person):
+                    self.id = person.id
+
+                def __eq__(self, other):
+                    return other.id == self.id
+            self.assertIsInstance(response, HTTPFound)
+            self.assertEquals('this is a test', response.location)
+            dbsession.delete.assert_called_once_with(Matcher(self.person1))
+            dbsession.flush.assert_called_once_with()
+        finally:
+            dbsession.flush = flush_which_has_to_be_back_for_teardown
