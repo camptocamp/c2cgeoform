@@ -1,0 +1,109 @@
+import pytest
+from pyramid.testing import DummyRequest
+from {{package}}.models.c2cgeoform_demo import Excavation
+from {{package}}.views.excavation import ExcavationViews
+
+
+@pytest.mark.usefixtures("transact", "test_app")
+class TestExcavationViews():
+
+    def _excavation_by_ref(self, dbsession, ref):
+        return dbsession.query(Excavation). \
+            filter(Excavation.reference_number == ref). \
+            one_or_none()
+
+    def test_index(self, test_app):
+        resp = test_app.get("/excavations/", status=200)
+
+        resp_tmp = resp.click(verbose=True, href="language=en")
+        resp_en = resp_tmp.follow()
+        html_en = resp_en.html
+        news_en = html_en.select('a[href$=/excavations/new/edit]')
+        assert len(news_en) == 1
+        assert news_en[0].string == "New"
+
+        reference_numbers = html_en.select("th[data-column-id=reference_number]")
+        assert len(reference_numbers) == 1
+        assert reference_numbers[0].string == "Reference Number"
+
+        resp_tmp = resp_en.click(verbose=True, href="language=fr")
+        resp_fr = resp_tmp.follow()
+        html_fr = resp_fr.html
+        news_fr = html_fr.select('a[href$=/excavations/new/edit]')
+        assert len(news_fr) == 1
+        assert news_fr[0].string == "Nouveau"
+
+    def test_grid(self, test_app, dbsession):
+        json = test_app.post(
+            "/excavations/grid.json",
+            params={
+                "current": 1,
+                "rowCount": 10,
+                "sort[reference_number]": "asc"
+            },
+            status=200
+        ).json
+
+        assert json["current"] == 1
+        assert json["rowCount"] == 10
+        assert len(json["rows"]) == 10
+        assert json["total"] == 100
+
+        row = json["rows"][5]
+        exc = self._excavation_by_ref(dbsession, row["reference_number"])
+        assert row["_id_"] == exc.hash
+        assert row["description"] == exc.description
+        assert row["location_town"] == exc.location_town
+        assert row["request_date"] == exc.request_date.strftime("%Y-%m-%d")
+        assert row["responsible_company"] == exc.responsible_company
+
+    def test_edit(self, dbsession, test_app):
+        exc = self._excavation_by_ref(dbsession, "ref0001")
+        resp = test_app.get("/excavations/{}/edit".format(exc.hash), status=200)
+
+        form = resp.form
+        #assert form["request_date"] == exc.request_date
+        assert form["description"].value == exc.description
+        assert form["motif"].value == exc.motif
+        #assert form["situations"].value == exc.situations
+        #assert form["contact_persons"].value == exc.contact_persons
+        assert form["location_district_id"].value == str(exc.location_district_id)
+        assert form["location_street"].value == exc.location_street
+        assert form["location_postal_code"].value == exc.location_postal_code
+        assert form["location_town"].value == exc.location_town
+        assert form["address_id"].value == str(exc.address_id or "")
+        assert form["location_position"].value == str(exc.location_position or "")
+        assert form["responsible_title"].value == exc.responsible_title
+        assert form["responsible_name"].value == exc.responsible_name
+        assert form["responsible_first_name"].value == exc.responsible_first_name
+        assert form["responsible_mobile"].value == exc.responsible_mobile
+        assert form["responsible_mail"].value == exc.responsible_mail
+        assert form["responsible_company"].value == exc.responsible_company
+        assert form["validated"].value == "true" if exc.validated else "false"
+        assert form["work_footprint"].value == str(exc.work_footprint or "")
+        #assert form["photos"].value == exc.photos
+
+        form["description"] = "New description"
+        form["motif"] = "New motif"
+        '''
+        form["location_district_id"]
+        form["location_street"]
+        form["location_postal_code"]
+        form["location_town"]
+        form["address_id"]
+        form["location_position"]
+        form["responsible_title"]
+        form["responsible_name"]
+        form["responsible_first_name"]
+        form["responsible_mobile"]
+        form["responsible_mail"]
+        form["responsible_company"]
+        form["validated"]
+        form["work_footprint"]
+        '''
+        resp = form.submit("submit")
+
+        dbsession.expire(exc)
+
+        assert exc.description == "New description"
+        assert exc.motif == "New motif"

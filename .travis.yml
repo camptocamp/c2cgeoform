@@ -16,11 +16,14 @@ addons:
 git:
   depth: 1
 
-install: make build
+install:
+- rm -rf ~/.nvm && git clone https://github.com/creationix/nvm.git ~/.nvm && (cd ~/.nvm && git checkout `git describe --abbrev=0 --tags`) && source ~/.nvm/nvm.sh && nvm install 6
+- npm -version
+- make build
 
 before_script:
-  - psql -c "CREATE USER c2cgeoform WITH PASSWORD 'c2cgeoform';" -U postgres
-  - psql -c "CREATE DATABASE c2cgeoform WITH OWNER c2cgeoform;" -U postgres
-  - psql -d c2cgeoform -c "CREATE EXTENSION postgis" -U postgres
+- psql -c "CREATE USER \"www-data\" WITH PASSWORD 'www-data';" -U postgres
+- psql -d postgres -c "CREATE DATABASE c2cgeoform_demo_tests OWNER \"www-data\";" -U postgres
+- psql -d c2cgeoform_demo_tests -c "CREATE EXTENSION postgis;" -U postgres
 
 script: make check && make test
