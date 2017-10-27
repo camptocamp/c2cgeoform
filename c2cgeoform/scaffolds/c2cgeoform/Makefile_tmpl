@@ -39,8 +39,8 @@ flake8: .build/requirements-dev.timestamp
 modwsgi: install .build/venv/{{package}}.wsgi .build/apache.conf
 
 .PHONY: test
-test: .build/requirements.timestamp .build/venv/requirements-dev.timestamp
-	.build/venv/bin/python setup.py test
+test: build .build/requirements-dev.timestamp
+	.build/venv/bin/pytest
 
 .PHONY: update-catalog
 update-catalog:

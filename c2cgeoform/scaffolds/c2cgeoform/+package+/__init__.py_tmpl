@@ -4,8 +4,8 @@ from pkg_resources import resource_filename
 import c2cgeoform
 from c2cgeoform.settings import apply_local_settings
 
-search_paths = ((resource_filename('{{package}}', 'templates/widgets'),)
-                + c2cgeoform.default_search_paths)
+search_paths = ((resource_filename('{{package}}', 'templates/widgets'),) +
+                c2cgeoform.default_search_paths)
 c2cgeoform.default_search_paths = search_paths
 
 

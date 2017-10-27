@@ -24,15 +24,30 @@ help:
 build: .build/requirements.timestamp compile-catalog
 
 .PHONY: check
-check: flake8
+check: flake8 check_c2cgeoform_demo
 
 .PHONY: flake8
 flake8: .build/requirements-dev.timestamp
 	.build/venv/bin/flake8 c2cgeoform
 
+.PHONY: check_c2cgeoform_demo
+check_c2cgeoform_demo: c2cgeoform_demo
+	make -C ../c2cgeoform_demo check
+
 .PHONY: test
-test: .build/requirements.timestamp .build/requirements-dev.timestamp
+test: test_c2cgeoform test_c2cgeoform_demo
+
+.PHONY: test_c2cgeoform
+test_c2cgeoform: .build/requirements.timestamp .build/requirements-dev.timestamp
 	.build/venv/bin/nosetests --ignore-files=test_views.py
+
+.PHONY: test_c2cgeoform_demo
+test_c2cgeoform_demo: c2cgeoform_demo
+	make -C ../c2cgeoform_demo test
+
+.PHONY: c2cgeoform_demo
+c2cgeoform_demo: .build/requirements.timestamp c2cgeoform/scaffolds/c2cgeoform
+	.build/venv/bin/pcreate -s c2cgeoform --overwrite ../c2cgeoform_demo > /dev/null
 
 .PHONY: update-catalog
 update-catalog: .build/requirements-dev.timestamp
