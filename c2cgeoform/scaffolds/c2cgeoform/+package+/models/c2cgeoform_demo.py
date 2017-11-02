@@ -17,6 +17,7 @@ import colander
 import deform
 from deform.widget import HiddenWidget
 from c2cgeoform.ext.deform_ext import (
+    RelationCheckBoxListWidget,
     RelationSelect2Widget,
     RelationSearchWidget,
     RelationSelectMapWidget,
@@ -185,12 +186,11 @@ class Excavation(Base):
                 # this widget type shows a select widget where the values are
                 # loaded from a database table. in this case the select options
                 # are generated from the Situation table.
-                'widget': RelationSelect2Widget(
+                'widget': RelationCheckBoxListWidget(
                     Situation,
                     'id',
                     'name',
-                    order_by='name',
-                    multiple=True
+                    order_by='name'
                 ),
                 'includes': ['id']
             }
