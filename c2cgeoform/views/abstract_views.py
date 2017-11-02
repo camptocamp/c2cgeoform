@@ -144,9 +144,11 @@ class AbstractViews():
         return rows
 
     def _form(self):
-        schema = self._base_schema.bind(
-            request=self._request,
-            dbsession=self._request.dbsession)
+        schema = self._base_schema.clone(). \
+            add_csrf_token(). \
+            bind(
+                request=self._request,
+                dbsession=self._request.dbsession)
 
         form = Form(
             schema,

@@ -23,6 +23,7 @@ def main(global_config, **settings):
 
     config.include('.models')
     config.include('.routes')
+    config.include('.security')
 
     config.add_translation_dirs('locale')
 

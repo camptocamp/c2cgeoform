@@ -32,7 +32,6 @@ def includeme(config):
     This function creates routes and views for c2cgeoform pages.
     """
     config.include('pyramid_chameleon')
-    config.include('pyramid_beaker')  # use Beaker for session storage
     config.add_static_view('c2cgeoform_static', 'static', cache_max_age=3600)
     config.add_static_view('deform_static', 'deform:static')
     config.add_route('locale', '/locale/')

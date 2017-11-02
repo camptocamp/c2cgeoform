@@ -3,6 +3,7 @@ https://github.com/arnaud-morvan/ColanderAlchemy/archive/f61482e426a6ca97c31a254
 plaster_pastedeploy
 pyramid >= 1.9a
 pyramid_debugtoolbar
+pyramid_nacl_session
 pyramid_retry
 pyramid_tm
 pyramid_jinja2
