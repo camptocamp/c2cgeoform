@@ -56,8 +56,7 @@ class DatabaseTestCase(unittest.TestCase):
 
     def cleanup(self):
         from .models_test import Person, EmploymentStatus, Phone, \
-            Tag, TagsForPerson
-        DBSession.query(TagsForPerson).delete()
+            Tag
         DBSession.query(Tag).delete()
         DBSession.query(Phone).delete()
         DBSession.query(Person).delete()

@@ -36,8 +36,6 @@ def includeme(config):
     config.add_static_view('c2cgeoform_static', 'static', cache_max_age=3600)
     config.add_static_view('deform_static', 'deform:static')
     config.add_route('locale', '/locale/')
-    config.add_view('c2cgeoform.views.set_locale_cookie',
-                    route_name='locale')
     config.add_translation_dirs('colander:locale', 'deform:locale', 'locale')
 
     _set_widget_template_path(config.root_package.__name__)

@@ -8,6 +8,7 @@ from sqlalchemy import (
     Text,
     Boolean,
     Date,
+    Table,
     ForeignKey)
 from sqlalchemy.orm import relationship
 
@@ -117,17 +118,14 @@ class Situation(Base):
     name_fr = Column(Text, nullable=False)
 
 
-class SituationForPermission(Base):
-    __tablename__ = 'situation_for_permission'
-    __table_args__ = (
-        {"schema": schema}
-    )
-
-    id = Column(Integer, primary_key=True)
-    situation_id = Column(
-        Integer, ForeignKey('c2cgeoform_demo.situation.id'))
-    permission_id = Column(
-        Integer, ForeignKey(EXCAV_ID))
+situation_for_permission = Table(
+    "situation_for_permission",
+    Base.metadata,
+    Column("situation_id", Integer, ForeignKey('c2cgeoform_demo.situation.id'),
+           primary_key=True),
+    Column("permission_id", Integer, ForeignKey(EXCAV_ID), primary_key=True),
+    schema=schema
+)
 
 
 # This is the main model class which is used to register a schema.
@@ -176,14 +174,14 @@ class Excavation(Base):
             'title': _('Motive for the Work'),
             'widget': deform.widget.TextAreaWidget(rows=3),
         }})
+
     situations = relationship(
-        SituationForPermission,
-        # by setting the `cascade` property to 'delete-orphan', situation
-        # entities are deleted when they are removed from the relation.
-        cascade="all, delete-orphan",
+        "Situation",
+        secondary=situation_for_permission,
+        cascade="save-update,merge,refresh-expire",
         info={
             'colanderalchemy': {
-                'title': _('Situation'),
+                'title': _('Situations'),
                 # this widget type shows a select widget where the values are
                 # loaded from a database table. in this case the select options
                 # are generated from the Situation table.
@@ -193,8 +191,11 @@ class Excavation(Base):
                     'name',
                     order_by='name',
                     multiple=True
-                )
-            }})
+                ),
+                'includes': ['id']
+            }
+        })
+
     # by default a Deform sequence widget is used for relationship columns,
     # which, for example, allows to create new contact persons in a sub-form.
     contact_persons = relationship(

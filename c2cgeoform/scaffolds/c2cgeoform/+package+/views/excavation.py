@@ -1,6 +1,6 @@
-from colanderalchemy import SQLAlchemySchemaNode
 from pyramid.view import view_config
 
+from c2cgeoform.schema import GeoFormSchemaNode
 from c2cgeoform.views.abstract_views import AbstractViews
 
 from ..models import Excavation
@@ -16,7 +16,7 @@ class ExcavationViews(AbstractViews):
         'location_town',
         'responsible_company',
     ]
-    _base_schema = SQLAlchemySchemaNode(Excavation, title='Person')
+    _base_schema = GeoFormSchemaNode(Excavation, title='Person')
     _id_field = 'hash'
 
     @view_config(route_name='c2cgeoform_index',
