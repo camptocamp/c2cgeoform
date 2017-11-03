@@ -24,6 +24,7 @@ from c2cgeoform.ext.deform_ext import (
 )
 from c2cgeoform.ext import colander_ext, deform_ext
 from c2cgeoform.models import FileData
+from c2cgeoform.schema import manytomany_validator
 
 from .meta import Base
 
@@ -192,7 +193,8 @@ class Excavation(Base):
                     'name',
                     order_by='name'
                 ),
-                'includes': ['id']
+                'includes': ['id'],
+                'validator': manytomany_validator
             }
         })
 

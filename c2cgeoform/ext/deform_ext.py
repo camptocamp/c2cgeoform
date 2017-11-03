@@ -217,7 +217,8 @@ class RelationSelectWidget(RelationMultiSelectMixin, SelectWidget):
                         order_by='name',
                         multiple=True
                     ),
-                    'includes': ['id']
+                    'includes': ['id'],
+                    'validator': manytomany_validator
                 }
             })
 
@@ -318,7 +319,8 @@ class RelationSelect2Widget(RelationMultiSelectMixin, Select2Widget):
                         order_by='name',
                         multiple=True
                     ),
-                    'includes': ['id']
+                    'includes': ['id'],
+                    'validator': manytomany_validator
                 }
             })
 
@@ -399,7 +401,8 @@ class RelationCheckBoxListWidget(RelationMultiSelectMixin,
                         'name',
                         order_by='name'
                     ),
-                    'includes': ['id']
+                    'includes': ['id'],
+                    'validator': manytomany_validator
                 }
             })
 
