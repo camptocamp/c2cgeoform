@@ -46,7 +46,7 @@ git commit -m 'Initial commit'
 ### Install the project and its dependencies
 
 ```shell
-make install
+make build
 ```
 
 ### Set up database
