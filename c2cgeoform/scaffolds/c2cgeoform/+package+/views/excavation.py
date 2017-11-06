@@ -46,6 +46,13 @@ class ExcavationViews(AbstractViews):
         return super().edit()
 
     @view_config(route_name='c2cgeoform_action',
+                 match_param=('table=excavations', 'action=delete'),
+                 request_method='GET',
+                 renderer='../templates/edit.jinja2')
+    def delete(self):
+        return super().delete()
+
+    @view_config(route_name='c2cgeoform_action',
                  match_param=('table=excavations', 'action=edit'),
                  request_method='POST',
                  renderer='../templates/edit.jinja2')
