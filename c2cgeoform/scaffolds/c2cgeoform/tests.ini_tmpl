@@ -16,7 +16,7 @@ pyramid.includes =
     pyramid_debugtoolbar
     pyramid_tm
 
-sqlalchemy.url = postgresql://www-data:www-data@localhost:5432/{{package}}_tests
+sqlalchemy.url = postgresql://c2cgeoform:c2cgeoform@localhost:5432/{{package}}_tests
 
 # By default, the toolbar only appears for clients from IP addresses
 # '127.0.0.1' and '::1'.
