@@ -213,4 +213,4 @@ class AbstractViews():
         obj = self._get_object()
         self._request.dbsession.delete(obj)
         self._request.dbsession.flush()
-        return HTTPFound(self._request.referer)
+        return Response('OK')

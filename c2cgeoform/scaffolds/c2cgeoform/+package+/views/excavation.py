@@ -1,11 +1,12 @@
 from colanderalchemy import SQLAlchemySchemaNode
 from pyramid.view import view_config
+from pyramid.view import view_defaults
 
 from c2cgeoform.views.abstract_views import AbstractViews
-
 from ..models import Excavation
 
 
+@view_defaults(match_param='table=excavations')
 class ExcavationViews(AbstractViews):
 
     _model = Excavation
@@ -20,40 +21,27 @@ class ExcavationViews(AbstractViews):
     _id_field = 'hash'
 
     @view_config(route_name='c2cgeoform_index',
-                 match_param=('table=excavations'),
                  renderer='../templates/index.jinja2')
     def index(self):
         return super().index()
 
     @view_config(route_name='c2cgeoform_grid',
-                 match_param=('table=excavations'),
                  renderer='json')
     def grid(self):
         return super().grid()
 
     @view_config(route_name='c2cgeoform_action',
-                 match_param=('table=excavations', 'action=edit', 'id=new'),
                  request_method='GET',
                  renderer='../templates/new.jinja2')
-    def new(self):
-        return super().edit()
-
-    @view_config(route_name='c2cgeoform_action',
-                 match_param=('table=excavations', 'action=edit'),
-                 request_method='GET',
-                 renderer='../templates/edit.jinja2')
     def edit(self):
         return super().edit()
 
     @view_config(route_name='c2cgeoform_action',
-                 match_param=('table=excavations', 'action=delete'),
-                 request_method='GET',
-                 renderer='../templates/edit.jinja2')
+                 request_method='DELETE')
     def delete(self):
         return super().delete()
 
     @view_config(route_name='c2cgeoform_action',
-                 match_param=('table=excavations', 'action=edit'),
                  request_method='POST',
                  renderer='../templates/edit.jinja2')
     def save(self):

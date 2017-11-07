@@ -203,9 +203,8 @@ class TestExcavationViews():
     def test_delete_success(self, dbsession, test_app):
         exc = self._excavation_by_ref(dbsession, "ref0001")
 
-        resp = test_app.get("/excavations/{}/delete".format(exc.hash),
-            headers = {'referer' : '/excavations/'},
-            status=302)
+        resp = test_app.delete("/excavations/{}/delete".format(exc.hash),
+            status=200)
 
         exc = self._excavation_by_ref(dbsession, "ref0001")
         assert None == exc
