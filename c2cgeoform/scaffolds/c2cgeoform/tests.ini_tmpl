@@ -1,20 +1,22 @@
 ###
 # app configuration
-# https://docs.pylonsproject.org/projects/pyramid/en/{{pyramid_docs_branch}}/narr/environment.html
+# http://docs.pylonsproject.org/projects/pyramid/en/{{pyramid_docs_branch}}/narr/environment.html
 ###
 
 [app:main]
-use = egg:c2cgeoform
+use = egg:{{project}}
 
 pyramid.reload_templates = true
 pyramid.debug_authorization = false
 pyramid.debug_notfound = false
 pyramid.debug_routematch = false
 pyramid.default_locale_name = en
+pyramid.available_languages = en fr de
 pyramid.includes =
     pyramid_debugtoolbar
+    pyramid_tm
 
-sqlalchemy.url = postgresql://c2cgeoform:c2cgeoform@localhost:5432/c2cgeoform_demo_tests
+sqlalchemy.url = postgresql://c2cgeoform:c2cgeoform@localhost:5432/{{package}}_tests
 
 # By default, the toolbar only appears for clients from IP addresses
 # '127.0.0.1' and '::1'.
@@ -26,11 +28,12 @@ sqlalchemy.url = postgresql://c2cgeoform:c2cgeoform@localhost:5432/c2cgeoform_de
 
 [server:main]
 use = egg:waitress#main
-listen = localhost:6543
+host = 0.0.0.0
+port = 6544
 
 ###
 # logging configuration
-# https://docs.pylonsproject.org/projects/pyramid/en/{{pyramid_docs_branch}}/narr/logging.html
+# http://docs.pylonsproject.org/projects/pyramid/en/{{pyramid_docs_branch}}/narr/logging.html
 ###
 
 [loggers]
@@ -66,4 +69,4 @@ level = NOTSET
 formatter = generic
 
 [formatter_generic]
-format = %(asctime)s %(levelname)-5.5s [%(name)s:%(lineno)s][%(threadName)s] %(message)s
+format = %(asctime)s %(levelname)-5.5s [%(name)s][%(threadName)s] %(message)s

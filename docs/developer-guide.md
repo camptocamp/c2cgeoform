@@ -60,6 +60,18 @@ $ make initdb
 
 Run the tests:
 
+Create the tests database:
+
+```
+sudo -u postgres psql -c "CREATE USER \"www-data\" WITH PASSWORD 'www-data';"
+
+export DATABASE=c2cgeoform_demo_tests
+sudo -u postgres psql -d postgres -c "CREATE DATABASE $DATABASE OWNER \"www-data\";"
+sudo -u postgres psql -d $DATABASE -c "CREATE EXTENSION postgis;"
+```
+
+Run the framework and demo tests:
+
 ```shell
-$ make test
+make test
 ```
