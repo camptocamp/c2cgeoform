@@ -128,7 +128,7 @@ class TestAbstractViews(DatabaseTestCase):
     def test_edit_get_not_found(self):
         self.request.matched_route = Mock(name='person_action')
         self.request.matchdict = {'id': 99999}
-        self.request.route_url = Mock(return_value='person/99999/edit')
+        self.request.route_url = Mock(return_value='person/99999')
 
         views = ConcreteViews(self.request)
         with self.assertRaises(HTTPNotFound):
@@ -138,7 +138,7 @@ class TestAbstractViews(DatabaseTestCase):
         self._add_test_persons()
         self.request.matched_route = Mock(name='person_action')
         self.request.matchdict = {'id': self.person1.id}
-        self.request.route_url = Mock(return_value='person/1/edit')
+        self.request.route_url = Mock(return_value='person/1')
 
         views = ConcreteViews(self.request)
         response = views.edit()
@@ -149,7 +149,7 @@ class TestAbstractViews(DatabaseTestCase):
     def test_edit_post_notfound(self):
         self.request.matched_route = Mock(name='person_action')
         self.request.matchdict = {'id': 99999}
-        self.request.route_url = Mock(return_value='person/99999/edit')
+        self.request.route_url = Mock(return_value='person/99999')
         self.request.method = 'POST'
 
         views = ConcreteViews(self.request)
@@ -161,7 +161,7 @@ class TestAbstractViews(DatabaseTestCase):
         self._add_test_persons()
         self.request.matched_route = Mock(name='person_action')
         self.request.matchdict = {'id': self.person1.id}
-        self.request.route_url = Mock(return_value='person/1/delete')
+        self.request.route_url = Mock(return_value='person/1')
         dbsession.delete = Mock()
         flush_which_has_to_be_back_for_teardown = dbsession.flush
         try:

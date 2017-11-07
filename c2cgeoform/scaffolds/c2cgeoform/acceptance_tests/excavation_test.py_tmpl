@@ -23,7 +23,7 @@ class TestExcavationViews():
         resp_tmp = resp.click(verbose=True, href="language=en")
         resp_en = resp_tmp.follow()
         html_en = resp_en.html
-        news_en = html_en.select('a[href$=/excavations/new/edit]')
+        news_en = html_en.select('a[href$=/excavations/new]')
         assert 1 == len(news_en)
         assert "New" == news_en[0].string
 
@@ -34,7 +34,7 @@ class TestExcavationViews():
         resp_tmp = resp_en.click(verbose=True, href="language=fr")
         resp_fr = resp_tmp.follow()
         html_fr = resp_fr.html
-        news_fr = html_fr.select('a[href$=/excavations/new/edit]')
+        news_fr = html_fr.select('a[href$=/excavations/new]')
         assert 1 == len(news_fr)
         assert "Nouveau" == news_fr[0].string
 
@@ -64,7 +64,7 @@ class TestExcavationViews():
 
     def test_edit_then_save(self, dbsession, test_app):
         exc = self._excavation_by_ref(dbsession, "ref0001")
-        resp = test_app.get("/excavations/{}/edit".format(exc.hash), status=200)
+        resp = test_app.get("/excavations/{}".format(exc.hash), status=200)
 
         form = resp.form
         # assert form["request_date"] == exc.request_date
@@ -127,7 +127,7 @@ class TestExcavationViews():
 
 
     def test_edit_new_then_save(self, dbsession, test_app):
-        resp = test_app.get("/excavations/new/edit", status=200)
+        resp = test_app.get("/excavations/new", status=200)
 
         form = resp.form
         # assert form["request_date"] == exc.request_date
@@ -188,7 +188,7 @@ class TestExcavationViews():
         assert None == exc.work_footprint
 
     def test_edit_new_then_save_with_missing_field(self, dbsession, test_app):
-        resp = test_app.get("/excavations/new/edit", status=200)
+        resp = test_app.get("/excavations/new", status=200)
 
         resp = resp.form.submit("submit")
 
@@ -203,7 +203,7 @@ class TestExcavationViews():
     def test_delete_success(self, dbsession, test_app):
         exc = self._excavation_by_ref(dbsession, "ref0001")
 
-        resp = test_app.delete("/excavations/{}/delete".format(exc.hash),
+        resp = test_app.delete("/excavations/{}".format(exc.hash),
             status=200)
 
         exc = self._excavation_by_ref(dbsession, "ref0001")
