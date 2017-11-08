@@ -196,7 +196,7 @@ class AbstractViews():
             form_data = self._request.POST.items()
             obj_dict = form.validate(form_data)
             obj = form.schema.objectify(obj_dict, obj)
-            self._request.dbsession.merge(obj)
+            obj = self._request.dbsession.merge(obj)
             self._request.dbsession.flush()
             return HTTPFound(
                 self._request.route_url(
