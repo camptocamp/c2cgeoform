@@ -6,6 +6,7 @@ from deform.compat import string_types
 from colander import (Invalid, null)
 from deform.widget import (FileUploadWidget as DeformFileUploadWidget,
                            MappingWidget)
+from sqlalchemy import inspect
 import urllib
 import json
 import logging
@@ -100,12 +101,13 @@ class RelationSelectMixin(object):
         self.values = self._get_select_values(session)
 
     def _get_select_values(self, session):
+        model = inspect(self.model)
         if self.order_by is not None:
-            order_by = getattr(self.model, self.order_by)
+            order_by = getattr(model.columns, self.order_by)
         else:
             order_by = None
 
-        entities = session.query(self.model).order_by(order_by).all()
+        entities = session.query(model).order_by(order_by).all()
 
         values = tuple(
             (getattr(entity, self.id_field), getattr(entity, self.label_field))
@@ -215,7 +217,8 @@ class RelationSelectWidget(RelationMultiSelectMixin, SelectWidget):
                         order_by='name',
                         multiple=True
                     ),
-                    'includes': ['id']
+                    'includes': ['id'],
+                    'validator': manytomany_validator
                 }
             })
 
@@ -316,7 +319,8 @@ class RelationSelect2Widget(RelationMultiSelectMixin, Select2Widget):
                         order_by='name',
                         multiple=True
                     ),
-                    'includes': ['id']
+                    'includes': ['id'],
+                    'validator': manytomany_validator
                 }
             })
 
@@ -397,7 +401,8 @@ class RelationCheckBoxListWidget(RelationMultiSelectMixin,
                         'name',
                         order_by='name'
                     ),
-                    'includes': ['id']
+                    'includes': ['id'],
+                    'validator': manytomany_validator
                 }
             })
 

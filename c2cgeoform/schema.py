@@ -20,5 +20,22 @@ class GeoFormSchemaNode(SQLAlchemySchemaNode):
         self.dbsession = deferred_dbsession
 
     def objectify(self, dict_, context=None):
-        context = super().objectify(dict_, context)
-        return self.dbsession.merge(context)
+        if isinstance(dict_, self.inspector.class_):
+            return dict_
+        return super().objectify(dict_, context)
+
+
+def manytomany_validator(node, cstruct):
+    dbsession = node.bindings['dbsession']
+    class_ = node.children[0].inspector.class_
+    for i, dict_ in enumerate(cstruct):
+        query = dbsession.query(class_)
+        for key, value in dict_.items():
+            query = query.filter(getattr(class_, key) == value)
+        entity = query.one_or_none()
+        if entity is None:
+            raise colander.Invalid(
+                '{} id={} does not exist'.
+                format(class_.__name__, dict_['id']))
+        else:
+            cstruct[i] = entity
