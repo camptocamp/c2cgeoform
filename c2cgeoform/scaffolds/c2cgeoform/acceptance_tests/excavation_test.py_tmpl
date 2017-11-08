@@ -1,4 +1,5 @@
 import pytest
+import re
 from pyramid.testing import DummyRequest
 from {{package}}.models.c2cgeoform_demo import Excavation
 from {{package}}.views.excavation import ExcavationViews
@@ -108,6 +109,8 @@ class TestExcavationViews():
 
         dbsession.expire(exc)
 
+        assert exc.hash == re.match('http://localhost/excavations/(.*)', resp.location).group(1)
+
         assert "New description" == exc.description
         assert "New motif" == exc.motif
         assert 4 == exc.location_district_id  # name="La Claie-aux-Moines"
@@ -170,6 +173,9 @@ class TestExcavationViews():
         resp = form.submit("submit")
 
         exc = self._excavation_by_desc(dbsession, "Description")
+
+        assert exc.hash == re.match('http://localhost/excavations/(.*)', resp.location).group(1)
+
         assert "Description" == exc.description
         assert "Motif" == exc.motif
         assert 4 == exc.location_district_id  # name="La Claie-aux-Moines"
