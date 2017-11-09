@@ -101,11 +101,11 @@ class TestExcavationViews():
             if situation.id in (1, 2, 3):
                 assert situation in exc.situations
                 assert 'True' == input['checked']
-                assert form.get('checkbox', index=i).checked
+                assert form.get('situations', index=i).checked
             else:
                 assert situation not in exc.situations
                 assert 'checked' not in input
-                assert not form.get('checkbox', index=i).checked
+                assert not form.get('situations', index=i).checked
 
         form["description"] = "New description"
         form["motif"] = "New motif"
@@ -125,7 +125,7 @@ class TestExcavationViews():
         form["work_footprint"] = ''
 
         # RelationCheckBoxListWidget
-        form["checkbox"] = ['3', '4', '5']
+        form["situations"] = ['3', '4', '5']
 
         resp = form.submit("submit")
 
@@ -188,7 +188,7 @@ class TestExcavationViews():
             assert [situation.name] == list(label.stripped_strings)
             assert str(situation.id) == input["value"]
             assert "checked" not in input
-            assert not form.get('checkbox', index=i).checked
+            assert not form.get('situations', index=i).checked
 
         form["description"] = "Description"
         form["motif"] = "Motif"
@@ -208,7 +208,7 @@ class TestExcavationViews():
         form["work_footprint"] = ''
 
          # RelationCheckBoxListWidget
-        form['checkbox'] = ['3', '4', '5']
+        form['situations'] = ['3', '4', '5']
 
         resp = form.submit("submit")
 
