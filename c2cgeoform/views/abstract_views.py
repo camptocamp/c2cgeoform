@@ -27,6 +27,42 @@ try it again.
 """
 
 
+class ListField():
+    def __init__(self, field, key=None, label=None, renderer=None):
+        self.field = field
+        self.key = key
+        self.label = label
+        self.renderer = renderer
+
+    def get_col_id(self):
+        if self.key is not None:
+            return self.key
+        return self.field
+
+    def get_col_label(self, model):
+        if self.label is not None:
+            return self.label
+        col_info = getattr(model, self.field).info
+        if 'colanderalchemy' not in col_info:
+            return self.field
+        if 'title' not in col_info['colanderalchemy']:
+            return self.field
+        return col_info['colanderalchemy']['title']
+
+    def get_col_value(self, entity):
+        if self.renderer is not None:
+            return self.renderer(entity)
+        value = getattr(entity, self.field)
+        if value is None:
+            value = ''
+        else:
+            if isinstance(value, WKBElement):
+                value = 'Geometry'
+            else:
+                value = str(value)
+        return value
+
+
 class AbstractViews():
 
     _model = None  # sqlalchemy model
@@ -37,17 +73,9 @@ class AbstractViews():
     def __init__(self, request):
         self._request = request
 
-    def _col_label(self, col_name):
-        col_info = self._model.__getattribute__(self._model, col_name).info
-        if 'colanderalchemy' not in col_info:
-            return col_name
-        if 'title' not in col_info['colanderalchemy']:
-            return col_name
-        to_translate = col_info['colanderalchemy']['title']
-        return self._request.localizer.translate(to_translate)
-
     def index(self):
-        list_fields = [(id, self._col_label(id)) for id in self._list_fields]
+        list_fields = [(field.get_col_id(), field.get_col_label(self._model))
+                       for field in self._list_fields]
         return {'list_fields': list_fields}
 
     def grid(self):
@@ -119,29 +147,11 @@ class AbstractViews():
         return query
 
     def _grid_rows(self, query, current_page, row_count):
-        """Creates plain objects for the given entities containing
-        only those properties flagged with `admin_list`.
-        """
-        rows = []
-
-        for entity in query.limit(row_count). \
-                offset((current_page - 1) * row_count):
-            row = {}
-            for field in self._list_fields:
-                value = getattr(entity, field)
-                if value is None:
-                    value = ''
-                else:
-                    if isinstance(value, WKBElement):
-                        value = 'Geometry'
-                    else:
-                        value = str(value)
-                row[field] = value
-            # set the entity id on a special property
-            row['_id_'] = str(getattr(entity, self._id_field))
-            rows.append(row)
-
-        return rows
+        entities = query.limit(row_count) \
+            .offset((current_page - 1) * row_count)
+        fields = self._list_fields + [ListField(self._id_field, key='_id_')]
+        return [{f.get_col_id(): f.get_col_value(entity) for f in fields}
+                for entity in entities]
 
     def _form(self):
         schema = self._base_schema.bind(

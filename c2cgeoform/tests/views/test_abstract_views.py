@@ -7,13 +7,14 @@ from c2cgeoform.tests import DatabaseTestCase
 from c2cgeoform.tests.models_test import Person
 from c2cgeoform.schema import GeoFormSchemaNode
 from c2cgeoform.views.abstract_views import AbstractViews
+from c2cgeoform.views.abstract_views import ListField
 
 
 class ConcreteViews(AbstractViews):
 
     _model = Person
     _id_field = 'id'
-    _list_fields = ['name', 'first_name']
+    _list_fields = [ListField('name', label='Name'), ListField('first_name')]
     _base_schema = GeoFormSchemaNode(Person, title='Person')
 
 
@@ -49,9 +50,9 @@ class TestAbstractViews(DatabaseTestCase):
         views = ConcreteViews(self.request)
         response = views.index()
         expected = {'list_fields':
-                    [('name', 'Your name'),
+                    [('name', 'Name'),
                      ('first_name', 'Your first name')]}
-        self.assertEquals(response, expected)
+        self.assertEquals(expected, response)
 
     def test_grid(self):
         self._add_test_persons()

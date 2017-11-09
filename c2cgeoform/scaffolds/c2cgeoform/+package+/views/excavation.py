@@ -3,6 +3,7 @@ from pyramid.view import view_defaults
 
 from c2cgeoform.schema import GeoFormSchemaNode
 from c2cgeoform.views.abstract_views import AbstractViews
+from c2cgeoform.views.abstract_views import ListField as ListField
 from ..models import Excavation
 
 
@@ -11,14 +12,17 @@ class ExcavationViews(AbstractViews):
 
     _model = Excavation
     _list_fields = [
-        'reference_number',
-        'request_date',
-        'description',
-        'location_town',
-        'responsible_company',
+        ListField('reference_number'),
+        ListField('request_date'),
+        ListField('description'),
+        ListField('location_town'),
+        ListField('responsible_company'),
+        ListField('situations',
+                  renderer=lambda excavation:
+                  ", ".join([s.name for s in excavation.situations]))
     ]
-    _base_schema = GeoFormSchemaNode(Excavation, title='Person')
     _id_field = 'hash'
+    _base_schema = GeoFormSchemaNode(Excavation, title='Person')
 
     @view_config(route_name='c2cgeoform_index',
                  renderer='../templates/index.jinja2')
