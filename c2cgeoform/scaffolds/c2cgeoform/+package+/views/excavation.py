@@ -1,10 +1,35 @@
 from pyramid.view import view_config
 from pyramid.view import view_defaults
 
-from c2cgeoform.schema import GeoFormSchemaNode
-from c2cgeoform.views.abstract_views import AbstractViews
-from c2cgeoform.views.abstract_views import ListField
-from ..models import Excavation
+import colander
+from c2cgeoform.schema import (
+    GeoFormSchemaNode,
+    GeoFormManyToManySchemaNode,
+    manytomany_validator,
+)
+from c2cgeoform.ext.deform_ext import RelationCheckBoxListWidget
+from c2cgeoform.views.abstract_views import AbstractViews, ListField
+
+from ..models.c2cgeoform_demo import Excavation, Situation
+
+
+base_schema = GeoFormSchemaNode(Excavation)
+
+base_schema.add_before(
+    'contact_persons',
+    colander.SequenceSchema(
+        GeoFormManyToManySchemaNode(Situation),
+        name='situations',
+        title='Situations',
+        widget=RelationCheckBoxListWidget(
+            Situation,
+            'id',
+            'name',
+            order_by='name'
+        ),
+        validator=manytomany_validator
+    )
+)
 
 
 @view_defaults(match_param='table=excavations')
@@ -22,7 +47,7 @@ class ExcavationViews(AbstractViews):
                   ", ".join([s.name for s in excavation.situations]))
     ]
     _id_field = 'hash'
-    _base_schema = GeoFormSchemaNode(Excavation, title='Person')
+    _base_schema = base_schema
 
     @view_config(route_name='c2cgeoform_index',
                  renderer='../templates/index.jinja2')

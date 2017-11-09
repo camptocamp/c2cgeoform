@@ -17,14 +17,12 @@ import colander
 import deform
 from deform.widget import HiddenWidget
 from c2cgeoform.ext.deform_ext import (
-    RelationCheckBoxListWidget,
     RelationSelect2Widget,
     RelationSearchWidget,
     RelationSelectMapWidget,
 )
 from c2cgeoform.ext import colander_ext, deform_ext
 from c2cgeoform.models import FileData
-from c2cgeoform.schema import manytomany_validator
 
 from .meta import Base
 
@@ -183,18 +181,7 @@ class Excavation(Base):
         cascade="save-update,merge,refresh-expire",
         info={
             'colanderalchemy': {
-                'title': _('Situations'),
-                # this widget type shows a select widget where the values are
-                # loaded from a database table. in this case the select options
-                # are generated from the Situation table.
-                'widget': RelationCheckBoxListWidget(
-                    Situation,
-                    'id',
-                    'name',
-                    order_by='name'
-                ),
-                'includes': ['id'],
-                'validator': manytomany_validator
+                'exclude': True
             }
         })
 
