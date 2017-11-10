@@ -3,7 +3,7 @@ from pyramid.view import view_defaults
 
 from c2cgeoform.schema import GeoFormSchemaNode
 from c2cgeoform.views.abstract_views import AbstractViews
-from c2cgeoform.views.abstract_views import ListField as ListField
+from c2cgeoform.views.abstract_views import ListField
 from ..models import Excavation
 
 

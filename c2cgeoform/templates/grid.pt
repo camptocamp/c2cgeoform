@@ -17,12 +17,12 @@
   function confirmation(href) {
       if (window.confirm('{{_("Are your sure ?")}}')) {
           $.ajax({
-    	    url: href,
-    	    type: 'DELETE',
-    	    success: function(result) {
-    	        location.reload();
-    	    }
-    	});
+              url: href,
+              type: 'DELETE',
+              success: function(result) {
+                  location.reload();
+              }
+          });
       }
   }
   $('#grid').bootgrid({
@@ -46,7 +46,7 @@
                   var delete_url = "${request.route_url('c2cgeoform_action', id='_id_')}".replace('_id_', value);
                   return '' +
                       '<a href="${request.route_url('c2cgeoform_action', id='_id_')}">${_("Edit")}</a>'.replace('_id_', value) +
-                  	  '<a href="#delete" onclick=confirmation("'+delete_url+'");>${_("Delete")}</a>';
+                        '<a href="#delete" onclick=confirmation("'+delete_url+'");>${_("Delete")}</a>';
               },
           }
       }
