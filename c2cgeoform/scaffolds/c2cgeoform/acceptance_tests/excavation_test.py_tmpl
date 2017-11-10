@@ -62,6 +62,7 @@ class TestExcavationViews():
         assert exc.location_town == row["location_town"]
         assert exc.request_date.strftime("%Y-%m-%d") == row["request_date"]
         assert exc.responsible_company == row["responsible_company"]
+        assert ", ".join([situation.name for situation in exc.situations]) == row["situations"]
 
     def test_edit_then_save(self, dbsession, test_app):
         exc = self._excavation_by_ref(dbsession, "ref0001")
@@ -246,7 +247,7 @@ class TestExcavationViews():
         assert 'Errors have been highlighted below' == \
             resp.html.select_one('div[class="error-msg-detail"]').text
         assert ['Postal Code', 'Street', 'Town'] == \
-            sorted([(x.select("label")[0].text.strip()) \
+            sorted([(x.select_one("label").text.strip()) \
             for x in resp.html.select("[class~'has-error']")])
 
     def test_delete_success(self, dbsession, test_app):
