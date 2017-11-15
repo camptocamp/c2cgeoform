@@ -14,31 +14,35 @@ requires = [
     'deform==2.0.4',
     'paginate',
     'pyramid_beaker',
-    'lingua>=2.4']
+    'lingua>=2.4'
+]
 
-setup(name='c2cgeoform',
-      version='0.0',
-      description='c2cgeoform',
-      long_description=README + '\n\n' + CHANGES,
-      classifiers=[
-          "Programming Language :: Python",
-          "Framework :: Pyramid",
-          "Topic :: Internet :: WWW/HTTP",
-          "Topic :: Internet :: WWW/HTTP :: WSGI :: Application",
-      ],
-      author='',
-      author_email='',
-      url='',
-      keywords='web wsgi bfg pylons pyramid',
-      packages=find_packages(),
-      include_package_data=True,
-      zip_safe=False,
-      test_suite='c2cgeoform',
-      install_requires=requires,
-      entry_points="""\
-      [paste.app_factory]
-        main=c2cgeoform:main
-      [pyramid.scaffold]
-        c2cgeoform=c2cgeoform.scaffolds:C2cgeoformTemplate
-      """,
-      )
+setup(
+    name='c2cgeoform',
+    version='2.0',
+    description='c2cgeoform',
+    long_description=README + '\n\n' + CHANGES,
+    classifiers=[
+        'Programming Language :: Python',
+        'Framework :: Pyramid',
+        'Topic :: Internet :: WWW/HTTP',
+        'Topic :: Internet :: WWW/HTTP :: WSGI :: Application',
+    ],
+    author='Camptocamp',
+    author_email='info@camptocamp.com',
+    url='https://github.com/camptocamp/c2cgeoform',
+    keywords='web wsgi bfg pylons pyramid',
+    packages=find_packages(),
+    include_package_data=True,
+    zip_safe=False,
+    test_suite='c2cgeoform',
+    install_requires=requires,
+    entry_points={
+        'paste.app_factory': [
+            'main=c2cgeoform:main',
+        ],
+        'pyramid.scaffold': [
+            'c2cgeoform=c2cgeoform.scaffolds:C2cgeoformTemplate',
+        ],
+    },
+)
