@@ -49,7 +49,7 @@ deploy:
     repo: camptocamp/c2cgeoform
     python: '3.4'
 - provider: script
-  script: travis/deploy-daily-pypi-build
+  script: travis/deploy-daily-pypi
   on:
     condition: '"${TRAVIS_EVENT_TYPE}" = cron'
     repo: camptocamp/c2cgeoform
