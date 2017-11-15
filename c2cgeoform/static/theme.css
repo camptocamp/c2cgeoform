@@ -40,3 +40,26 @@
 .tt-dropdown-menu {
   color: black;
 }
+
+/*
+ * Grid
+ */
+#grid {
+  table-layout: auto;
+}
+.table>tbody>tr>td,
+.table>tbody>tr>th,
+.table>tfoot>tr>td,
+.table>tfoot>tr>th,
+.table>thead>tr>td,
+.table>thead>tr>th {
+  vertical-align: middle;
+}
+ul.grid-row-actions {
+  padding: 0;
+  margin: 0;
+}
+li.grid-row-action {
+  display: inline-block;
+  margin-right: 5px;
+}
