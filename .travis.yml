@@ -32,24 +32,15 @@ before_script:
 
 script: make check && make test
 
-before_deploy:
-- make compile-catalog
-
 deploy:
-- provider: pypi
-  server: https://upload.pypi.org/legacy/
-  user: sbrunner
-  password:
-    secure: "PoIuVu4sdApkWm6CXnBMMzXCj1vNnEdLXKqcBkXlKjBxh6JlivGRmqoFizJAe3KNjZMwMBMcJkMR+f53g0z3P06sIx9WQCaAjYV0j5w5Si71tjjOWohY2DjIaUcNNOsodZc9KDdtSpN0Xm4+vbn7Lg9FofCovs2KAIsBONVD/I4="
-  distributions: sdist bdist_wheel
-  skip_upload_docs: true
-  skip_cleanup: true
+- provider: script
+  script: travis/deploy-pypi
   on:
     tags: true
     repo: camptocamp/c2cgeoform
     python: '3.4'
 - provider: script
-  script: travis/deploy-daily-pypi
+  script: travis/deploy-pypi
   on:
     condition: '"${TRAVIS_EVENT_TYPE}" = cron'
     repo: camptocamp/c2cgeoform

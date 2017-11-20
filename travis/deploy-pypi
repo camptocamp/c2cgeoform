@@ -1,5 +1,7 @@
 #!/bin/bash -ex
 
+make compile-catalog
+
 # Prepare .pypirc config
 echo "[distutils]" > ~/.pypirc
 echo "index-servers = pypi" >> ~/.pypirc
@@ -8,5 +10,10 @@ echo "repository:https://upload.pypi.org/legacy/" >> ~/.pypirc
 echo "username:sbrunner" >> ~/.pypirc
 echo "password:${PYPI_PASSWORD}" >> ~/.pypirc
 
-# Deploy daily pypi build
-python setup.py egg_info --tag-date --tag-build=dev sdist bdist_wheel upload -r pypi
+# Deploy pypi build
+if [ "${TRAVIS_EVENT_TYPE}" = cron ]
+then
+    python setup.py egg_info --tag-date --tag-build=dev sdist bdist_wheel upload -r pypi
+else
+    python setup.py egg_info sdist bdist_wheel upload -r pypi
+fi
