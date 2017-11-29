@@ -7,7 +7,6 @@ from pyramid.response import Response
 from sqlalchemy import desc, or_, types
 from sqlalchemy.exc import DBAPIError
 from translationstring import TranslationStringFactory
-
 _ = TranslationStringFactory('c2cgeoform')
 
 db_err_msg = """\
@@ -29,36 +28,42 @@ try it again.
 
 class ListField():
     def __init__(self,
+                 model,
                  field,
                  key=None,
                  label=None,
                  renderer=None,
-                 sortable=True):
-        self.field = field
-        self.key = key
-        self.label = label
-        self.renderer = renderer
-        self.sortable = sortable and 'true' or 'false'
+                 sortable=True,
+                 searchable=True,
+                 search_attribute=None):
+        self._model = model
+        self._field = field
+        self._key = key
+        self._label = label
+        self._renderer = renderer
+        self._sortable = sortable
+        self._searchable = searchable
+        self._search_attribute = search_attribute
 
-    def get_col_id(self):
-        if self.key is not None:
-            return self.key
-        return self.field
+    def id(self):
+        if self._key is not None:
+            return self._key
+        return self._field
 
-    def get_col_label(self, model):
-        if self.label is not None:
-            return self.label
-        col_info = getattr(model, self.field).info
+    def label(self):
+        if self._label is not None:
+            return self._label
+        col_info = getattr(self._model, self._field).info
         if 'colanderalchemy' not in col_info:
-            return self.field
+            return self._field
         if 'title' not in col_info['colanderalchemy']:
-            return self.field
+            return self._field
         return col_info['colanderalchemy']['title']
 
-    def get_col_value(self, entity):
-        if self.renderer is not None:
-            return self.renderer(entity)
-        value = getattr(entity, self.field)
+    def value(self, entity):
+        if self._renderer is not None:
+            return self._renderer(entity)
+        value = getattr(entity, self._field)
         if value is None:
             value = ''
         else:
@@ -67,6 +72,16 @@ class ListField():
             else:
                 value = str(value)
         return value
+
+    def search_attribute(self):
+        if not self._searchable:
+            return None
+        if self._search_attribute is not None:
+            return self._search_attribute
+        return getattr(self._model, self._field)
+
+    def sortable(self):
+        return self._sortable
 
 
 class AbstractViews():
@@ -80,11 +95,9 @@ class AbstractViews():
         self._request = request
 
     def index(self):
-        list_fields = [(field.get_col_id(),
-                        field.get_col_label(self._model),
-                        field.sortable)
-                       for field in self._list_fields]
-        return {'list_fields': list_fields}
+        return {
+            'list_fields': self._list_fields
+        }
 
     def grid(self):
         """API method which serves the JSON data for the Bootgrid table
@@ -130,9 +143,9 @@ class AbstractViews():
             # create `ilike` filters for every list text field
             filters = []
             for field in self._list_fields:
-                column = getattr(self._model, field)
+                column = field.search_attribute()
                 # NOTE only text fields are searched
-                if isinstance(column.type, types.String):
+                if column and isinstance(column.type, types.String):
                     like = getattr(column, 'ilike')
                     filters.append(like(search_expr))
 
@@ -157,9 +170,12 @@ class AbstractViews():
     def _grid_rows(self, query, current_page, row_count):
         entities = query.limit(row_count) \
             .offset((current_page - 1) * row_count)
-        fields = self._list_fields + [ListField(self._id_field, key='_id_')]
-        return [{f.get_col_id(): f.get_col_value(entity) for f in fields}
-                for entity in entities]
+        return [
+            {f.id(): f.value(entity)
+             for f in (
+                 self._list_fields +
+                 [ListField(self._model, self._id_field, key='_id_')])}
+            for entity in entities]
 
     def _form(self):
         schema = self._base_schema.bind(

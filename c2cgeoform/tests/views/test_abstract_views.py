@@ -1,6 +1,7 @@
 from pyramid.httpexceptions import HTTPNotFound
 from pyramid.httpexceptions import HTTPFound
 from unittest.mock import Mock
+from functools import partial
 
 from c2cgeoform.models import DBSession
 from c2cgeoform.tests import DatabaseTestCase
@@ -10,11 +11,16 @@ from c2cgeoform.views.abstract_views import AbstractViews
 from c2cgeoform.views.abstract_views import ListField
 
 
+_list_field = partial(ListField, Person)
+
+
 class ConcreteViews(AbstractViews):
 
     _model = Person
     _id_field = 'id'
-    _list_fields = [ListField('name', label='Name'), ListField('first_name')]
+    _list_fields = [
+        _list_field('name', label='Name'),
+        _list_field('first_name')]
     _base_schema = GeoFormSchemaNode(Person, title='Person')
 
 
@@ -49,10 +55,7 @@ class TestAbstractViews(DatabaseTestCase):
     def test_index(self):
         views = ConcreteViews(self.request)
         response = views.index()
-        expected = {'list_fields':
-                    [('name', 'Name', 'true'),
-                     ('first_name', 'Your first name', 'true')]}
-        self.assertEquals(expected, response)
+        self.assertIn('list_fields', response)
 
     def test_grid(self):
         self._add_test_persons()

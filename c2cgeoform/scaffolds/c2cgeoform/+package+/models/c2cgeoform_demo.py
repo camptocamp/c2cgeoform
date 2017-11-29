@@ -178,6 +178,7 @@ class Excavation(Base):
     situations = relationship(
         "Situation",
         secondary=situation_for_permission,
+        order_by=Situation.name,
         cascade="save-update,merge,refresh-expire",
         info={
             'colanderalchemy': {

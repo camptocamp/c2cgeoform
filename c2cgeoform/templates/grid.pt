@@ -5,7 +5,7 @@
   <table id="grid" data-toggle="bootgrid" class="table table-condensed table-hover table-striped">
     <thead>
       <tr>
-        <th tal:repeat="field list_fields" tal:attributes="data-column-id field[0]" tal:attributes="data-sortable field[2]" tal:content="field[1]"></th>
+        <th tal:repeat="field list_fields" tal:attributes="data-column-id field.id()" data-sortable="${ 'true' if field.sortable() else 'false' }" tal:content="field.label()"></th>
         <th data-column-id="_id_" data-searchable="false" data-sortable="false"
             data-converter="commands">${_('Commands')}</th>
       </tr>
