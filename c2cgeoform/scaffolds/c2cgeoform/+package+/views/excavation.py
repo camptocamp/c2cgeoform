@@ -42,7 +42,7 @@ class ExcavationViews(AbstractViews):
         ListField('description'),
         ListField('location_town'),
         ListField('responsible_company'),
-        ListField('situations',
+        ListField('situations', sortable=False,
                   renderer=lambda excavation:
                   ", ".join([s.name for s in excavation.situations]))
     ]

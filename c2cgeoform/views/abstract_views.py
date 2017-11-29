@@ -28,11 +28,17 @@ try it again.
 
 
 class ListField():
-    def __init__(self, field, key=None, label=None, renderer=None):
+    def __init__(self,
+                 field,
+                 key=None,
+                 label=None,
+                 renderer=None,
+                 sortable=True):
         self.field = field
         self.key = key
         self.label = label
         self.renderer = renderer
+        self.sortable = sortable and 'true' or 'false'
 
     def get_col_id(self):
         if self.key is not None:
@@ -74,7 +80,9 @@ class AbstractViews():
         self._request = request
 
     def index(self):
-        list_fields = [(field.get_col_id(), field.get_col_label(self._model))
+        list_fields = [(field.get_col_id(),
+                        field.get_col_label(self._model),
+                        field.sortable)
                        for field in self._list_fields]
         return {'list_fields': list_fields}
 

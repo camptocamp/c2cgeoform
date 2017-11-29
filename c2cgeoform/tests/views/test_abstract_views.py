@@ -50,8 +50,8 @@ class TestAbstractViews(DatabaseTestCase):
         views = ConcreteViews(self.request)
         response = views.index()
         expected = {'list_fields':
-                    [('name', 'Name'),
-                     ('first_name', 'Your first name')]}
+                    [('name', 'Name', 'true'),
+                     ('first_name', 'Your first name', 'true')]}
         self.assertEquals(expected, response)
 
     def test_grid(self):
