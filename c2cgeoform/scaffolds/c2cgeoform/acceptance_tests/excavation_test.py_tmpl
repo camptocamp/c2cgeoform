@@ -151,8 +151,9 @@ class TestExcavationViews():
         assert False == exc.validated
         assert None == exc.work_footprint
 
-        situation_ids = [situation.id for situation in exc.situations]
-        assert [3, 4, 5] == situation_ids
+        situation_ids = [situation.id for situation
+                          in exc.situations]
+        assert set([3, 4, 5]) == set(situation_ids)
 
     def test_edit_new_then_save(self, dbsession, test_app):
         resp = test_app.get("/excavations/new", status=200)
@@ -235,7 +236,7 @@ class TestExcavationViews():
         assert None == exc.work_footprint
 
         situation_ids = [situation.id for situation in exc.situations]
-        assert [3, 4, 5] == situation_ids
+        assert set([3, 4, 5]) == set(situation_ids)
 
     def test_edit_new_then_save_with_missing_field(self, dbsession, test_app):
         resp = test_app.get("/excavations/new", status=200)
