@@ -1,3 +1,4 @@
+import logging
 from deform import Form, ValidationFailure  # , ZPTRendererFactory
 from deform.form import Button
 from geoalchemy2.elements import WKBElement
@@ -6,8 +7,12 @@ from pyramid.httpexceptions import HTTPFound
 from pyramid.response import Response
 from sqlalchemy import desc, or_, types
 from sqlalchemy.exc import DBAPIError
+from sqlalchemy.inspection import inspect
+from sqlalchemy.orm.properties import ColumnProperty
 from translationstring import TranslationStringFactory
 _ = TranslationStringFactory('c2cgeoform')
+
+logger = logging.getLogger(__name__)
 
 db_err_msg = """\
 Pyramid is having a problem using your SQL database.  The problem
@@ -28,42 +33,37 @@ try it again.
 
 class ListField():
     def __init__(self,
-                 model,
-                 field,
+                 model=None,
+                 attr=None,
                  key=None,
                  label=None,
                  renderer=None,
-                 sortable=True,
-                 searchable=True,
-                 search_attribute=None):
-        self._model = model
-        self._field = field
-        self._key = key
-        self._label = label
-        self._renderer = renderer
-        self._sortable = sortable
-        self._searchable = searchable
-        self._search_attribute = search_attribute
+                 sort_column=None,
+                 filter_column=None,
+                 **kwargs):
+        self._attr = getattr(model, attr) if model else attr
+        self._key = key or self._attr.key
+        self._label = label or self._prop_title() or key
+        self._renderer = renderer or self._prop_renderer
+        is_column = isinstance(self._attr.property, ColumnProperty)
+        self._sort_column = sort_column or (self._attr if is_column else None)
+        self._filter_column = filter_column or (self._attr
+                                                if is_column else None)
 
-    def id(self):
-        if self._key is not None:
-            return self._key
-        return self._field
-
-    def label(self):
-        if self._label is not None:
-            return self._label
-        col_info = getattr(self._model, self._field).info
+    def _prop_title(self):
+        if self._attr is None:
+            return None
+        col_info = self._attr.info
         if 'colanderalchemy' not in col_info:
-            return self._field
+            return None
         if 'title' not in col_info['colanderalchemy']:
-            return self._field
+            return None
         return col_info['colanderalchemy']['title']
 
-    def value(self, entity):
-        if self._renderer is not None:
-            return self._renderer(entity)
-        value = getattr(entity, self._field)
+    def _prop_renderer(self, entity):
+        value = None
+        if self._attr is not None:
+            value = getattr(entity, self._attr.key)
         if value is None:
             value = ''
         else:
@@ -73,15 +73,27 @@ class ListField():
                 value = str(value)
         return value
 
-    def search_attribute(self):
-        if not self._searchable:
-            return None
-        if self._search_attribute is not None:
-            return self._search_attribute
-        return getattr(self._model, self._field)
+    def id(self):
+        return self._key
+
+    def label(self):
+        return self._label
+
+    def value(self, entity):
+        return self._renderer(entity)
 
     def sortable(self):
-        return self._sortable
+        return self._sort_column is not None
+
+    def filtrable(self):
+        return self._filter_column and isinstance(self._filter_column.type,
+                                                  types.String)
+
+    def sort_column(self):
+        return self._sort_column
+
+    def filter_expression(self, term):
+        return self._filter_column.ilike(term)
 
 
 class AbstractViews():
@@ -120,7 +132,8 @@ class AbstractViews():
                 "rows": self._grid_rows(query, current_page, row_count),
                 "total": query.count()
             }
-        except DBAPIError:
+        except DBAPIError as e:
+            logger.error(str(e), exc_info=True)
             return Response(db_err_msg, content_type='text/plain', status=500)
 
     def _sort_columns(self):
@@ -143,11 +156,8 @@ class AbstractViews():
             # create `ilike` filters for every list text field
             filters = []
             for field in self._list_fields:
-                column = field.search_attribute()
-                # NOTE only text fields are searched
-                if column and isinstance(column.type, types.String):
-                    like = getattr(column, 'ilike')
-                    filters.append(like(search_expr))
+                if field.filtrable():
+                    filters.append(field.filter_expression(search_expr))
 
             # then join the filters into one `or` condition
             if len(filters) > 0:
@@ -158,18 +168,24 @@ class AbstractViews():
     def _sort_query(self, query, sort_columns):
         sorts = []
         for col_name, sort_order in sort_columns:
-            if hasattr(self._model, col_name):
-                sort = getattr(self._model, col_name)
-                if sort_order == 'desc':
-                    sort = desc(sort)
-                sorts.append(sort)
-        if len(sorts) > 0:
-            query = query.order_by(*sorts)
+            for field in self._list_fields:
+                if field.id() == col_name:
+                    sort = field.sort_column()
+                    if sort_order == 'desc':
+                        sort = desc(sort)
+                    sorts.append(sort)
+        # Sort on primary key as subqueryload with limit need deterministic
+        # order
+        for pkey_column in inspect(self._model).primary_key:
+            sorts.append(pkey_column)
+        query = query.order_by(*sorts)
         return query
 
     def _grid_rows(self, query, current_page, row_count):
-        entities = query.limit(row_count) \
-            .offset((current_page - 1) * row_count)
+        entities = query
+        if row_count != -1:
+            entities = entities.limit(row_count) \
+                .offset((current_page - 1) * row_count)
         return [
             {f.id(): f.value(entity)
              for f in (

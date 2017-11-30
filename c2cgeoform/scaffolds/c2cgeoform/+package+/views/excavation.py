@@ -39,17 +39,19 @@ base_schema.add_before(
 class ExcavationViews(AbstractViews):
 
     _model = Excavation
+
     _list_fields = [
         _list_field('reference_number'),
         _list_field('request_date'),
         _list_field('description'),
         _list_field('location_town'),
         _list_field('responsible_company'),
-        _list_field('situations', sortable=False,
+        _list_field('situations',
                     renderer=lambda excavation: ", ".join(
                         [s.name for s in excavation.situations]),
-                    search_attribute=Situation.name)
+                    filter_column=Situation.name)
     ]
+
     _id_field = 'hash'
     _base_schema = base_schema
 
