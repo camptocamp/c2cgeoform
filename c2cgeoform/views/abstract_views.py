@@ -39,8 +39,7 @@ class ListField():
                  label=None,
                  renderer=None,
                  sort_column=None,
-                 filter_column=None,
-                 **kwargs):
+                 filter_column=None):
         self._attr = getattr(model, attr) if model else attr
         self._key = key or self._attr.key
         self._label = label or self._prop_title() or key
