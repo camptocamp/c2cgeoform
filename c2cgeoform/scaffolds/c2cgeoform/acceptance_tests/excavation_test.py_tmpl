@@ -64,6 +64,26 @@ class TestExcavationViews():
         assert exc.responsible_company == row["responsible_company"]
         assert ", ".join([situation.name for situation in exc.situations]) == row["situations"]
 
+    def test_grid_filter(self, test_app):
+        json = test_app.post(
+            "/excavations/grid.json",
+            params={
+                "current": 1,
+                "rowCount": 10,
+                "sort[reference_number]": "asc",
+                "searchPhrase": "Road"
+            },
+            status=200
+        ).json
+
+        assert 1 == json["current"]
+        assert 10 == json["rowCount"]
+        assert 10 == len(json["rows"])
+        assert 49 == json["total"]
+
+        row = json["rows"][0]
+        assert "Road" in row["situations"]
+
     def test_edit_then_save(self, dbsession, test_app):
         exc = self._excavation_by_ref(dbsession, "ref0001")
         resp = test_app.get("/excavations/{}".format(exc.hash), status=200)

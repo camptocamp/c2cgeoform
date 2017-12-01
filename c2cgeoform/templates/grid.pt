@@ -27,6 +27,9 @@
   }
   $('#grid').bootgrid({
       ajax: true,
+      ajaxSettings: {
+        method: "GET"
+      },
       multiSort: true,
       url: "${request.route_url('c2cgeoform_grid')}",
       labels: {
