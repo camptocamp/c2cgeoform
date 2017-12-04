@@ -46,8 +46,9 @@ class ListField():
         self._renderer = renderer or self._prop_renderer
         is_column = isinstance(self._attr.property, ColumnProperty)
         self._sort_column = sort_column or (self._attr if is_column else None)
-        self._filter_column = filter_column or (self._attr
-                                                if is_column else None)
+        self._filter_column = filter_column if filter_column is not None \
+            else self._attr if is_column \
+            else None
 
     def _prop_title(self):
         if self._attr is None:
@@ -85,8 +86,8 @@ class ListField():
         return self._sort_column is not None
 
     def filtrable(self):
-        return self._filter_column and isinstance(self._filter_column.type,
-                                                  types.String)
+        return self._filter_column is not None and \
+         isinstance(self._filter_column.type, types.String)
 
     def sort_column(self):
         return self._sort_column
