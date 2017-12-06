@@ -42,7 +42,7 @@ class ListField():
                  filter_column=None):
         self._attr = getattr(model, attr) if model else attr
         self._key = key or self._attr.key
-        self._label = label or self._prop_title() or key
+        self._label = label or self._prop_title() or self._key
         self._renderer = renderer or self._prop_renderer
         is_column = isinstance(self._attr.property, ColumnProperty)
         self._sort_column = sort_column or (self._attr if is_column else None)
