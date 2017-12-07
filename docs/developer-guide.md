@@ -12,17 +12,15 @@ You need to install PostgreSQL and PostGIS. On Ubuntu, the packages
 You need to create a role. For example:
 
 ```shell
-$sudo su - postgres
-$ createuser --pwprompt c2cgeoform
-Enter password for new role: [c2cgeoform]
-Enter it again: [c2cgeoform]
+sudo su - postgres
+createuser --pwprompt c2cgeoform
 ```
 
 You need to create a PostGIS database. For example:
 
 ```shell
-$ createdb --owner=c2cgeoform c2cgeoform
-$ psql -d c2cgeoform -c "CREATE EXTENSION postgis;"
+createdb --owner=c2cgeoform c2cgeoform
+psql -d c2cgeoform -c "CREATE EXTENSION postgis;"
 ```
 
 ### Configuration

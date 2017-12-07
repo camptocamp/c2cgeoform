@@ -26,7 +26,9 @@ def register_models(config, models):
 
     rec_with_pregenerator('c2cgeoform_index', '{}'.format(base_route))
     rec_with_pregenerator('c2cgeoform_grid', '{}/grid.json'.format(base_route))
-    rec_with_pregenerator('c2cgeoform_action', '{}/{{id}}'
+    rec_with_pregenerator('c2cgeoform_item', '{}/{{id}}'
+                          .format(base_route))
+    rec_with_pregenerator('c2cgeoform_item_action', '{}/{{id}}/{{action}}'
                           .format(base_route))
 
     def add_global(event):
