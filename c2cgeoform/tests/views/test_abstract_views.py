@@ -3,6 +3,7 @@ from pyramid.httpexceptions import HTTPFound
 from unittest import TestCase
 from unittest.mock import Mock
 from functools import partial
+from bs4 import BeautifulSoup
 
 from c2cgeoform.models import DBSession
 from c2cgeoform.tests import DatabaseTestCase
@@ -82,7 +83,7 @@ class TestAbstractViews(DatabaseTestCase):
         self.assertEquals('Smith', rows[0]['name'])
 
     def test_new_get(self):
-        self.request.matched_route = Mock(name='c2cgeoform_action')
+        self.request.matched_route = Mock(name='c2cgeoform_item')
         self.request.route_url = Mock(return_value='person/new/edit')
 
         self.request.matchdict = {'id': 'new'}
@@ -93,7 +94,7 @@ class TestAbstractViews(DatabaseTestCase):
         self.assertIn('deform_dependencies', response)
 
     def test_new_post_validation_error(self):
-        self.request.matched_route = Mock(name='c2cgeoform_action')
+        self.request.matched_route = Mock(name='c2cgeoform_item')
         self.request.route_url = Mock(return_value='person/new/save')
 
         self.request.matchdict = {'id': 'new'}
@@ -164,6 +165,25 @@ class TestAbstractViews(DatabaseTestCase):
         views = ConcreteViews(self.request)
         with self.assertRaises(HTTPNotFound):
             views.save()
+
+    def test_duplicate_get(self):
+        self._add_test_persons()
+        self.request.matched_route = Mock(name='c2cgeoform_item_action')
+        self.request.matchdict = {'id': self.person1.id}
+        self.request.route_url = Mock(return_value='c2cgeoform_item/new')
+        self.request.method = 'GET'
+
+        views = ConcreteViews(self.request)
+        response = views.duplicate()
+
+        self.assertIn('form', response)
+        self.assertIn('deform_dependencies', response)
+        form = BeautifulSoup(response['form'], 'html.parser')
+        # self.assertEqual('', form.select_one('form').attrs['action'])
+        self.assertEqual('', form.select_one('input[name=id]').attrs['value'])
+        self.assertEqual(self.person1.name, form.select_one('input[name=name]').attrs['value'])
+        self.assertEqual(self.person1.first_name, form.select_one('input[name=first_name]').attrs['value'])
+        self.assertEqual('', form.select_one('input[name=age]').attrs['value'])
 
     def test_delete_person(self):
         dbsession = self.request.dbsession

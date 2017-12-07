@@ -271,6 +271,10 @@ class TestExcavationViews():
             sorted([(x.select_one("label").text.strip()) \
             for x in resp.html.select("[class~'has-error']")])
 
+    def test_duplicate(self, dbsession, test_app):
+        exc = self._excavation_by_ref(dbsession, "ref0001")
+        resp = test_app.get("/excavations/{}/duplicate".format(exc.hash), status=200)
+
     def test_delete_success(self, dbsession, test_app):
         exc = self._excavation_by_ref(dbsession, "ref0001")
 
