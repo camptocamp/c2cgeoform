@@ -8,7 +8,7 @@ from pyramid.response import Response
 from sqlalchemy import desc, or_, types
 from sqlalchemy.exc import DBAPIError
 from sqlalchemy.inspection import inspect
-from sqlalchemy.orm.properties import ColumnProperty
+from sqlalchemy.orm.properties import ColumnProperty, RelationshipProperty
 from translationstring import TranslationStringFactory
 _ = TranslationStringFactory('c2cgeoform')
 
@@ -31,6 +31,17 @@ try it again.
 """
 
 
+def model_attr_info(attr, *keys):
+    if attr is None:
+        return None
+    value = attr.info
+    for key in keys:
+        if not key in value:
+            return None
+        value = value[key]
+    return value
+
+
 class ListField():
     def __init__(self,
                  model=None,
@@ -42,23 +53,15 @@ class ListField():
                  filter_column=None):
         self._attr = getattr(model, attr) if model else attr
         self._key = key or self._attr.key
-        self._label = label or self._prop_title() or self._key
+        self._label = (label or
+                       model_attr_info(self._attr, 'colanderalchemy', 'title') or
+                       self._key)
         self._renderer = renderer or self._prop_renderer
         is_column = isinstance(self._attr.property, ColumnProperty)
         self._sort_column = sort_column or (self._attr if is_column else None)
         self._filter_column = filter_column if filter_column is not None \
             else self._attr if is_column \
             else None
-
-    def _prop_title(self):
-        if self._attr is None:
-            return None
-        col_info = self._attr.info
-        if 'colanderalchemy' not in col_info:
-            return None
-        if 'title' not in col_info['colanderalchemy']:
-            return None
-        return col_info['colanderalchemy']['title']
 
     def _prop_renderer(self, entity):
         value = None
@@ -193,16 +196,23 @@ class AbstractViews():
                  [ListField(self._model, self._id_field, key='_id_')])}
             for entity in entities]
 
-    def _form(self):
+    def _form(self, **kwargs):
         schema = self._base_schema.bind(
             request=self._request,
             dbsession=self._request.dbsession)
 
+        config = getattr(inspect(self._model), '__c2cgeoform_config__', {})
+
+        buttons = [Button(name='formsubmit', title=_('Submit'))]
+        if config.get('duplicate', False):
+            buttons.append(Button(name='duplicate', title=_('Duplicate')))
+
         form = Form(
             schema,
-            buttons=(Button(name='formsubmit', title=_('Submit')),),
+            buttons=buttons,
+            **kwargs
             # renderer=renderer,
-            # action=self._request.route_url('c2cgeoform_action',))
+            # action=self._request.route_url('c2cgeoform_item',))
             )
         # _set_form_widget(form, geo_form_schema.schema_user, template)
         return form
@@ -235,9 +245,31 @@ class AbstractViews():
         form = self._form()
         self._populate_widgets(form.schema)
         rendered = form.render(form.schema.dictify(obj), request=self._request)
-        return({
+        return {
             'form': rendered,
-            'deform_dependencies': form.get_widget_resources()})
+            'deform_dependencies': form.get_widget_resources()
+        }
+
+    def duplicate(self):
+        obj = self._new_object()
+        tmpl = self._get_object()
+
+        insp = inspect(self._model)
+        for prop in insp.attrs:
+            if isinstance(prop, ColumnProperty):
+                if model_attr_info(prop.columns[0], 'c2cgeoform', 'duplicate'):
+                    setattr(obj, prop.key, getattr(tmpl, prop.key))
+            if isinstance(prop, RelationshipProperty):
+                pass
+
+        form = self._form(
+            action=self._request.route_url('c2cgeoform_item', id='new'))
+        self._populate_widgets(form.schema)
+        rendered = form.render(form.schema.dictify(obj), request=self._request)
+        return {
+            'form': rendered,
+            'deform_dependencies': form.get_widget_resources()
+        }
 
     def save(self):
         obj = self._get_object()
@@ -250,7 +282,7 @@ class AbstractViews():
             self._request.dbsession.flush()
             return HTTPFound(
                 self._request.route_url(
-                    'c2cgeoform_action',
+                    'c2cgeoform_item',
                     action='edit',
                     id=obj.__getattribute__(self._id_field)))
         except ValidationFailure as e:
@@ -260,9 +292,10 @@ class AbstractViews():
                 e.field,
                 e.cstruct,
                 request=self._request)
-            return({
+            return {
                 'form': rendered,
-                'deform_dependencies': form.get_widget_resources()})
+                'deform_dependencies': form.get_widget_resources()
+            }
 
     def delete(self):
         obj = self._get_object()
