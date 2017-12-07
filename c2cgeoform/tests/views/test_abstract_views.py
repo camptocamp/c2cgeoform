@@ -1,17 +1,23 @@
 from pyramid.httpexceptions import HTTPNotFound
 from pyramid.httpexceptions import HTTPFound
+from unittest import TestCase
 from unittest.mock import Mock
 from functools import partial
 
 from c2cgeoform.models import DBSession
 from c2cgeoform.tests import DatabaseTestCase
-from c2cgeoform.tests.models_test import Person
+from c2cgeoform.tests.models_test import Person, Tag
 from c2cgeoform.schema import GeoFormSchemaNode
-from c2cgeoform.views.abstract_views import AbstractViews
-from c2cgeoform.views.abstract_views import ListField
+from c2cgeoform.views.abstract_views import AbstractViews, ListField
 
 
 _list_field = partial(ListField, Person)
+
+
+class TestListField(TestCase):
+
+    def test_title_default_to_attr_key(self):
+        self.assertEqual('id', ListField(Tag, 'id').label())
 
 
 class ConcreteViews(AbstractViews):
