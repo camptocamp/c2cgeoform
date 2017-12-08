@@ -24,7 +24,7 @@ def register_models(config, models):
     table_regex = '|'.join(['({})'.format(table['key']) for table in tables])
     base_route = '/{{table:{}}}'.format(table_regex)
 
-    rec_with_pregenerator('c2cgeoform_index', '{}/'.format(base_route))
+    rec_with_pregenerator('c2cgeoform_index', '{}'.format(base_route))
     rec_with_pregenerator('c2cgeoform_grid', '{}/grid.json'.format(base_route))
     rec_with_pregenerator('c2cgeoform_action', '{}/{{id}}'
                           .format(base_route))
