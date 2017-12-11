@@ -36,7 +36,7 @@ def model_attr_info(attr, *keys):
         return None
     value = attr.info
     for key in keys:
-        if not key in value:
+        if key not in value:
             return None
         value = value[key]
     return value
@@ -54,7 +54,9 @@ class ListField():
         self._attr = getattr(model, attr) if model else attr
         self._key = key or self._attr.key
         self._label = (label or
-                       model_attr_info(self._attr, 'colanderalchemy', 'title') or
+                       model_attr_info(self._attr,
+                                       'colanderalchemy',
+                                       'title') or
                        self._key)
         self._renderer = renderer or self._prop_renderer
         is_column = isinstance(self._attr.property, ColumnProperty)
