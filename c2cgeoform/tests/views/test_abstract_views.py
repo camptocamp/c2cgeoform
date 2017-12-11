@@ -181,8 +181,11 @@ class TestAbstractViews(DatabaseTestCase):
         form = BeautifulSoup(response['form'], 'html.parser')
         # self.assertEqual('', form.select_one('form').attrs['action'])
         self.assertEqual('', form.select_one('input[name=id]').attrs['value'])
-        self.assertEqual(self.person1.name, form.select_one('input[name=name]').attrs['value'])
-        self.assertEqual(self.person1.first_name, form.select_one('input[name=first_name]').attrs['value'])
+        self.assertEqual(self.person1.name,
+                         form.select_one('input[name=name]').attrs['value'])
+        self.assertEqual(self.person1.first_name,
+                         form.select_one('input[name=first_name]')
+                         .attrs['value'])
         self.assertEqual('', form.select_one('input[name=age]').attrs['value'])
 
     def test_delete_person(self):
