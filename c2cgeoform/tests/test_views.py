@@ -367,7 +367,6 @@ class TestView(DatabaseTestCase):
         response = grid(request)
         self.assertEquals(0, response['total'])
 
-        # only text fields tagged with 'admin_list' are searched
         request.POST['searchPhrase'] = 'Peter'
         response = grid(request)
         self.assertEquals(0, response['total'])
