@@ -145,10 +145,7 @@ class Excavation(Base):
         # column or to use a specific widget.
         'colanderalchemy': {
             'title': _('Permission Number'),
-            'widget': HiddenWidget(),
-            # if the `admin_list` property is enabled for a column on the main
-            # model, then this column will be shown in the admin list grid.
-            'admin_list': True
+            'widget': HiddenWidget()
         }})
     hash = Column(Text, unique=True, default=lambda: str(uuid4()), info={
         'colanderalchemy': {
@@ -160,8 +157,7 @@ class Excavation(Base):
         }})
     request_date = Column(Date, nullable=True, info={
         'colanderalchemy': {
-            'title': _('Request Date'),
-            'admin_list': True
+            'title': _('Request Date')
         }})
 
     description = Column(Text, nullable=True, info={
@@ -262,13 +258,11 @@ class Excavation(Base):
         }})
     responsible_name = Column(Text, nullable=True, info={
         'colanderalchemy': {
-            'title': _('Name'),
-            'admin_list': True
+            'title': _('Name')
         }})
     responsible_first_name = Column(Text, nullable=True, info={
         'colanderalchemy': {
-            'title': _('First Name'),
-            'admin_list': True
+            'title': _('First Name')
         }})
     responsible_mobile = Column(Text, nullable=True, info={
         'colanderalchemy': {
@@ -333,8 +327,7 @@ class Comment(Base):
 
     id = Column(Integer, primary_key=True, info={
         'colanderalchemy': {
-            'widget': HiddenWidget(),
-            'admin_list': True
+            'widget': HiddenWidget()
         }})
     hash = Column(Text, unique=True, default=lambda: str(uuid4()), info={
         'colanderalchemy': {
