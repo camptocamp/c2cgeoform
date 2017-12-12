@@ -206,7 +206,9 @@ class AbstractViews():
 
         buttons = [Button(name='formsubmit', title=_('Submit'))]
         if self._duplicate_schema is not None:
-            buttons.append(Button(name='duplicate', title=_('Duplicate')))
+            buttons.append(Button(name='duplicate',
+                                  type='button',
+                                  title=_('Duplicate')))
 
         form = Form(
             schema,
@@ -247,8 +249,13 @@ class AbstractViews():
         self._populate_widgets(form.schema)
         rendered = form.render(form.schema.dictify(obj), request=self._request)
         return {
-            'form': rendered,
-            'deform_dependencies': form.get_widget_resources()
+            'form': form,
+            'form_rendered': rendered,
+            'deform_dependencies': form.get_widget_resources(),
+            'duplicate_url': self._request.route_url(
+                'c2cgeoform_item_action',
+                id=self._request.matchdict.get('id'),
+                action='duplicate')
         }
 
     def duplicate(self):
@@ -261,7 +268,8 @@ class AbstractViews():
 
         rendered = form.render(to_render, request=self._request)
         return {
-            'form': rendered,
+            'form': form,
+            'form_rendered': rendered,
             'deform_dependencies': form.get_widget_resources()
         }
 
@@ -287,7 +295,8 @@ class AbstractViews():
                 e.cstruct,
                 request=self._request)
             return {
-                'form': rendered,
+                'form': form,
+                'form_rendered': rendered,
                 'deform_dependencies': form.get_widget_resources()
             }
 
