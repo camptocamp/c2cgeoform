@@ -34,6 +34,29 @@ base_schema.add_before(
     )
 )
 
+duplicate_schema = GeoFormSchemaNode(Excavation,
+                                     excludes=['id',
+                                               'hash',
+                                               'reference_number'],
+                                     overrides={'contact_persons':
+                                                {'includes': ['first_name',
+                                                              'last_name']}})
+duplicate_schema.add_before(
+    'contact_persons',
+    colander.SequenceSchema(
+        GeoFormManyToManySchemaNode(Situation),
+        name='situations',
+        title='Situations',
+        widget=RelationCheckBoxListWidget(
+            Situation,
+            'id',
+            'name',
+            order_by='name'
+        ),
+        validator=manytomany_validator
+    )
+)
+
 
 @view_defaults(match_param='table=excavations')
 class ExcavationViews(AbstractViews):
@@ -54,7 +77,7 @@ class ExcavationViews(AbstractViews):
 
     _id_field = 'hash'
     _base_schema = base_schema
-    _duplicate_schema = GeoFormSchemaNode(Excavation, includes=[])
+    _duplicate_schema = duplicate_schema
 
     def _base_query(self):
         return self._request.dbsession.query(Excavation).distinct(). \
