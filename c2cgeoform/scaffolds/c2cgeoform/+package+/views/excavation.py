@@ -37,7 +37,8 @@ base_schema.add_before(
 duplicate_schema = GeoFormSchemaNode(Excavation,
                                      excludes=['id',
                                                'hash',
-                                               'reference_number'],
+                                               'reference_number',
+                                               'validated'],
                                      overrides={'contact_persons':
                                                 {'includes': ['first_name',
                                                               'last_name']}})

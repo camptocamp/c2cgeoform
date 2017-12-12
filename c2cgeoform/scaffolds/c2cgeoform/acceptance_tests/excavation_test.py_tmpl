@@ -7,6 +7,20 @@ from {{package}}.views.excavation import ExcavationViews
 
 @pytest.mark.usefixtures("transact", "test_app")
 class TestExcavationViews():
+    def check_checkboxes_list_widget(self, resp, all_situations, excavation):
+        form_group = resp.html.select_one('.item-situations')
+        situations_labels = form_group.select('.checkbox label')
+        for i, situation in enumerate(all_situations):
+            label = situations_labels[i]
+            input = label.select_one('input')
+            assert [situation.name] == list(label.stripped_strings)
+            assert str(situation.id) == input['value']
+            if situation in excavation.situations:
+                assert 'True' == input['checked']
+                assert resp.form.get('situations', index=i).checked
+            else:
+                assert 'checked' not in input
+                assert not resp.form.get('situations', index=i).checked
 
     def _excavation_by_desc(self, dbsession, desc):
         return dbsession.query(Excavation). \
@@ -89,11 +103,17 @@ class TestExcavationViews():
         resp = test_app.get("/excavations/{}".format(exc.hash), status=200)
 
         form = resp.form
-        # assert form["request_date"] == exc.request_date
+        assert exc.reference_number == form['reference_number'].value
+        assert exc.hash == form['hash'].value
+        assert str(exc.id) == form.fields.get('id')[0].value
+        assert str(exc.request_date) == resp.html.find('input', attrs={'name': 'date'}).attrs['value']
         assert exc.description == form["description"].value
         assert exc.motif == form["motif"].value
-        # assert form["situations"].value == exc.situations
-        # assert form["contact_persons"].value == exc.contact_persons
+        assert exc.contact_persons[0].first_name == form["first_name"].value
+        assert exc.contact_persons[0].last_name == form["last_name"].value
+        assert str(exc.contact_persons[0].id) == form.fields.get('id')[1].value
+        assert str(exc.contact_persons[0].permission_id) == form['permission_id'].value
+        assert exc.contact_persons[0].permission_id == exc.id
         assert str(exc.location_district_id) == form["location_district_id"].value
         assert exc.location_street == form["location_street"].value
         assert exc.location_postal_code == form["location_postal_code"].value
@@ -110,23 +130,8 @@ class TestExcavationViews():
         assert str(exc.work_footprint or "") == form["work_footprint"].value
         # assert form["photos"].value == exc.photos
 
-        # RelationCheckBoxListWidget
-        form_group = resp.html.select_one('.item-situations')
-        situations = dbsession.query(Situation).order_by(Situation.name).all()
-        situations_labels = form_group.select('.checkbox label')
-        for i, situation in enumerate(situations):
-            label = situations_labels[i]
-            input = label.select_one('input')
-            assert [situation.name] == list(label.stripped_strings)
-            assert str(situation.id) == input['value']
-            if situation.id in (1, 2, 3):
-                assert situation in exc.situations
-                assert 'True' == input['checked']
-                assert form.get('situations', index=i).checked
-            else:
-                assert situation not in exc.situations
-                assert 'checked' not in input
-                assert not form.get('situations', index=i).checked
+        all_situations = dbsession.query(Situation).order_by(Situation.name).all()
+        self.check_checkboxes_list_widget(resp, all_situations, exc)
 
         form["description"] = "New description"
         form["motif"] = "New motif"
@@ -144,9 +149,11 @@ class TestExcavationViews():
         form["responsible_company"] = "csc"
         form["validated"] = False
         form["work_footprint"] = ''
+        form["first_name"] = 'Raoul'
+        form["last_name"] = 'Wolffoni'
 
-        # RelationCheckBoxListWidget
-        form["situations"] = ['3', '4', '5']
+
+        form["situations"] = ['3', '4', '5']  # RelationCheckBoxListWidget
 
         resp = form.submit("submit")
 
@@ -168,6 +175,7 @@ class TestExcavationViews():
         assert "06.75.65.83" == exc.responsible_mobile
         assert "lapin.malin@lugano.ch" == exc.responsible_mail
         assert "csc" == exc.responsible_company
+        assert "Raoul" == exc.contact_persons[0].first_name
         assert False == exc.validated
         assert None == exc.work_footprint
 
@@ -179,11 +187,13 @@ class TestExcavationViews():
         resp = test_app.get("/excavations/new", status=200)
 
         form = resp.form
-        # assert form["request_date"] == exc.request_date
+        assert '' == form['reference_number'].value
+        assert '' == form['hash'].value
+        assert '' == form.fields.get('id')[0].value
+        assert '' == resp.html.find('input', attrs={'name': 'date'}).attrs['value']
         assert '' == form["description"].value
         assert '' == form["motif"].value
-        # assert form["situations"].value == None
-        # assert form["contact_persons"].value == ''
+        assert form.fields.get('first_name') is None # no contact_persons
         assert '' == form["location_district_id"].value
         assert '' == form["location_street"].value
         assert '' == form["location_postal_code"].value
@@ -200,17 +210,8 @@ class TestExcavationViews():
         assert '' == form["work_footprint"].value
         # assert form["photos"].value == exc.photos
 
-        # RelationCheckBoxListWidget
-        form_group = resp.html.select_one(".item-situations")
-        situations = dbsession.query(Situation).order_by(Situation.name).all()
-        situations_labels = form_group.select(".checkbox label")
-        for i, situation in enumerate(situations):
-            label = situations_labels[i]
-            input = label.select_one("input")
-            assert [situation.name] == list(label.stripped_strings)
-            assert str(situation.id) == input["value"]
-            assert "checked" not in input
-            assert not form.get('situations', index=i).checked
+        all_situations = dbsession.query(Situation).order_by(Situation.name).all()
+        self.check_checkboxes_list_widget(resp, all_situations, Excavation())
 
         form["description"] = "Description"
         form["motif"] = "Motif"
@@ -228,9 +229,7 @@ class TestExcavationViews():
         form["responsible_company"] = "csc"
         form["validated"] = False
         form["work_footprint"] = ''
-
-         # RelationCheckBoxListWidget
-        form['situations'] = ['3', '4', '5']
+        form['situations'] = ['3', '4', '5']  # RelationCheckBoxListWidget
 
         resp = form.submit("submit")
 
@@ -274,7 +273,37 @@ class TestExcavationViews():
     def test_duplicate(self, dbsession, test_app):
         exc = self._excavation_by_ref(dbsession, "ref0001")
         resp = test_app.get("/excavations/{}/duplicate".format(exc.hash), status=200)
+        form = resp.form
 
+        assert '' == form['reference_number'].value
+        assert '' == form['hash'].value
+        assert '' == form.fields.get('id')[0].value
+        assert None == form["validated"].value
+        assert str(exc.request_date) == resp.html.find('input', attrs={'name': 'date'}).attrs['value']
+        assert exc.description == form["description"].value
+        assert exc.motif == form["motif"].value
+        assert str(exc.location_district_id) == form["location_district_id"].value
+        assert exc.location_street == form["location_street"].value
+        assert exc.location_postal_code == form["location_postal_code"].value
+        assert exc.location_town == form["location_town"].value
+        assert str(exc.address_id or "") == form["address_id"].value
+        assert str(exc.location_position or "") == form["location_position"].value
+        assert exc.responsible_title == form["responsible_title"].value
+        assert exc.responsible_name == form["responsible_name"].value
+        assert exc.responsible_first_name == form["responsible_first_name"].value
+        assert exc.responsible_mobile == form["responsible_mobile"].value
+        assert exc.responsible_mail == form["responsible_mail"].value
+        assert exc.responsible_company == form["responsible_company"].value
+        assert str(exc.work_footprint or "") == form["work_footprint"].value
+        assert exc.contact_persons[0].first_name == form["first_name"].value
+        assert exc.contact_persons[0].last_name == form["last_name"].value
+        assert '' == form.fields.get('id')[1].value
+        assert exc.contact_persons[0].id != form.fields.get('id')[1].value
+        assert '' == form['permission_id'].value
+        assert exc.contact_persons[0].permission_id != form['permission_id'].value
+        all_situations = dbsession.query(Situation).order_by(Situation.name).all()
+        self.check_checkboxes_list_widget(resp, all_situations, exc)
+        
     def test_delete_success(self, dbsession, test_app):
         exc = self._excavation_by_ref(dbsession, "ref0001")
 
