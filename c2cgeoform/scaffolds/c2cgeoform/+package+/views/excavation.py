@@ -72,7 +72,7 @@ class ExcavationViews(AbstractViews):
 
     @view_config(route_name='c2cgeoform_item',
                  request_method='GET',
-                 renderer='../templates/new.jinja2')
+                 renderer='../templates/edit.jinja2')
     def edit(self):
         return super().edit()
 
