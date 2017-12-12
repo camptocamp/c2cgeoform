@@ -8,7 +8,7 @@ from pyramid.response import Response
 from sqlalchemy import desc, or_, types
 from sqlalchemy.exc import DBAPIError
 from sqlalchemy.inspection import inspect
-from sqlalchemy.orm.properties import ColumnProperty, RelationshipProperty
+from sqlalchemy.orm.properties import ColumnProperty
 from translationstring import TranslationStringFactory
 _ = TranslationStringFactory('c2cgeoform')
 
@@ -107,6 +107,7 @@ class AbstractViews():
     _list_fields = []  # Fields in list
     _id_field = None  # Primary key
     _base_schema = None  # base colander schema
+    _duplicate_schema = None
 
     def __init__(self, request):
         self._request = request
@@ -203,10 +204,8 @@ class AbstractViews():
             request=self._request,
             dbsession=self._request.dbsession)
 
-        config = getattr(inspect(self._model), '__c2cgeoform_config__', {})
-
         buttons = [Button(name='formsubmit', title=_('Submit'))]
-        if config.get('duplicate', False):
+        if self._duplicate_schema is not None:
             buttons.append(Button(name='duplicate', title=_('Duplicate')))
 
         form = Form(
@@ -253,21 +252,14 @@ class AbstractViews():
         }
 
     def duplicate(self):
-        obj = self._new_object()
         tmpl = self._get_object()
-
-        insp = inspect(self._model)
-        for prop in insp.attrs:
-            if isinstance(prop, ColumnProperty):
-                if model_attr_info(prop.columns[0], 'c2cgeoform', 'duplicate'):
-                    setattr(obj, prop.key, getattr(tmpl, prop.key))
-            if isinstance(prop, RelationshipProperty):
-                pass
-
         form = self._form(
             action=self._request.route_url('c2cgeoform_item', id='new'))
         self._populate_widgets(form.schema)
-        rendered = form.render(form.schema.dictify(obj), request=self._request)
+
+        to_render = self._duplicate_schema.dictify(tmpl)
+
+        rendered = form.render(to_render, request=self._request)
         return {
             'form': rendered,
             'deform_dependencies': form.get_widget_resources()

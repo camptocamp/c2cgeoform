@@ -29,6 +29,8 @@ class ConcreteViews(AbstractViews):
         _list_field('name', label='Name'),
         _list_field('first_name')]
     _base_schema = GeoFormSchemaNode(Person, title='Person')
+    _duplicate_schema = GeoFormSchemaNode(Person,
+                                          includes=['name', 'first_name'])
 
 
 class TestAbstractViews(DatabaseTestCase):

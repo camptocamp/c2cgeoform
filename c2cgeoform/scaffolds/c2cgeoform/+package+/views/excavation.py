@@ -54,6 +54,7 @@ class ExcavationViews(AbstractViews):
 
     _id_field = 'hash'
     _base_schema = base_schema
+    _duplicate_schema = GeoFormSchemaNode(Excavation, includes=[])
 
     def _base_query(self):
         return self._request.dbsession.query(Excavation).distinct(). \

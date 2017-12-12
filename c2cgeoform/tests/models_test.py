@@ -62,9 +62,6 @@ class Person(Base):
         'title': 'A Person',
         'description': 'Tell us about you.'
     }
-    __c2cgeoform_config__ = {
-        'duplicate': True
-    }
 
     id = Column(Integer, primary_key=True, info={
         'colanderalchemy': {
@@ -77,16 +74,10 @@ class Person(Base):
         'colanderalchemy': {
             'title': 'Your name',
             'admin_list': True
-        },
-        'c2cgeoform': {
-            'duplicate': True
         }})
     first_name = Column(Text, nullable=False, info={
         'colanderalchemy': {
             'title': 'Your first name'
-        },
-        'c2cgeoform': {
-            'duplicate': True
         }})
     age = Column(Integer, info={
         'colanderalchemy': {
