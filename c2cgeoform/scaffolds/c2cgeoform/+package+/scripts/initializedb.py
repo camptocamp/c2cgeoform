@@ -26,6 +26,7 @@ from ..models.c2cgeoform_demo import (
     District,
     Excavation,
     Situation,
+    ContactPerson
     )
 
 
@@ -117,13 +118,15 @@ def setup_test_data(dbsession):
 def _excavation(i, dbsession):
     situations = dbsession.query(Situation).all()
 
+    contact = ContactPerson()
+    contact.first_name = 'Leonard'
+    contact.last_name = 'Michalon'
+
     excavation = Excavation(
         reference_number='ref{:04d}'.format(i),
-        request_date=date.today() - timedelta(days=100-i),
+        request_date=date.today() - timedelta(days=100 - i),
         description="Installation d'un réseau AEP",
         motif="Création d'un lotissement",
-        # situations = relationship(SituationForPermission,
-        # contact_persons = relationship(ContactPerson,
         location_district_id=0,
         location_street="48 avenue du Lac du Bourget",
         location_postal_code="73370",
@@ -142,6 +145,7 @@ def _excavation(i, dbsession):
     )
     for j in range(0, 3):
         excavation.situations.append(situations[(i + j) % len(situations)])
+    excavation.contact_persons = [contact]
     return excavation
 
 
