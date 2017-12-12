@@ -69,14 +69,12 @@ class Person(Base):
     id = Column(Integer, primary_key=True, info={
         'colanderalchemy': {
             'title': 'ID',
-            'widget': deform.widget.HiddenWidget(),
-            'admin_list': True
+            'widget': deform.widget.HiddenWidget()
         }})
     hash = Column(Text, unique=True)
     name = Column(Text, nullable=False, info={
         'colanderalchemy': {
             'title': 'Your name',
-            'admin_list': True
         },
         'c2cgeoform': {
             'duplicate': True
