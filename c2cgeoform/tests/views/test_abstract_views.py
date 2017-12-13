@@ -29,6 +29,8 @@ class ConcreteViews(AbstractViews):
         _list_field('name', label='Name'),
         _list_field('first_name')]
     _base_schema = GeoFormSchemaNode(Person, title='Person')
+    _duplicate_schema = GeoFormSchemaNode(Person,
+                                          includes=['name', 'first_name'])
 
 
 class TestAbstractViews(DatabaseTestCase):
@@ -90,7 +92,7 @@ class TestAbstractViews(DatabaseTestCase):
         views = ConcreteViews(self.request)
         response = views.edit()
 
-        self.assertIn('form', response)
+        self.assertIn('form_rendered', response)
         self.assertIn('deform_dependencies', response)
 
     def test_new_post_validation_error(self):
@@ -104,7 +106,7 @@ class TestAbstractViews(DatabaseTestCase):
         views = ConcreteViews(self.request)
         response = views.save()
 
-        self.assertIn('form', response)
+        self.assertIn('form_rendered', response)
         self.assertIn('deform_dependencies', response)
 
     def test_new_post_success(self):
@@ -153,7 +155,7 @@ class TestAbstractViews(DatabaseTestCase):
         views = ConcreteViews(self.request)
         response = views.edit()
 
-        self.assertIn('form', response)
+        self.assertIn('form_rendered', response)
         self.assertIn('deform_dependencies', response)
 
     def test_edit_post_notfound(self):
@@ -176,9 +178,9 @@ class TestAbstractViews(DatabaseTestCase):
         views = ConcreteViews(self.request)
         response = views.duplicate()
 
-        self.assertIn('form', response)
+        self.assertIn('form_rendered', response)
         self.assertIn('deform_dependencies', response)
-        form = BeautifulSoup(response['form'], 'html.parser')
+        form = BeautifulSoup(response['form_rendered'], 'html.parser')
         # self.assertEqual('', form.select_one('form').attrs['action'])
         self.assertEqual('', form.select_one('input[name=id]').attrs['value'])
         self.assertEqual(self.person1.name,
