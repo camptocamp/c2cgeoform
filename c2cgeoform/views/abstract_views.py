@@ -269,10 +269,15 @@ class AbstractViews():
             if isinstance(prop, RelationshipProperty):
                 if model_attr_info(prop, 'c2cgeoform', 'duplicate'):
                     if prop.cascade.delete:
-                        duplicate = [self.copy_members_if_duplicates(
-                                            prop.mapper.class_,
-                                            m)
-                                 for m in getattr(source, prop.key)]
+                        if not prop.uselist:
+                            duplicate = self.copy_members_if_duplicates(
+                                                prop.mapper.class_,
+                                                getattr(source, prop.key))
+                        else:
+                            duplicate = [self.copy_members_if_duplicates(
+                                                prop.mapper.class_,
+                                                m)
+                                         for m in getattr(source, prop.key)]
                     else:
                         duplicate = getattr(source, prop.key)
                     setattr(dest, prop.key, duplicate)
