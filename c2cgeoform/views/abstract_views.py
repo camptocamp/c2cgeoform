@@ -31,13 +31,13 @@ try it again.
 """
 
 
-def model_attr_info(attr, *keys):
+def model_attr_info(attr, *keys, default=None):
     if attr is None:
-        return None
+        return default
     value = attr.info
     for key in keys:
         if key not in value:
-            return None
+            return default
         value = value[key]
     return value
 
@@ -264,10 +264,18 @@ class AbstractViews():
 
         for prop in insp.attrs:
             if isinstance(prop, ColumnProperty):
-                if model_attr_info(prop.columns[0], 'c2cgeoform', 'duplicate'):
+                is_primary_key = prop.columns[0].primary_key
+                to_duplicate = model_attr_info(prop.columns[0],
+                                               'c2cgeoform',
+                                               'duplicate',
+                                               default=True)
+                if not is_primary_key and to_duplicate:
                     setattr(dest, prop.key, getattr(source, prop.key))
             if isinstance(prop, RelationshipProperty):
-                if model_attr_info(prop, 'c2cgeoform', 'duplicate'):
+                if model_attr_info(prop,
+                                   'c2cgeoform',
+                                   'duplicate',
+                                   default=True):
                     if prop.cascade.delete:
                         if not prop.uselist:
                             duplicate = self.copy_members_if_duplicates(
