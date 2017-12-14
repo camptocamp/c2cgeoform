@@ -203,7 +203,7 @@ class AbstractViews():
             request=self._request,
             dbsession=self._request.dbsession)
 
-        config = getattr(inspect(self._model), '__c2cgeoform_config__', {})
+        config = getattr(inspect(self._model).class_, '__c2cgeoform_config__', {})
 
         buttons = [Button(name='formsubmit', title=_('Submit'))]
         if config.get('duplicate', False):
@@ -229,13 +229,10 @@ class AbstractViews():
         for child in node:
             self._populate_widgets(child)
 
-    def _new_object(self):
-        return self._model()
-
     def _get_object(self):
         pk = self._request.matchdict.get('id')
         if pk == "new":
-            return self._new_object()
+            return self._model()
         obj = self._request.dbsession.query(self._model). \
             filter(getattr(self._model, self._id_field) == pk). \
             one_or_none()
@@ -258,22 +255,33 @@ class AbstractViews():
                 action='duplicate')
         }
 
-    def duplicate(self):
-        obj = self._new_object()
-        tmpl = self._get_object()
-
-        insp = inspect(self._model)
+    def copy_members_if_duplicates(self, model, source):
+        dest = model()
+        insp = inspect(model)
         for prop in insp.attrs:
             if isinstance(prop, ColumnProperty):
                 if model_attr_info(prop.columns[0], 'c2cgeoform', 'duplicate'):
-                    setattr(obj, prop.key, getattr(tmpl, prop.key))
+                    setattr(dest, prop.key, getattr(source, prop.key))
             if isinstance(prop, RelationshipProperty):
-                pass
+                if model_attr_info(prop, 'c2cgeoform', 'duplicate'):
+                    duplicate = [self.copy_members_if_duplicates(
+                                            prop.mapper.class_,
+                                            m)
+                                 for m in getattr(source, prop.key)]
+                    setattr(dest, prop.key, duplicate)
+        return dest
+
+    def duplicate(self):
+        src = self._get_object()
+
+        dest = self.copy_members_if_duplicates(self._model, src)
 
         form = self._form(
             action=self._request.route_url('c2cgeoform_item', id='new'))
         self._populate_widgets(form.schema)
-        rendered = form.render(form.schema.dictify(obj), request=self._request)
+        rendered = form.render(
+            form.schema.dictify(dest),
+            request=self._request)
         return {
             'form': form,
             'form_rendered': rendered,
