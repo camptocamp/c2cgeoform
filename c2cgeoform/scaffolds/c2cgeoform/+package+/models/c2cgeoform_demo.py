@@ -119,18 +119,9 @@ class Situation(Base):
         {"schema": schema}
     )
 
-    id = Column(Integer, primary_key=True, info={
-        'c2cgeoform': {
-            'duplicate': True
-        }})
-    name = Column(Text, nullable=False, info={
-        'c2cgeoform': {
-            'duplicate': True
-        }})
-    name_fr = Column(Text, nullable=False, info={
-        'c2cgeoform': {
-            'duplicate': True
-        }})
+    id = Column(Integer, primary_key=True)
+    name = Column(Text, nullable=False)
+    name_fr = Column(Text, nullable=False)
 
 
 situation_for_permission = Table(
@@ -277,7 +268,11 @@ class Excavation(Base):
                                     model=Address,
                                     min_length=1,
                                     id_field='id',
-                                    label_field='label')}})
+                                    label_field='label')
+                              },
+                              'c2cgeoform': {
+                                    'duplicate': True
+                        }})
     # to show a map for a geometry column, the column has to be defined as
     # follows.
     location_position = Column(
