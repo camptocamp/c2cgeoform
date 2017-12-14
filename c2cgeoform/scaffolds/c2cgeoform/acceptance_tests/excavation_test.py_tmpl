@@ -295,14 +295,14 @@ class TestExcavationViews():
         assert exc.responsible_mail == form["responsible_mail"].value
         assert exc.responsible_company == form["responsible_company"].value
         assert str(exc.work_footprint or "") == form["work_footprint"].value
+        all_situations = dbsession.query(Situation).order_by(Situation.name).all()
+        self.check_checkboxes_list_widget(resp, all_situations, exc)
         assert exc.contact_persons[0].first_name == form["first_name"].value
         assert exc.contact_persons[0].last_name == form["last_name"].value
         assert '' == form.fields.get('id')[1].value
         assert exc.contact_persons[0].id != form.fields.get('id')[1].value
         assert '' == form['permission_id'].value
         assert exc.contact_persons[0].permission_id != form['permission_id'].value
-        all_situations = dbsession.query(Situation).order_by(Situation.name).all()
-        self.check_checkboxes_list_widget(resp, all_situations, exc)
         
     def test_delete_success(self, dbsession, test_app):
         exc = self._excavation_by_ref(dbsession, "ref0001")
