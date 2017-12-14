@@ -80,21 +80,15 @@ class ContactPerson(Base):
     first_name = Column(Text, nullable=False, info={
         'colanderalchemy': {
             'title': _('First name')
-        },
-        'c2cgeoform': {
-            'duplicate': True
         }})
     last_name = Column(Text, nullable=False, info={
         'colanderalchemy': {
             'title': _('Last name')
-        },
-        'c2cgeoform': {
-            'duplicate': True
         }})
     permission_id = Column(Integer,
                            ForeignKey(EXCAV_ID),
-                           info={'colanderalchemy':
-                                 {'widget': HiddenWidget()}})
+                           info={'colanderalchemy': {'widget': HiddenWidget()},
+                                 'c2cgeoform': {'duplicate': False}})
     verified = Column(Boolean)
 
 
@@ -160,34 +154,31 @@ class Excavation(Base):
     hash = Column(Text, unique=True, default=lambda: str(uuid4()), info={
         'colanderalchemy': {
             'widget': HiddenWidget()
+        },
+        'c2cgeoform': {
+            'duplicate': False
         }})
     reference_number = Column(Text, nullable=True, info={
         'colanderalchemy': {
             'title': _('Reference Number')
+        },
+        'c2cgeoform': {
+            'duplicate': False
         }})
     request_date = Column(Date, nullable=True, info={
         'colanderalchemy': {
             'title': _('Request Date')
-        },
-        'c2cgeoform': {
-            'duplicate': True
         }})
 
     description = Column(Text, nullable=True, info={
         'colanderalchemy': {
             'title': _('Description of the Work'),
             'widget': deform.widget.TextAreaWidget(rows=3),
-        },
-        'c2cgeoform': {
-            'duplicate': True
         }})
     motif = Column(Text, nullable=True, info={
         'colanderalchemy': {
             'title': _('Motive for the Work'),
             'widget': deform.widget.TextAreaWidget(rows=3),
-        },
-        'c2cgeoform': {
-            'duplicate': True
         }})
 
     situations = relationship(
@@ -197,9 +188,6 @@ class Excavation(Base):
         cascade="save-update,merge,refresh-expire",
         info={'colanderalchemy': {
                     'exclude': True
-              },
-              'c2cgeoform': {
-                    'duplicate': True
         }})
 
     # by default a Deform sequence widget is used for relationship columns,
@@ -210,9 +198,6 @@ class Excavation(Base):
         cascade="all, delete-orphan",
         info={'colanderalchemy': {
                 'title': _('Contact Persons')
-              },
-              'c2cgeoform': {
-                'duplicate': True
         }})
     location_district_id = \
         Column(Integer,
@@ -224,10 +209,7 @@ class Excavation(Base):
                                     'id',
                                     'name',
                                     order_by='name',
-                                    default_value=('', _('- Select -')))},
-                     'c2cgeoform': {
-                         'duplicate': True}
-                     })
+                                    default_value=('', _('- Select -')))}})
     # if the name for the options should be internationalized, one
     # can create columns like 'name_fr' and 'name_de' in the table
     # 'District'. then in the translation files, the column name
@@ -238,23 +220,14 @@ class Excavation(Base):
     location_street = Column(Text, nullable=False, info={
         'colanderalchemy': {
             'title': _('Street')
-        },
-        'c2cgeoform': {
-            'duplicate': True
         }})
     location_postal_code = Column(Text, nullable=False, info={
         'colanderalchemy': {
             'title': _('Postal Code')
-        },
-        'c2cgeoform': {
-            'duplicate': True
         }})
     location_town = Column(Text, nullable=False, info={
         'colanderalchemy': {
             'title': _('Town')
-        },
-        'c2cgeoform': {
-            'duplicate': True
         }})
     # this is a search field to search for an address
     address_id = Column(Integer,
@@ -267,10 +240,7 @@ class Excavation(Base):
                                     model=Address,
                                     min_length=1,
                                     id_field='id',
-                                    label_field='label')},
-                              'c2cgeoform': {
-                                    'duplicate': True}
-                              })
+                                    label_field='label')}})
     # to show a map for a geometry column, the column has to be defined as
     # follows.
     location_position = Column(
@@ -292,51 +262,36 @@ class Excavation(Base):
                 ('mr', _('Mr.')),
                 ('mrs', _('Mrs.'))
             ))
-        },
-        'c2cgeoform': {
-            'duplicate': True
         }})
     responsible_name = Column(Text, nullable=True, info={
         'colanderalchemy': {
             'title': _('Name')
-        },
-        'c2cgeoform': {
-            'duplicate': True
         }})
     responsible_first_name = Column(Text, nullable=True, info={
         'colanderalchemy': {
             'title': _('First Name')
-        },
-        'c2cgeoform': {
-            'duplicate': True
         }})
     responsible_mobile = Column(Text, nullable=True, info={
         'colanderalchemy': {
             'title': _('Mobile Phone')
-        },
-        'c2cgeoform': {
-            'duplicate': True
         }})
     responsible_mail = Column(Text, nullable=True, info={
         'colanderalchemy': {
             'title': _('Mail'),
             'validator': colander.Email()
-        },
-        'c2cgeoform': {
-            'duplicate': True
         }})
     responsible_company = Column(Text, nullable=True, info={
         'colanderalchemy': {
             'title': _('Company')
-        },
-        'c2cgeoform': {
-            'duplicate': True
         }})
 
     validated = Column(Boolean, info={
         'colanderalchemy': {
             'title': _('Validation'),
             'label': _('Validated')
+        },
+        'c2cgeoform': {
+            'duplicate': False
         }})
 
     # Work footprint
