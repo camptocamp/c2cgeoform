@@ -218,17 +218,16 @@ class Excavation(Base):
         Column(Integer,
                ForeignKey('c2cgeoform_demo.district.id'),
                info={'colanderalchemy': {
-                       'title': _('District'),
-                       'widget': RelationSelect2Widget(
+                        'title': _('District'),
+                        'widget': RelationSelect2Widget(
                                     District,
                                     'id',
                                     'name',
                                     order_by='name',
-                                    default_value=('', _('- Select -')))
-                    },
-                    'c2cgeoform': {
-                        'duplicate': True
-                        }})
+                                    default_value=('', _('- Select -')))},
+                     'c2cgeoform': {
+                         'duplicate': True}
+                     })
     # if the name for the options should be internationalized, one
     # can create columns like 'name_fr' and 'name_de' in the table
     # 'District'. then in the translation files, the column name
@@ -268,11 +267,10 @@ class Excavation(Base):
                                     model=Address,
                                     min_length=1,
                                     id_field='id',
-                                    label_field='label')
-                              },
+                                    label_field='label')},
                               'c2cgeoform': {
-                                    'duplicate': True
-                        }})
+                                    'duplicate': True}
+                              })
     # to show a map for a geometry column, the column has to be defined as
     # follows.
     location_position = Column(
