@@ -117,6 +117,7 @@ def setup_test_data(dbsession):
 
 def _excavation(i, dbsession):
     situations = dbsession.query(Situation).all()
+    addresses = dbsession.query(Address).all()
 
     contact = ContactPerson()
     contact.first_name = 'Leonard'
@@ -146,6 +147,7 @@ def _excavation(i, dbsession):
     for j in range(0, 3):
         excavation.situations.append(situations[(i + j) % len(situations)])
     excavation.contact_persons = [contact]
+    excavation.address_id = addresses[i % len(addresses)].id
     return excavation
 
 

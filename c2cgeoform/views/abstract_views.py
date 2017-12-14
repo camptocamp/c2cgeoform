@@ -203,7 +203,10 @@ class AbstractViews():
             request=self._request,
             dbsession=self._request.dbsession)
 
-        config = getattr(inspect(self._model).class_, '__c2cgeoform_config__', {})
+        config = getattr(
+            inspect(self._model).class_,
+            '__c2cgeoform_config__',
+            {})
 
         buttons = [Button(name='formsubmit', title=_('Submit'))]
         if config.get('duplicate', False):
@@ -258,16 +261,20 @@ class AbstractViews():
     def copy_members_if_duplicates(self, model, source):
         dest = model()
         insp = inspect(model)
+
         for prop in insp.attrs:
             if isinstance(prop, ColumnProperty):
                 if model_attr_info(prop.columns[0], 'c2cgeoform', 'duplicate'):
                     setattr(dest, prop.key, getattr(source, prop.key))
             if isinstance(prop, RelationshipProperty):
                 if model_attr_info(prop, 'c2cgeoform', 'duplicate'):
-                    duplicate = [self.copy_members_if_duplicates(
+                    if prop.cascade.delete:
+                        duplicate = [self.copy_members_if_duplicates(
                                             prop.mapper.class_,
                                             m)
                                  for m in getattr(source, prop.key)]
+                    else:
+                        duplicate = getattr(source, prop.key)
                     setattr(dest, prop.key, duplicate)
         return dest
 
