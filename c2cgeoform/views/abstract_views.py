@@ -293,15 +293,17 @@ class AbstractViews():
 
     def duplicate(self):
         src = self._get_object()
-
-        dest = self.copy_members_if_duplicates(self._model, src)
-
         form = self._form(
             action=self._request.route_url('c2cgeoform_item', id='new'))
+
+        with self._request.dbsession.no_autoflush:
+            dest = self.copy_members_if_duplicates(self._model, src)
+            dict_ = form.schema.dictify(dest)
+            self._request.dbsession.expunge_all()
+
         self._populate_widgets(form.schema)
-        rendered = form.render(
-            form.schema.dictify(dest),
-            request=self._request)
+        rendered = form.render(dict_, request=self._request)
+
         return {
             'form': form,
             'form_rendered': rendered,
