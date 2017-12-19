@@ -312,12 +312,14 @@ class AbstractViews():
 
     def save(self):
         obj = self._get_object()
+        form = self._form()
         try:
-            form = self._form()
             form_data = self._request.POST.items()
             obj_dict = form.validate(form_data)
             with self._request.dbsession.no_autoflush:
                 obj = form.schema.objectify(obj_dict, obj)
+
+            from sqlalchemy.exc import IntegrityError
             obj = self._request.dbsession.merge(obj)
             self._request.dbsession.flush()
             return HTTPFound(
@@ -335,6 +337,19 @@ class AbstractViews():
             return {
                 'form': form,
                 'form_rendered': rendered,
+                'deform_dependencies': form.get_widget_resources()
+            }
+        except IntegrityError as e:
+            from colander import Invalid
+            import re
+            col_key = re.search('Key \((.*?)\)', e.orig.pgerror).group(1)
+            col_err = Invalid(form.schema, "Duplicate database entry")
+            col_err[col_key] = "Duplicate database entry:  there's already an entry with this value in the database"
+            form.widget.handle_error(form, col_err)
+            vf = ValidationFailure(form, form.schema.serialize(obj_dict), col_err)
+            return {
+                'form': form,
+                'form_rendered': vf.render(),
                 'deform_dependencies': form.get_widget_resources()
             }
 
