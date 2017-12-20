@@ -203,24 +203,13 @@ class AbstractViews():
             request=self._request,
             dbsession=self._request.dbsession)
 
-        config = getattr(
-            inspect(self._model).class_,
-            '__c2cgeoform_config__',
-            {})
-
         buttons = [Button(name='formsubmit', title=_('Submit'))]
-        if config.get('duplicate', False):
-            buttons.append(Button(name='duplicate',
-                                  type='button',
-                                  title=_('Duplicate')))
+
         form = Form(
             schema,
             buttons=buttons,
             **kwargs
-            # renderer=renderer,
-            # action=self._request.route_url('c2cgeoform_item',))
             )
-        # _set_form_widget(form, geo_form_schema.schema_user, template)
         return form
 
     def _populate_widgets(self, node):
@@ -248,14 +237,22 @@ class AbstractViews():
         form = self._form()
         self._populate_widgets(form.schema)
         rendered = form.render(form.schema.dictify(obj), request=self._request)
-        return {
-            'form': form,
-            'form_rendered': rendered,
-            'deform_dependencies': form.get_widget_resources(),
-            'duplicate_url': self._request.route_url(
+
+        config = getattr(inspect(self._model).class_, '__c2cgeoform_config__', {})
+        duplicable = config.get('duplicate', False)
+        new = self._request.matchdict.get('id') == 'new'
+        if duplicable and not new:
+            duplicable_url = self._request.route_url(
                 'c2cgeoform_item_action',
                 id=self._request.matchdict.get('id'),
                 action='duplicate')
+        else:
+            duplicable_url = None
+
+        return {
+            'form': rendered,
+            'deform_dependencies': form.get_widget_resources(),
+            'duplicate_url': duplicable_url
         }
 
     def copy_members_if_duplicates(self, source):
@@ -302,8 +299,7 @@ class AbstractViews():
         rendered = form.render(dict_, request=self._request)
 
         return {
-            'form': form,
-            'form_rendered': rendered,
+            'form': rendered,
             'deform_dependencies': form.get_widget_resources()
         }
 
@@ -330,8 +326,7 @@ class AbstractViews():
                 e.cstruct,
                 request=self._request)
             return {
-                'form': form,
-                'form_rendered': rendered,
+                'form': rendered,
                 'deform_dependencies': form.get_widget_resources()
             }
 
