@@ -186,9 +186,7 @@ class Excavation(Base):
         secondary=situation_for_permission,
         order_by=Situation.name,
         cascade="save-update,merge,refresh-expire",
-        info={'colanderalchemy': {
-                    'exclude': True
-        }})
+        info={'colanderalchemy': {'exclude': True}})
 
     # by default a Deform sequence widget is used for relationship columns,
     # which, for example, allows to create new contact persons in a sub-form.
@@ -199,17 +197,22 @@ class Excavation(Base):
         info={'colanderalchemy': {
                 'title': _('Contact Persons')
         }})
-    location_district_id = \
-        Column(Integer,
-               ForeignKey('c2cgeoform_demo.district.id'),
-               info={'colanderalchemy': {
-                        'title': _('District'),
-                        'widget': RelationSelect2Widget(
-                                    District,
-                                    'id',
-                                    'name',
-                                    order_by='name',
-                                    default_value=('', _('- Select -')))}})
+    location_district_id = Column(
+        Integer,
+        ForeignKey('c2cgeoform_demo.district.id'),
+        info={
+            'colanderalchemy': {
+                'title': _('District'),
+                'widget': RelationSelect2Widget(
+                    District,
+                    'id',
+                    'name',
+                    order_by='name',
+                    default_value=('', _('- Select -'))
+                )
+            }
+        }
+    )
     # if the name for the options should be internationalized, one
     # can create columns like 'name_fr' and 'name_de' in the table
     # 'District'. then in the translation files, the column name
@@ -230,17 +233,22 @@ class Excavation(Base):
             'title': _('Town')
         }})
     # this is a search field to search for an address
-    address_id = Column(Integer,
-                        ForeignKey('c2cgeoform_demo.address.id'),
-                        info={'colanderalchemy': {
-                                'title': _('Address'),
-                                'widget': RelationSearchWidget(
-                                    url=lambda request:
-                                        request.route_url('addresses'),
-                                    model=Address,
-                                    min_length=1,
-                                    id_field='id',
-                                    label_field='label')}})
+    address_id = Column(
+        Integer,
+        ForeignKey('c2cgeoform_demo.address.id'),
+        info={
+            'colanderalchemy': {
+                'title': _('Address'),
+                'widget': RelationSearchWidget(
+                    url=lambda request: request.route_url('addresses'),
+                    model=Address,
+                    min_length=1,
+                    id_field='id',
+                    label_field='label'
+                )
+            }
+        }
+    )
     # to show a map for a geometry column, the column has to be defined as
     # follows.
     location_position = Column(

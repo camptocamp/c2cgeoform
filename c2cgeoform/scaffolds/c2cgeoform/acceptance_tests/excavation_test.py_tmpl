@@ -106,7 +106,7 @@ class TestExcavationViews():
         assert exc.reference_number == form['reference_number'].value
         assert exc.hash == form['hash'].value
         assert str(exc.id) == form.fields.get('id')[0].value
-        assert str(exc.request_date) == resp.html.find('input', attrs={'name': 'date'}).attrs['value']
+        assert str(exc.request_date) == form['date'].value
         assert exc.description == form["description"].value
         assert exc.motif == form["motif"].value
         assert exc.contact_persons[0].first_name == form["first_name"].value
@@ -190,7 +190,7 @@ class TestExcavationViews():
         assert '' == form['reference_number'].value
         assert '' == form['hash'].value
         assert '' == form.fields.get('id')[0].value
-        assert '' == resp.html.find('input', attrs={'name': 'date'}).attrs['value']
+        assert '' == form['date'].value
         assert '' == form["description"].value
         assert '' == form["motif"].value
         assert form.fields.get('first_name') is None # no contact_persons
@@ -280,7 +280,7 @@ class TestExcavationViews():
         assert '' == form['hash'].value
         assert '' == form.fields.get('id')[0].value
         assert None == form["validated"].value
-        assert str(exc.request_date) == resp.html.find('input', attrs={'name': 'date'}).attrs['value']
+        assert str(exc.request_date) == form['date'].value
         assert exc.description == form["description"].value
         assert exc.motif == form["motif"].value
         assert str(exc.location_district_id) == form["location_district_id"].value

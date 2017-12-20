@@ -258,9 +258,9 @@ class AbstractViews():
                 action='duplicate')
         }
 
-    def copy_members_if_duplicates(self, model, source):
-        dest = model()
-        insp = inspect(model)
+    def copy_members_if_duplicates(self, source):
+        dest = source.__class__()
+        insp = inspect(source.__class__)
 
         for prop in insp.attrs:
             if isinstance(prop, ColumnProperty):
@@ -279,12 +279,9 @@ class AbstractViews():
                     if prop.cascade.delete:
                         if not prop.uselist:
                             duplicate = self.copy_members_if_duplicates(
-                                                prop.mapper.class_,
                                                 getattr(source, prop.key))
                         else:
-                            duplicate = [self.copy_members_if_duplicates(
-                                                prop.mapper.class_,
-                                                m)
+                            duplicate = [self.copy_members_if_duplicates(m)
                                          for m in getattr(source, prop.key)]
                     else:
                         duplicate = getattr(source, prop.key)
@@ -297,7 +294,7 @@ class AbstractViews():
             action=self._request.route_url('c2cgeoform_item', id='new'))
 
         with self._request.dbsession.no_autoflush:
-            dest = self.copy_members_if_duplicates(self._model, src)
+            dest = self.copy_members_if_duplicates(src)
             dict_ = form.schema.dictify(dest)
             self._request.dbsession.expunge_all()
 
