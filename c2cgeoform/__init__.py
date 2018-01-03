@@ -58,7 +58,7 @@ def _set_widget_template_path(root_package):
 
     node_modules_root = '{}:node_modules'.format(root_package)
 
-    registry = widget.ResourceRegistry()
+    registry = widget.default_resource_registry
     registry.set_js_resources(
         'openlayers', '3.0.0',
         '{}/openlayers/dist/ol.js'.format(node_modules_root))
@@ -81,4 +81,3 @@ def _set_widget_template_path(root_package):
     registry.set_js_resources(
         'c2cgeoform.deform_search', None,
         'c2cgeoform:static/deform_search/search.js')
-    Form.set_default_resource_registry(registry)
