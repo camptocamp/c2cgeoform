@@ -255,8 +255,9 @@ class AbstractViews():
             'duplicate_url': duplicable_url
         }
 
-    def copy_members_if_duplicates(self, source):
-        dest = source.__class__()
+    def copy_members_if_duplicates(self, source, dest=None):
+        if dest is None:
+            dest = source.__class__()
         insp = inspect(source.__class__)
 
         for prop in insp.attrs:
