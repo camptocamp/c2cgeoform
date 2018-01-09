@@ -1,10 +1,8 @@
 <ul class="nav nav-pills nav-stacked c2cgeoform-item-actions">
-  <li class="c2cgeoform-item-action">
-    <a class="btn btn-default" href="{{request.route_url('c2cgeoform_index')}}">{{_("Back to overview")}}</a>
-  </li>
-  {% if duplicate_url %}
-  <li class="c2cgeoform-item-action">
-    <a class="btn btn-default" href="{{ duplicate_url }}">{{_("Duplicate")}}</a>
-  </li>
-  {% endif %}
+  {% for item in actions %}
+	  <li class="c2cgeoform-item-action">
+	    <a class="btn btn-default" href="{{ item['url'] }}">{{item['label']}}</a>
+	  </li>
+  {% endfor %}
+  
 </ul>

@@ -232,6 +232,9 @@ class AbstractViews():
             raise HTTPNotFound()
         return obj
 
+    def _get_back_to_overview_actions(self):
+        return [{'url': self._request.route_url('c2cgeoform_index'), 'label': _('Back to overview')}]
+
     def edit(self):
         obj = self._get_object()
         form = self._form()
@@ -241,22 +244,25 @@ class AbstractViews():
         config = getattr(inspect(self._model).class_, '__c2cgeoform_config__', {})
         duplicable = config.get('duplicate', False)
         new = self._request.matchdict.get('id') == 'new'
+        actions = self._get_back_to_overview_actions()
         if duplicable and not new:
             duplicable_url = self._request.route_url(
                 'c2cgeoform_item_action',
                 id=self._request.matchdict.get('id'),
                 action='duplicate')
+            actions.append({'url': duplicable_url, 'label': _('Duplicate')})
         else:
             duplicable_url = None
 
         return {
             'form': rendered,
             'deform_dependencies': form.get_widget_resources(),
-            'duplicate_url': duplicable_url
+            'actions': actions
         }
 
-    def copy_members_if_duplicates(self, source):
-        dest = source.__class__()
+    def copy_members_if_duplicates(self, source, dest=None):
+        if dest is None:
+            dest = source.__class__()
         insp = inspect(source.__class__)
 
         for prop in insp.attrs:
@@ -300,7 +306,8 @@ class AbstractViews():
 
         return {
             'form': rendered,
-            'deform_dependencies': form.get_widget_resources()
+            'deform_dependencies': form.get_widget_resources(),
+            'actions': self._get_back_to_overview_actions()
         }
 
     def save(self):
@@ -327,7 +334,8 @@ class AbstractViews():
                 request=self._request)
             return {
                 'form': rendered,
-                'deform_dependencies': form.get_widget_resources()
+                'deform_dependencies': form.get_widget_resources(),
+                'actions': self._get_back_to_overview_actions()
             }
 
     def delete(self):
