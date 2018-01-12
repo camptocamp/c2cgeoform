@@ -221,10 +221,13 @@ class AbstractViews():
         for child in node:
             self._populate_widgets(child)
 
+    def _is_new(self):
+        return self._request.matchdict.get('id') == "new"
+
     def _get_object(self):
-        pk = self._request.matchdict.get('id')
-        if pk == "new":
+        if self._is_new():
             return self._model()
+        pk = self._request.matchdict.get('id')
         obj = self._request.dbsession.query(self._model). \
             filter(getattr(self._model, self._id_field) == pk). \
             one_or_none()
