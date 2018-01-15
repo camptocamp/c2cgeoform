@@ -302,7 +302,8 @@ class AbstractViews():
         with self._request.dbsession.no_autoflush:
             dest = self.copy_members_if_duplicates(src)
             dict_ = form.schema.dictify(dest)
-            self._request.dbsession.expunge_all()
+            if dest in self._request.dbsession:
+                self._request.dbsession.expunge(dest)
 
         self._populate_widgets(form.schema)
         rendered = form.render(dict_, request=self._request)
