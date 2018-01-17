@@ -1,7 +1,9 @@
+from functools import partial
 import colander
 from colanderalchemy import SQLAlchemySchemaNode
 from sqlalchemy import and_, or_
 from sqlalchemy.inspection import inspect
+from c2cgeoform import _
 
 
 @colander.deferred
@@ -14,12 +16,27 @@ def deferred_dbsession(node, kw):
     return kw.get('dbsession')
 
 
+def unique_validator(mapper, column, id_column, node, value):
+    dbsession = node.bindings['dbsession']
+    _id = node.bindings['request'].matchdict['id']
+    _id = _id if _id != 'new' else None
+    if dbsession.query(mapper).filter(column == value, id_column != _id).count() != 0:
+        raise colander.Invalid(node, _('{} is already used.').format(value))
+
+
 class GeoFormSchemaNode(SQLAlchemySchemaNode):
 
     def __init__(self, *args, **kw):
         super().__init__(*args, **kw)
         self.request = deferred_request
         self.dbsession = deferred_dbsession
+
+    def add_unique_validator(self, column, column_id):
+        validator = partial(unique_validator, self.class_, column, column_id)
+        if self[column.name].validator is None:
+            self[column.name].validator = validator
+        else:
+            self[column.name].validator = colander.All(self[column.name].validator, validator)
 
 
 class GeoFormManyToManySchemaNode(GeoFormSchemaNode):

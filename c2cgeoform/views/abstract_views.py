@@ -9,8 +9,7 @@ from sqlalchemy import desc, or_, types
 from sqlalchemy.exc import DBAPIError
 from sqlalchemy.inspection import inspect
 from sqlalchemy.orm.properties import ColumnProperty, RelationshipProperty
-from translationstring import TranslationStringFactory
-_ = TranslationStringFactory('c2cgeoform')
+from c2cgeoform import _
 
 logger = logging.getLogger(__name__)
 
