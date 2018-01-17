@@ -33,6 +33,7 @@ base_schema.add_before(
         validator=manytomany_validator
     )
 )
+base_schema.add_unique_validator(Excavation.reference_number, Excavation.hash)
 
 
 @view_defaults(match_param='table=excavations')

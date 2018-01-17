@@ -4,8 +4,11 @@ from pyramid.threadlocal import get_current_request
 from pyramid.events import BeforeRender, NewRequest
 from pyramid.config import Configurator
 from deform import Form, widget
-
+from translationstring import TranslationStringFactory
 from .subscribers import add_renderer_globals, add_localizer
+
+
+_ = TranslationStringFactory('c2cgeoform')
 
 
 """ Default search paths for the form templates.
