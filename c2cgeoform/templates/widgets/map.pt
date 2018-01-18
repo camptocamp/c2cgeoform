@@ -1,3 +1,4 @@
+<?python import json ?>
 <span tal:define="name name|field.name;
                   css_class css_class|field.widget.css_class;
                   oid oid|field.oid;
@@ -23,12 +24,6 @@
           var controlsDefinition = ${controls_definition};
           var geoJson = '${cstruct}';
 
-          /** Default center and zoom when no geometry is given. */
-          var defaultCenter = [829170, 5933942];
-          var defaultZoom = 7;
-          /** Minimum zoom when a geometry is given. */
-          var zoomForGeometry = 14;
-
           /** Translations */
           c2cgeoform.i18n = {};
           c2cgeoform.i18n['zoomInTipLabel'] = '${_('Zoom In')}';
@@ -43,34 +38,28 @@
           var source = new ol.source.Vector();
           var vector = new ol.layer.Vector({
             source: source,
-            style: new ol.style.Style({
-              fill: new ol.style.Fill({
-                color: 'rgba(255, 255, 255, 0.2)'
-              }),
-              stroke: new ol.style.Stroke({
-                color: '#ffcc33',
-                width: 2
-              }),
-              image: new ol.style.Circle({
-                radius: 7,
+            style: [
+              new ol.style.Style({
+                stroke: new ol.style.Stroke({
+                  color: 'blue',
+                  width: 3
+                }),
                 fill: new ol.style.Fill({
-                  color: '#ffcc33'
+                  color: 'rgba(0, 0, 255, 0.1)'
                 })
               })
-            })
+            ]
           });
 
           var map = new ol.Map({
             target: 'map_'+oid,
             layers: [
-              new ol.layer.Tile({
-                source: new ol.source.OSM()
-              }),
+              ${structure: field.widget.base_layer},
               vector
             ],
             view: new ol.View({
-              center: defaultCenter,
-              zoom: defaultZoom
+              center: ${structure: json.dumps(field.widget.center) },
+              zoom: ${structure: json.dumps(field.widget.zoom) }
             }),
             controls: ol.control.defaults({
               zoomOptions: {
@@ -84,7 +73,8 @@
             })
           });
 
-          c2cgeoform.addFeature(map, source, geoJson, zoomForGeometry, controlsDefinition);
+          var fit_max_zoom = ${structure: json.dumps(field.widget.fit_max_zoom) };
+          c2cgeoform.addFeature(map, source, geoJson, fit_max_zoom, controlsDefinition);
           c2cgeoform.initializeToolbar(map, source, {
             controlsDefinition: controlsDefinition,
             updateField: function(newGeoJson) {

@@ -28,15 +28,38 @@ class MapWidget(Widget):
                 'colanderalchemy': {
                     'typ': colander_ext.Geometry(
                         'POLYGON', srid=4326, map_srid=3857),
-                    'widget': deform_ext.MapWidget()
+                    'widget': deform_ext.MapWidget(
+                        base_layer='new ol.layer.Tile({ source: new ol.source.OSM() })',
+                        center=[829170, 5933942],
+                        zoom=7,
+                        fit_max_zoom=14
+                    )
                 }})
 
     To customize the map, the template file `map.pt` has to be overwritten.
 
+    **Attributes/Arguments**
+
+    base_layer (str, optional):
+        Javascript code returning the map base layer.
+
+    center ([x, y], optional):
+        Initial center when no geometry is given.
+
+    zoom (int, optional):
+        Initial zoom when no geometry is given.
+
+    fit_max_zoom (int, optional):
+        Maximum zoom when fitting to given geometry.
     """
     requirements = (
         ('openlayers', '3.0.0'),
         ('c2cgeoform.deform_map', None))
+
+    base_layer = 'new ol.layer.Tile({ source: new ol.source.OSM() })'
+    center = [829170, 5933942]
+    zoom = 7
+    fit_max_zoom = 14
 
     def serialize(self, field, cstruct, readonly=False, **kw):
         if cstruct is null:
