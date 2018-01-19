@@ -1,5 +1,5 @@
 
-from colander import (null, Invalid)
+from colander import (null, Invalid, SchemaType)
 
 from geoalchemy2 import WKBElement
 from geoalchemy2.shape import to_shape, from_shape
@@ -12,7 +12,7 @@ from io import StringIO
 import os
 
 
-class Geometry(object):
+class Geometry(SchemaType):
     """ A Colander type meant to be used with GeoAlchemy 2 geometry columns.
 
     Example usage
@@ -93,11 +93,8 @@ class Geometry(object):
 
         return from_shape(geometry, srid=self.srid)
 
-    def cstruct_children(self, node, cstruct):
-        return []
 
-
-class BinaryData(object):
+class BinaryData(SchemaType):
     """ A Colander type meant to be used with ``LargeBinary`` columns.
 
     Example usage
@@ -146,6 +143,3 @@ class BinaryData(object):
         # set the file position back to 0, so that the file can be read again
         cstruct.seek(0, os.SEEK_SET)
         return byte_array
-
-    def cstruct_children(self, node, cstruct):
-        return []

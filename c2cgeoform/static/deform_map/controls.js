@@ -145,7 +145,7 @@ c2cgeoform.DrawPointControl.prototype.createInteractions = function(source) {
     source: source,
     type: 'Point'
   });
-  drawInteraction.on('drawend', this.callback);
+  drawInteraction.on('drawstart', this.callback);
   return [drawInteraction];
 };
 
@@ -163,7 +163,7 @@ c2cgeoform.DrawLineControl.prototype.createInteractions = function(source) {
     source: source,
     type: 'LineString'
   });
-  drawInteraction.on('drawend', this.callback);
+  drawInteraction.on('drawstart', this.callback);
   return [drawInteraction];
 };
 
@@ -181,7 +181,7 @@ c2cgeoform.DrawPolygonControl.prototype.createInteractions = function(source) {
     source: source,
     type: 'Polygon'
   });
-  drawInteraction.on('drawend', this.callback);
+  drawInteraction.on('drawstart', this.callback);
   return [drawInteraction];
 };
 
@@ -230,8 +230,10 @@ c2cgeoform.zoomToGeometry_ = function(map, geometry, zoomForGeometry) {
   zoomForGeometry = (zoomForGeometry === undefined) ?
     map.get('zoomForGeometry') : zoomForGeometry;
 
-  map.getView().fit(geometry, map.getSize(),
-    {maxZoom: zoomForGeometry});
+  map.getView().fit(geometry, {
+    size: map.getSize(),
+    maxZoom: zoomForGeometry
+  });
 
   map.set('geometry', geometry);
   map.set('zoomForGeometry', zoomForGeometry);
@@ -361,7 +363,6 @@ c2cgeoform.initializeToolbar = function(map, source, options) {
       // if the geometry type is not a collection type (like MultiPoint),
       // make sure that there is always only one geometry
       source.clear();
-      source.addFeature(event.feature);
     }
   };
 
