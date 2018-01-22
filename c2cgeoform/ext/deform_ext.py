@@ -174,7 +174,7 @@ class RelationMultiSelectMixin(RelationSelectMixin):
                 return subfield
 
 
-class RelationSelectWidget(RelationMultiSelectMixin, SelectWidget):
+class RelationSelectWidget(SelectWidget, RelationMultiSelectMixin):
     """
     Extension of the widget ````deform.widget.SelectWidget`` which loads the
     values from the database using a SQLAlchemy model.
@@ -276,7 +276,7 @@ class RelationSelectWidget(RelationMultiSelectMixin, SelectWidget):
         return SelectWidget.serialize(self, field, cstruct, **kw)
 
 
-class RelationSelect2Widget(RelationMultiSelectMixin, Select2Widget):
+class RelationSelect2Widget(Select2Widget, RelationMultiSelectMixin):
     """
     Extension of the widget ````deform.widget.Select2Widget`` which loads the
     values from the database using a SQLAlchemy model.
@@ -378,8 +378,8 @@ class RelationSelect2Widget(RelationMultiSelectMixin, Select2Widget):
         return Select2Widget.serialize(self, field, cstruct, **kw)
 
 
-class RelationCheckBoxListWidget(RelationMultiSelectMixin,
-                                 CheckboxChoiceWidget):
+class RelationCheckBoxListWidget(CheckboxChoiceWidget,
+                                 RelationMultiSelectMixin):
     """
     Extension of the widget ````deform.widget.CheckboxChoiceWidget`` which
     loads the values from the database using a SQLAlchemy model.
@@ -445,7 +445,7 @@ class RelationCheckBoxListWidget(RelationMultiSelectMixin,
         return CheckboxChoiceWidget.serialize(self, field, cstruct, **kw)
 
 
-class RelationRadioChoiceWidget(RelationSelectMixin, RadioChoiceWidget):
+class RelationRadioChoiceWidget(RadioChoiceWidget, RelationSelectMixin):
     """
     Extension of the widget ````deform.widget.RadioChoiceWidget`` which loads
     the values from the database using a SQLAlchemy model.
