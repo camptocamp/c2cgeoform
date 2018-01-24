@@ -19,6 +19,10 @@
              value="${value}"
              id="${oid}-${repeat.choice.index}"/>
       ${title}
+      <a class="" tal:condition="hasattr(field.widget, 'edit_url')"
+         href="${ field.widget.edit_url(field.schema.bindings['request'], value) }">
+         <span class="glyphicon glyphicon-pencil"></span>
+      </a>
     </label>
   </div>
   ${field.end_sequence()}
