@@ -399,7 +399,12 @@ class RelationCheckBoxListWidget(RelationMultiSelectMixin,
                         Situation,
                         'id',
                         'name',
-                        order_by='name'
+                        order_by='name',
+                        edit_url=lambda request, value: request.route_url(
+                                'c2cgeoform_item',
+                                table='situations',
+                                id=value
+                                )
                     ),
                     'includes': ['id'],
                     'validator': manytomany_validator
@@ -423,7 +428,9 @@ class RelationCheckBoxListWidget(RelationMultiSelectMixin,
         The property of the model that is used for the ``order_by`` clause of
         the SQL query.
         Default: ``None``.
-
+    edit_url (optionnal)
+        a function taking request and value as parameter and returning
+        an url to the correponding resource.
     For further attributes, please refer to the documentation of
     ``deform.widget.Select2Widget`` in the deform documentation:
     <http://deform.readthedocs.org/en/latest/api.html>
