@@ -1,6 +1,16 @@
 <div class="row">
   <div class="col-md-10">
     {{form|safe}}
+  <script>
+  $('#deform').data('serialize',$('#deform').serialize()); // On load save form current state
+  $(window).bind('beforeunload', function(e){
+    if($('#deform').serialize()!=$('#deform').data('serialize')){
+      return true;
+    }else{
+      e=null;
+    }
+  });
+  </script>
   </div>
   <div class="col-md-2">
     {% include 'c2cgeoform:/templates/item_actions.jinja2' %}
