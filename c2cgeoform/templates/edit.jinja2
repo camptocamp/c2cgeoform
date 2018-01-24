@@ -2,13 +2,18 @@
   <div class="col-md-10">
     {{form|safe}}
   <script>
-  $('#deform').data('serialize',$('#deform').serialize()); // On load save form current state
-  $(window).bind('beforeunload', function(e){
-    if($('#deform').serialize()!=$('#deform').data('serialize')){
-      return true;
-    }else{
-      e=null;
-    }
+  $(function () {
+    $('#deform').data('serialize', $('#deform').serialize()); // On load save form current state
+    $(window).bind('beforeunload', function(e){
+      if($('#deform').serialize() != $('#deform').data('serialize')){
+        return true;
+      } else {
+        e = null;
+      }
+    });
+    $('button[type=submit]').click(function (e) {
+      $(window).off('beforeunload')
+    });
   });
   </script>
   </div>
