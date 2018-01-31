@@ -7,7 +7,7 @@ from webob.multidict import MultiDict
 
 from c2cgeoform.models import (DBSession, Base)
 from c2cgeoform.settings import apply_local_settings
-from c2cgeoform import default_search_paths
+from c2cgeoform import init_deform
 
 
 class DatabaseTestCase(unittest.TestCase):
@@ -46,8 +46,7 @@ class DatabaseTestCase(unittest.TestCase):
         config.add_route('form', '/{schema}/form/')
         config.add_route('view_user', '/{schema}/form/{hash}')
         config.add_route('confirm', '/{schema}/form/confirm')
-        from deform import Form
-        Form.set_zpt_renderer(default_search_paths)
+        init_deform('c2cgeoform')
 
     def tearDown(self):  # noqa
         self.cleanup()

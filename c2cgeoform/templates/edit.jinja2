@@ -1,23 +1,16 @@
-<div class="row">
-  <div class="col-md-10">
-    {{form|safe}}
-  <script>
-  $(function () {
-    $('#deform').data('serialize', $('#deform').serialize()); // On load save form current state
-    $(window).bind('beforeunload', function(e){
-      if($('#deform').serialize() != $('#deform').data('serialize')){
-        return true;
-      } else {
-        e = null;
-      }
-    });
-    $('button[type=submit]').click(function (e) {
-      $(window).off('beforeunload')
-    });
+{{form|safe}}
+<script>
+$(function () {
+  $('#deform').data('serialize', $('#deform').serialize()); // On load save form current state
+  $(window).bind('beforeunload', function(e){
+    if($('#deform').serialize() != $('#deform').data('serialize')){
+      return true;
+    } else {
+      e = null;
+    }
   });
-  </script>
-  </div>
-  <div class="col-md-2">
-    {% include 'c2cgeoform:/templates/item_actions.jinja2' %}
-  </div>
-</div>
+  $('button[type=submit]').click(function (e) {
+    $(window).off('beforeunload')
+  });
+});
+</script>

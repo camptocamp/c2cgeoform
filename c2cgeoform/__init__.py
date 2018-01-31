@@ -42,7 +42,7 @@ def includeme(config):
     config.add_view('c2cgeoform.views.set_locale_cookie', route_name='locale')
     config.add_translation_dirs('colander:locale', 'deform:locale', 'locale')
 
-    _set_widget_template_path(config.root_package.__name__)
+    init_deform(config.root_package.__name__)
 
     config.add_subscriber(add_renderer_globals, BeforeRender)
     config.add_subscriber(add_localizer, NewRequest)
@@ -56,7 +56,7 @@ def translator(term):
         return get_localizer(request).translate(term)
 
 
-def _set_widget_template_path(root_package):
+def init_deform(root_package):
     Form.set_zpt_renderer(default_search_paths, translator=translator)
 
     node_modules_root = '{}:node_modules'.format(root_package)
@@ -84,3 +84,6 @@ def _set_widget_template_path(root_package):
     registry.set_js_resources(
         'c2cgeoform.deform_search', None,
         'c2cgeoform:static/deform_search/search.js')
+
+    widget.MappingWidget.fields_template = 'mapping_fields'
+    widget.FormWidget.fields_template = 'mapping_fields'
