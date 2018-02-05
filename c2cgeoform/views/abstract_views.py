@@ -234,32 +234,31 @@ class AbstractViews():
             raise HTTPNotFound()
         return obj
 
-    def _get_back_to_overview_actions(self):
-        return [{'url': self._request.route_url('c2cgeoform_index'), 'label': _('Back to overview')}]
+    def _model_config(self):
+        return getattr(inspect(self._model).class_, '__c2cgeoform_config__', {})
+
+    def _item_actions(self):
+        actions = []
+        if not self._is_new() and self._model_config().get('duplicate', False):
+            actions.append({
+                'name': 'duplicate',
+                'label': _('Duplicate'),
+                'url': self._request.route_url(
+                    'c2cgeoform_item_action',
+                    id=self._request.matchdict.get('id'),
+                    action='duplicate')})
+        return actions
 
     def edit(self):
         obj = self._get_object()
         form = self._form()
         self._populate_widgets(form.schema)
-        rendered = form.render(form.schema.dictify(obj), request=self._request)
-
-        config = getattr(inspect(self._model).class_, '__c2cgeoform_config__', {})
-        duplicable = config.get('duplicate', False)
-        new = self._request.matchdict.get('id') == 'new'
-        actions = self._get_back_to_overview_actions()
-        if duplicable and not new:
-            duplicable_url = self._request.route_url(
-                'c2cgeoform_item_action',
-                id=self._request.matchdict.get('id'),
-                action='duplicate')
-            actions.append({'url': duplicable_url, 'label': _('Duplicate')})
-        else:
-            duplicable_url = None
-
+        rendered = form.render(form.schema.dictify(obj),
+                               request=self._request,
+                               actions=self._item_actions())
         return {
             'form': rendered,
-            'deform_dependencies': form.get_widget_resources(),
-            'actions': actions
+            'deform_dependencies': form.get_widget_resources()
         }
 
     def copy_members_if_duplicates(self, source, dest=None):
@@ -305,12 +304,13 @@ class AbstractViews():
                 self._request.dbsession.expunge(dest)
 
         self._populate_widgets(form.schema)
-        rendered = form.render(dict_, request=self._request)
+        rendered = form.render(dict_,
+                               request=self._request,
+                               actions=self._item_actions())
 
         return {
             'form': rendered,
-            'deform_dependencies': form.get_widget_resources(),
-            'actions': self._get_back_to_overview_actions()
+            'deform_dependencies': form.get_widget_resources()
         }
 
     def save(self):
@@ -334,11 +334,11 @@ class AbstractViews():
             rendered = e.field.widget.serialize(
                 e.field,
                 e.cstruct,
-                request=self._request)
+                request=self._request,
+                actions=self._item_actions())
             return {
                 'form': rendered,
-                'deform_dependencies': form.get_widget_resources(),
-                'actions': self._get_back_to_overview_actions()
+                'deform_dependencies': form.get_widget_resources()
             }
 
     def delete(self):
