@@ -67,7 +67,7 @@ li.grid-row-action {
 /*
  * Form
  */
-.form-panel .panel-footer {
+.form-panel > .panel-footer {
   position:sticky;
   bottom: 0;
 }
