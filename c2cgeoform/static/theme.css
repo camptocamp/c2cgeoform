@@ -38,25 +38,11 @@
 #grid {
   table-layout: auto;
 }
-.table>tbody>tr>td,
-.table>tbody>tr>th,
-.table>tfoot>tr>td,
-.table>tfoot>tr>th,
-.table>thead>tr>td,
-.table>thead>tr>th {
-  vertical-align: middle;
+.bootstrap-table {
+  white-space: nowrap;
 }
-ul.grid-row-actions {
-  padding: 0;
-  margin: 0;
-}
-li.grid-row-action {
-  display: inline-block;
-  margin-right: 5px;
-}
-/* Fix actions dropdown not showing */
-.bootgrid-table td.actions {
-  overflow: visible
+.bootstrap-table .fixed-table-toolbar .dropdown-menu {
+  min-width: 200px;
 }
 
 /*

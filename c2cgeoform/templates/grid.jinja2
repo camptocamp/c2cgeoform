@@ -1,24 +1,12 @@
 <div class="list-grid">
 
-  <table id="grid" data-toggle="bootgrid" class="table table-condensed table-hover table-striped">
-    <thead>
-      <tr>
-        <th data-column-id="_id_"
-            data-searchable="false"
-            data-sortable="false"
-            data-css-class="actions"
-            data-header-css-class="actions"
-            data-visible-in-selection="false"
-            data-formatter="actions"></th>
-        {% for field in list_fields %}
-        <th data-column-id="{{field.id()}}"
-            data-sortable="{{'true' if field.sortable() else 'false'}}"
-            data-css-class="{{field.id()}}"
-            data-visible="{{'true' if field.visible() else 'false'}}">{{field.label()}}</th>
-        {% endfor %}
-      </tr>
-    </thead>
-    <tbody></tbody>
+  <div id="toolbar">
+    <a class="btn btn-primary btn-new"
+       href="{{request.route_url('c2cgeoform_item', action='edit', id='new')}}"
+       >{{_('New')}}</a>
+  </div>
+
+  <table id="grid" class="table table-condensed table-hover table-striped">
   </table>
 
   <script type="text/javascript">
@@ -26,93 +14,67 @@
 
     const namespace = '{{ request.registry.package_name }}';
 
-    /*
-    const action_confirmation_template = '\
-      <a tal:condition="action.confirmation()"
-            class="btn btn-default c2cgeoform-item-action action-confirmation ${action.name()} ${action.css_class()}"
-            href="#"
-            data-url="${action.url()}"
-            data-confirmation="${action.confirmation()}">
-            <span tal:omit-tag="not action.icon()" class="${action.icon()}"></span>
-            ${action.label()}</a>
-    */
-
-    $('#grid').on("initialize.rs.jquery.bootgrid", function(e) {
-      var instance = $(this).data('.rs.jquery.bootgrid');
-      instance.rowCount = parseInt(localStorage.getItem('rowCount.' + namespace)) || instance.rowCount;
-    });
-
-    $('#grid').bootgrid({
-      ajax: true,
-      ajaxSettings: {
-        method: "GET"
-      },
-      multiSort: true,
+    $('#grid').bootstrapTable({
+      height: $(window).height() - $('nav').height() - 30,
       url: "{{request.route_url('c2cgeoform_grid')}}",
-      rowCount: [10, 15, 20, 25, 50, -1],
-      labels: {
-          all: '{{_('All')}}',
-          infos: '{{_('Showing ((ctx.start)) to ((ctx.end)) of ((ctx.total)) entries')}}'.replace(/\(\(/g, '{{ '{{' }}').replace(/\)\)/g, '{{ '}}' }}'),
-          loading: '{{_('Loading...')}}',
-          noResults: '{{_('No results found!')}}',
-          refresh: '{{_('Refresh')}}',
-          search: '{{_('Search')}}'
-      },
-      templates: {
-        header: {% raw %}"\
-          <div id=\"{{ctx.id}}\" class=\"{{css.header}}\"><div class=\"row\">\
-          <div class=\"col-sm-2\">"{% endraw %} + '\
-            <a class="btn btn-primary btn-new" href="{{request.route_url('c2cgeoform_item', action='edit', id='new')}}">{{_('New')}}</a>\
-          ' + {% raw %}"</div>\
-          <div class=\"col-sm-10 actionBar\">\
-          <p class=\"{{css.search}}\"></p>\
-          <p class=\"{{css.actions}}\"></p>\
-          </div></div></div>"{% endraw %}
-      },
-      formatters: {
-          "actions": function(column, row) {
-              var content = '\
-                <div class="btn-group">\
-                  <button type="button" class="btn btn-xs btn-default dropdown-toggle" data-toggle="dropdown" data-target="item-' + row._id_ + '-actions" aria-haspopup="true" aria-expanded="false">\
-                    <span class="caret"></span>\
-                  </button>\
-                  <ul id="item-' + row._id_ + '-actions" class="dropdown-menu">';
 
-              row['actions'].forEach(function(action) {
-                content += '\
-                  <li>\
-                    <a class="c2cgeoform-item-action ' + action['name'] + ' ' + action['css_class'] + '"\
-                       href="' + action['url'] + '">\
-                       <span class="' + action['icon'] + '"></span>\
-                       ' + action['label'] + '\
-                    </a>\
-                  </li>';
-              });
+      toolbar: "#toolbar",
+      search: true,
+      showRefresh: true,
+      showColumns: true,
 
+      pagination: true,
+      sidePagination: 'server',
+      pageSize: 25,
+      pageList: [10, 25, 50, 100, 'All'],
+
+      uniqueId: '_id_',
+      columns: [
+        {
+          field: 'actions',
+          searchable: false,
+          sortable: false,
+          switchable: false,
+          class: 'actions',
+          formatter: function(value, row, index, field) {
+            var content = '\
+              <div class="btn-group">\
+                <button type="button" class="btn btn-xs btn-default dropdown-toggle" data-toggle="dropdown" data-target="item-' + row._id_ + '-actions" aria-haspopup="true" aria-expanded="false">\
+                  <span class="caret"></span>\
+                </button>\
+                <ul id="item-' + row._id_ + '-actions" class="dropdown-menu">';
+
+            row['actions'].forEach(function(action) {
               content += '\
-                  </ul>\
-                </div>';
+                <li>\
+                  <a class="c2cgeoform-item-action ' + action['name'] + ' ' + action['css_class'] + '"\
+                     href="' + action['url'] + '">\
+                     <span class="' + action['icon'] + '"></span>\
+                     ' + action['label'] + '\
+                  </a>\
+                </li>';
+            });
 
-              return content
+            content += '\
+                </ul>\
+              </div>';
+
+            return content
+            return value;
           }
-      }
-    }).on("loaded.rs.jquery.bootgrid", function(e, appendedRows) {
-      localStorage.setItem('rowCount.' + namespace, $(this).bootgrid('getRowCount'));
-
-      $('.dropdown-toggle').dropdown();
-
-      $("a.btn-delete", this).on('click', function() {
-        if (window.confirm('{{_("Are your sure ?")}}')) {
-          $.ajax({
-              url: $(this).attr("data-url"),
-              type: 'DELETE',
-              success: function(result) {
-                  location.reload();
-              }
-          });
-        }
-      });
-
+        },
+        {% for field in list_fields %}
+        {
+          field: '{{field.id()}}',
+          title: '{{field.label()}}',
+          sortable: '{{'true' if field.sortable() else 'false'}}',
+          class: '{{field.id()}}',
+          formatter: function(value, row, index, field) {
+            return value;
+          }
+        },
+        {% endfor %}
+      ]
     });
 
   });

@@ -172,34 +172,23 @@ class AbstractViews():
         """
         try:
             params = self._request.params
-            current_page = int(params.get('current'))
-            row_count = int(params.get('rowCount'))
-            search_phrase = params.get('searchPhrase', '').strip()
-            sort_columns = self._sort_columns()
+            offset = int(params.get('offset'))
+            limit = int(params.get('limit'))
+            search = params.get('search', '').strip()
+            sort = params.get('sort', '')
+            order = params.get('order', '')
 
             query = self._base_query()
-            query = self._filter_query(query, search_phrase)
-            query = self._sort_query(query, sort_columns)
+            query = self._filter_query(query, search)
+            query = self._sort_query(query, sort, order)
 
             return {
-                "current": current_page,
-                "rowCount": row_count,
-                "rows": self._grid_rows(query, current_page, row_count),
+                "rows": self._grid_rows(query, offset, limit),
                 "total": query.count()
             }
         except DBAPIError as e:
             logger.error(str(e), exc_info=True)
             return Response(db_err_msg, content_type='text/plain', status=500)
-
-    def _sort_columns(self):
-        sort_columns = []
-        for key, value in self._request.params.items():
-            # Bootgrid sends the sort fields as "sort[col_name]: asc"
-            if key.startswith('sort'):
-                col_name = key.replace('sort[', '').replace(']', '')
-                sort_order = 'asc' if value == 'asc' else 'desc'
-                sort_columns.append((col_name, sort_order))
-        return sort_columns
 
     def _base_query(self):
         return self._request.dbsession.query(self._model)
@@ -220,27 +209,26 @@ class AbstractViews():
 
         return query
 
-    def _sort_query(self, query, sort_columns):
+    def _sort_query(self, query, sort, order):
         sorts = []
-        for col_name, sort_order in sort_columns:
-            for field in self._list_fields:
-                if field.id() == col_name:
-                    sort = field.sort_column()
-                    if sort_order == 'desc':
-                        sort = desc(sort)
-                    sorts.append(sort)
-        # Sort on primary key as subqueryload with limit need deterministic
-        # order
+        for field in self._list_fields:
+            if field.id() == sort:
+                sort = field.sort_column()
+                if order == 'desc':
+                    sort = desc(sort)
+                sorts.append(sort)
+
+        # Sort on primary key as subqueryload with limit need deterministic order
         for pkey_column in inspect(self._model).primary_key:
             sorts.append(pkey_column)
-        query = query.order_by(*sorts)
-        return query
 
-    def _grid_rows(self, query, current_page, row_count):
+        return query.order_by(*sorts)
+
+    def _grid_rows(self, query, offset, limit):
         entities = query
-        if row_count != -1:
-            entities = entities.limit(row_count) \
-                .offset((current_page - 1) * row_count)
+        if limit != -1:
+            entities = entities.limit(limit) \
+                .offset(offset)
         rows = []
         for entity in entities:
             row = {
@@ -304,7 +292,7 @@ class AbstractViews():
                 icon='glyphicon glyphicon-pencil',
                 url=self._request.route_url(
                     'c2cgeoform_item',
-                    id=self._request.matchdict.get('id'))))
+                    id=getattr(item, self._id_field))))
 
         if inspect(item).persistent and self._model_config().get('duplicate', False):
             actions.append(ItemAction(
@@ -313,7 +301,7 @@ class AbstractViews():
                 icon='glyphicon glyphicon-duplicate',
                 url=self._request.route_url(
                     'c2cgeoform_item_action',
-                    id=self._request.matchdict.get('id'),
+                    id=getattr(item, self._id_field),
                     action='duplicate')))
 
         actions.append(ItemAction(
@@ -322,7 +310,7 @@ class AbstractViews():
             icon='glyphicon glyphicon-remove',
             url=self._request.route_url(
                 'c2cgeoform_item',
-                id=self._request.matchdict.get('id')),
+                id=getattr(item, self._id_field)),
             confirmation='Are your sure ?'))
 
         return actions

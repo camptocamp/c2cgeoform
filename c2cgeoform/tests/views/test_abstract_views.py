@@ -65,16 +65,15 @@ class TestAbstractViews(DatabaseTestCase):
         self.assertIn('list_fields', response)
 
     def test_grid(self):
+        self.request.route_url = Mock(return_value='person/1')
         self._add_test_persons()
 
-        self.request.params['current'] = '1'
-        self.request.params['rowCount'] = '5'
+        self.request.params['offset'] = '0'
+        self.request.params['limit'] = '5'
 
         views = ConcreteViews(self.request)
         response = views.grid()
 
-        self.assertEquals(1, response['current'])
-        self.assertEquals(5, response['rowCount'])
         self.assertEquals(22, response['total'])
 
         rows = response['rows']
