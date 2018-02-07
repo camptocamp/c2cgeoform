@@ -66,7 +66,18 @@
       </div>
 
       <tal:loop tal:repeat="action actions">
-        <a class="btn btn-default c2cgeoform-item-action ${action.get('name', '')}" href="${action['url']}">${action['label']}</a>
+        <a tal:condition="not action.confirmation()"
+           class="btn btn-default c2cgeoform-item-action ${action.name()} ${action.css_class()}"
+           href="${action.url()}">
+           <span tal:omit-tag="not action.icon()" class="${action.icon()}"></span>
+           ${action.label()}</a>
+        <a tal:condition="action.confirmation()"
+           class="btn btn-default c2cgeoform-item-action action-confirmation ${action.name()} ${action.css_class()}"
+           href="#"
+           data-url="${action.url()}"
+           data-confirmation="${action.confirmation()}">
+           <span tal:omit-tag="not action.icon()" class="${action.icon()}"></span>
+           ${action.label()}</a>
       </tal:loop>
     </div>
   </div>
@@ -115,6 +126,18 @@ $(function () {
   });
   $('#${field.formid} button[type=submit]').click(function (e) {
     $(window).off('beforeunload')
+  });
+
+  $('.action-confirmation').on('click', function(e) {
+    if (window.confirm($(this).data('confirmation'))) {
+      $.ajax({
+          url: $(this).data('url'),
+          type: 'DELETE',
+          success: function(result) {
+              location.reload();
+          }
+      });
+    }
   });
 });
 </script>

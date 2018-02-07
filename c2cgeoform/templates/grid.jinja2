@@ -26,34 +26,22 @@
   <script type="text/javascript">
   $(function() {
 
-    const actions_template = '\
-      <div class="btn-group">\
-          <button type="button" class="btn btn-xs btn-default dropdown-toggle" data-toggle="dropdown" data-target="item-_id_-actions" aria-haspopup="true" aria-expanded="false">\
-            <span class="caret"></span>\
-          </button>\
-          <ul id="item-_id_-actions" class="dropdown-menu">\
-              <li class="action-edit">\
-                  <a title="{{_("Edit")}}"\
-                      href="{{request.route_url('c2cgeoform_item', id='_id_')}}">\
-                      <span class="glyphicon glyphicon-pencil"></span>\
-                      {{_("Edit")}}\
-                  </a>\
-              </li>\
-              <li class="action-delete">\
-                  <a title="{{_("Delete")}}"\
-                      data-url="{{request.route_url('c2cgeoform_item', id='_id_')}}"\
-                      href="#"\
-                      role="button">\
-                      <span class="glyphicon glyphicon-remove"></span>\
-                      {{_("Delete")}}\
-                  </a>\
-              </li>\
-          </ul>\
-      </div>';
+    const namespace = '{{ request.registry.package_name }}';
+
+    /*
+    const action_confirmation_template = '\
+      <a tal:condition="action.confirmation()"
+            class="btn btn-default c2cgeoform-item-action action-confirmation ${action.name()} ${action.css_class()}"
+            href="#"
+            data-url="${action.url()}"
+            data-confirmation="${action.confirmation()}">
+            <span tal:omit-tag="not action.icon()" class="${action.icon()}"></span>
+            ${action.label()}</a>
+    */
 
     $('#grid').on("initialize.rs.jquery.bootgrid", function(e) {
       var instance = $(this).data('.rs.jquery.bootgrid');
-      instance.rowCount = parseInt(localStorage.getItem('rowCount.rs.jquery.bootgrid')) || instance.rowCount;
+      instance.rowCount = parseInt(localStorage.getItem('rowCount.' + namespace)) || instance.rowCount;
     });
 
     $('#grid').bootgrid({
@@ -74,11 +62,33 @@
       },
       formatters: {
           "actions": function(column, row) {
-              return actions_template.replace(/_id_/g, row._id_);
+              var content = '\
+                <div class="btn-group">\
+                  <button type="button" class="btn btn-xs btn-default dropdown-toggle" data-toggle="dropdown" data-target="item-' + row._id_ + '-actions" aria-haspopup="true" aria-expanded="false">\
+                    <span class="caret"></span>\
+                  </button>\
+                  <ul id="item-' + row._id_ + '-actions" class="dropdown-menu">';
+
+              row['actions'].forEach(function(action) {
+                content += '\
+                  <li>\
+                    <a class="c2cgeoform-item-action ' + action['name'] + ' ' + action['css_class'] + '"\
+                       href="' + action['url'] + '">\
+                       <span class="' + action['icon'] + '"></span>\
+                       ' + action['label'] + '\
+                    </a>\
+                  </li>';
+              });
+
+              content += '\
+                  </ul>\
+                </div>';
+
+              return content
           }
       }
     }).on("loaded.rs.jquery.bootgrid", function(e, appendedRows) {
-      localStorage.setItem('rowCount.rs.jquery.bootgrid', $(this).bootgrid('getRowCount'));
+      localStorage.setItem('rowCount.' + namespace, $(this).bootgrid('getRowCount'));
 
       $('.dropdown-toggle').dropdown();
 

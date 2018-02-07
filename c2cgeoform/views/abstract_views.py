@@ -105,6 +105,52 @@ class ListField():
         return self._visible
 
 
+class ItemAction():
+
+    def __init__(self,
+                 name,
+                 url,
+                 label=None,
+                 css_class='',
+                 icon=None,
+                 confirmation=False,
+                 ):
+        self._name = name
+        self._url = url
+        self._label = label or self._name
+        self._css_class = css_class
+        self._icon = icon
+        self._confirmation = confirmation
+
+    def name(self):
+        return self._name
+
+    def url(self):
+        return self._url
+
+    def label(self):
+        return self._label
+
+    def css_class(self):
+        return self._css_class
+
+    def icon(self):
+        return self._icon
+
+    def confirmation(self):
+        return self._confirmation
+
+    def to_dict(self):
+        return {
+            'name': self._name,
+            'url': self._url,
+            'label': self._label,
+            'css_class': self._css_class,
+            'icon': self._icon,
+            'confirmation': self._confirmation
+        }
+
+
 class AbstractViews():
 
     _model = None  # sqlalchemy model
@@ -195,12 +241,18 @@ class AbstractViews():
         if row_count != -1:
             entities = entities.limit(row_count) \
                 .offset((current_page - 1) * row_count)
-        return [
-            {f.id(): f.value(entity)
-             for f in (
-                 self._list_fields +
-                 [ListField(self._model, self._id_field, key='_id_')])}
-            for entity in entities]
+        rows = []
+        for entity in entities:
+            row = {
+                f.id(): f.value(entity) for f in (
+                    self._list_fields + [ListField(self._model, self._id_field, key='_id_')]
+                )
+            }
+            row['actions'] = [
+                action.to_dict() for action in self._item_actions(entity, grid=True)
+            ]
+            rows.append(row)
+        return rows
 
     def _form(self, **kwargs):
         schema = self._base_schema.bind(
@@ -242,16 +294,37 @@ class AbstractViews():
     def _model_config(self):
         return getattr(inspect(self._model).class_, '__c2cgeoform_config__', {})
 
-    def _item_actions(self):
+    def _item_actions(self, item, grid=False):
         actions = []
-        if not self._is_new() and self._model_config().get('duplicate', False):
-            actions.append({
-                'name': 'duplicate',
-                'label': _('Duplicate'),
-                'url': self._request.route_url(
+
+        if grid:
+            actions.append(ItemAction(
+                name='edit',
+                label=_('Edit'),
+                icon='glyphicon glyphicon-pencil',
+                url=self._request.route_url(
+                    'c2cgeoform_item',
+                    id=self._request.matchdict.get('id'))))
+
+        if inspect(item).persistent and self._model_config().get('duplicate', False):
+            actions.append(ItemAction(
+                name='duplicate',
+                label=_('Duplicate'),
+                icon='glyphicon glyphicon-duplicate',
+                url=self._request.route_url(
                     'c2cgeoform_item_action',
                     id=self._request.matchdict.get('id'),
-                    action='duplicate')})
+                    action='duplicate')))
+
+        actions.append(ItemAction(
+            name='delete',
+            label=_('Delete'),
+            icon='glyphicon glyphicon-remove',
+            url=self._request.route_url(
+                'c2cgeoform_item',
+                id=self._request.matchdict.get('id')),
+            confirmation='Are your sure ?'))
+
         return actions
 
     def edit(self):
@@ -260,7 +333,7 @@ class AbstractViews():
         self._populate_widgets(form.schema)
         rendered = form.render(form.schema.dictify(obj),
                                request=self._request,
-                               actions=self._item_actions())
+                               actions=self._item_actions(obj))
         return {
             'form': rendered,
             'deform_dependencies': form.get_widget_resources()
@@ -311,7 +384,7 @@ class AbstractViews():
         self._populate_widgets(form.schema)
         rendered = form.render(dict_,
                                request=self._request,
-                               actions=self._item_actions())
+                               actions=self._item_actions(self._model()))
 
         return {
             'form': rendered,
@@ -340,7 +413,7 @@ class AbstractViews():
                 e.field,
                 e.cstruct,
                 request=self._request,
-                actions=self._item_actions())
+                actions=self._item_actions(obj))
             return {
                 'form': rendered,
                 'deform_dependencies': form.get_widget_resources()
