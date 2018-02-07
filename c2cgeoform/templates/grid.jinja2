@@ -51,6 +51,11 @@
           </ul>\
       </div>';
 
+    $('#grid').on("initialize.rs.jquery.bootgrid", function(e) {
+      var instance = $(this).data('.rs.jquery.bootgrid');
+      instance.rowCount = parseInt(localStorage.getItem('rowCount.rs.jquery.bootgrid')) || instance.rowCount;
+    });
+
     $('#grid').bootgrid({
       ajax: true,
       ajaxSettings: {
@@ -58,6 +63,7 @@
       },
       multiSort: true,
       url: "{{request.route_url('c2cgeoform_grid')}}",
+      rowCount: [10, 15, 20, 25, 50, -1],
       labels: {
           all: '{{_('All')}}',
           infos: '{{_('Showing ((ctx.start)) to ((ctx.end)) of ((ctx.total)) entries')}}'.replace(/\(\(/g, '{{ '{{' }}').replace(/\)\)/g, '{{ '}}' }}'),
@@ -72,6 +78,8 @@
           }
       }
     }).on("loaded.rs.jquery.bootgrid", function(e, appendedRows) {
+      localStorage.setItem('rowCount.rs.jquery.bootgrid', $(this).bootgrid('getRowCount'));
+
       $('.dropdown-toggle').dropdown();
 
       $("a.btn-delete", this).on('click', function() {
