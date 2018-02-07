@@ -14,15 +14,6 @@
   color: #42325b;
 }
 
-.btn-new {
-  float: left;
-  margin: 15px 0;
-}
-
-.bootgrid-header {
-  float: right;
-}
-
 .deformFileupload span, .deformFileupload input[type=file] {
   color: #000000;
 }
