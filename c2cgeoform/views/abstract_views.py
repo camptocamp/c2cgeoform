@@ -49,7 +49,8 @@ class ListField():
                  label=None,
                  renderer=None,
                  sort_column=None,
-                 filter_column=None):
+                 filter_column=None,
+                 visible=True):
         self._attr = getattr(model, attr) if model else attr
         self._key = key or self._attr.key
         self._label = (label or
@@ -63,6 +64,7 @@ class ListField():
         self._filter_column = filter_column if filter_column is not None \
             else self._attr if is_column \
             else None
+        self._visible = visible
 
     def _prop_renderer(self, entity):
         value = None
@@ -98,6 +100,9 @@ class ListField():
 
     def filter_expression(self, term):
         return self._filter_column.ilike(term)
+
+    def visible(self):
+        return self._visible
 
 
 class AbstractViews():

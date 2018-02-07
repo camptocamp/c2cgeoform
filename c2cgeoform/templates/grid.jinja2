@@ -15,7 +15,8 @@
         {% for field in list_fields %}
         <th data-column-id="{{field.id()}}"
             data-sortable="{{'true' if field.sortable() else 'false'}}"
-            data-css-class="{{field.id()}}">{{field.label()}}</th>
+            data-css-class="{{field.id()}}"
+            data-visible="{{'true' if field.visible() else 'false'}}">{{field.label()}}</th>
         {% endfor %}
       </tr>
     </thead>
