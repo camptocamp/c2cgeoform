@@ -63,6 +63,10 @@ li.grid-row-action {
   display: inline-block;
   margin-right: 5px;
 }
+/* Fix actions dropdown not showing */
+.bootgrid-table td.actions {
+  overflow: visible
+}
 
 /*
  * Form

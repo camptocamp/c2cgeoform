@@ -5,10 +5,17 @@
   <table id="grid" data-toggle="bootgrid" class="table table-condensed table-hover table-striped">
     <thead>
       <tr>
-        <th data-column-id="_id_" data-searchable="false" data-sortable="false"
+        <th data-column-id="_id_"
+            data-searchable="false"
+            data-sortable="false"
+            data-css-class="actions"
+            data-header-css-class="actions"
+            data-visible-in-selection="false"
             data-formatter="actions"></th>
         {% for field in list_fields %}
-        <th data-column-id="{{field.id()}}" data-sortable="{{'true' if field.sortable() else 'false'}}" >{{field.label()}}</th>
+        <th data-column-id="{{field.id()}}"
+            data-sortable="{{'true' if field.sortable() else 'false'}}"
+            data-css-class="{{field.id()}}">{{field.label()}}</th>
         {% endfor %}
       </tr>
     </thead>
@@ -18,20 +25,30 @@
   <script type="text/javascript">
   $(function() {
 
-    actions_template = '\
-      <ul class="grid-row-actions">\
-        <li class="grid-row-action">\
-          <a class="btn btn-edit btn-sm btn-primary glyphicon glyphicon-pencil"\
-             title="{{_("Edit")}}"\
-             href="{{request.route_url('c2cgeoform_item', id='_id_')}}"></a>\
-        </li>\
-        <li class="grid-row-action">\
-          <a class="btn btn-delete btn-sm btn-danger glyphicon glyphicon-remove"\
-             title="{{_("Delete")}}"\
-             data-url="{{request.route_url('c2cgeoform_item', id='_id_')}}"\
-             href="#" role="button"></a>\
-        </li>\
-      </ul>';
+    const actions_template = '\
+      <div class="btn-group">\
+          <button type="button" class="btn btn-xs btn-default dropdown-toggle" data-toggle="dropdown" data-target="item-_id_-actions" aria-haspopup="true" aria-expanded="false">\
+            <span class="caret"></span>\
+          </button>\
+          <ul id="item-_id_-actions" class="dropdown-menu">\
+              <li class="action-edit">\
+                  <a title="{{_("Edit")}}"\
+                      href="{{request.route_url('c2cgeoform_item', id='_id_')}}">\
+                      <span class="glyphicon glyphicon-pencil"></span>\
+                      {{_("Edit")}}\
+                  </a>\
+              </li>\
+              <li class="action-delete">\
+                  <a title="{{_("Delete")}}"\
+                      data-url="{{request.route_url('c2cgeoform_item', id='_id_')}}"\
+                      href="#"\
+                      role="button">\
+                      <span class="glyphicon glyphicon-remove"></span>\
+                      {{_("Delete")}}\
+                  </a>\
+              </li>\
+          </ul>\
+      </div>';
 
     $('#grid').bootgrid({
       ajax: true,
@@ -54,6 +71,7 @@
           }
       }
     }).on("loaded.rs.jquery.bootgrid", function(e, appendedRows) {
+      $('.dropdown-toggle').dropdown();
 
       $("a.btn-delete", this).on('click', function() {
         if (window.confirm('{{_("Are your sure ?")}}')) {
