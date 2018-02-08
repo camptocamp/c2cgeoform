@@ -110,6 +110,7 @@ class ItemAction():
     def __init__(self,
                  name,
                  url,
+                 method=False,
                  label=None,
                  css_class='',
                  icon=None,
@@ -117,6 +118,7 @@ class ItemAction():
                  ):
         self._name = name
         self._url = url
+        self._method = method
         self._label = label or self._name
         self._css_class = css_class
         self._icon = icon
@@ -127,6 +129,9 @@ class ItemAction():
 
     def url(self):
         return self._url
+
+    def method(self):
+        return self._method
 
     def label(self):
         return self._label
@@ -144,6 +149,7 @@ class ItemAction():
         return {
             'name': self._name,
             'url': self._url,
+            'method': self._method,
             'label': self._label,
             'css_class': self._css_class,
             'icon': self._icon,
@@ -304,14 +310,16 @@ class AbstractViews():
                     id=getattr(item, self._id_field),
                     action='duplicate')))
 
-        actions.append(ItemAction(
-            name='delete',
-            label=_('Delete'),
-            icon='glyphicon glyphicon-remove',
-            url=self._request.route_url(
-                'c2cgeoform_item',
-                id=getattr(item, self._id_field)),
-            confirmation='Are your sure ?'))
+        if inspect(item).persistent:
+            actions.append(ItemAction(
+                name='delete',
+                label=_('Delete'),
+                icon='glyphicon glyphicon-remove',
+                url=self._request.route_url(
+                    'c2cgeoform_item',
+                    id=getattr(item, self._id_field)),
+                method='DELETE',
+                confirmation='Are your sure ?'))
 
         return actions
 
@@ -372,7 +380,7 @@ class AbstractViews():
         self._populate_widgets(form.schema)
         rendered = form.render(dict_,
                                request=self._request,
-                               actions=self._item_actions(self._model()))
+                               actions=self._item_actions(dest))
 
         return {
             'form': rendered,
@@ -411,4 +419,7 @@ class AbstractViews():
         obj = self._get_object()
         self._request.dbsession.delete(obj)
         self._request.dbsession.flush()
-        return Response('OK')
+        return {
+            'success': True,
+            'redirect': self._request.route_url('c2cgeoform_index')
+        }

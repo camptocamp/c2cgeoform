@@ -84,7 +84,8 @@ class ExcavationViews(AbstractViews):
         return super().duplicate()
 
     @view_config(route_name='c2cgeoform_item',
-                 request_method='DELETE')
+                 request_method='DELETE',
+                 renderer='json')
     def delete(self):
         return super().delete()
 
