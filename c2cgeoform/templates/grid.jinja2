@@ -25,7 +25,7 @@
 
       pagination: true,
       sidePagination: 'server',
-      pageSize: 25,
+      pageSize: localStorage.getItem('pageSize') || 25,
       pageList: [10, 25, 50, 100, 'All'],
 
       uniqueId: '_id_',
@@ -89,6 +89,10 @@
         },
         {% endfor %}
       ]
+    });
+
+    $('#grid').on('page-change.bs.table', function(e, number, size) {
+      localStorage.setItem('pageSize', size);
     });
 
     $('#grid').on('load-success.bs.table', function (e) {
