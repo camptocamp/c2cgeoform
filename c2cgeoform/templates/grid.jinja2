@@ -28,6 +28,14 @@
       pageSize: localStorage.getItem('pageSize') || 25,
       pageList: [10, 25, 50, 100, 'All'],
 
+      {# see: https://github.com/wenzhixin/bootstrap-table/tree/develop/src/locale #}
+      {% set bootstrap_table_locales = {
+          'de': 'de-DE',
+          'en': 'en-US',
+          'fr': 'fr-FR',
+      } %}
+      locale: '{{ bootstrap_table_locales[request.locale_name] }}',
+
       uniqueId: '_id_',
       columns: [
         {
