@@ -306,9 +306,8 @@ class AbstractViews():
                 label=_('Duplicate'),
                 icon='glyphicon glyphicon-duplicate',
                 url=self._request.route_url(
-                    'c2cgeoform_item_action',
-                    id=getattr(item, self._id_field),
-                    action='duplicate')))
+                    'c2cgeoform_item_duplicate',
+                    id=getattr(item, self._id_field))))
 
         if inspect(item).persistent:
             actions.append(ItemAction(

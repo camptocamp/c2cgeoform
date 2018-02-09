@@ -77,7 +77,7 @@ class ExcavationViews(AbstractViews):
     def edit(self):
         return super().edit()
 
-    @view_config(route_name='c2cgeoform_item_action',
+    @view_config(route_name='c2cgeoform_item_duplicate',
                  request_method='GET',
                  renderer='../templates/edit.jinja2')
     def duplicate(self):
