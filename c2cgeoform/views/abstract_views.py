@@ -109,6 +109,9 @@ class AbstractViews():
 
     def __init__(self, request):
         self._request = request
+        self._schema = None
+        self._appstruct = None
+        self._obj = None
 
     def index(self):
         return {
@@ -198,14 +201,14 @@ class AbstractViews():
             for entity in entities]
 
     def _form(self, **kwargs):
-        schema = self._base_schema.bind(
+        self._schema = self._base_schema.bind(
             request=self._request,
             dbsession=self._request.dbsession)
 
         buttons = [Button(name='formsubmit', title=_('Submit'))]
 
         form = Form(
-            schema,
+            self._schema,
             buttons=buttons,
             **kwargs
             )
@@ -253,7 +256,10 @@ class AbstractViews():
         obj = self._get_object()
         form = self._form()
         self._populate_widgets(form.schema)
-        rendered = form.render(form.schema.dictify(obj),
+        dict_ = form.schema.dictify(obj)
+        if self._is_new():
+            dict_.update(self._request.GET)
+        rendered = form.render(dict_,
                                request=self._request,
                                actions=self._item_actions())
         return {
@@ -318,16 +324,16 @@ class AbstractViews():
         try:
             form = self._form()
             form_data = self._request.POST.items()
-            obj_dict = form.validate(form_data)
+            self._appstruct = form.validate(form_data)
             with self._request.dbsession.no_autoflush:
-                obj = form.schema.objectify(obj_dict, obj)
-            obj = self._request.dbsession.merge(obj)
+                obj = form.schema.objectify(self._appstruct, obj)
+            self._obj = self._request.dbsession.merge(obj)
             self._request.dbsession.flush()
             return HTTPFound(
                 self._request.route_url(
                     'c2cgeoform_item',
                     action='edit',
-                    id=obj.__getattribute__(self._id_field)))
+                    id=self._obj.__getattribute__(self._id_field)))
         except ValidationFailure as e:
             # FIXME see https://github.com/Pylons/deform/pull/243
             self._populate_widgets(form.schema)
