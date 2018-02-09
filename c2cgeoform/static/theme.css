@@ -63,3 +63,11 @@ li.grid-row-action {
   display: inline-block;
   margin-right: 5px;
 }
+
+/*
+ * Form
+ */
+.form-panel > .panel-footer {
+  position:sticky;
+  bottom: 0;
+}
