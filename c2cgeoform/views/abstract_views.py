@@ -49,7 +49,8 @@ class ListField():
                  label=None,
                  renderer=None,
                  sort_column=None,
-                 filter_column=None):
+                 filter_column=None,
+                 visible=True):
         self._attr = getattr(model, attr) if model else attr
         self._key = key or self._attr.key
         self._label = (label or
@@ -63,6 +64,7 @@ class ListField():
         self._filter_column = filter_column if filter_column is not None \
             else self._attr if is_column \
             else None
+        self._visible = visible
 
     def _prop_renderer(self, entity):
         value = None
@@ -99,6 +101,61 @@ class ListField():
     def filter_expression(self, term):
         return self._filter_column.ilike(term)
 
+    def visible(self):
+        return self._visible
+
+
+class ItemAction():
+
+    def __init__(self,
+                 name,
+                 url,
+                 method=False,
+                 label=None,
+                 css_class='',
+                 icon=None,
+                 confirmation=False,
+                 ):
+        self._name = name
+        self._url = url
+        self._method = method
+        self._label = label or self._name
+        self._css_class = css_class
+        self._icon = icon
+        self._confirmation = confirmation
+
+    def name(self):
+        return self._name
+
+    def url(self):
+        return self._url
+
+    def method(self):
+        return self._method
+
+    def label(self):
+        return self._label
+
+    def css_class(self):
+        return self._css_class
+
+    def icon(self):
+        return self._icon
+
+    def confirmation(self):
+        return self._confirmation
+
+    def to_dict(self):
+        return {
+            'name': self._name,
+            'url': self._url,
+            'method': self._method,
+            'label': self._label,
+            'css_class': self._css_class,
+            'icon': self._icon,
+            'confirmation': self._confirmation
+        }
+
 
 class AbstractViews():
 
@@ -124,34 +181,23 @@ class AbstractViews():
         """
         try:
             params = self._request.params
-            current_page = int(params.get('current'))
-            row_count = int(params.get('rowCount'))
-            search_phrase = params.get('searchPhrase', '').strip()
-            sort_columns = self._sort_columns()
+            offset = int(params.get('offset'))
+            limit = int(params.get('limit'))
+            search = params.get('search', '').strip()
+            sort = params.get('sort', '')
+            order = params.get('order', '')
 
             query = self._base_query()
-            query = self._filter_query(query, search_phrase)
-            query = self._sort_query(query, sort_columns)
+            query = self._filter_query(query, search)
+            query = self._sort_query(query, sort, order)
 
             return {
-                "current": current_page,
-                "rowCount": row_count,
-                "rows": self._grid_rows(query, current_page, row_count),
+                "rows": self._grid_rows(query, offset, limit),
                 "total": query.count()
             }
         except DBAPIError as e:
             logger.error(str(e), exc_info=True)
             return Response(db_err_msg, content_type='text/plain', status=500)
-
-    def _sort_columns(self):
-        sort_columns = []
-        for key, value in self._request.params.items():
-            # Bootgrid sends the sort fields as "sort[col_name]: asc"
-            if key.startswith('sort'):
-                col_name = key.replace('sort[', '').replace(']', '')
-                sort_order = 'asc' if value == 'asc' else 'desc'
-                sort_columns.append((col_name, sort_order))
-        return sort_columns
 
     def _base_query(self):
         return self._request.dbsession.query(self._model)
@@ -172,33 +218,38 @@ class AbstractViews():
 
         return query
 
-    def _sort_query(self, query, sort_columns):
+    def _sort_query(self, query, sort, order):
         sorts = []
-        for col_name, sort_order in sort_columns:
-            for field in self._list_fields:
-                if field.id() == col_name:
-                    sort = field.sort_column()
-                    if sort_order == 'desc':
-                        sort = desc(sort)
-                    sorts.append(sort)
-        # Sort on primary key as subqueryload with limit need deterministic
-        # order
+        for field in self._list_fields:
+            if field.id() == sort:
+                sort = field.sort_column()
+                if order == 'desc':
+                    sort = desc(sort)
+                sorts.append(sort)
+
+        # Sort on primary key as subqueryload with limit need deterministic order
         for pkey_column in inspect(self._model).primary_key:
             sorts.append(pkey_column)
-        query = query.order_by(*sorts)
-        return query
 
-    def _grid_rows(self, query, current_page, row_count):
+        return query.order_by(*sorts)
+
+    def _grid_rows(self, query, offset, limit):
         entities = query
-        if row_count != -1:
-            entities = entities.limit(row_count) \
-                .offset((current_page - 1) * row_count)
-        return [
-            {f.id(): f.value(entity)
-             for f in (
-                 self._list_fields +
-                 [ListField(self._model, self._id_field, key='_id_')])}
-            for entity in entities]
+        if limit != -1:
+            entities = entities.limit(limit) \
+                .offset(offset)
+        rows = []
+        for entity in entities:
+            row = {
+                f.id(): f.value(entity) for f in (
+                    self._list_fields + [ListField(self._model, self._id_field, key='_id_')]
+                )
+            }
+            row['actions'] = [
+                action.to_dict() for action in self._item_actions(entity, grid=True)
+            ]
+            rows.append(row)
+        return rows
 
     def _form(self, **kwargs):
         self._schema = self._base_schema.bind(
@@ -240,16 +291,38 @@ class AbstractViews():
     def _model_config(self):
         return getattr(inspect(self._model).class_, '__c2cgeoform_config__', {})
 
-    def _item_actions(self):
+    def _item_actions(self, item, grid=False):
         actions = []
-        if not self._is_new() and self._model_config().get('duplicate', False):
-            actions.append({
-                'name': 'duplicate',
-                'label': _('Duplicate'),
-                'url': self._request.route_url(
-                    'c2cgeoform_item_action',
-                    id=self._request.matchdict.get('id'),
-                    action='duplicate')})
+
+        if grid:
+            actions.append(ItemAction(
+                name='edit',
+                label=_('Edit'),
+                icon='glyphicon glyphicon-pencil',
+                url=self._request.route_url(
+                    'c2cgeoform_item',
+                    id=getattr(item, self._id_field))))
+
+        if inspect(item).persistent and self._model_config().get('duplicate', False):
+            actions.append(ItemAction(
+                name='duplicate',
+                label=_('Duplicate'),
+                icon='glyphicon glyphicon-duplicate',
+                url=self._request.route_url(
+                    'c2cgeoform_item_duplicate',
+                    id=getattr(item, self._id_field))))
+
+        if inspect(item).persistent:
+            actions.append(ItemAction(
+                name='delete',
+                label=_('Delete'),
+                icon='glyphicon glyphicon-remove',
+                url=self._request.route_url(
+                    'c2cgeoform_item',
+                    id=getattr(item, self._id_field)),
+                method='DELETE',
+                confirmation='Are your sure ?'))
+
         return actions
 
     def edit(self):
@@ -261,7 +334,7 @@ class AbstractViews():
             dict_.update(self._request.GET)
         rendered = form.render(dict_,
                                request=self._request,
-                               actions=self._item_actions())
+                               actions=self._item_actions(obj))
         return {
             'form': rendered,
             'deform_dependencies': form.get_widget_resources()
@@ -312,7 +385,7 @@ class AbstractViews():
         self._populate_widgets(form.schema)
         rendered = form.render(dict_,
                                request=self._request,
-                               actions=self._item_actions())
+                               actions=self._item_actions(dest))
 
         return {
             'form': rendered,
@@ -341,7 +414,7 @@ class AbstractViews():
                 e.field,
                 e.cstruct,
                 request=self._request,
-                actions=self._item_actions())
+                actions=self._item_actions(obj))
             return {
                 'form': rendered,
                 'deform_dependencies': form.get_widget_resources()
@@ -351,4 +424,7 @@ class AbstractViews():
         obj = self._get_object()
         self._request.dbsession.delete(obj)
         self._request.dbsession.flush()
-        return Response('OK')
+        return {
+            'success': True,
+            'redirect': self._request.route_url('c2cgeoform_index')
+        }

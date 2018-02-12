@@ -77,14 +77,15 @@ class ExcavationViews(AbstractViews):
     def edit(self):
         return super().edit()
 
-    @view_config(route_name='c2cgeoform_item_action',
+    @view_config(route_name='c2cgeoform_item_duplicate',
                  request_method='GET',
                  renderer='../templates/edit.jinja2')
     def duplicate(self):
         return super().duplicate()
 
     @view_config(route_name='c2cgeoform_item',
-                 request_method='DELETE')
+                 request_method='DELETE',
+                 renderer='json')
     def delete(self):
         return super().delete()
 

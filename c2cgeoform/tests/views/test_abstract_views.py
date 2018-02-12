@@ -65,16 +65,15 @@ class TestAbstractViews(DatabaseTestCase):
         self.assertIn('list_fields', response)
 
     def test_grid(self):
+        self.request.route_url = Mock(return_value='person/1')
         self._add_test_persons()
 
-        self.request.params['current'] = '1'
-        self.request.params['rowCount'] = '5'
+        self.request.params['offset'] = '0'
+        self.request.params['limit'] = '5'
 
         views = ConcreteViews(self.request)
         response = views.grid()
 
-        self.assertEquals(1, response['current'])
-        self.assertEquals(5, response['rowCount'])
         self.assertEquals(22, response['total'])
 
         rows = response['rows']
@@ -188,13 +187,13 @@ class TestAbstractViews(DatabaseTestCase):
                          .attrs['value'])
         self.assertEqual('', form.select_one('input[name=age]').attrs['value'])
 
-    def test_delete_person(self):
+    def test_delete(self):
         dbsession = self.request.dbsession
 
         self._add_test_persons()
         self.request.matched_route = Mock(name='person_action')
         self.request.matchdict = {'id': self.person1.id}
-        self.request.route_url = Mock(return_value='person/1')
+        self.request.route_url = Mock(return_value='person')
         dbsession.delete = Mock()
         flush_which_has_to_be_back_for_teardown = dbsession.flush
         try:
@@ -209,7 +208,8 @@ class TestAbstractViews(DatabaseTestCase):
 
                 def __eq__(self, other):
                     return other.id == self.id
-            self.assertEqual('OK', response.text)
+            self.assertEqual(True, response['success'])
+            self.assertEqual('person', response['redirect'])
             dbsession.delete.assert_called_once_with(Matcher(self.person1))
             dbsession.flush.assert_called_once_with()
         finally:

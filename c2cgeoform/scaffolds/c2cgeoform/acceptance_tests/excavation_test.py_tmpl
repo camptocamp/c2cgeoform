@@ -42,7 +42,7 @@ class TestExcavationViews():
         assert 1 == len(news_en)
         assert "New" == news_en[0].string
 
-        reference_numbers = html_en.select("th[data-column-id=reference_number]")
+        reference_numbers = html_en.select("th[data-field=reference_number]")
         assert 1 == len(reference_numbers)
         assert "Reference Number" == reference_numbers[0].string
 
@@ -57,15 +57,14 @@ class TestExcavationViews():
         json = test_app.post(
             "/excavations/grid.json",
             params={
-                "current": 1,
-                "rowCount": 10,
-                "sort[reference_number]": "asc"
+                "offset": 0,
+                "limit": 10,
+                "sort": "reference_number",
+                "order": "asc"
             },
             status=200
         ).json
 
-        assert 1 == json["current"]
-        assert 10 == json["rowCount"]
         assert 10 == len(json["rows"])
         assert 100 == json["total"]
 
@@ -82,16 +81,15 @@ class TestExcavationViews():
         json = test_app.post(
             "/excavations/grid.json",
             params={
-                "current": 1,
-                "rowCount": 10,
-                "sort[reference_number]": "asc",
-                "searchPhrase": "Road"
+                "offset": 0,
+                "limit": 10,
+                "sort": "reference_number",
+                "order": "asc",
+                "search": "Road"
             },
             status=200
         ).json
 
-        assert 1 == json["current"]
-        assert 10 == json["rowCount"]
         assert 10 == len(json["rows"])
         assert 49 == json["total"]
 

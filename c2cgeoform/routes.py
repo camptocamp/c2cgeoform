@@ -1,12 +1,13 @@
 from pyramid.events import BeforeRender
 
 
-def register_models(config, models):
+def table_pregenerator(request, elements, kw):
+    if 'table' not in kw:
+        kw['table'] = request.matchdict['table']
+    return elements, kw
 
-    def table_pregenerator(request, elements, kw):
-        if 'table' not in kw:
-            kw['table'] = request.matchdict['table']
-        return elements, kw
+
+def register_models(config, models):
 
     def rec_with_pregenerator(route, pattern):
         config.add_route(route, pattern, pregenerator=table_pregenerator)
@@ -28,7 +29,7 @@ def register_models(config, models):
     rec_with_pregenerator('c2cgeoform_grid', '{}/grid.json'.format(base_route))
     rec_with_pregenerator('c2cgeoform_item', '{}/{{id}}'
                           .format(base_route))
-    rec_with_pregenerator('c2cgeoform_item_action', '{}/{{id}}/{{action}}'
+    rec_with_pregenerator('c2cgeoform_item_duplicate', '{}/{{id}}/duplicate'
                           .format(base_route))
 
     def add_global(event):
