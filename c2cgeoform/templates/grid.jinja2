@@ -7,6 +7,21 @@
   </div>
 
   <table id="grid" class="table table-condensed table-hover table-striped">
+    <thead>
+      <tr>
+        <th data-field="actions"
+            data-sortable="false"
+            data-switchable="false"
+            class="actions"
+        ></th>
+        {% for field in list_fields %}
+        <th data-field="{{field.id()}}"
+            data-sortable="{{'true' if field.sortable() else 'false'}}"
+            class="{{field.id()}}"
+        >{{field.label()}}</th>
+        {% endfor %}
+      </tr>
+    </thead>
   </table>
 
   <script type="text/javascript">
@@ -40,10 +55,6 @@
       columns: [
         {
           field: 'actions',
-          searchable: false,
-          sortable: false,
-          switchable: false,
-          class: 'actions',
           formatter: function(value, row, index, field) {
             var content = '\
               <div class="btn-group">\
@@ -84,18 +95,7 @@
             return content
             return value;
           }
-        },
-        {% for field in list_fields %}
-        {
-          field: '{{field.id()}}',
-          title: '{{field.label()}}',
-          sortable: '{{'true' if field.sortable() else 'false'}}',
-          class: '{{field.id()}}',
-          formatter: function(value, row, index, field) {
-            return value;
-          }
-        },
-        {% endfor %}
+        }
       ]
     });
 
