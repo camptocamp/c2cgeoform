@@ -219,19 +219,19 @@ class AbstractViews():
         return query
 
     def _sort_query(self, query, sort, order):
-        sorts = []
+        criteria = []
         for field in self._list_fields:
             if field.id() == sort:
-                sort = field.sort_column()
+                criterion = field.sort_column()
                 if order == 'desc':
-                    sort = desc(sort)
-                sorts.append(sort)
+                    criterion = desc(sort)
+                criteria.append(criterion)
 
         # Sort on primary key as subqueryload with limit need deterministic order
         for pkey_column in inspect(self._model).primary_key:
-            sorts.append(pkey_column)
+            criteria.append(pkey_column)
 
-        return query.order_by(*sorts)
+        return query.order_by(*criteria)
 
     def _grid_rows(self, query, offset, limit):
         entities = query
