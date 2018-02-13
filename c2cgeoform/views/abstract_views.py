@@ -321,7 +321,7 @@ class AbstractViews():
                     'c2cgeoform_item',
                     id=getattr(item, self._id_field)),
                 method='DELETE',
-                confirmation='Are your sure ?'))
+                confirmation=_('Are your sure you want to delete this record ?')))
 
         return actions
 
