@@ -1,3 +1,4 @@
+from itertools import groupby
 from pyramid.httpexceptions import HTTPNotFound
 from pyramid.httpexceptions import HTTPFound
 from unittest import TestCase
@@ -80,6 +81,13 @@ class TestAbstractViews(DatabaseTestCase):
         self.assertEquals(5, len(rows))
         self.assertTrue('_id_' in rows[0])
         self.assertEquals('Smith', rows[0]['name'])
+        self.assertEquals('person/1', rows[0]['actions']['dblclick'])
+        call_list = self.request.route_url.call_args_list
+        idx = [call[1]['id'] for call in call_list]
+        grouped_by_id = [len(list(cgen)) for dummy, cgen in groupby(idx)]
+        grouped_by_count = [len(list(cgen)) for dummy, cgen in groupby(grouped_by_id)]
+        self.assertEquals(1, len(grouped_by_count))
+        self.assertEquals(5, grouped_by_count[0])
 
     def test_new_get(self):
         self.request.matched_route = Mock(name='c2cgeoform_item')

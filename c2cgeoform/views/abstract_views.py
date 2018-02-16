@@ -245,9 +245,7 @@ class AbstractViews():
                     self._list_fields + [ListField(self._model, self._id_field, key='_id_')]
                 )
             }
-            row['actions'] = [
-                action.to_dict() for action in self._item_actions(entity, grid=True)
-            ]
+            row['actions'] = self._grid_item_actions(entity)
             rows.append(row)
         return rows
 
@@ -291,17 +289,23 @@ class AbstractViews():
     def _model_config(self):
         return getattr(inspect(self._model).class_, '__c2cgeoform_config__', {})
 
-    def _item_actions(self, item, grid=False):
-        actions = []
+    def _grid_item_actions(self, item):
+        actions = self._item_actions(item)
+        actions.insert(0, ItemAction(
+            name='edit',
+            label=_('Edit'),
+            icon='glyphicon glyphicon-pencil',
+            url=self._request.route_url(
+                'c2cgeoform_item',
+                id=getattr(item, self._id_field))))
+        return {
+            'dropdown': [action.to_dict() for action in actions],
+            'dblclick': self._request.route_url(
+                'c2cgeoform_item',
+                id=getattr(item, self._id_field))}
 
-        if grid:
-            actions.append(ItemAction(
-                name='edit',
-                label=_('Edit'),
-                icon='glyphicon glyphicon-pencil',
-                url=self._request.route_url(
-                    'c2cgeoform_item',
-                    id=getattr(item, self._id_field))))
+    def _item_actions(self, item):
+        actions = []
 
         if inspect(item).persistent and self._model_config().get('duplicate', False):
             actions.append(ItemAction(

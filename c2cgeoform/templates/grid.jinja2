@@ -63,7 +63,7 @@
                 </button>\
                 <ul id="item-' + row._id_ + '-actions" class="dropdown-menu">';
 
-            row.actions.forEach(function(action) {
+            row.actions.dropdown.forEach(function(action) {
               if (action.confirmation || action.method) {
                 content += '\
                   <li>\
@@ -97,6 +97,12 @@
           }
         }
       ]
+    });
+
+    $('#grid').on('dbl-click-row.bs.table', function (e, row, $element) {
+      if (row['actions']['dblclick']) {
+        window.location = row['actions']['dblclick'];
+      };
     });
 
     $('#grid').on('page-change.bs.table', function(e, number, size) {
