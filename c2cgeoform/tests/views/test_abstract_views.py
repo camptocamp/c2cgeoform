@@ -191,8 +191,35 @@ class TestAbstractViews(DatabaseTestCase):
         self.assertEqual(self.person1.name,
                          form.select_one('input[name=name]').attrs['value'])
         self.assertEqual(self.person1.first_name,
-                         form.select_one('input[name=first_name]')
-                         .attrs['value'])
+                         form.select_one('input[name=first_name]').attrs['value'])
+        self.assertEqual('', form.select_one('input[name=age]').attrs['value'])
+
+    def test_copy_and_discard_excluded(self):
+        self._add_test_persons()
+        self.request.matched_route = Mock(name='c2cgeoform_item_action')
+        self.request.matchdict = {'id': self.person1.id}
+        self.request.route_url = Mock(return_value='c2cgeoform_item/new')
+        self.request.method = 'GET'
+        person2 = self.request.dbsession.query(Person). \
+            filter(Person.name == 'Wayne').one_or_none()
+        views = ConcreteViews(self.request)
+
+        response = views.copy(person2)
+        form = BeautifulSoup(response['form'], 'html.parser')
+
+        self.assertEqual(person2.name,
+                         form.select_one('input[name=name]').attrs['value'])
+        self.assertEqual(person2.first_name,
+                         form.select_one('input[name=first_name]').attrs['value'])
+        self.assertEqual('', form.select_one('input[name=age]').attrs['value'])
+
+        response = views.copy(person2, ['first_name'])
+        form = BeautifulSoup(response['form'], 'html.parser')
+
+        self.assertEqual(person2.name,
+                         form.select_one('input[name=name]').attrs['value'])
+        self.assertEqual('',
+                         form.select_one('input[name=first_name]').attrs['value'])
         self.assertEqual('', form.select_one('input[name=age]').attrs['value'])
 
     def test_delete(self):

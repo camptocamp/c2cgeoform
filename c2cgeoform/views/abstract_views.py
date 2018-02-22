@@ -344,29 +344,22 @@ class AbstractViews():
             'deform_dependencies': form.get_widget_resources()
         }
 
-    def copy_members_if_duplicates(self, source, dest=None):
-        if dest is None:
-            dest = source.__class__()
+    def copy_members_if_duplicates(self, source, excludes=None):
+        dest = source.__class__()
         insp = inspect(source.__class__)
 
         for prop in insp.attrs:
             if isinstance(prop, ColumnProperty):
                 is_primary_key = prop.columns[0].primary_key
-                to_duplicate = model_attr_info(prop.columns[0],
-                                               'c2cgeoform',
-                                               'duplicate',
-                                               default=True)
-                if not is_primary_key and to_duplicate:
+                to_duplicate = model_attr_info(prop.columns[0], 'c2cgeoform', 'duplicate', default=True)
+                to_exclude = excludes and prop.columns[0].key in excludes
+                if not is_primary_key and to_duplicate and not to_exclude:
                     setattr(dest, prop.key, getattr(source, prop.key))
             if isinstance(prop, RelationshipProperty):
-                if model_attr_info(prop,
-                                   'c2cgeoform',
-                                   'duplicate',
-                                   default=True):
+                if model_attr_info(prop, 'c2cgeoform', 'duplicate', default=True):
                     if prop.cascade.delete:
                         if not prop.uselist:
-                            duplicate = self.copy_members_if_duplicates(
-                                                getattr(source, prop.key))
+                            duplicate = self.copy_members_if_duplicates(getattr(source, prop.key))
                         else:
                             duplicate = [self.copy_members_if_duplicates(m)
                                          for m in getattr(source, prop.key)]
@@ -375,13 +368,12 @@ class AbstractViews():
                     setattr(dest, prop.key, duplicate)
         return dest
 
-    def duplicate(self):
-        src = self._get_object()
-        form = self._form(
-            action=self._request.route_url('c2cgeoform_item', id='new'))
+    def copy(self, src, excludes=None):
+        # excludes only apply at first level
+        form = self._form(action=self._request.route_url('c2cgeoform_item', id='new'))
 
         with self._request.dbsession.no_autoflush:
-            dest = self.copy_members_if_duplicates(src)
+            dest = self.copy_members_if_duplicates(src, excludes)
             dict_ = form.schema.dictify(dest)
             if dest in self._request.dbsession:
                 self._request.dbsession.expunge(dest)
@@ -395,6 +387,10 @@ class AbstractViews():
             'form': rendered,
             'deform_dependencies': form.get_widget_resources()
         }
+
+    def duplicate(self):
+        src = self._get_object()
+        return self.copy(src)
 
     def save(self):
         obj = self._get_object()
