@@ -224,7 +224,7 @@ class AbstractViews():
             if field.id() == sort:
                 criterion = field.sort_column()
                 if order == 'desc':
-                    criterion = desc(sort)
+                    criterion = desc(criterion)
                 criteria.append(criterion)
 
         # Sort on primary key as subqueryload with limit need deterministic order
