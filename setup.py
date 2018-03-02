@@ -11,7 +11,7 @@ with open(os.path.join(here, 'CHANGES.txt')) as f:
 requires = [
     'pyramid',
     'pyramid_chameleon',
-    'deform==2.0.4',
+    'deform>=2.0.4',
     'paginate',
     'pyramid_beaker',
     'lingua>=2.4'
