@@ -130,7 +130,7 @@ class RelationSelectMixin(object):
         else:
             order_by = None
 
-        entities = session.query(model).order_by(order_by).all()
+        entities = session.query(model).order_by(order_by)
 
         values = tuple(
             (getattr(entity, self.id_field), getattr(entity, self.label_field))
