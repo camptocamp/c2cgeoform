@@ -1,11 +1,9 @@
 from pkg_resources import resource_filename
 from pyramid.i18n import get_localizer
 from pyramid.threadlocal import get_current_request
-from pyramid.events import BeforeRender, NewRequest
 from pyramid.config import Configurator
 from deform import Form, widget
 from translationstring import TranslationStringFactory
-from .subscribers import add_renderer_globals, add_localizer
 
 
 _ = TranslationStringFactory('c2cgeoform')
@@ -43,9 +41,6 @@ def includeme(config):
     config.add_translation_dirs('colander:locale', 'deform:locale', 'locale')
 
     init_deform(config.root_package.__name__)
-
-    config.add_subscriber(add_renderer_globals, BeforeRender)
-    config.add_subscriber(add_localizer, NewRequest)
 
 
 def translator(term):
