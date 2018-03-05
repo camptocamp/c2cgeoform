@@ -44,6 +44,9 @@
 .bootstrap-table .fixed-table-toolbar .dropdown-menu {
   min-width: 200px;
 }
+.dropdown-menu {
+  margin-bottom: 5px;
+}
 
 /*
  * Form

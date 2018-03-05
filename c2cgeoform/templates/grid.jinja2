@@ -62,7 +62,7 @@
           field: 'actions',
           formatter: function(value, row, index, field) {
             var content = '\
-              <div class="btn-group">\
+              <div class="btn-group dropdown">\
                 <button type="button" class="btn btn-xs btn-default dropdown-toggle" data-toggle="dropdown" data-target="item-' + row._id_ + '-actions" aria-haspopup="true" aria-expanded="false">\
                   <span class="caret"></span>\
                 </button>\
@@ -115,6 +115,10 @@
     });
 
     $('#grid').on('load-success.bs.table', function (e) {
+
+      $(".dropdown").on("shown.bs.dropdown", function () {
+        $(this).children(".dropdown-menu").scrollintoview({viewPadding: 5});
+      });
 
       $(this).find('a.c2cgeoform-action-ajax').on('click', function(e) {
         var execute = function() {

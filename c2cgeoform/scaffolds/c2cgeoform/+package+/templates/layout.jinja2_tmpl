@@ -38,6 +38,7 @@
     <script type="text/javascript" src="\{\{request.static_url('{{package}}:node_modules/bootstrap/dist/js/bootstrap.min.js')\}\}"></script>
     <script type="text/javascript" src="\{\{request.static_url('{{package}}:node_modules/bootstrap-table/dist/bootstrap-table.min.js')\}\}"></script>
     <script type="text/javascript" src="\{\{request.static_url('{{package}}:node_modules/bootstrap-table/dist/bootstrap-table-locale-all.js')\}\}"></script>
+    <script type="text/javascript" src="\{\{request.static_url('{{package}}:node_modules/jquery.scrollintoview/jquery.scrollintoview.js')\}\}"></script>
     <script type="text/javascript" src="\{\{request.static_url('{{package}}:node_modules/jquery-steps/build/jquery.steps.min.js')\}\}"></script>
     <script type="text/javascript" src="\{\{request.static_url('c2cgeoform:static/js/c2cgeoform.js')\}\}"></script>
 
