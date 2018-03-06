@@ -371,10 +371,11 @@ class AbstractViews():
     def copy(self, src, excludes=None):
         # excludes only apply at first level
         form = self._form(action=self._request.route_url('c2cgeoform_item', id='new'))
-
         with self._request.dbsession.no_autoflush:
             dest = self.copy_members_if_duplicates(src, excludes)
             dict_ = form.schema.dictify(dest)
+            if self._is_new():
+                dict_.update(self._request.GET)
             if dest in self._request.dbsession:
                 self._request.dbsession.expunge(dest)
                 self._request.dbsession.expire_all()
