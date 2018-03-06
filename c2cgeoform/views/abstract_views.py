@@ -329,20 +329,24 @@ class AbstractViews():
 
         return actions
 
-    def edit(self):
-        obj = self._get_object()
-        form = self._form()
-        self._populate_widgets(form.schema)
-        dict_ = form.schema.dictify(obj)
+    def _render_edit(self, form, dict_, obj):
         if self._is_new():
             dict_.update(self._request.GET)
+        self._populate_widgets(form.schema)
         rendered = form.render(dict_,
                                request=self._request,
                                actions=self._item_actions(obj))
+
         return {
             'form': rendered,
             'deform_dependencies': form.get_widget_resources()
         }
+
+    def edit(self):
+        obj = self._get_object()
+        form = self._form()
+        dict_ = form.schema.dictify(obj)
+        return self._render_edit(form, dict_, obj)
 
     def copy_members_if_duplicates(self, source, excludes=None):
         dest = source.__class__()
@@ -374,21 +378,11 @@ class AbstractViews():
         with self._request.dbsession.no_autoflush:
             dest = self.copy_members_if_duplicates(src, excludes)
             dict_ = form.schema.dictify(dest)
-            if self._is_new():
-                dict_.update(self._request.GET)
             if dest in self._request.dbsession:
                 self._request.dbsession.expunge(dest)
                 self._request.dbsession.expire_all()
 
-        self._populate_widgets(form.schema)
-        rendered = form.render(dict_,
-                               request=self._request,
-                               actions=self._item_actions(dest))
-
-        return {
-            'form': rendered,
-            'deform_dependencies': form.get_widget_resources()
-        }
+        return self._render_edit(form, dict_, dest)
 
     def duplicate(self):
         src = self._get_object()
