@@ -9,12 +9,13 @@ with open(os.path.join(here, 'CHANGES.txt')) as f:
     CHANGES = f.read()
 
 requires = [
-    'pyramid',
-    'pyramid_chameleon',
+    'babel',
     'deform>=2.0.4',
-    'paginate',
+    'lingua>=2.4',
+    'pyramid',
     'pyramid_beaker',
-    'lingua>=2.4'
+    'pyramid_chameleon',
+    'pyramid_jinja2'
 ]
 
 setup(

@@ -50,8 +50,8 @@ c2cgeoform_demo: .build/requirements.timestamp c2cgeoform/scaffolds/c2cgeoform
 	.build/venv/bin/pcreate -s c2cgeoform --overwrite ../c2cgeoform_demo > /dev/null
 
 .PHONY: update-catalog
-update-catalog: .build/requirements-dev.timestamp
-	.build/venv/bin/pot-create -c lingua.cfg -o c2cgeoform/locale/c2cgeoform.pot \
+update-catalog: .build/requirements.timestamp
+	.build/venv/bin/pot-create -c lingua.cfg --keyword _ -o c2cgeoform/locale/c2cgeoform.pot \
 	    c2cgeoform/models.py \
 	    c2cgeoform/views/abstract_views.py \
 	    c2cgeoform/templates/
@@ -69,8 +69,10 @@ dist: .build/requirements-dev.timestamp compile-catalog
 	msgfmt $< --output-file=$@
 
 .build/venv.timestamp:
-	mkdir -p ${VENV}
-	virtualenv -p python3 ${VENV}
+	# Create a Python virtual environment.
+	virtualenv -p python3 .build/venv
+	# Upgrade packaging tools.
+	.build/venv/bin/pip install --upgrade pip==9.0.1 setuptools==36.5.0
 	touch $@
 
 .build/requirements.timestamp: .build/venv.timestamp setup.py

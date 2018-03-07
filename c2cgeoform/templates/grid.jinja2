@@ -18,7 +18,7 @@
         <th data-field="{{field.id()}}"
             data-sortable="{{'true' if field.sortable() else 'false'}}"
             class="{{field.id()}}"
-        >{{field.label()}}</th>
+        >{{request.localizer.translate(field.label())}}</th>
         {% endfor %}
       </tr>
     </thead>

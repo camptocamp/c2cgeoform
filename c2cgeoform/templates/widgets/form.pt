@@ -63,7 +63,7 @@
         </button>
       </tal:loop>
 
-      <div class="pull-right">
+      <div class="pull-right" i18n:domain="c2cgeoform">
         <tal:loop tal:repeat="action actions">
           <a tal:condition="not action.confirmation()"
              class="btn btn-default c2cgeoform-item-action ${action.name()} ${action.css_class()}"

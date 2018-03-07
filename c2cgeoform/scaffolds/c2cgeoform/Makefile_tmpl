@@ -44,8 +44,8 @@ test: build .build/requirements-dev.timestamp
 	.build/venv/bin/pytest
 
 .PHONY: update-catalog
-update-catalog:
-	.build/venv/bin/pot-create -c lingua.cfg -o {{package}}/locale/{{package}}.pot \
+update-catalog: .build/requirements.timestamp
+	.build/venv/bin/pot-create -c lingua.cfg --keyword _ -o {{package}}/locale/{{package}}.pot \
 	    {{package}}/models/{{package}}.py \
 	    {{package}}/views/ \
 	    {{package}}/templates/
@@ -67,13 +67,10 @@ node_modules: package.json
 	msgfmt $< --output-file=$@
 
 .build/venv.timestamp:
-	mkdir -p $(dir $@)
-	# make a first virtualenv to get a recent version of virtualenv
-	# virtualenv venv
-	#venv/bin/pip install virtualenv
+	# Create a Python virtual environment.
 	virtualenv -p python3 .build/venv
-	# remove the temporary virtualenv
-	rm -rf venv
+	# Upgrade packaging tools.
+	.build/venv/bin/pip install --upgrade pip==9.0.1 setuptools==36.5.0
 	touch $@
 
 .build/requirements.timestamp: .build/venv.timestamp requirements.txt
