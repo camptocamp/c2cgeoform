@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2016-02-17 11:07+0100\n"
+"POT-Creation-Date: 2018-03-06 19:17+0100\n"
 "PO-Revision-Date: 2016-01-29 14:18+0100\n"
 "Last-Translator: Arnaud Morvan <contact@camptocamp.com>\n"
 "Language-Team: French\n"
@@ -17,174 +17,231 @@ msgstr ""
 "Generated-By: Lingua 4.7\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: {{package}}/models.py:54
+#: c2cgeoform_demo/models/c2cgeoform_demo.py:71
 msgid "Contact Person"
-msgstr ""
+msgstr "Contact"
 
-#: {{package}}/models.py:63
+#: c2cgeoform_demo/models/c2cgeoform_demo.py:80
 msgid "First name"
-msgstr ""
+msgstr "Prénom"
 
-#: {{package}}/models.py:67
+#: c2cgeoform_demo/models/c2cgeoform_demo.py:84
 msgid "Last name"
-msgstr ""
+msgstr "Nom"
 
-#: {{package}}/models.py:81 {{package}}/models.py:284
+#: c2cgeoform_demo/models/c2cgeoform_demo.py:101
+#: c2cgeoform_demo/models/c2cgeoform_demo.py:319
 msgid "Photo"
-msgstr ""
+msgstr "Photo"
 
-#: {{package}}/models.py:111
+#: c2cgeoform_demo/models/c2cgeoform_demo.py:137
 msgid "Application form for permission to carry out excavation work"
-msgstr ""
+msgstr "Formulaire de demande d'autorisation pour effectuer les travaux de fouille"
 
-#: {{package}}/models.py:118
+#: c2cgeoform_demo/models/c2cgeoform_demo.py:138
+msgid "Excavation forms"
+msgstr "Demandes de fouille"
+
+#: c2cgeoform_demo/models/c2cgeoform_demo.py:149
 msgid "Permission Number"
-msgstr ""
+msgstr "Numéro d'autorisation"
 
-#: {{package}}/models.py:128
+#: c2cgeoform_demo/models/c2cgeoform_demo.py:161
 msgid "Reference Number"
-msgstr ""
+msgstr "Référence"
 
-#: {{package}}/models.py:132
+#: c2cgeoform_demo/models/c2cgeoform_demo.py:168
 msgid "Request Date"
-msgstr ""
+msgstr "Date de la demande"
 
-#: {{package}}/models.py:138
+#: c2cgeoform_demo/models/c2cgeoform_demo.py:173
 msgid "Description of the Work"
-msgstr ""
+msgstr "Description des travaux"
 
-#: {{package}}/models.py:143
+#: c2cgeoform_demo/models/c2cgeoform_demo.py:178
 msgid "Motive for the Work"
-msgstr ""
+msgstr "Motif des travaux"
 
-#: {{package}}/models.py:153
-msgid "Situation"
-msgstr ""
-
-#: {{package}}/models.py:173
+#: c2cgeoform_demo/models/c2cgeoform_demo.py:196
 msgid "Contact Persons"
-msgstr ""
+msgstr "Contacts"
 
-#: {{package}}/models.py:177
+#: c2cgeoform_demo/models/c2cgeoform_demo.py:203
 msgid "District"
 msgstr ""
 
-#: {{package}}/models.py:189 {{package}}/models.py:233
+#: c2cgeoform_demo/models/c2cgeoform_demo.py:209
+#: c2cgeoform_demo/models/c2cgeoform_demo.py:267
 msgid "- Select -"
-msgstr ""
+msgstr "- Sélectionnez -"
 
-#: {{package}}/models.py:194
+#: c2cgeoform_demo/models/c2cgeoform_demo.py:223
 msgid "Street"
-msgstr ""
+msgstr "Rue"
 
-#: {{package}}/models.py:198
+#: c2cgeoform_demo/models/c2cgeoform_demo.py:227
 msgid "Postal Code"
-msgstr ""
+msgstr "Code postal"
 
-#: {{package}}/models.py:202
+#: c2cgeoform_demo/models/c2cgeoform_demo.py:231
 msgid "Town"
-msgstr ""
+msgstr "Ville"
 
-#: {{package}}/models.py:207
+#: c2cgeoform_demo/models/c2cgeoform_demo.py:239
 msgid "Address"
-msgstr ""
+msgstr "Adresse"
 
-#: {{package}}/models.py:221
+#: c2cgeoform_demo/models/c2cgeoform_demo.py:255
 msgid "Position"
 msgstr ""
 
-#: {{package}}/models.py:230
+#: c2cgeoform_demo/models/c2cgeoform_demo.py:264
 msgid "Title"
-msgstr ""
+msgstr "Titre"
 
-#: {{package}}/models.py:234
+#: c2cgeoform_demo/models/c2cgeoform_demo.py:268
 msgid "Mr."
-msgstr ""
+msgstr "M."
 
-#: {{package}}/models.py:235
+#: c2cgeoform_demo/models/c2cgeoform_demo.py:269
 msgid "Mrs."
-msgstr ""
+msgstr "Mme"
 
-#: {{package}}/models.py:240
+#: c2cgeoform_demo/models/c2cgeoform_demo.py:274
 msgid "Name"
-msgstr ""
+msgstr "Nom"
 
-#: {{package}}/models.py:245
+#: c2cgeoform_demo/models/c2cgeoform_demo.py:278
 msgid "First Name"
-msgstr ""
+msgstr "Prénom"
 
-#: {{package}}/models.py:250
+#: c2cgeoform_demo/models/c2cgeoform_demo.py:282
 msgid "Mobile Phone"
-msgstr ""
+msgstr "Tél .Mobile"
 
-#: {{package}}/models.py:254
+#: c2cgeoform_demo/models/c2cgeoform_demo.py:286
 msgid "Mail"
-msgstr ""
+msgstr "Courriel"
 
-#: {{package}}/models.py:259
+#: c2cgeoform_demo/models/c2cgeoform_demo.py:291
 msgid "Company"
-msgstr ""
+msgstr "Entreprise"
 
-#: {{package}}/models.py:264
+#: c2cgeoform_demo/models/c2cgeoform_demo.py:296
 msgid "Validation"
 msgstr ""
 
-#: {{package}}/models.py:265
+#: c2cgeoform_demo/models/c2cgeoform_demo.py:297
 msgid "Validated"
-msgstr ""
+msgstr "Validé"
 
-#: {{package}}/models.py:272
+#: c2cgeoform_demo/models/c2cgeoform_demo.py:307
 msgid "Footprint for the Work"
-msgstr ""
+msgstr "Emprise des travaux"
 
-#: {{package}}/templates/form.pt:33
+#: c2cgeoform_demo/models/c2cgeoform_demo.py:340
+msgid "A very simple form"
+msgstr "Un formulaire très simple"
+
+#: c2cgeoform_demo/models/c2cgeoform_demo.py:341
+msgid "Comments"
+msgstr "Commentaires"
+
+#: c2cgeoform_demo/templates/form.pt:33
+#: c2cgeoform_demo/templates/excavation/form.pt:33
 msgid "There was a problem with your submission"
 msgstr ""
 
-#: {{package}}/templates/form.pt:34
+#: c2cgeoform_demo/templates/form.pt:34
+#: c2cgeoform_demo/templates/excavation/form.pt:34
 msgid "Errors have been highlighted below"
 msgstr ""
 
-#: {{package}}/templates/form.pt:44
+#: c2cgeoform_demo/templates/form.pt:44
+#: c2cgeoform_demo/templates/excavation/form.pt:44
 msgid "Basic"
 msgstr ""
 
-#: {{package}}/templates/form.pt:54
+#: c2cgeoform_demo/templates/form.pt:54
+#: c2cgeoform_demo/templates/excavation/form.pt:54
 msgid "Location"
 msgstr ""
 
-#: {{package}}/templates/form.pt:70
+#: c2cgeoform_demo/templates/form.pt:70
+#: c2cgeoform_demo/templates/excavation/form.pt:70
 msgid "Person in Charge for the Work"
 msgstr ""
 
-#: {{package}}/templates/form.pt:88
+#: c2cgeoform_demo/templates/form.pt:88
+#: c2cgeoform_demo/templates/excavation/form.pt:88
 msgid "Footprint"
 msgstr ""
 
-#: {{package}}/templates/form.pt:285
+#: c2cgeoform_demo/templates/form.pt:285
+#: c2cgeoform_demo/templates/excavation/form.pt:285
 msgid "Cancel"
 msgstr ""
 
-#: {{package}}/templates/form.pt:285
+#: c2cgeoform_demo/templates/form.pt:285
+#: c2cgeoform_demo/templates/excavation/form.pt:285
 msgid "current step:"
 msgstr ""
 
-#: {{package}}/templates/form.pt:285
+#: c2cgeoform_demo/templates/form.pt:285
+#: c2cgeoform_demo/templates/excavation/form.pt:285
 msgid "Pagination"
 msgstr ""
 
-#: {{package}}/templates/form.pt:285
+#: c2cgeoform_demo/templates/form.pt:285
+#: c2cgeoform_demo/templates/excavation/form.pt:285
 msgid "Proceed"
 msgstr ""
 
-#: {{package}}/templates/form.pt:285
+#: c2cgeoform_demo/templates/form.pt:285
+#: c2cgeoform_demo/templates/excavation/form.pt:285
 msgid "Next"
 msgstr ""
 
-#: {{package}}/templates/form.pt:285
+#: c2cgeoform_demo/templates/form.pt:285
+#: c2cgeoform_demo/templates/excavation/form.pt:285
 msgid "Previous"
 msgstr ""
 
-#: {{package}}/templates/form.pt:285
+#: c2cgeoform_demo/templates/form.pt:285
+#: c2cgeoform_demo/templates/excavation/form.pt:285
 msgid "Loading ..."
+msgstr ""
+
+#: c2cgeoform_demo/templates/edit.pt:7
+msgid "Edit"
+msgstr ""
+
+#: c2cgeoform_demo/templates/edit.pt:9
+msgid "Back to overview"
+msgstr ""
+
+#: c2cgeoform_demo/templates/deform/excavation/readonly/form_view_user.pt:22
+msgid "Submission successful"
+msgstr ""
+
+#: c2cgeoform_demo/templates/deform/excavation/readonly/form_view_user.pt:23
+msgid ""
+"Thank you for your submission. Please find below the information that was "
+"stored in our system."
+msgstr ""
+
+#: c2cgeoform_demo/templates/deform/excavation/readonly/form_confirmation.pt:24
+msgid "Confirmation"
+msgstr ""
+
+#: c2cgeoform_demo/templates/deform/excavation/readonly/form_confirmation.pt:25
+msgid "Please confirm your details and submit the form."
+msgstr ""
+
+#: c2cgeoform_demo/templates/deform/excavation/readonly/form_confirmation.pt:42
+msgid "Submit"
+msgstr ""
+
+#: c2cgeoform_demo/templates/deform/excavation/readonly/form_confirmation.pt:44
+msgid "Back to form"
 msgstr ""
