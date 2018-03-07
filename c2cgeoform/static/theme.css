@@ -44,6 +44,11 @@
 .bootstrap-table .fixed-table-toolbar .dropdown-menu {
   min-width: 200px;
 }
+.bootstrap-table th.actions,
+.bootstrap-table td.actions
+{
+  width: 30px;
+}
 .dropdown-menu {
   margin-bottom: 5px;
 }
