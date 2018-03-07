@@ -14,7 +14,8 @@ def main(global_config, **settings):
     """
     apply_local_settings(settings)
 
-    config = Configurator(settings=settings)
+    config = Configurator(settings=settings,
+                          locale_negotiator='{{package}}.i18n.locale_negotiator')
     config.include('pyramid_chameleon')
     config.include('pyramid_mako')
     config.include('pyramid_jinja2')

@@ -24,10 +24,8 @@ from c2cgeoform.ext.deform_ext import (
 from c2cgeoform.ext import colander_ext, deform_ext
 from c2cgeoform.models import FileData
 
-from .meta import Base
-
-from translationstring import TranslationStringFactory
-_ = TranslationStringFactory('{{package}}')
+from {{package}}.i18n import _
+from {{package}}.models.meta import Base
 
 
 schema = 'c2cgeoform_demo'

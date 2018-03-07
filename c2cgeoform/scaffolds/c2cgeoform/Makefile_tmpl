@@ -14,6 +14,7 @@ help:
 	@echo "- modwsgi                 Create files for Apache mod_wsgi"
 	@echo "- test                    Run the unit tests"
 	@echo "- dist                    Build a source distribution"
+	@echo "- update-catalog          Update message catalog"
 	@echo "- compile-catalog         Compile message catalog"
 	@echo
 
@@ -45,7 +46,7 @@ test: build .build/requirements-dev.timestamp
 .PHONY: update-catalog
 update-catalog:
 	.build/venv/bin/pot-create -c lingua.cfg -o {{package}}/locale/{{package}}.pot \
-	    {{package}}/models.py \
+	    {{package}}/models/{{package}}.py \
 	    {{package}}/views/ \
 	    {{package}}/templates/
 	msgmerge --update {{package}}/locale/fr/LC_MESSAGES/{{package}}.po {{package}}/locale/{{package}}.pot
