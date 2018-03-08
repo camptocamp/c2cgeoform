@@ -8,7 +8,7 @@
            tal:attributes="class string: form-control ${css_class or ''};
                            style style"
            id="${oid}"/>
-    <div id="map_${oid}" class="map"></div>
+    <div id="map_${oid}" class="map" tabindex="0"></div>
     <style>
       .map {
         height: 400px;
@@ -61,6 +61,7 @@
               center: ${structure: json.dumps(field.widget.center) },
               zoom: ${structure: json.dumps(field.widget.zoom) }
             }),
+            interactions: ol.interaction.defaults({mouseWheelZoom:false}),
             controls: ol.control.defaults({
               zoomOptions: {
                 zoomInTipLabel: c2cgeoform.i18n['zoomInTipLabel'],
@@ -71,6 +72,15 @@
                 collapsible: false
               }
             })
+          });
+
+          var target = $('#map_'+oid);
+          var mwz = new ol.interaction.MouseWheelZoom();
+          target.on('focus', function(){
+              map.addInteraction(mwz);
+          });
+          target.on('focusout', function(){
+              map.removeInteraction(mwz);
           });
 
           var fit_max_zoom = ${structure: json.dumps(field.widget.fit_max_zoom) };
