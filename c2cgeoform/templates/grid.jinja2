@@ -26,15 +26,11 @@
 
   <script type="text/javascript">
   $(function() {
-    $(window).resize(function() {
-        $('#grid').bootstrapTable('resetView',{
-          height: $(window).height() - $('nav').height() - 30}
-        );
-    });
 
     const namespace = '{{ request.registry.package_name }}';
 
-    $('#grid').bootstrapTable({
+    const $grid = $('#grid');
+    $grid.bootstrapTable({
       height: $(window).height() - $('nav').height() - 30,
       url: "{{request.route_url('c2cgeoform_grid')}}",
 
@@ -104,17 +100,23 @@
       ]
     });
 
-    $('#grid').on('dbl-click-row.bs.table', function (e, row, $element) {
+    $(window).resize(function() {
+      $grid.bootstrapTable('resetView', {
+        height: $(window).height() - $('nav').height() - 30
+      });
+    });
+
+    $grid.on('dbl-click-row.bs.table', function (e, row, $element) {
       if (row['actions']['dblclick']) {
         window.location = row['actions']['dblclick'];
       };
     });
 
-    $('#grid').on('page-change.bs.table', function(e, number, size) {
+    $grid.on('page-change.bs.table', function(e, number, size) {
       localStorage.setItem('pageSize', size);
     });
 
-    $('#grid').on('load-success.bs.table', function (e) {
+    $grid.on('load-success.bs.table', function (e) {
 
       $(".dropdown").on("shown.bs.dropdown", function () {
         $(this).children(".dropdown-menu").scrollintoview({viewPadding: 5});
@@ -127,7 +129,7 @@
             type: $(this).data('method'),
             success: function(data) {
               if (this.type == 'DELETE') {
-                $('#grid').bootstrapTable('refresh');
+                $grid.bootstrapTable('refresh');
               } else {
                 window.location = data.redirect;
               }
