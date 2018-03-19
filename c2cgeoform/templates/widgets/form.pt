@@ -112,19 +112,26 @@
      }
    );
   </script>
+  <script type="text/javascript">
+   deform.addCallback(
+     '${formid}',
+     function(oid) {
+       $('#' + oid).data('serialize', $('#' + oid).serialize()); // On load save form current state
+       $(window).bind('beforeunload', function(e){
+         if($('#' + oid).serialize() != $('#' + oid).data('serialize')){
+           return true;
+         } else {
+           e = null;
+         }
+       });
+     }
+   );
+  </script>
 
 </form>
 
 <script type="text/javascript">
 $(function () {
-  $('#${field.formid}').data('serialize', $('#${field.formid}').serialize()); // On load save form current state
-  $(window).bind('beforeunload', function(e){
-    if($('#${field.formid}').serialize() != $('#${field.formid}').data('serialize')){
-      return true;
-    } else {
-      e = null;
-    }
-  });
   $('#${field.formid} button[type=submit]').click(function (e) {
     $(window).off('beforeunload')
   });
