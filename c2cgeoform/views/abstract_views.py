@@ -145,12 +145,12 @@ class ItemAction():
     def confirmation(self):
         return self._confirmation
 
-    def to_dict(self):
+    def to_dict(self, request):
         return {
             'name': self._name,
             'url': self._url,
             'method': self._method,
-            'label': self._label,
+            'label': request.localizer.translate(self._label),
             'css_class': self._css_class,
             'icon': self._icon,
             'confirmation': self._confirmation
@@ -299,7 +299,7 @@ class AbstractViews():
                 'c2cgeoform_item',
                 id=getattr(item, self._id_field))))
         return {
-            'dropdown': [action.to_dict() for action in actions],
+            'dropdown': [action.to_dict(self._request) for action in actions],
             'dblclick': self._request.route_url(
                 'c2cgeoform_item',
                 id=getattr(item, self._id_field))}

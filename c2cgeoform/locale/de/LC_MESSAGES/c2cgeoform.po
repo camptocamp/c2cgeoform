@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2017-09-25 11:36+0200\n"
+"POT-Creation-Date: 2018-03-19 19:17+0100\n"
 "PO-Revision-Date: 2014-07-31 11:14+0200\n"
 "Last-Translator: Tobias Sauerwein <tobias.sauerwein@camptocamp.com>\n"
 "Language-Team: German\n"
@@ -15,23 +15,80 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: c2cgeoform/views/abstract_views.py:150
-#: c2cgeoform/templates/widgets/readonly/form_confirmation.pt:42
+#: c2cgeoform/views/abstract_views.py:257
 msgid "Submit"
 msgstr "Absenden"
 
+#: c2cgeoform/views/abstract_views.py:296 c2cgeoform/templates/grid.pt:103
+msgid "Edit"
+msgstr "Editieren"
+
+#: c2cgeoform/views/abstract_views.py:313
+msgid "Duplicate"
+msgstr ""
+
+#: c2cgeoform/views/abstract_views.py:322 c2cgeoform/templates/grid.pt:105
+msgid "Delete"
+msgstr ""
+
+#: c2cgeoform/views/abstract_views.py:328
+msgid "Are your sure you want to delete this record ?"
+msgstr ""
+
+#: c2cgeoform/templates/grid.jinja2:6 c2cgeoform/templates/grid.pt:7
+msgid "New"
+msgstr "Neu"
+
+#: c2cgeoform/templates/grid.pt:21
+msgid "Commands"
+msgstr "Aktionen"
+
+#: c2cgeoform/templates/grid.pt:33
+msgid "All"
+msgstr "Alle"
+
+#: c2cgeoform/templates/grid.pt:33
+msgid "Showing ((ctx.start)) to ((ctx.end)) of ((ctx.total)) entries"
+msgstr ""
+"Zeige Eintrag ((ctx.start)) bis ((ctx.end)) von insgesamt ((ctx.total)) "
+"Einträgen."
+
+#: c2cgeoform/templates/grid.pt:33
+msgid "Loading..."
+msgstr "Lade..."
+
+#: c2cgeoform/templates/grid.pt:33
+msgid "No results found!"
+msgstr "Keine Einträge gefunden!"
+
+#: c2cgeoform/templates/grid.pt:33
+msgid "Refresh"
+msgstr "Aktualisieren"
+
+#: c2cgeoform/templates/grid.pt:33
+msgid "Search"
+msgstr "Suchen"
+
+#: c2cgeoform/templates/widgets/form.pt:36
+msgid "There was a problem with your submission"
+msgstr ""
+
+#: c2cgeoform/templates/widgets/form.pt:38
+msgid "Errors have been highlighted below"
+msgstr ""
+
 #: c2cgeoform/templates/widgets/map_select.pt:37
-#: c2cgeoform/templates/widgets/map.pt:35
+#: c2cgeoform/templates/widgets/map.pt:37
 msgid "Zoom In"
 msgstr "Vergrößern"
 
 #: c2cgeoform/templates/widgets/map_select.pt:37
-#: c2cgeoform/templates/widgets/map.pt:35
+#: c2cgeoform/templates/widgets/map.pt:37
 msgid "Zoom Out"
 msgstr "Verkleinern"
 
 #: c2cgeoform/templates/widgets/map_select.pt:37
-#: c2cgeoform/templates/widgets/map.pt:35
+#: c2cgeoform/templates/widgets/map.pt:37
 msgid "Attributions"
 msgstr "Copyright"
 
@@ -43,103 +100,59 @@ msgstr "Selektiert:"
 msgid "Please select an item on the map!"
 msgstr "Bitte Objekt auf der Karte selektieren!"
 
-#: c2cgeoform/templates/widgets/map.pt:35
+#: c2cgeoform/templates/widgets/mapping.pt:13
+msgid "There was a problem with this section"
+msgstr ""
+
+#: c2cgeoform/templates/widgets/map.pt:37
 msgid "Draw point"
 msgstr "Punkt zeichnen"
 
-#: c2cgeoform/templates/widgets/map.pt:35
+#: c2cgeoform/templates/widgets/map.pt:37
 msgid "Draw line"
 msgstr "Linie zeichnen"
 
-#: c2cgeoform/templates/widgets/map.pt:35
+#: c2cgeoform/templates/widgets/map.pt:37
 msgid "Draw polygon"
 msgstr "Polygon zeichnen"
 
-#: c2cgeoform/templates/widgets/map.pt:35
+#: c2cgeoform/templates/widgets/map.pt:37
 msgid "Modify"
 msgstr "Editieren"
 
-#: c2cgeoform/templates/widgets/map.pt:35
+#: c2cgeoform/templates/widgets/map.pt:37
 msgid "Remove all"
 msgstr "Alles löschen"
 
-#: c2cgeoform/templates/widgets/readonly/form_view_user.pt:22
-msgid "Submission successful"
-msgstr "Übertragung erfolgreich"
+#~ msgid "Submission successful"
+#~ msgstr "Übertragung erfolgreich"
 
-#: c2cgeoform/templates/widgets/readonly/form_view_user.pt:23
-msgid ""
-"Thank you for your submission. Please find below the information that was "
-"stored in our system."
-msgstr ""
-"Vielen Dank für Ihre Einsendung! Nachfolgend finden Sie zur Kontrolle die "
-"Daten, die in unserem System gespeichert wurden."
+#~ msgid ""
+#~ "Thank you for your submission. Please find below the information that was "
+#~ "stored in our system."
+#~ msgstr ""
+#~ "Vielen Dank für Ihre Einsendung! Nachfolgend finden Sie zur Kontrolle die "
+#~ "Daten, die in unserem System gespeichert wurden."
 
-#: c2cgeoform/templates/widgets/readonly/form_confirmation.pt:24
-msgid "Confirmation"
-msgstr "Bestätigung"
+#~ msgid "Confirmation"
+#~ msgstr "Bestätigung"
 
-#: c2cgeoform/templates/widgets/readonly/form_confirmation.pt:25
-msgid "Please confirm your details and submit the form."
-msgstr ""
-"Bitte überprüfen Sie Ihre Eingabe und senden Sie abschließend das Formular "
-"ab."
+#~ msgid "Please confirm your details and submit the form."
+#~ msgstr ""
+#~ "Bitte überprüfen Sie Ihre Eingabe und senden Sie abschließend das "
+#~ "Formular ab."
 
-#: c2cgeoform/templates/widgets/readonly/form_confirmation.pt:44
-msgid "Back to form"
-msgstr "Zurück zum Formular"
+#~ msgid "Back to form"
+#~ msgstr "Zurück zum Formular"
 
-#: c2cgeoform/templates/site/view_admin.pt:7
-#: c2cgeoform/templates/site/index.pt:81
-msgid "View"
-msgstr "Anzeigen"
+#~ msgid "View"
+#~ msgstr "Anzeigen"
 
-#: c2cgeoform/templates/site/view_admin.pt:9 c2cgeoform/templates/site/new.pt:9
-#: c2cgeoform/templates/site/edit.pt:9
-msgid "Back to overview"
-msgstr "Zurück zur Übersicht"
+#~ msgid "Back to overview"
+#~ msgstr "Zurück zur Übersicht"
 
-#: c2cgeoform/templates/site/index.pt:7
-msgid "All entities"
-msgstr "Alle Einträge"
-
-#: c2cgeoform/templates/site/index.pt:15 c2cgeoform/templates/site/new.pt:7
-msgid "New"
-msgstr "Neu"
-
-#: c2cgeoform/templates/site/index.pt:29
-msgid "Commands"
-msgstr "Aktionen"
-
-#: c2cgeoform/templates/site/index.pt:41
-msgid "All"
-msgstr "Alle"
-
-#: c2cgeoform/templates/site/index.pt:41
-msgid "Showing ((ctx.start)) to ((ctx.end)) of ((ctx.total)) entries"
-msgstr ""
-"Zeige Eintrag ((ctx.start)) bis ((ctx.end)) von insgesamt ((ctx.total)) "
-"Einträgen."
-
-#: c2cgeoform/templates/site/index.pt:41
-msgid "Loading..."
-msgstr "Lade..."
-
-#: c2cgeoform/templates/site/index.pt:41
-msgid "No results found!"
-msgstr "Keine Einträge gefunden!"
-
-#: c2cgeoform/templates/site/index.pt:41
-msgid "Refresh"
-msgstr "Aktualisieren"
-
-#: c2cgeoform/templates/site/index.pt:41
-msgid "Search"
-msgstr "Suchen"
-
-#: c2cgeoform/templates/site/index.pt:83 c2cgeoform/templates/site/edit.pt:7
-msgid "Edit"
-msgstr "Editieren"
+#~ msgid "All entities"
+#~ msgstr "Alle Einträge"
 
 #~ msgid "Verification has failed"
 #~ msgstr "Verifikation ist fehlgeschlagen"
