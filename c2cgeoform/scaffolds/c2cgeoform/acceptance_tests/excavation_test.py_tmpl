@@ -157,7 +157,9 @@ class TestExcavationViews():
 
         dbsession.expire(exc)
 
-        assert exc.hash == re.match('http://localhost/excavations/(.*)', resp.location).group(1)
+        assert exc.hash == re.match(
+            'http://localhost/excavations/(.*)\?msg_col=submit_ok',
+            resp.location).group(1)
 
         assert "New description" == exc.description
         assert "New motif" == exc.motif
@@ -180,6 +182,8 @@ class TestExcavationViews():
         situation_ids = [situation.id for situation
                           in exc.situations]
         assert set([3, 4, 5]) == set(situation_ids)
+        assert 'Your submission has been taken into account.' == \
+            resp.follow().html.find('div', {'class': 'msg-lbl'}).getText()
 
     def test_edit_new_then_save(self, dbsession, test_app):
         resp = test_app.get("/excavations/new", status=200)
@@ -233,7 +237,9 @@ class TestExcavationViews():
 
         exc = self._excavation_by_desc(dbsession, "Description")
 
-        assert exc.hash == re.match('http://localhost/excavations/(.*)', resp.location).group(1)
+        assert exc.hash == re.match(
+            'http://localhost/excavations/(.*)\?msg_col=submit_ok',
+            resp.location).group(1)
 
         assert "Description" == exc.description
         assert "Motif" == exc.motif
@@ -254,6 +260,8 @@ class TestExcavationViews():
 
         situation_ids = [situation.id for situation in exc.situations]
         assert set([3, 4, 5]) == set(situation_ids)
+        assert 'Your submission has been taken into account.' == \
+            resp.follow().html.find('div', {'class': 'msg-lbl'}).getText()
 
     def test_edit_new_then_save_with_missing_field(self, dbsession, test_app):
         resp = test_app.get("/excavations/new", status=200)
@@ -302,6 +310,10 @@ class TestExcavationViews():
         assert exc.contact_persons[0].id != form.fields.get('id')[1].value
         assert '' == form['permission_id'].value
         assert exc.contact_persons[0].permission_id != form['permission_id'].value
+
+        assert 'Please check that the copy fits before submitting.' == \
+            resp.html.find('div', {'class': 'msg-lbl'}).getText()
+
 
     def test_unique_validator(self, dbsession, test_app):
         exc = self._excavation_by_ref(dbsession, "ref0001")
