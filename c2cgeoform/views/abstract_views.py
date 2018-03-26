@@ -29,6 +29,10 @@ After you fix the problem, please restart the Pyramid application to
 try it again.
 """
 
+MSG_COL = {
+    'submit_ok': _('Your submission has been taken into account.'),
+    'copy_ok': _('Please check that the copy fits before submitting.')}
+
 
 def model_attr_info(attr, *keys, default=None):
     if attr is None:
@@ -336,9 +340,17 @@ class AbstractViews():
         dict_ = form.schema.dictify(obj)
         if self._is_new():
             dict_.update(self._request.GET)
-        rendered = form.render(dict_,
-                               request=self._request,
-                               actions=self._item_actions(obj))
+        if 'msg_col' in self._request.params.keys() and self._request.params['msg_col'] in MSG_COL.keys():
+            rendered = form.render(
+                dict_,
+                request=self._request,
+                actions=self._item_actions(obj),
+                msg_col=[MSG_COL[self._request.params['msg_col']]])
+        else:
+            rendered = form.render(
+                dict_,
+                request=self._request,
+                actions=self._item_actions(obj))
         return {
             'form': rendered,
             'deform_dependencies': form.get_widget_resources()
@@ -383,7 +395,8 @@ class AbstractViews():
         self._populate_widgets(form.schema)
         rendered = form.render(dict_,
                                request=self._request,
-                               actions=self._item_actions(dest))
+                               actions=self._item_actions(dest),
+                               msg_col=[MSG_COL['copy_ok']])
 
         return {
             'form': rendered,
@@ -408,7 +421,8 @@ class AbstractViews():
                 self._request.route_url(
                     'c2cgeoform_item',
                     action='edit',
-                    id=self._obj.__getattribute__(self._id_field)))
+                    id=self._obj.__getattribute__(self._id_field),
+                    _query=[('msg_col', 'submit_ok')]))
         except ValidationFailure as e:
             # FIXME see https://github.com/Pylons/deform/pull/243
             self._populate_widgets(form.schema)
