@@ -71,7 +71,7 @@ msgstr "Suchen"
 
 #: c2cgeoform/templates/widgets/form.pt:36
 msgid "There was a problem with your submission"
-msgstr "Ihre Eingabe konnte nicht bearbeitet werden"
+msgstr "Ihre Eingabe konnte nicht verarbeitet werden"
 
 #: c2cgeoform/templates/widgets/form.pt:38
 msgid "Errors have been highlighted below"
