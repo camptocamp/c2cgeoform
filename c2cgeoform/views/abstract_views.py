@@ -185,8 +185,8 @@ class AbstractViews():
         """
         try:
             params = self._request.params
-            offset = int(params.get('offset'))
-            limit = int(params.get('limit'))
+            offset = int(params.get('offset', 0) if params.get('offset') != 'NaN' else 0)
+            limit = int(params.get('limit', -1) if params.get('limit') != 'NaN' else -1)
             search = params.get('search', '').strip()
             sort = params.get('sort', '')
             order = params.get('order', '')
