@@ -1,5 +1,14 @@
 MO_FILES = $(addprefix {{package}}/locale/, fr/LC_MESSAGES/{{package}}.mo de/LC_MESSAGES/{{package}}.mo)
 
+ifneq (,$(findstring CYGWIN, $(shell uname)))
+PYTHON3 =
+VENV_BIN = .build/venv/Scripts
+PIP_UPGRADE = python.exe -m pip install --upgrade pip setuptools
+else
+PYTHON3 = -p python3
+VENV_BIN = .build/venv/bin
+PIP_UPGRADE = pip install --upgrade pip==9.0.1 setuptools==36.5.0
+endif
 
 .PHONY: help
 help:
@@ -23,29 +32,29 @@ build: .build/requirements.timestamp node_modules compile-catalog
 
 .PHONY: initdb
 initdb: .build/requirements.timestamp
-	.build/venv/bin/initialize_{{package}}_db development.ini
+	$(VENV_BIN)/initialize_{{package}}_db development.ini
 
 .PHONY: serve
 serve: build
-	.build/venv/bin/pserve --reload development.ini
+	$(VENV_BIN)/pserve --reload development.ini
 
 .PHONY: check
 check: flake8
 
 .PHONY: flake8
 flake8: .build/requirements-dev.timestamp
-	.build/venv/bin/flake8 {{package}}
+	$(VENV_BIN)/flake8 {{package}}
 
 .PHONY: modwsgi
 modwsgi: install .build/venv/{{package}}.wsgi .build/apache.conf
 
 .PHONY: test
 test: build .build/requirements-dev.timestamp
-	.build/venv/bin/pytest
+	$(VENV_BIN)/pytest
 
 .PHONY: update-catalog
 update-catalog: .build/requirements.timestamp
-	.build/venv/bin/pot-create -c lingua.cfg --keyword _ -o {{package}}/locale/{{package}}.pot \
+	$(VENV_BIN)/pot-create -c lingua.cfg --keyword _ -o {{package}}/locale/{{package}}.pot \
 	    {{package}}/models/ \
 	    {{package}}/views/ \
 	    {{package}}/templates/
@@ -57,7 +66,7 @@ compile-catalog: $(MO_FILES)
 
 .PHONY: dist
 dist: .build/venv.timestamp compile-catalog
-	.build/venv/bin/python setup.py sdist
+	$(VENV_BIN)/python setup.py sdist
 
 .PHONY: node_modules
 node_modules: package.json
@@ -68,17 +77,17 @@ node_modules: package.json
 
 .build/venv.timestamp:
 	# Create a Python virtual environment.
-	virtualenv -p python3 .build/venv
+	virtualenv $(PYTHON3) .build/venv
 	# Upgrade packaging tools.
-	.build/venv/bin/pip install --upgrade pip==9.0.1 setuptools==36.5.0
+	$(VENV_BIN)/$(PIP_UPGRADE)
 	touch $@
 
 .build/requirements.timestamp: .build/venv.timestamp requirements.txt
-	.build/venv/bin/pip install -U -r requirements.txt
+	$(VENV_BIN)/pip install -U -r requirements.txt
 	touch $@
 
 .build/requirements-dev.timestamp: .build/venv.timestamp requirements-dev.txt
-	.build/venv/bin/pip install -r requirements-dev.txt > /dev/null 2>&1
+	$(VENV_BIN)/pip install -r requirements-dev.txt > /dev/null 2>&1
 	touch $@
 
 .build/venv/{{package}}.wsgi: {{package}}.wsgi
@@ -86,7 +95,7 @@ node_modules: package.json
 	chmod 755 $@
 
 .build/apache.conf: apache.conf .build/venv.timestamp
-	sed -e 's#\[PYTHONPATH\]#$(shell .build/venv/bin/python -c "import distutils.sysconfig; print(distutils.sysconfig.get_python_lib())")#' \
+	sed -e 's#\[PYTHONPATH\]#$(shell $(VENV_BIN)/python -c "import distutils.sysconfig; print(distutils.sysconfig.get_python_lib())")#' \
         -e 's#\[WSGISCRIPT\]#$(abspath .build/venv/{{package}}.wsgi)#' $< > $@
 
 .PHONY: clean
