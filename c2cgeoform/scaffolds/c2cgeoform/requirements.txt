@@ -10,5 +10,5 @@ SQLAlchemy
 transaction
 zope.sqlalchemy
 waitress
--e ../c2cgeoform
+c2cgeoform
 -e .
