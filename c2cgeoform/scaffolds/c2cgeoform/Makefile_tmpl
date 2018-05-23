@@ -46,7 +46,7 @@ test: build .build/requirements-dev.timestamp
 .PHONY: update-catalog
 update-catalog: .build/requirements.timestamp
 	.build/venv/bin/pot-create -c lingua.cfg --keyword _ -o {{package}}/locale/{{package}}.pot \
-	    {{package}}/models/{{package}}.py \
+	    {{package}}/models/ \
 	    {{package}}/views/ \
 	    {{package}}/templates/
 	msgmerge --update {{package}}/locale/fr/LC_MESSAGES/{{package}}.po {{package}}/locale/{{package}}.pot
