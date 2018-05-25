@@ -97,7 +97,7 @@ class ListField():
 
     def filtrable(self):
         return self._filter_column is not None and \
-         isinstance(self._filter_column.type, types.String)
+            isinstance(self._filter_column.type, types.String)
 
     def sort_column(self):
         return self._sort_column
@@ -174,14 +174,21 @@ class AbstractViews():
         self._appstruct = None
         self._obj = None
 
+        self._request.response.cache_control.no_cache = True
+        self._request.response.cache_control.max_age = 0
+        self._request.response.cache_control.private = True
+
     def index(self):
+        self._request.response.cache_control.no_cache = False
+        self._request.response.cache_control.max_age = 3600  # one hour
+        self._request.response.cache_control.private = True
         return {
             'list_fields': self._list_fields
         }
 
     def grid(self):
-        """API method which serves the JSON data for the Bootgrid table
-        in the admin view.
+        """
+        API method which serves the JSON data for the Bootgrid table in the admin view.
         """
         try:
             params = self._request.params
@@ -264,7 +271,7 @@ class AbstractViews():
             self._schema,
             buttons=buttons,
             **kwargs
-            )
+        )
         return form
 
     def _populate_widgets(self, node):
