@@ -12,12 +12,22 @@ The following system packages must be installed on your system:
 * `libpq-dev` (header files for PostgreSQL)
 * `gettext`
 
+On Windows, you should install `make` using Cygwin (and put the bin folder
+into the path. For Python, please use Python >= 3.x.
+
+
 ### Install c2cgeoform
 
 ```shell
 git clone git@github.com:camptocamp/c2cgeoform.git
 cd c2cgeoform
 make build
+```
+
+On Windows, you should use the https way to clone the repository:
+
+```shell
+git clone https://github.com:camptocamp/c2cgeoform.git
 ```
 
 ### Create a Pyramid project using c2cgeoform scaffold
@@ -58,7 +68,8 @@ know how to do that.
 Create the database :
 
 ```shell
-sudo -u postgres createdb myproject -T template_postgis
+sudo -u postgres createdb myproject
+sudo -u postgres psql -c 'CREATE EXTENSION postgis;'
 sudo -u postgres psql -c 'GRANT ALL ON DATABASE myproject TO "www-data";'
 ```
 
