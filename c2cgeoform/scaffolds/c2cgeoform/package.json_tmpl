@@ -12,7 +12,8 @@
     "jquery": "^3.2.1",
     "jquery.scrollintoview": "1.9.4",
     "jquery-steps": "^1.1.0",
-    "openlayers": "=3.11.2",
-    "typeahead.js": "=0.10.5"
+    "openlayers": "4.5.0",
+    "typeahead.js": "=0.10.5",
+    "@camptocamp/closure-util": "1.23.0"
   }
 }
