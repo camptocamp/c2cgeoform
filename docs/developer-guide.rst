@@ -14,14 +14,14 @@ You need to install PostgreSQL and PostGIS. On Ubuntu, the packages
 
 You need to create a role. For example:
 
-.. code:: shell
+.. code-block:: shell
 
    sudo su - postgres
    createuser --pwprompt c2cgeoform
 
 You need to create a PostGIS database. For example:
 
-.. code:: shell
+.. code-block:: shell
 
    createdb --owner=c2cgeoform c2cgeoform
    psql -d c2cgeoform -c "CREATE EXTENSION postgis;"
@@ -34,7 +34,7 @@ as appropriate.
 
 For example:
 
-.. code:: py
+.. code-block:: ini
 
    sqlalchemy.url = postgresql://c2cgeoform:c2cgeoform@localhost:5432/c2cgeoform
 
@@ -43,9 +43,9 @@ Installation
 
 Install a dev egg of ``c2cgeoform`` in a virtual env:
 
-.. code:: shell
+.. code-block:: shell
 
-   $ make install
+   make install
 
 (This creates the virtual env for you.)
 
@@ -56,9 +56,9 @@ Initialize the DB
 
 Initialize the database:
 
-.. code:: shell
+.. code-block:: shell
 
-   $ make initdb
+   make initdb
 
 Run the tests
 ~~~~~~~~~~~~~
@@ -67,7 +67,7 @@ Run the tests:
 
 Create the tests database:
 
-::
+.. code-block:: shell
 
    sudo -u postgres psql -c "CREATE USER \"www-data\" WITH PASSWORD 'www-data';"
 
@@ -77,6 +77,6 @@ Create the tests database:
 
 Run the framework and demo tests:
 
-.. code:: shell
+.. code-block:: shell
 
    make test

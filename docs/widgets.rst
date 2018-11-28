@@ -1,5 +1,11 @@
+Configure the widgets
+---------------------
+
+
+
+
 The map widget
---------------
+~~~~~~~~~~~~~~
 
 All Deform `widgets`_ can be used with ``c2cgeoform``. Additionally,
 ``c2cgeoform`` provides a map widget for GeoAlchemy 2 geometry columns,
@@ -7,35 +13,35 @@ which allows to draw and modify geometries on an OpenLayers 3 map.
 
 Example:
 
-.. code:: py
+.. code-block:: python
 
-       position = Column(
-           geoalchemy2.Geometry('POINT', 4326, management=True), info={
-               'colanderalchemy': {
-                   'title': 'Position',
-                   'typ': colander_ext.Geometry('POINT', srid=4326, map_srid=3857),
-                   'widget': deform_ext.MapWidget()
-               }})
+    position = Column(
+        geoalchemy2.Geometry('POINT', 4326, management=True), info={
+            'colanderalchemy': {
+                'title': 'Position',
+                'typ': colander_ext.Geometry('POINT', srid=4326, map_srid=3857),
+                'widget': deform_ext.MapWidget()
+            }})
 
 To customize the OpenLayers 3 map, the widget template ``map.pt`` has to
 be overridden in your project templates/widgets folder, see: `page`_
 
 Override the ``c2cgeoform/widgets/map.pt`` template in your project.
 
-.. code:: shell
+.. code-block:: shell
 
    mkdir c2cgeoform_project/templates/widgets
    cp ../.build/venv/src/c2cgeoform/c2cgeoform/templates/widgets/map.pt c2cgeoform_project/templates/widgets/
 
 Customize the file, for example, replace :
 
-.. code:: javascript
+.. code-block:: javascript
 
    source: new ol.source.MapQuest({layer: 'osm'})
 
 by :
 
-.. code:: javascript
+.. code-block:: javascript
 
    source: new ol.source.WMTS({
        requestEncoding: 'KVP',
@@ -62,7 +68,7 @@ by :
 
 and
 
-.. code:: javascript
+.. code-block:: javascript
 
    view: new ol.View({
        center: defaultCenter,
@@ -71,7 +77,7 @@ and
 
 by :
 
-.. code:: javascript
+.. code-block:: javascript
 
    view: new ol.View({
        center: [539000, 181000],

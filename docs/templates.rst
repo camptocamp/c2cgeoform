@@ -3,55 +3,74 @@ Using custom templates
 
 To customize applications built with ``c2cgeoform``, the `Chameleon`_
 templates can be overwritten. ``c2cgeoform`` distinguishes between two
-types of templates: **site** templates and Deform **form** templates.
+types of templates: **site** templates and Deform **widget** templates.
 Site templates are used by the views and provide the site structure.
 Form templates are templates for the Deform form and field widgets.
 
-Overwriting site templates
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+Default site templates
+~~~~~~~~~~~~~~~~~~~~~~
 
-The default ``c2cgeoform`` templates are located in `templates/sites`_.
-To use custom templates, the templates asset has to be overwritten, for
-example like this:
+The default ``c2cgeoform`` site templates are located in the ``templates``
+folder and use `jinja2`_ syntax.
 
-::
+c2cgeoform comes with partial templates that are included in sites templates
+of your project.
 
-   config.override_asset(
-       to_override='c2cgeoform:templates/sites/',
-       override_with='myproject:templates/sites/')
+.. _Jinja2: http://jinja.pocoo.org/
 
-For more information please refer to the Pyramid documentation (`“Static
-Assets: The override_asset API”`_).
+Overriding widget templates globally
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Overwriting form templates
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+Deform widget templates are located in the ``templates/widgets`` folder and
+use the `chameleon`_ syntax.
 
-To overwrite the `Deform templates`_ or the templates of ``c2cgeoform``
-widgets (like the map widget), a custom template directory can be
-provided when registering a schema:
+At rendering time, Deform will search for the templates as configured in Form
+class renderer ``search_path``. c2cgeoform configure it to:
 
-::
+.. code-block:: python
 
-   register_schema(
-       'person',
-       model.Person,
-       templates_user=resource_filename('myproject', 'templates_user')
-       templates_admin=resource_filename('myproject', 'templates_admin'))
+   default_search_paths = (
+       resource_filename('c2cgeoform', 'templates/widgets'),
+       resource_filename('deform', 'templates'))
 
-Because several ``c2cgeoform`` views use forms and to make it possible
-to customize the forms in these different views, ``c2cgeoform`` uses
-separate form templates for each view. The mapping between view and form
-template is as follows:
+But you can add you own widgets folder, in your package ``__init__.py`` file
+before including ``c2cgeoform`` using:
 
--  View ``form``: ``[templates_user/]form.pt``
--  View ``confirmation``:
-   ``[templates_user/]readonly/form_confirmation.pt``
--  View ``view_user``: ``[templates_user/]readonly/form_view_user.pt``
--  View ``edit`` (admin): ``[templates_admin/]form.pt``
--  View ``view_admin`` (admin): ``[templates_admin/]readonly/form.pt``
+.. code-block:: python
+
+   import c2cgeoform
+   search_paths = (
+       (resource_filename(__name__, 'templates/widgets'),) +
+       c2cgeoform.default_search_paths
+   )
+   c2cgeoform.default_search_paths = search_paths
+
+With this, to overwrite globally the `Deform templates`_ or the templates coming from
+``c2cgeoform`` (like the map widget), you just need to copy the template to your application
+``templates/widgets`` folder.
 
 .. _Chameleon: https://chameleon.readthedocs.org/en/latest/
-.. _templates/sites: ../c2cgeoform/templates/sites
-.. _`“Static Assets: The override_asset API”`: http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/assets.html#the-override-asset-api
 .. _Deform templates: https://github.com/Pylons/deform/tree/master/deform/templates
 
+Use a custom template for a form or a specific widget in a form
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The form main template as each widget template can be changed locally by for a
+given model by giving a ``template`` property to the ``Widget``.
+
+.. code-block:: python
+
+   base_schema = GeoFormSchemaNode(
+       Comment,
+       widget=FormWidget(template='comment'))
+
+Note that it is possible to create a layout for the form fields without completely
+overriding the form template by giving a ``fields_template`` to the form schema.
+
+.. code-block:: python
+
+   base_schema = GeoFormSchemaNode(
+       Comment,
+       widget=FormWidget(fields_template='comment_fields'))
+
+Here is the default one: https://github.com/camptocamp/c2cgeoform/blob/master/c2cgeoform/templates/widgets/mapping_fields.pt

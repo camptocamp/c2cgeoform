@@ -40,6 +40,8 @@ base_schema.add_unique_validator(Excavation.reference_number, Excavation.hash)
 class ExcavationViews(AbstractViews):
 
     _model = Excavation
+    _base_schema = base_schema
+    _id_field = 'hash'
 
     _list_fields = [
         _list_field('reference_number'),
@@ -52,9 +54,6 @@ class ExcavationViews(AbstractViews):
                         [s.name for s in excavation.situations]),
                     filter_column=Situation.name)
     ]
-
-    _id_field = 'hash'
-    _base_schema = base_schema
 
     def _base_query(self):
         return self._request.dbsession.query(Excavation).distinct(). \

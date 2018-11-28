@@ -1,9 +1,9 @@
-Creating a ``c2cgeoform`` project
----------------------------------
+Creating a c2cgeoform project
+-----------------------------
 
-This page describes how to create a ``c2cgeoform`` project. A
-``c2cgeoform`` project is basically a Pyramid project with
-``c2cgeoform`` enabled in the project.
+This page describes how to create a c2cgeoform project. A
+c2cgeoform project is basically a Pyramid project with
+c2cgeoform enabled in the project.
 
 System requirements
 ~~~~~~~~~~~~~~~~~~~
@@ -20,7 +20,7 @@ folder into the path). For Python, please use Python >= 3.x.
 Install c2cgeoform
 ~~~~~~~~~~~~~~~~~~
 
-.. code:: shell
+.. code-block:: shell
 
    git clone git@github.com:camptocamp/c2cgeoform.git
    cd c2cgeoform
@@ -28,7 +28,7 @@ Install c2cgeoform
 
 On Windows, you should use the https way to clone the repository:
 
-.. code:: shell
+.. code-block:: shell
 
    git clone https://github.com:camptocamp/c2cgeoform.git
 
@@ -39,9 +39,9 @@ Creating a ``c2cgeoform`` is creating a pyramid project using the
 c2cgeoform scaffold.
 
 Note that if PYTHONPATH does not exists as an environment variable,
-template files (*_tmpl) do not render in new project folder.
+template files (\*_tmpl) do not render in new project folder.
 
-.. code:: shell
+.. code-block:: shell
 
    export PYTHONPATH=$PYTHONPATH
    .build/venv/bin/pcreate -s c2cgeoform ../c2cgeoform_project
@@ -51,7 +51,7 @@ Initialize a git repository
 
 Make your new project folder a git repository.
 
-.. code:: shell
+.. code-block:: shell
 
    cd ../c2cgeoform_project
    git init
@@ -61,7 +61,7 @@ Make your new project folder a git repository.
 Install the project and its dependencies
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. code:: shell
+.. code-block:: shell
 
    make build
 
@@ -73,7 +73,7 @@ the `Prerequesites`_ of the Developer Guide to know how to do that.
 
 Create the database:
 
-.. code:: shell
+.. code-block:: shell
 
    sudo -u postgres createdb c2cgeoform_project
    sudo -u postgres psql -d c2cgeoform_project -c 'CREATE EXTENSION postgis;'
@@ -83,13 +83,13 @@ When you do have a Postgres role and a PostGIS database edit the
 ``development.ini`` and ``production.ini`` files and set
 ``sqlachemy.url`` as appropriate. For example:
 
-.. code:: py
+.. code-block:: ini
 
    sqlalchemy.url = postgresql://www-data:www-data@localhost:5432/c2cgeoform_project
 
 Now create the tables:
 
-.. code:: shell
+.. code-block:: shell
 
    make initdb
 
@@ -102,7 +102,7 @@ Run the development server
 
 You’re now ready to run the application:
 
-.. code:: shell
+.. code-block:: shell
 
    make serve
 
@@ -113,7 +113,7 @@ http://localhost:6543/excavations.
 Customise the model
 ~~~~~~~~~~~~~~~~~~~
 
-As a ``c2cgeoform`` application developer your main task is to define a
+As a c2cgeoform application developer your main task is to define a
 *model*. See the “Defining a model for a form page” `page`_ to know how
 to do this.
 

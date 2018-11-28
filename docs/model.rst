@@ -4,7 +4,7 @@ Defining the model for a form
 The underlying schema for a ``c2cgeoform`` form is defined as SQLAlchemy
 model. A simple definition is shown below:
 
-.. code:: python
+.. code-block:: python
 
    from sqlalchemy import (Column, Integer, Text)
    import deform
@@ -21,8 +21,7 @@ model. A simple definition is shown below:
 
        id = Column(Integer, primary_key=True, info={
            'colanderalchemy': {
-               'widget': deform.widget.HiddenWidget(),
-               'admin_list': True
+               'widget': deform.widget.HiddenWidget()
            }})
 
        hash = Column(Text, unique=True, default=lambda: str(uuid4(), info={
@@ -32,8 +31,7 @@ model. A simple definition is shown below:
 
        name = Column(Text, nullable=False, info={
            'colanderalchemy': {
-               'title': 'Name',
-               'admin_list': True
+               'title': 'Name'
            }})
 
        comment = Column(Text, nullable=True, info={

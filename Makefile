@@ -76,7 +76,7 @@ dist: .build/requirements-dev.timestamp compile-catalog
 	$(VENV_BIN)/python setup.py sdist
 
 .PHONY: docs
-docs:
+docs: .build/requirements-dev.timestamp
 	make -C docs html
 
 %.mo: %.po
