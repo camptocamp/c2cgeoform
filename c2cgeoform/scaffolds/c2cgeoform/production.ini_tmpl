@@ -15,7 +15,7 @@ pyramid.available_languages = en fr de
 pyramid.includes =
     pyramid_tm
 
-sqlalchemy.url = sqlite:///%(here)s/{{project}}.sqlite
+sqlalchemy.url = postgresql://www-data:www-data@localhost:5432/{{package}}
 
 [server:main]
 use = egg:waitress#main
