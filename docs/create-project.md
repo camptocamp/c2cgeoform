@@ -108,14 +108,14 @@ As a `c2cgeoform` application developer your main task is to define a *model*.
 See the "Defining a model for a form page" [page](model.md) to know how to do
 this.
 
-Edit the file `myproject/models.py`.
+Edit the file `c2cgeoform_project/models.py`.
 
 ### Customise the form template
 
 As a `c2cgeoform` application developer you also need to define a *form
 template*.
 
-Edit the file `myproject/templates/form.pt`.
+Edit the file `c2cgeoform_project/templates/form.pt`.
 
 ### Update translations
 
@@ -126,7 +126,7 @@ make update-catalog
 ```
 
 Now you can edit translation catalogues with `.po` extension
-in `myproject/locale` folder.
+in `c2cgeoform_project/locale` folder.
 
 `c2cgeoform` is installed from source (as opposed to being installed as an
 egg). For that reason it is required to manually compile the `c2cgeoform`

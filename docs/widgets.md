@@ -1,11 +1,30 @@
-## Customize the map widget
+## The map widget
+
+All Deform [widgets](http://deform2demo.repoze.org/) can be used with
+`c2cgeoform`. Additionally, `c2cgeoform` provides a map widget for GeoAlchemy 2
+geometry columns, which allows to draw and modify geometries on an OpenLayers 3
+map.
+
+Example:
+
+```py
+    position = Column(
+        geoalchemy2.Geometry('POINT', 4326, management=True), info={
+            'colanderalchemy': {
+                'title': 'Position',
+                'typ': colander_ext.Geometry('POINT', srid=4326, map_srid=3857),
+                'widget': deform_ext.MapWidget()
+            }})
+```
+
+To customize the OpenLayers 3 map, the widget template `map.pt` has to be
+overridden in your project templates/widgets folder, see: [page](templates.md)
 
 Override the `c2cgeoform/widgets/map.pt` template in your project.
 
 ```shell
-cd MyProject
-mkdir myproject/templates/widgets
-cp ../.build/venv/src/c2cgeoform/c2cgeoform/templates/widgets/map.pt myproject/templates/widgets/
+mkdir c2cgeoform_project/templates/widgets
+cp ../.build/venv/src/c2cgeoform/c2cgeoform/templates/widgets/map.pt c2cgeoform_project/templates/widgets/
 ```
 
 Customize the file, for example, replace :

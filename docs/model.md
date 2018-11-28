@@ -6,6 +6,8 @@ simple definition is shown below:
 ```python
 from sqlalchemy import (Column, Integer, Text)
 import deform
+from uuid import uuid4
+
 from c2cgeoform.models import Base
 
 
@@ -21,7 +23,10 @@ class Comment(Base):
             'admin_list': True
         }})
 
-    hash = Column(Text, unique=True)
+    hash = Column(Text, unique=True, default=lambda: str(uuid4(), info={
+        'colanderalchemy': {
+            'widget': HiddenWidget()
+        }})
 
     name = Column(Text, nullable=False, info={
         'colanderalchemy': {
@@ -47,29 +52,9 @@ requirements are:
 * The model class must contain exactly one primary key column. Tables with
 composite primary keys are not supported.
 
-A more complex example for a model can be found [here](../c2cgeoform/pully/model.py).
+A more complex example for a model can be found
+[here](../c2cgeoform/scaffolds/c2cgeoform/+package+/models/c2cgeoform_demo.py).
 For more information on how to define the model, please refer to the documentation
 of [SQLAlchemy](http://www.sqlalchemy.org/), [ColanderAlchemy](
 http://colanderalchemy.readthedocs.org/en/latest/), [Colander](
 http://colander.readthedocs.org/en/latest/) and [Deform](http://deform.readthedocs.org/en/latest/).
-
-## The map widget
-
-All Deform [widgets](http://deform2demo.repoze.org/) can be used with
-`c2cgeoform`. Additionally, `c2cgeoform` provides a map widget for GeoAlchemy 2
-geometry columns, which allows to draw and modify geometries on an OpenLayers 3
-map.
-
-Example:
-
-    position = Column(
-        geoalchemy2.Geometry('POINT', 4326, management=True), info={
-            'colanderalchemy': {
-                'title': 'Position',
-                'typ':
-                colander_ext.Geometry('POINT', srid=4326, map_srid=3857),
-                'widget': deform_ext.MapWidget()
-            }})
-
-To customize the OpenLayers 3 map, the widget template `map.pt` has to be
-overwritten.
