@@ -86,7 +86,7 @@ dist: .build/venv.timestamp compile-catalog
 	touch $@
 
 .build/requirements.timestamp: .build/venv.timestamp requirements.txt
-	$(VENV_BIN)/pip install -U -r requirements.txt
+	$(VENV_BIN)/pip install -r requirements.txt -e .
 	touch $@
 
 .build/requirements-dev.timestamp: .build/venv.timestamp requirements-dev.txt

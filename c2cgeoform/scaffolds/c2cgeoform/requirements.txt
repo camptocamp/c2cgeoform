@@ -1,14 +1,15 @@
-#-e git+https://github.com/camptocamp/c2cgeoform#egg=c2cgeoform
-ColanderAlchemy==0.3.3
+c2cgeoform
+colander
+ColanderAlchemy>=0.3.2
+geoalchemy2
 plaster_pastedeploy
-pyramid >= 1.9a
+psycopg2-binary
+pyproj
 pyramid_debugtoolbar
 pyramid_retry
 pyramid_tm
-pyramid_jinja2
+shapely
 SQLAlchemy
 transaction
 zope.sqlalchemy
 waitress
-c2cgeoform
--e .
