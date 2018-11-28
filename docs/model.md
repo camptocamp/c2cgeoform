@@ -46,11 +46,6 @@ requirements are:
 
 * The model class must contain exactly one primary key column. Tables with
 composite primary keys are not supported.
-* The table must have a `hash` column, in which a generated identifier will be
-inserted for new form entries. This allows to reference a form submission
-without exposing the database id. By default the hash column is assumed to be
-named `hash`. But a different name can be provided using the property
-`hash_column_name` when registering the schema.
 
 A more complex example for a model can be found [here](../c2cgeoform/pully/model.py).
 For more information on how to define the model, please refer to the documentation

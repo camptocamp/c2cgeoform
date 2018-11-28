@@ -13,7 +13,7 @@ The following system packages must be installed on your system:
 * `gettext`
 
 On Windows, you should install `make` using Cygwin (and put the bin folder
-into the path. For Python, please use Python >= 3.x.
+into the path). For Python, please use Python >= 3.x.
 
 
 ### Install c2cgeoform
@@ -39,7 +39,7 @@ template files (*_tmpl) do not render in new project folder.
 
 ```shell
 export PYTHONPATH=$PYTHONPATH
-.build/venv/bin/pcreate -s c2cgeoform ../MyProject
+.build/venv/bin/pcreate -s c2cgeoform ../c2cgeoform_project
 ```
 
 ### Initialize a git repository
@@ -47,7 +47,7 @@ export PYTHONPATH=$PYTHONPATH
 Make your new project folder a git repository.
 
 ```shell
-cd ../MyProject
+cd ../c2cgeoform_project
 git init
 git add .
 git commit -m 'Initial commit'
@@ -65,19 +65,20 @@ First of all you need to have a PostGIS database for the project. See the
 [Prerequesites](developer-guide.md#prerequesites) of the Developer Guide to
 know how to do that.
 
-Create the database :
+Create the database:
 
 ```shell
-sudo -u postgres createdb myproject
-sudo -u postgres psql -d myproject -c 'CREATE EXTENSION postgis;'
-sudo -u postgres psql -c 'GRANT ALL ON DATABASE myproject TO "www-data";'
+sudo -u postgres createdb c2cgeoform_project
+sudo -u postgres psql -d c2cgeoform_project -c 'CREATE EXTENSION postgis;'
+sudo -u postgres psql -c 'GRANT ALL ON DATABASE c2cgeoform_project TO "www-data";'
 ```
 
 When you do have a Postgres role and a PostGIS database edit the
-`development.ini` file and set `sqlachemy.url` as appropriate. For example:
+`development.ini` and `production.ini` files and set `sqlachemy.url` as appropriate.
+For example:
 
 ```py
-sqlalchemy.url = postgresql://myproject:myproject@localhost:5432/myproject
+sqlalchemy.url = postgresql://www-data:www-data@localhost:5432/c2cgeoform_project
 ```
 
 Now create the tables:
@@ -86,7 +87,7 @@ Now create the tables:
 make initdb
 ```
 
-Note that this execute the python script `myproject/scripts/initializedb.py`.
+Note that this execute the python script `c2cgeoform_project/scripts/initializedb.py`.
 You will have to customize this thereafter.
 
 ### Run the development server
@@ -98,9 +99,8 @@ make serve
 ```
 
 Visit the following ULRs to verify that the application works correctly:
-[http://localhost:6543/fouille/form](http://localhost:6543/fouille/form) and
-[http://localhost:6543/admin/fouille](http://localhost:6543/admin/fouille).
-
+[http://localhost:6543/excavations/new](http://localhost:6543/excavations/new) and
+[http://localhost:6543/excavations](http://localhost:6543/excavations).
 
 ### Customise the model
 
