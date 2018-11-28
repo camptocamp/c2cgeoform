@@ -75,6 +75,10 @@ compile-catalog: $(MO_FILES)
 dist: .build/requirements-dev.timestamp compile-catalog
 	$(VENV_BIN)/python setup.py sdist
 
+.PHONY: docs
+docs:
+	make -C docs html
+
 %.mo: %.po
 	msgfmt $< --output-file=$@
 
