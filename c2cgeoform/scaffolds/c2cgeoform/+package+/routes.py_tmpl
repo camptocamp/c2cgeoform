@@ -2,7 +2,6 @@ import os
 
 from c2cgeoform.routes import register_models
 from .models.c2cgeoform_demo import (
-    Comment,
     Excavation,
 )
 
@@ -19,5 +18,4 @@ def includeme(config):
     config.add_route('addresses', '/addresses')
 
     register_models(config, [
-        ('excavations', Excavation),
-        ('comments', Comment)])
+        ('excavations', Excavation)])
