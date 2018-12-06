@@ -41,23 +41,23 @@ flake8: .build/requirements-dev.timestamp
 	$(VENV_BIN)/flake8 c2cgeoform
 
 .PHONY: check_c2cgeoform_demo
-check_c2cgeoform_demo: c2cgeoform_demo
-	make -C ../c2cgeoform_demo check
+check_c2cgeoform_demo: $(BUILD_DIR)/c2cgeoform_demo
+	make -C $(BUILD_DIR)/c2cgeoform_demo check
 
 .PHONY: test
 test: test_c2cgeoform test_c2cgeoform_demo
 
 .PHONY: test_c2cgeoform
-test_c2cgeoform: .build/requirements.timestamp .build/requirements-dev.timestamp
+test_c2cgeoform: build .build/requirements-dev.timestamp
 	$(VENV_BIN)/nosetests --ignore-files=test_views.py
 
 .PHONY: test_c2cgeoform_demo
-test_c2cgeoform_demo: c2cgeoform_demo
-	make -C ../c2cgeoform_demo -f ./dev.mk test
+test_c2cgeoform_demo: $(BUILD_DIR)/c2cgeoform_demo
+	make -C $(BUILD_DIR)/c2cgeoform_demo -f ./dev.mk test
 
-.PHONY: c2cgeoform_demo
-c2cgeoform_demo: .build/requirements.timestamp c2cgeoform/scaffolds/c2cgeoform
-	$(VENV_BIN)/pcreate -s c2cgeoform --overwrite ../c2cgeoform_demo > /dev/null
+$(BUILD_DIR)/c2cgeoform_demo: build c2cgeoform/scaffolds/c2cgeoform c2cgeoform_demo_dev.mk
+	$(VENV_BIN)/pcreate -s c2cgeoform --overwrite $(BUILD_DIR)/c2cgeoform_demo > /dev/null
+	cp c2cgeoform_demo_dev.mk $(BUILD_DIR)/c2cgeoform_demo/dev.mk
 
 .PHONY: update-catalog
 update-catalog: .build/requirements.timestamp
@@ -102,5 +102,13 @@ clean:
 	rm -f $(MO_FILES)
 
 .PHONY: cleanall
-cleanall:
+cleanall: clean
 	rm -rf .build
+
+.PHONY: initdb
+initdb: $(BUILD_DIR)/c2cgeoform_demo
+	make -C $(BUILD_DIR)/c2cgeoform_demo -f dev.mk initdb
+
+.PHONY: serve
+serve: $(BUILD_DIR)/c2cgeoform_demo
+	make -C $(BUILD_DIR)/c2cgeoform_demo -f dev.mk serve
