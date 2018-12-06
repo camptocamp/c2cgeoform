@@ -53,7 +53,7 @@ test_c2cgeoform: .build/requirements.timestamp .build/requirements-dev.timestamp
 
 .PHONY: test_c2cgeoform_demo
 test_c2cgeoform_demo: c2cgeoform_demo
-	make -C ../c2cgeoform_demo test
+	make -C ../c2cgeoform_demo -f ./dev.mk test
 
 .PHONY: c2cgeoform_demo
 c2cgeoform_demo: .build/requirements.timestamp c2cgeoform/scaffolds/c2cgeoform
