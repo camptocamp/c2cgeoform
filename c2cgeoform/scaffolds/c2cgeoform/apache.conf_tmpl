@@ -1,0 +1,11 @@
+WSGIPassAuthorization On
+
+WSGIDaemonProcess {{package}}:[INSTANCE_ID] display-name=%{GROUP} user=www-data group=staff \
+    python-path=[PYTHONPATH]
+
+WSGIScriptAlias /[APACHE_ENTRY_POINT] [WSGISCRIPT]
+
+<Location /[APACHE_ENTRY_POINT]>
+    WSGIProcessGroup {{package}}:[INSTANCE_ID]
+    WSGIApplicationGroup %{GLOBAL}
+</Location>

@@ -17,12 +17,9 @@ More specifically, it uses
 database it uses [SQLAlchemy](http://www.sqlalchemy.org/) and
 [GeoAlchemy 2](https://geoalchemy-2.readthedocs.org/en/latest/).
 
-Documentation : https://c2cgeoform.readthedocs.io/en/latest/
+Documentation: https://c2cgeoform.readthedocs.io/en/latest/
 
-Demo links: [fill in
-a form](https://geomapfish-demo.camptocamp.net/c2cgeoform/wsgi/fouille/form/),
-[list form
-submissions](https://geomapfish-demo.camptocamp.net/c2cgeoform/wsgi/fouille/).
+Demo: https://geomapfish-demo.camptocamp.com/c2cgeoform
 
 ## Copyright
 

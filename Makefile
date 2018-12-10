@@ -112,3 +112,7 @@ initdb: $(BUILD_DIR)/c2cgeoform_demo
 .PHONY: serve
 serve: $(BUILD_DIR)/c2cgeoform_demo
 	make -C $(BUILD_DIR)/c2cgeoform_demo -f dev.mk serve
+
+.PHONY: modwsgi
+modwsgi: $(BUILD_DIR)/c2cgeoform_demo
+	make -C $(BUILD_DIR)/c2cgeoform_demo modwsgi
