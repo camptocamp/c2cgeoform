@@ -19,14 +19,6 @@ folder and finally checks and tests are launched on this project too.
 Note that you should never alter the c2cgeoform_demo project itself but the
 c2cgeoform scaffold and regenerate the c2cgeoform_demo project.
 
-.. _developer-guide Prerequisites:
-
-Prerequisites
-~~~~~~~~~~~~~
-
-You need to install PostgreSQL and PostGIS. On Ubuntu, the packages
-``postgresql-server-dev-9.3`` and ``python-dev`` are required.
-
 Clone the project
 ~~~~~~~~~~~~~~~~~
 

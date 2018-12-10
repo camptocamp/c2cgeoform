@@ -1,25 +1,26 @@
+.. _templates:
+
 Using custom templates
 ----------------------
 
-To customize applications built with ``c2cgeoform``, the `Chameleon`_
-templates can be overwritten. ``c2cgeoform`` distinguishes between two
-types of templates: **site** templates and Deform **widget** templates.
-Site templates are used by the views and provide the site structure.
-Form templates are templates for the Deform form and field widgets.
+c2cgeoform distinguishes between two types of templates: **views** templates
+and **widget** templates.
+- Views templates are used directly by Pyramid and provide the site structure.
+- Widgets templates are used by Deform to render the forms.
 
-Default site templates
-~~~~~~~~~~~~~~~~~~~~~~
+Default views templates
+~~~~~~~~~~~~~~~~~~~~~~~
 
-The default ``c2cgeoform`` site templates are located in the ``templates``
+The default c2cgeoform views templates are located in the ``templates``
 folder and use `jinja2`_ syntax.
 
-c2cgeoform comes with partial templates that are included in sites templates
+c2cgeoform comes with partial templates that are included in views templates
 of your project.
 
 .. _Jinja2: http://jinja.pocoo.org/
 
-Overriding widget templates globally
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Overriding widgets templates globally
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Deform widget templates are located in the ``templates/widgets`` folder and
 use the `chameleon`_ syntax.

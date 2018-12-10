@@ -5,18 +5,6 @@ This page describes how to create a c2cgeoform project. A
 c2cgeoform project is basically a Pyramid project with
 c2cgeoform enabled in the project.
 
-System requirements
-~~~~~~~~~~~~~~~~~~~
-
-The following system packages must be installed on your system:
-
--  ``python-virtualenv``
--  ``libpq-dev`` (header files for PostgreSQL)
--  ``gettext``
-
-On Windows, you should install ``make`` using Cygwin (and put the bin
-folder into the path). For Python, please use Python >= 3.x.
-
 Install c2cgeoform
 ~~~~~~~~~~~~~~~~~~
 
@@ -68,9 +56,7 @@ Install the project and its dependencies
 Set up database
 ~~~~~~~~~~~~~~~
 
-First of all you need to have a PostGIS database for the project. See
-the `Prerequesites`_ of the Developer Guide to know how to do that.
-
+First of all you need to have a PostGIS database for the project.
 Create the database:
 
 .. code-block:: shell
@@ -109,28 +95,3 @@ You’re now ready to run the application:
 Visit the following ULRs to verify that the application works correctly:
 http://localhost:6543/excavations/new and
 http://localhost:6543/excavations.
-
-Customise the model
-~~~~~~~~~~~~~~~~~~~
-
-As a c2cgeoform application developer your main task is to define a
-*model*. See the “Defining a model for a form page” `page`_ to know how
-to do this.
-
-Edit the file ``c2cgeoform_project/models.py``.
-
-Customise the form template
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-As a ``c2cgeoform`` application developer you also need to define a
-*form template*.
-
-Edit the file ``c2cgeoform_project/templates/form.pt``.
-
-Update translations
-~~~~~~~~~~~~~~~~~~~
-
-Update the
-
-.. _Prerequesites: developer-guide.md#prerequesites
-.. _page: model.md

@@ -12,9 +12,9 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
-# import os
-# import sys
-# sys.path.insert(0, os.path.abspath('.'))
+import os
+import sys
+sys.path.insert(0, os.path.abspath(os.path.join('..', 'c2cgeoform')))
 
 
 # -- Project information -----------------------------------------------------
@@ -39,6 +39,7 @@ release = '2.0'
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
+    'sphinx.ext.autodoc',
     'sphinx.ext.githubpages',
 ]
 
@@ -175,3 +176,9 @@ epub_exclude_files = ['search.html']
 
 
 # -- Extension configuration -------------------------------------------------
+
+autodoc_default_options = {
+    'members': None,
+    'no-undoc-members': None,
+    'no-inherited-members': None
+}

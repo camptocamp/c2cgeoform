@@ -17,7 +17,8 @@ log = logging.getLogger(__name__)
 
 class MapWidget(Widget):
     """
-    A Deform widget for geometry columns which shows a map.
+    A Deform widget that fits with GeoAlchemy 2 geometry columns and shows a
+    an OpenLayers 3 map which allows to draw and modify geometries.
 
     Example usage
 
@@ -454,10 +455,10 @@ class RelationCheckBoxListWidget(CheckboxChoiceWidget,
     edit_url (optionnal)
         a function taking request and value as parameter and returning
         an url to the correponding resource.
+
     For further attributes, please refer to the documentation of
     ``deform.widget.Select2Widget`` in the deform documentation:
     <http://deform.readthedocs.org/en/latest/api.html>
-
     """
     def __init__(
             self, model, id_field='id', label_field='label',

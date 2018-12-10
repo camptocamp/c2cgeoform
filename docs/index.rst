@@ -7,17 +7,11 @@ Welcome to c2cgeoform's documentation!
 ======================================
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
    :caption: Contents:
 
-   create-project
-   model
-   views
-   grid
-   widgets
-   templates
-   tests
-   i18n
+   prerequisites
+   user-guide/index
    developer-guide
 
 Indices and tables

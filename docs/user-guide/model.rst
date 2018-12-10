@@ -1,3 +1,5 @@
+.. _model:
+
 Defining the model for a form
 -----------------------------
 
@@ -58,7 +60,7 @@ documentation of `SQLAlchemy`_, `ColanderAlchemy`_, `Colander`_ and
 .. _ColanderAlchemy: http://colanderalchemy.readthedocs.org/en/latest/
 .. _widget: http://deform2demo.repoze.org/
 .. _validator: http://colander.readthedocs.org/en/latest/api.html#validators
-.. _here: ../c2cgeoform/scaffolds/c2cgeoform/+package+/models/c2cgeoform_demo.py
+.. _here: https://github.com/camptocamp/c2cgeoform/blob/master/c2cgeoform/scaffolds/c2cgeoform/%2Bpackage%2B/models/c2cgeoform_demo.py_tmpl
 .. _SQLAlchemy: http://www.sqlalchemy.org/
 .. _Colander: http://colander.readthedocs.org/en/latest/
 .. _Deform: http://deform.readthedocs.org/en/latest/
