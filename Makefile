@@ -76,7 +76,7 @@ dist: .build/requirements-dev.timestamp compile-catalog
 	$(VENV_BIN)/python setup.py sdist
 
 .PHONY: docs
-docs: .build/requirements-dev.timestamp
+docs: .build/requirements.timestamp .build/requirements-dev.timestamp
 	make -C docs html
 
 %.mo: %.po
@@ -89,8 +89,8 @@ docs: .build/requirements-dev.timestamp
 	$(VENV_BIN)/$(PIP_UPGRADE)
 	touch $@
 
-.build/requirements.timestamp: .build/venv.timestamp setup.py
-	$(VENV_BIN)/pip install -U -e .
+.build/requirements.timestamp: .build/venv.timestamp setup.py requirements.txt
+	$(VENV_BIN)/pip install -r requirements.txt -e .
 	touch $@
 
 .build/requirements-dev.timestamp: .build/venv.timestamp requirements-dev.txt
