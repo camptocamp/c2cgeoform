@@ -1,20 +1,20 @@
 .. _developer-guide:
 
-Developper guide
-----------------
+Developer guide
+---------------
 
 This page describes how to set up the development environment for working on
 c2cgeoform. It is for developers working on c2cgeoform itself, not for
 developers working on c2cgeoform-based applications.
 
-Note that c2cgeoform is a framework and with a
+Note that c2cgeoform is a framework with a
 `Pyramid  scaffold <https://docs.pylonsproject.org/projects/pyramid/en/latest/narr/scaffolding.html>`_
-to create c2cgeoform-based applications. This scaffold produce a fully
+used to create c2cgeoform-based applications. This scaffold produce a fully
 functional c2cgeoform-base project: the c2cgeoform_demo project.
 
 When running code checks and tests, these jobs are first run on the c2cgeoform
-framework itself where after the c2cgeoform_demo project is generated in `.build`
-folder and finally checks and tests are launched on this project too.
+framework itself. Then the c2cgeoform_demo project is generated in `.build`
+folder. Finally, the checks and tests are launched in this project.
 
 Note that you should never alter the c2cgeoform_demo project itself but the
 c2cgeoform scaffold and regenerate the c2cgeoform_demo project.
@@ -76,8 +76,9 @@ Run the development server:
 You can now open the demo project in your favorite browser:
 http://localhost:6543/
 
-Here is it, you're ready to develop in c2cgeoform. Make changes in c2cgeoform,
-run the checks, tests and see the results in c2cgeoform demo application.
+And there you go, you're ready to develop, make changes in c2cgeoform, run
+checks and tests in c2cgeoform. And finally see the results in c2cgeoform demo
+application.
 
 Deploy the c2cgeoform_demo on demo server
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -96,7 +97,7 @@ Prepare the demo project:
    # generate the c2cgeoform_demo project with mod_wsgi related files
    APACHE_ENTRY_POINT=c2cgeoform make modwsgi
 
-Create the database as for serving the developement version, see:
+Create the database as to serve the development version, see:
 :ref:`developer-guide Serve_development_version`
 
 Include the demo project in Apache virtual host configuration:

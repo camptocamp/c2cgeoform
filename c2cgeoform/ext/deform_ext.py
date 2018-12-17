@@ -17,7 +17,7 @@ log = logging.getLogger(__name__)
 
 class MapWidget(Widget):
     """
-    A Deform widget that fits with GeoAlchemy 2 geometry columns and shows a
+    A Deform widget that fits with GeoAlchemy 2 geometry columns and shows
     an OpenLayers 3 map which allows to draw and modify geometries.
 
     Example usage

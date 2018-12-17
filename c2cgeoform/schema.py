@@ -27,7 +27,7 @@ def unique_validator(mapper, column, id_column, node, value):
 class GeoFormSchemaNode(SQLAlchemySchemaNode):
     """
     An SQLAlchemySchemaNode with deferred request and dbsession properties.
-    This allow defining schemas that requires the request and dbsession at
+    This will allow defining schemas that requires the request and dbsession at
     module-scope.
 
     Example usage:
@@ -70,7 +70,7 @@ class GeoFormSchemaNode(SQLAlchemySchemaNode):
 
 class GeoFormManyToManySchemaNode(GeoFormSchemaNode):
     """
-    A GeoFormSchemaNode that properly handle many to many relationships.
+    A GeoFormSchemaNode that properly handles many to many relationships.
 
     includes:
         Default to primary key name(s) only.
@@ -82,7 +82,7 @@ class GeoFormManyToManySchemaNode(GeoFormSchemaNode):
 
     def objectify(self, dict_, context=None):
         """
-        Method override that return the existing ORM class instance instead of
+        Method override that returns the existing ORM class instance instead of
         creating a new one.
         """
         dbsession = self.bindings['dbsession']
@@ -92,7 +92,7 @@ class GeoFormManyToManySchemaNode(GeoFormSchemaNode):
 
 def manytomany_validator(node, cstruct):
     """
-    Validator function that checks ``cstruct`` values exists in related table.
+    Validator function that checks if ``cstruct`` values exist in the related table.
 
     Note that entities are retrieved using only one query and placed in
     SQLAlchemy identity map before looping on ``cstruct``.

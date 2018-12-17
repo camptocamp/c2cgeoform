@@ -3,7 +3,7 @@
 Using custom templates
 ----------------------
 
-c2cgeoform distinguishes between two types of templates: **views** templates
+c2cgeoform distinguishes two types of templates: **views** templates
 and **widget** templates.
 - Views templates are used directly by Pyramid and provide the site structure.
 - Widgets templates are used by Deform to render the forms.
@@ -25,8 +25,8 @@ Overriding widgets templates globally
 Deform widget templates are located in the ``templates/widgets`` folder and
 use the `chameleon`_ syntax.
 
-At rendering time, Deform will search for the templates as configured in Form
-class renderer ``search_path``. c2cgeoform configure it to:
+At rendering time, Deform will search folders for the templates in order they
+appear in Form renderer ``search_path`` property. c2cgeoform configure it to:
 
 .. code-block:: python
 
@@ -46,7 +46,7 @@ before including ``c2cgeoform`` using:
    )
    c2cgeoform.default_search_paths = search_paths
 
-With this, to overwrite globally the `Deform templates`_ or the templates coming from
+To overwrite globally the `Deform templates`_ or the templates coming from
 ``c2cgeoform`` (like the map widget), you just need to copy the template to your application
 ``templates/widgets`` folder.
 
@@ -56,7 +56,7 @@ With this, to overwrite globally the `Deform templates`_ or the templates coming
 Use a custom template for a form or a specific widget in a form
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The form main template as each widget template can be changed locally by for a
+Both the form main template and widget templates can be changed locally for a
 given model by giving a ``template`` property to the ``Widget``.
 
 .. code-block:: python

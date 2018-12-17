@@ -3,7 +3,7 @@
 Defining the model for a form
 -----------------------------
 
-The underlying schema for a ``c2cgeoform`` form is defined as SQLAlchemy
+The underlying schema for a ``c2cgeoform`` form is defined as a SQLAlchemy
 model. A simple definition is shown below:
 
 .. code-block:: python
@@ -42,9 +42,9 @@ model. A simple definition is shown below:
                'widget': deform.widget.TextAreaWidget(rows=3),
            }})
 
-This SQLAlchemy model is enriched with properties for
-`ColanderAlchemy`_, for example to set a title for a field, to use a
-specific Deform `widget`_ or to use a Colander `validator`_.
+This SQLAlchemy model is enriched with properties for `ColanderAlchemy`_, for
+example to set a title for a field, use a specific Deform `widget`_ or use a
+Colander `validator`_.
 
 In general, every SQLAlchemy model can be used as schema for a form. The
 only requirements are:
@@ -54,8 +54,8 @@ only requirements are:
 
 A more complex example for a model can be found `here`_. For more
 information on how to define the model, please refer to the
-documentation of `SQLAlchemy`_, `ColanderAlchemy`_, `Colander`_ and
-`Deform`_.
+`SQLAlchemy`_, `ColanderAlchemy`_, `Colander`_ and
+`Deform`_ documentations.
 
 .. _ColanderAlchemy: http://colanderalchemy.readthedocs.org/en/latest/
 .. _widget: http://deform2demo.repoze.org/

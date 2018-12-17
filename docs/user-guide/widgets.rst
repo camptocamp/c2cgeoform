@@ -4,7 +4,7 @@ Configure the widgets
 All Deform widgets can be used with ``c2cgeoform``. See the Deform `examples`_
 and widgets `API reference`_ for detailed description about available options.
 
-Additionally, c2cgeoform provides some additionals widgets:
+Additionally, c2cgeoform provides some extra widgets:
 
 .. automodule:: c2cgeoform.ext.deform_ext
    :members:

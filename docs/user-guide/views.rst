@@ -26,8 +26,8 @@ class will only apply when the route parameter named ``table`` will be equal to
 * c2cgeoform_item: ``{table}/{{id}}``
 * c2cgeoform_item_duplicate: ``{table}/{{id}}/duplicate``
 
-Those routes are registered in pyramid config with module ``routes``, see file
-``routes.py`` at the root of the generated project.
+Those routes are registered in the pyramid config by the ``routes`` module (see
+the ``routes.py`` file situated at the root of the generated project).
 
 .. code-block:: python
 
@@ -40,7 +40,7 @@ To select records through urls, we also need a unique field, this is given by:
 
    _id_field = 'hash'
 
-And to show the grid of table records we need a definition per column:
+And to show the table records grid we need a definition per column:
 
 .. code-block:: python
 
