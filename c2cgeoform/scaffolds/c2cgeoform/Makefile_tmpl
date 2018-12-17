@@ -1,3 +1,6 @@
+INSTANCE_ID ?= main
+APACHE_ENTRY_POINT ?= /
+
 MO_FILES = $(addprefix {{package}}/locale/, fr/LC_MESSAGES/{{package}}.mo de/LC_MESSAGES/{{package}}.mo)
 
 ifneq (,$(findstring CYGWIN, $(shell uname)))
@@ -49,7 +52,7 @@ flake8: .build/requirements-dev.timestamp
 	$(VENV_BIN)/flake8 {{package}}
 
 .PHONY: modwsgi
-modwsgi: install .build/venv/{{package}}.wsgi .build/apache.conf
+modwsgi: build .build/venv/{{package}}.wsgi .build/apache.conf
 
 .PHONY: test
 test: build .build/requirements-dev.timestamp
@@ -87,7 +90,6 @@ dist: .build/venv.timestamp compile-catalog
 
 .build/requirements.timestamp: .build/venv.timestamp requirements.txt
 	$(VENV_BIN)/pip install -r requirements.txt -e .
-	touch $@
 
 .build/requirements-dev.timestamp: .build/venv.timestamp requirements-dev.txt
 	$(VENV_BIN)/pip install -r requirements-dev.txt > /dev/null 2>&1
@@ -99,7 +101,9 @@ dist: .build/venv.timestamp compile-catalog
 
 .build/apache.conf: apache.conf .build/venv.timestamp
 	sed -e 's#\[PYTHONPATH\]#$(shell $(VENV_BIN)/python -c "import distutils.sysconfig; print(distutils.sysconfig.get_python_lib())")#' \
-        -e 's#\[WSGISCRIPT\]#$(abspath .build/venv/{{package}}.wsgi)#' $< > $@
+        -e 's#\[WSGISCRIPT\]#$(abspath .build/venv/{{package}}.wsgi)#' \
+        -e 's#\[INSTANCE_ID\]#$(INSTANCE_ID)#' \
+        -e 's#\[APACHE_ENTRY_POINT\]#$(APACHE_ENTRY_POINT)#' $< > $@
 
 .PHONY: clean
 clean:

@@ -7,8 +7,6 @@ with open(os.path.join(here, 'README.txt')) as f:
     README = f.read()
 with open(os.path.join(here, 'CHANGES.txt')) as f:
     CHANGES = f.read()
-with open(os.path.join(here, 'requirements.txt')) as f:
-    install_requires = f.read().splitlines()
 
 setup(name='{{project}}',
       version='0.0',
@@ -28,7 +26,6 @@ setup(name='{{project}}',
       include_package_data=True,
       zip_safe=False,
       test_suite='{{package}}',
-      install_requires=install_requires,
       entry_points="""\
       [paste.app_factory]
       main = {{package}}:main

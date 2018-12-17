@@ -25,6 +25,25 @@ def unique_validator(mapper, column, id_column, node, value):
 
 
 class GeoFormSchemaNode(SQLAlchemySchemaNode):
+    """
+    An SQLAlchemySchemaNode with deferred request and dbsession properties.
+    This will allow defining schemas that requires the request and dbsession at
+    module-scope.
+
+    Example usage:
+
+    .. code-block:: python
+
+        schema = GeoFormSchemaNode(MyModel)
+
+        def create_form(request, dbsession):
+            return Form(
+                schema = schema.bind(
+                    request=request,
+                    dbsession=request.dbsession),
+                ...
+            )
+    """
 
     def __init__(self, *args, **kw):
         super().__init__(*args, **kw)
@@ -32,6 +51,16 @@ class GeoFormSchemaNode(SQLAlchemySchemaNode):
         self.dbsession = deferred_dbsession
 
     def add_unique_validator(self, column, column_id):
+        """
+        Adds an unique validator on this schema instance.
+
+        column
+            SQLAlchemy ColumnProperty that should be unique.
+
+        column_id
+            SQLAlchemy MapperProperty that is used to recognize the entity,
+            basically the primary key ColumnProperty.
+        """
         validator = partial(unique_validator, self.class_, column, column_id)
         if self[column.name].validator is None:
             self[column.name].validator = validator
@@ -40,12 +69,22 @@ class GeoFormSchemaNode(SQLAlchemySchemaNode):
 
 
 class GeoFormManyToManySchemaNode(GeoFormSchemaNode):
+    """
+    A GeoFormSchemaNode that properly handles many to many relationships.
+
+    includes:
+        Default to primary key name(s) only.
+    """
 
     def __init__(self, class_, includes=None, *args, **kw):
         includes = [pk.name for pk in inspect(class_).primary_key]
         super().__init__(class_, includes, *args, **kw)
 
     def objectify(self, dict_, context=None):
+        """
+        Method override that returns the existing ORM class instance instead of
+        creating a new one.
+        """
         dbsession = self.bindings['dbsession']
         class_ = self.inspector.class_
         return dbsession.query(class_).get(dict_.values())
@@ -53,9 +92,10 @@ class GeoFormManyToManySchemaNode(GeoFormSchemaNode):
 
 def manytomany_validator(node, cstruct):
     """
-    Validate that cstruct values exists in related table.
+    Validator function that checks if ``cstruct`` values exist in the related table.
+
     Note that entities are retrieved using only one query and placed in
-    sqlalchemy identity map.
+    SQLAlchemy identity map before looping on ``cstruct``.
     """
     dbsession = node.bindings['dbsession']
     class_ = node.children[0].inspector.class_
