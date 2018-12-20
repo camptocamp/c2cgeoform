@@ -56,7 +56,7 @@ class ExcavationViews(AbstractViews):
     ]
 
     def _base_query(self):
-        return self._request.dbsession.query(Excavation).distinct(). \
+        return super()._base_query().distinct(). \
             join('situations'). \
             options(subqueryload('situations'))
 
