@@ -18,6 +18,9 @@ See the following API to understand what is going on behind the scene.
    :members: GeoFormSchemaNode, GeoFormManyToManySchemaNode
    :member-order: bysource
 
+.. automodule:: c2cgeoform.ext.colander_ext
+   :members:
+
 .. _Colander: http://colander.readthedocs.org/en/latest/
 .. _ColanderAlchemy: http://colanderalchemy.readthedocs.org/en/latest/
 .. _SQLAlchemy: http://www.sqlalchemy.org/
