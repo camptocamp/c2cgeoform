@@ -3,5 +3,5 @@ geoalchemy2==0.4.0
 shapely==1.5.17
 pyproj==1.9.5.1
 zope.sqlalchemy==0.7.7
-psycopg2==2.7.3
+psycopg2-binary==2.7.7
 colanderalchemy==0.3.3
