@@ -38,7 +38,7 @@ class TestExcavationViews():
         resp_tmp = resp.click(verbose=True, href="language=en")
         resp_en = resp_tmp.follow()
         html_en = resp_en.html
-        news_en = html_en.select('a[href$=/excavations/new]')
+        news_en = html_en.select('a[href$="/excavations/new"]')
         assert 1 == len(news_en)
         assert "New" == news_en[0].string
 
@@ -49,7 +49,7 @@ class TestExcavationViews():
         resp_tmp = resp_en.click(verbose=True, href="language=fr")
         resp_fr = resp_tmp.follow()
         html_fr = resp_fr.html
-        news_fr = html_fr.select('a[href$=/excavations/new]')
+        news_fr = html_fr.select('a[href$="/excavations/new"]')
         assert 1 == len(news_fr)
         assert "Nouveau" == news_fr[0].string
 
@@ -274,7 +274,7 @@ class TestExcavationViews():
             resp.html.select_one('div[class="error-msg-detail"]').text
         assert ['Postal Code', 'Street', 'Town'] == \
             sorted([(x.select_one("label").text.strip()) \
-            for x in resp.html.select("[class~'has-error']")])
+            for x in resp.html.select(".has-error")])
 
     def test_duplicate(self, dbsession, test_app):
         exc = self._excavation_by_ref(dbsession, "ref0001")
@@ -326,7 +326,7 @@ class TestExcavationViews():
         assert 'Errors have been highlighted below' == \
             resp.html.select_one('div[class="error-msg-detail"]').text
         assert '{} is already used.'.format(exc.reference_number) == \
-            resp.html.select_one("[class~'has-error']").select_one("[class~'help-block']").getText()
+            resp.html.select_one(".has-error").select_one(".help-block").getText()
 
     def test_delete_success(self, dbsession, test_app):
         exc = self._excavation_by_ref(dbsession, "ref0001")
