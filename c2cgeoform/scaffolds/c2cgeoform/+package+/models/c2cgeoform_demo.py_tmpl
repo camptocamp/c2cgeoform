@@ -171,6 +171,7 @@ class Excavation(Base):
     description = Column(Text, nullable=True, info={
         'colanderalchemy': {
             'title': _('Description of the Work'),
+            'description': _('exemple de description'),
             'widget': deform.widget.TextAreaWidget(rows=3),
         }})
     motif = Column(Text, nullable=True, info={
