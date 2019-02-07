@@ -57,7 +57,7 @@ class ExcavationViews(AbstractViews):
 
     def _base_query(self):
         return super()._base_query().distinct(). \
-            join('situations'). \
+            outerjoin('situations'). \
             options(subqueryload('situations'))
 
     @view_config(route_name='c2cgeoform_index',
