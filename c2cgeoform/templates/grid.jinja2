@@ -17,6 +17,7 @@
         {% for field in list_fields %}
         <th data-field="{{field.id()}}"
             data-sortable="{{'true' if field.sortable() else 'false'}}"
+            data-visible="{{'true' if field.visible() else 'false'}}"
             class="{{field.id()}}"
         >{{request.localizer.translate(field.label())}}</th>
         {% endfor %}

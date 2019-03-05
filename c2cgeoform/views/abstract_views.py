@@ -359,6 +359,7 @@ class AbstractViews():
                 request=self._request,
                 actions=self._item_actions(obj))
         return {
+            'title': form.title,
             'form': rendered,
             'deform_dependencies': form.get_widget_resources()
         }
@@ -406,6 +407,7 @@ class AbstractViews():
                                msg_col=[MSG_COL['copy_ok']])
 
         return {
+            'title': form.title,
             'form': rendered,
             'deform_dependencies': form.get_widget_resources()
         }
@@ -439,6 +441,7 @@ class AbstractViews():
                 request=self._request,
                 actions=self._item_actions(obj))
             return {
+                'title': form.title,
                 'form': rendered,
                 'deform_dependencies': form.get_widget_resources()
             }
