@@ -52,7 +52,7 @@ flake8: .build/requirements-dev.timestamp
 	$(VENV_BIN)/flake8 {{package}}
 
 .PHONY: modwsgi
-modwsgi: build .build/venv/{{package}}.wsgi .build/apache.conf
+modwsgi: build .build/{{package}}.wsgi .build/apache.conf
 
 .PHONY: test
 test: build .build/requirements-dev.timestamp
@@ -96,13 +96,13 @@ dist: .build/venv.timestamp compile-catalog
 	$(VENV_BIN)/pip install -r requirements-dev.txt > /dev/null 2>&1
 	touch $@
 
-.build/venv/{{package}}.wsgi: {{package}}.wsgi
+.build/{{package}}.wsgi: {{package}}.wsgi
 	sed 's#\[DIR\]#$(CURDIR)#' $< > $@
 	chmod 755 $@
 
 .build/apache.conf: apache.conf .build/venv.timestamp
 	sed -e 's#\[PYTHONPATH\]#$(shell $(VENV_BIN)/python -c "import distutils.sysconfig; print(distutils.sysconfig.get_python_lib())")#' \
-        -e 's#\[WSGISCRIPT\]#$(abspath .build/venv/{{package}}.wsgi)#' \
+        -e 's#\[WSGISCRIPT\]#$(abspath .build/{{package}}.wsgi)#' \
         -e 's#\[INSTANCE_ID\]#$(INSTANCE_ID)#' \
         -e 's#\[APACHE_ENTRY_POINT\]#$(APACHE_ENTRY_POINT)#' $< > $@
 
