@@ -1,11 +1,12 @@
 WSGIPassAuthorization On
 
-WSGIDaemonProcess {{package}}:[INSTANCE_ID] display-name=%{GROUP} user=www-data group=staff \
-    python-path=[PYTHONPATH]
+WSGIDaemonProcess {{package}}:[INSTANCE_ID] display-name=%{GROUP} user=www-data group=staff
 
-WSGIScriptAlias /[APACHE_ENTRY_POINT] [WSGISCRIPT]
+WSGIScriptAlias [APACHE_ENTRY_POINT] [WSGISCRIPT]
 
-<Location /[APACHE_ENTRY_POINT]>
+<Location [APACHE_ENTRY_POINT]>
     WSGIProcessGroup {{package}}:[INSTANCE_ID]
     WSGIApplicationGroup %{GLOBAL}
+
+    Require all granted
 </Location>

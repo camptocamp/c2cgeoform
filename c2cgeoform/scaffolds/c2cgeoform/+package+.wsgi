@@ -1,6 +1,9 @@
-import sys
-sys.path.append('[DIR]/.build/venv/lib/python3.6/site-packages')
+python_home = '[DIR]/.build/venv'
+activate_this = python_home + '/bin/activate_this.py'
+with open(activate_this) as f:
+    exec(f.read(), dict(__file__=activate_this))
 
-from pyramid.paster import get_app
-application = get_app(
-  '[DIR]/production.ini', 'main')
+from pyramid.paster import get_app, setup_logging
+ini_path = '[DIR]/production.ini'
+setup_logging(ini_path)
+application = get_app(ini_path, 'main')
