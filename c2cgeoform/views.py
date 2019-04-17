@@ -3,7 +3,6 @@ from pyramid.httpexceptions import HTTPNotFound, HTTPFound, HTTPBadRequest
 from deform import Form, ValidationFailure, ZPTRendererFactory
 from deform.form import Button
 from deform.widget import FormWidget
-import webhelpers.paginate as paginate
 from sqlalchemy import desc, or_, types
 from sqlalchemy.orm.exc import NoResultFound
 from geoalchemy2.elements import WKBElement
@@ -58,7 +57,7 @@ def form(request):
 
         try:
             obj_dict = form.validate(form_data)
-        except ValidationFailure, e:
+        except ValidationFailure as e:
             # FIXME see https://github.com/Pylons/deform/pull/243
             rendered = e.field.widget.serialize(
                 e.field, e.cstruct, custom_data=custom_data, request=request)
@@ -156,7 +155,7 @@ def _validate_and_store(
         form_data = form_data + request.POST.items()
     try:
         obj_dict = form.validate(form_data)
-    except ValidationFailure, e:
+    except ValidationFailure as e:
         # FIXME see https://github.com/Pylons/deform/pull/243
         rendered = e.field.widget.serialize(
             e.field, e.cstruct, readonly=True, request=request,
@@ -263,14 +262,15 @@ def grid(request):
     search_phrase = request.POST.get('searchPhrase', '').strip()
     sort = _get_sort_param(request.POST)
 
-    query = _get_query(geo_form_schema, sort, search_phrase)
-    page = paginate.Page(query, page=current_page, items_per_page=row_count)
+    query = _get_query(geo_form_schema, sort, search_phrase). \
+        offset(current_page * row_count). \
+        limit(row_count)
 
     return {
-        "current": page.page,
-        "rowCount": page.items_per_page,
-        "rows": _get_grid_rows(page.items, geo_form_schema),
-        "total": page.item_count
+        "current": current_page,
+        "rowCount": row_count,
+        "rows": _get_grid_rows(query.all(), geo_form_schema),
+        "total": query.count()
     }
 
 
@@ -357,7 +357,7 @@ def edit(request):
 
         try:
             obj_dict = form.validate(form_data)
-        except ValidationFailure, e:
+        except ValidationFailure as e:
             rendered = e.render()
         else:
             obj = geo_form_schema.schema_admin.objectify(obj_dict)

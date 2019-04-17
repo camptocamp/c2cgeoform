@@ -8,7 +8,7 @@ from shapely.ops import transform
 from functools import partial
 import pyproj
 import json
-from StringIO import StringIO
+from io import StringIO
 import os
 
 
