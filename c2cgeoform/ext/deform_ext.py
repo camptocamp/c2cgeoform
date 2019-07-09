@@ -642,7 +642,7 @@ class FileUploadWidget(DeformFileUploadWidget):
     def deserialize(self, field, pstruct):
         value = DeformFileUploadWidget.deserialize(self, field, pstruct)
         if value != null and 'fp' in value:
-            value['data'] = value['fp']
+            value['data'] = value.pop('fp')
         return value
 
 
