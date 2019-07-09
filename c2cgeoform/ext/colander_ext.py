@@ -8,7 +8,7 @@ from shapely.ops import transform
 from functools import partial
 import pyproj
 import json
-from io import StringIO
+from io import BytesIO
 import os
 
 
@@ -131,7 +131,7 @@ class BinaryData(object):
         """
         if appstruct is null or appstruct == '':
             return null
-        return StringIO(appstruct)
+        return BytesIO(appstruct)
 
     def deserialize(self, node, cstruct):
         """
@@ -141,7 +141,7 @@ class BinaryData(object):
         """
         if cstruct is null or cstruct == '':
             return null
-        byte_array = memoryview(cstruct.read())
+        byte_array = cstruct.read()
         # set the file position back to 0, so that the file can be read again
         cstruct.seek(0, os.SEEK_SET)
         return byte_array
