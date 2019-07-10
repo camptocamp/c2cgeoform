@@ -819,12 +819,12 @@ class RecaptchaWidget(MappingWidget):
                 field.schema,
                 _('Please verify that you are a human!'), pstruct)
         remoteip = self.request.remote_addr
-        data = urllib.urlencode({'secret': self.private_key,
-                                 'response': response,
-                                 'remoteip': remoteip})
+        data = urllib.parse.urlencode({'secret': self.private_key,
+                                       'response': response,
+                                       'remoteip': remoteip})
 
         try:
-            resp = urllib.request.urlopen(self.url, data)
+            resp = urllib.request.urlopen(self.url, data.encode('ascii'))
         except urllib.error.URLError as e:
             log.error('reCaptcha connection problem: %s', e.reason)
             raise Invalid(field.schema, _("Connection problem"), pstruct)
