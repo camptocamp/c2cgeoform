@@ -1,29 +1,49 @@
 from pyramid.events import BeforeRender
 
 
-def table_pregenerator(request, elements, kw):
+class Application():
+
+    def __init__(self, name, models):
+        self._name = name
+        self._models = models
+
+    def tables(self):
+        tables = []
+        for key, mapper in self._models:
+            ca_config = getattr(mapper, '__colanderalchemy_config__', {})
+            table = {}
+            # key stand for url path, sometimes designated as table (in match dict)
+            table['key'] = key
+            table['title'] = ca_config.get('title', mapper.__tablename__)
+            table['plural'] = ca_config.get('plural', mapper.__tablename__)
+            tables.append(table)
+        return tables
+
+
+applications = {}
+
+
+def pregenerator(request, elements, kw):
     if 'table' not in kw:
         kw['table'] = request.matchdict['table']
+    if 'application' not in kw:
+        kw['application'] = request.matchdict['application']
     return elements, kw
 
 
-def register_models(config, models, prefix=''):
+def register_application(name, models):
+    global applications
+    applications[name] = Application(name, models)
+
+
+def register_routes(config, multi_application=True, prefix=''):
+    if multi_application:
+        base_route = '{}/{{application}}/{{table}}'.format(prefix)
+    else:
+        base_route = '{}/{{table}}'.format(prefix)
 
     def rec_with_pregenerator(route, pattern):
-        config.add_route(route, pattern, pregenerator=table_pregenerator)
-
-    tables = []
-    for key, mapper in models:
-        ca_config = getattr(mapper, '__colanderalchemy_config__', {})
-        table = {}
-        # key stand for url path, sometimes designated as table (in match dict)
-        table['key'] = key
-        table['title'] = ca_config.get('title', mapper.__tablename__)
-        table['plural'] = ca_config.get('plural', mapper.__tablename__)
-        tables.append(table)
-
-    table_regex = '|'.join(['({})'.format(table['key']) for table in tables])
-    base_route = '{}/{{table:{}}}'.format(prefix, table_regex)
+        config.add_route(route, pattern, pregenerator=pregenerator)
 
     rec_with_pregenerator('c2cgeoform_index', base_route)
     rec_with_pregenerator('c2cgeoform_grid', '{}/grid.json'.format(base_route))
@@ -31,6 +51,14 @@ def register_models(config, models, prefix=''):
     rec_with_pregenerator('c2cgeoform_item_duplicate', '{}/{{id}}/duplicate'.format(base_route))
 
     def add_global(event):
-        event['tables'] = tables
+        event['applications'] = applications
 
     config.add_subscriber(add_global, iface=BeforeRender)
+
+
+def register_models(config, models, prefix=''):
+    """
+    Deprecated, use register_application and register_routes instead
+    """
+    register_application('default', models)
+    register_routes(config, False, prefix)
