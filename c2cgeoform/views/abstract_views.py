@@ -174,14 +174,7 @@ class AbstractViews():
         self._appstruct = None
         self._obj = None
 
-        self._request.response.cache_control.no_cache = True
-        self._request.response.cache_control.max_age = 0
-        self._request.response.cache_control.private = True
-
     def index(self):
-        self._request.response.cache_control.no_cache = False
-        self._request.response.cache_control.max_age = 3600  # one hour
-        self._request.response.cache_control.private = True
         return {
             'list_fields': self._list_fields
         }
@@ -260,18 +253,29 @@ class AbstractViews():
             rows.append(row)
         return rows
 
-    def _form(self, **kwargs):
-        self._schema = self._base_schema.bind(
+    def _set_readonly(self, field):
+        field.readonly = True
+        for child in field.children:
+            child.widget.readonly = True
+
+    def _form(self, schema=None, readonly=False, **kwargs):
+        self._schema = schema or self._base_schema.bind(
             request=self._request,
             dbsession=self._request.dbsession)
 
-        buttons = [Button(name='formsubmit', title=_('Submit'))]
+        buttons = []
+        if not readonly:
+            buttons.append(Button(name='formsubmit', title=_('Submit')))
 
         form = Form(
             self._schema,
             buttons=buttons,
             **kwargs
         )
+
+        if readonly:
+            self._set_readonly(form)
+
         return form
 
     def _populate_widgets(self, node):
@@ -340,9 +344,10 @@ class AbstractViews():
 
         return actions
 
-    def edit(self):
+    def edit(self, schema=None, readonly=False):
         obj = self._get_object()
-        form = self._form()
+        form = self._form(schema=schema,
+                          readonly=readonly)
         self._populate_widgets(form.schema)
         dict_ = form.schema.dictify(obj)
         if self._is_new():
