@@ -29,10 +29,6 @@ After you fix the problem, please restart the Pyramid application to
 try it again.
 """
 
-MSG_COL = {
-    'submit_ok': _('Your submission has been taken into account.'),
-    'copy_ok': _('Please check that the copy fits before submitting.')}
-
 
 def model_attr_info(attr, *keys, default=None):
     if attr is None:
@@ -167,6 +163,11 @@ class AbstractViews():
     _list_fields = []  # Fields in list
     _id_field = None  # Primary key
     _base_schema = None  # base colander schema
+
+    MSG_COL = {
+        'submit_ok': _('Your submission has been taken into account.'),
+        'copy_ok': _('Please check that the copy fits before submitting.'),
+    }
 
     def __init__(self, request):
         self._request = request
@@ -352,12 +353,15 @@ class AbstractViews():
         dict_ = form.schema.dictify(obj)
         if self._is_new():
             dict_.update(self._request.GET)
-        if 'msg_col' in self._request.params.keys() and self._request.params['msg_col'] in MSG_COL.keys():
+        if (
+            'msg_col' in self._request.params.keys() and
+            self._request.params['msg_col'] in self.MSG_COL.keys()
+        ):
             rendered = form.render(
                 dict_,
                 request=self._request,
                 actions=self._item_actions(obj),
-                msg_col=[MSG_COL[self._request.params['msg_col']]])
+                msg_col=[self.MSG_COL[self._request.params['msg_col']]])
         else:
             rendered = form.render(
                 dict_,
@@ -409,7 +413,7 @@ class AbstractViews():
         rendered = form.render(dict_,
                                request=self._request,
                                actions=self._item_actions(dest),
-                               msg_col=[MSG_COL['copy_ok']])
+                               msg_col=[self.MSG_COL['copy_ok']])
 
         return {
             'title': form.title,
