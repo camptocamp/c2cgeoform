@@ -87,6 +87,7 @@ docs: .build/requirements.timestamp .build/requirements-dev.timestamp
 	virtualenv $(PYTHON3) .build/venv
 	# Upgrade packaging tools.
 	$(VENV_BIN)/$(PIP_UPGRADE)
+	$(VENV_BIN)/pip install wheel  # Avoid error when building wheels
 	touch $@
 
 .build/requirements.timestamp: .build/venv.timestamp setup.py requirements.txt
