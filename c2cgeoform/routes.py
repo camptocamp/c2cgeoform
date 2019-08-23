@@ -7,6 +7,9 @@ class Application():
         self._name = name
         self._models = models
 
+    def name(self):
+        return self._name
+
     def tables(self):
         tables = []
         for key, mapper in self._models:
@@ -37,8 +40,10 @@ def register_application(name, models):
 
 
 def register_routes(config, multi_application=True, prefix=''):
+    app_regex = '|'.join(applications.keys())
+
     if multi_application:
-        base_route = '{}/{{application}}/{{table}}'.format(prefix)
+        base_route = '{}/{{application:{}}}/{{table}}'.format(prefix, app_regex)
     else:
         base_route = '{}/{{table}}'.format(prefix)
 
