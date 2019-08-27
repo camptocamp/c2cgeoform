@@ -1,9 +1,12 @@
 <div class="list-grid">
 
   <div id="toolbar">
-    <a class="btn btn-primary btn-new"
-       href="{{request.route_url('c2cgeoform_item', action='edit', id='new')}}"
-       >{{_('New')}}</a>
+    {% for action in grid_actions %}
+    <a class="{{action.name()}} {{action.css_class()}}"
+       href="{{action.url()}}">
+       <span class="{{action.icon()}}"></span>{{_(action.label())}}
+    </a>
+    {% endfor %}
   </div>
 
   <table id="grid" class="table table-condensed table-hover table-striped">

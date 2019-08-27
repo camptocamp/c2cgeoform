@@ -177,7 +177,8 @@ class AbstractViews():
 
     def index(self):
         return {
-            'list_fields': self._list_fields
+            'grid_actions': self._grid_actions(),
+            'list_fields': self._list_fields,
         }
 
     def grid(self):
@@ -304,6 +305,16 @@ class AbstractViews():
 
     def _model_config(self):
         return getattr(inspect(self._model).class_, '__c2cgeoform_config__', {})
+
+    def _grid_actions(self):
+        return [
+            ItemAction(
+                name='new',
+                label=_('New'),
+                css_class='btn btn-primary btn-new',
+                url=self._request.route_url('c2cgeoform_item', id='new')
+            )
+        ]
 
     def _grid_item_actions(self, item):
         actions = self._item_actions(item)

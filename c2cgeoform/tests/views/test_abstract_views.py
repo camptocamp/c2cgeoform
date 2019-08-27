@@ -61,6 +61,7 @@ class TestAbstractViews(DatabaseTestCase):
         DBSession.flush()
 
     def test_index(self):
+        self.request.route_url = Mock(return_value='person/new')
         views = ConcreteViews(self.request)
         response = views.index()
         self.assertIn('list_fields', response)
