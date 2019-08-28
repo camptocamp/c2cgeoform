@@ -364,23 +364,20 @@ class AbstractViews():
         dict_ = form.schema.dictify(obj)
         if self._is_new():
             dict_.update(self._request.GET)
+        kwargs = {
+            "request": self._request,
+            "actions": self._item_actions(obj),
+            }
         if (
             'msg_col' in self._request.params.keys() and
             self._request.params['msg_col'] in self.MSG_COL.keys()
         ):
-            rendered = form.render(
-                dict_,
-                request=self._request,
-                actions=self._item_actions(obj),
-                msg_col=[self.MSG_COL[self._request.params['msg_col']]])
-        else:
-            rendered = form.render(
-                dict_,
-                request=self._request,
-                actions=self._item_actions(obj))
+            kwargs.update({'msg_col': [self.MSG_COL[self._request.params['msg_col']]]})
         return {
             'title': form.title,
-            'form': rendered,
+            'form': form,
+            'form_render_args': (dict_,),
+            'form_render_kwargs': kwargs,
             'deform_dependencies': form.get_widget_resources()
         }
 
@@ -421,14 +418,16 @@ class AbstractViews():
                 self._request.dbsession.expire_all()
 
         self._populate_widgets(form.schema)
-        rendered = form.render(dict_,
-                               request=self._request,
-                               actions=self._item_actions(dest),
-                               msg_col=[self.MSG_COL['copy_ok']])
+        kwargs = {
+            "request": self._request,
+            "actions": self._item_actions(dest),
+            "msg_col": [self.MSG_COL['copy_ok']]}
 
         return {
             'title': form.title,
-            'form': rendered,
+            'form': form,
+            'form_render_args': (dict_,),
+            'form_render_kwargs': kwargs,
             'deform_dependencies': form.get_widget_resources()
         }
 
@@ -453,16 +452,15 @@ class AbstractViews():
                     id=self._obj.__getattribute__(self._id_field),
                     _query=[('msg_col', 'submit_ok')]))
         except ValidationFailure as e:
-            # FIXME see https://github.com/Pylons/deform/pull/243
             self._populate_widgets(form.schema)
-            rendered = e.field.widget.serialize(
-                e.field,
-                e.cstruct,
-                request=self._request,
-                actions=self._item_actions(obj))
+            kwargs = {
+                "request": self._request,
+                "actions": self._item_actions(obj)}
             return {
                 'title': form.title,
-                'form': rendered,
+                'form': e,
+                'form_render_args': tuple(),
+                'form_render_kwargs': kwargs,
                 'deform_dependencies': form.get_widget_resources()
             }
 
