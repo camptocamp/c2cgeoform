@@ -33,9 +33,15 @@
 
     const namespace = '{{ request.registry.package_name }}';
 
+    const calculateTableHeight = function() {
+      {% block calculateTableHeightJS %}
+      return $(window).height() - $('nav').height() - 30
+      {% endblock %}
+    }
+
     const $grid = $('#grid');
     $grid.bootstrapTable({
-      height: $(window).height() - $('nav').height() - 30,
+      height: calculateTableHeight(),
       url: "{{request.route_url('c2cgeoform_grid')}}",
 
       toolbar: "#toolbar",
@@ -105,7 +111,7 @@
 
     $(window).resize(function() {
       $grid.bootstrapTable('resetView', {
-        height: $(window).height() - $('nav').height() - 30
+        height: calculateTableHeight()
       });
     });
 
