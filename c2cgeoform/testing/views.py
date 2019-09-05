@@ -26,7 +26,7 @@ class AbstractViewsTests():
         assert 'http://localhost{}'.format(self._prefix) == link.attrs['href']
         assert title == link.getText()
 
-    def check_grid_headers(self, resp, expected_col_headers):
+    def check_grid_headers(self, resp, expected_col_headers, check_actions=True):
         pp = pprint.PrettyPrinter(indent=4)
         effective_cols = [(th.attrs['data-field'], th.getText(), th.attrs['data-sortable'])
                           for th in resp.html.select('th')]
@@ -35,8 +35,9 @@ class AbstractViewsTests():
             str.format('\n\n{}\n\n differs from \n\n{}',
                        pp.pformat(expected_col_headers),
                        pp.pformat(effective_cols))
-        actions = resp.html.select_one('th[data-field="actions"]')
-        assert 'false' == actions.attrs['data-sortable']
+        if check_actions:
+            actions = resp.html.select_one('th[data-field="actions"]')
+            assert 'false' == actions.attrs['data-sortable']
 
     def check_new_button(self, resp):
         assert 1 == len(list(filter(lambda x: str(x.contents) == "['New']",
