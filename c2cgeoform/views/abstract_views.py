@@ -255,28 +255,17 @@ class AbstractViews():
             rows.append(row)
         return rows
 
-    def _set_readonly(self, field):
-        field.readonly = True
-        for child in field.children:
-            child.widget.readonly = True
-
     def _form(self, schema=None, readonly=False, **kwargs):
         self._schema = schema or self._base_schema.bind(
             request=self._request,
             dbsession=self._request.dbsession)
 
-        buttons = []
-        if not readonly:
-            buttons.append(Button(name='formsubmit', title=_('Submit')))
-
         form = Form(
             self._schema,
-            buttons=buttons,
+            buttons=[Button(name='formsubmit', title=_('Submit'))],
+            readonly=readonly,
             **kwargs
         )
-
-        if readonly:
-            self._set_readonly(form)
 
         return form
 
@@ -367,7 +356,8 @@ class AbstractViews():
         kwargs = {
             "request": self._request,
             "actions": self._item_actions(obj),
-            }
+            "readonly": form.readonly,
+        }
         if (
             'msg_col' in self._request.params.keys() and
             self._request.params['msg_col'] in self.MSG_COL.keys()
@@ -421,7 +411,9 @@ class AbstractViews():
         kwargs = {
             "request": self._request,
             "actions": self._item_actions(dest),
-            "msg_col": [self.MSG_COL['copy_ok']]}
+            "readonly": form.readonly,
+            "msg_col": [self.MSG_COL['copy_ok']],
+        }
 
         return {
             'title': form.title,
@@ -455,7 +447,9 @@ class AbstractViews():
             self._populate_widgets(form.schema)
             kwargs = {
                 "request": self._request,
-                "actions": self._item_actions(obj)}
+                "actions": self._item_actions(obj),
+                "readonly": form.readonly,
+            }
             return {
                 'title': form.title,
                 'form': e,
