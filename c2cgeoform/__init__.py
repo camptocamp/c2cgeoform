@@ -34,6 +34,8 @@ def includeme(config):
     """
     config.include('pyramid_chameleon')
     config.include('pyramid_beaker')  # use Beaker for session storage
+    config.include('.routes')
+    config.include('.views')
     config.add_static_view('c2cgeoform_static', 'static', cache_max_age=3600)
     config.add_static_view('deform_static', 'deform:static')
     config.add_route('locale', '/locale/')

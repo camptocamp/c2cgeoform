@@ -11,3 +11,54 @@ def set_locale_cookie(request):
                                     max_age=31536000)  # max_age = year
     return HTTPFound(location=request.referer,
                      headers=request.response.headers)
+
+
+class ApplicationViewPredicate(object):
+    """
+    Predicate which checks request.application.name() match with passed value.
+
+    Example usage
+
+    .. code-block:: python
+
+        @view_defaults(application='admin')
+        class AdminViews():
+    """
+    def __init__(self, application, config):  # pylint: disable=unused-argument
+        self._application = application
+
+    def text(self):
+        return 'application = %s' % (self._application,)
+
+    phash = text
+
+    def __call__(self, info, request):  # pylint: disable=unused-argument
+        return request.application.name() == self._application
+
+
+class TableViewPredicate(object):
+    """
+    Predicate which checks request.matchdict['table'] match with passed value.
+
+    Example usage
+
+    .. code-block:: python
+
+        @view_defaults(application='admin', table='users')
+        class AdminUserViews():
+    """
+    def __init__(self, table, config):  # pylint: disable=unused-argument
+        self._table = table
+
+    def text(self):
+        return 'table = %s' % (self._table,)
+
+    phash = text
+
+    def __call__(self, info, request):  # pylint: disable=unused-argument
+        return info['match']['table'] == self._table
+
+
+def includeme(config):
+    config.add_view_predicate('application', ApplicationViewPredicate)
+    config.add_view_predicate('table', TableViewPredicate)
