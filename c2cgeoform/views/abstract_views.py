@@ -255,7 +255,7 @@ class AbstractViews():
             rows.append(row)
         return rows
 
-    def _form(self, schema=None, readonly=False, **kwargs):
+    def _form(self, schema=None, **kwargs):
         self._schema = schema or self._base_schema.bind(
             request=self._request,
             dbsession=self._request.dbsession)
@@ -263,7 +263,6 @@ class AbstractViews():
         form = Form(
             self._schema,
             buttons=[Button(name='formsubmit', title=_('Submit'))],
-            readonly=readonly,
             **kwargs
         )
 
@@ -356,7 +355,7 @@ class AbstractViews():
         kwargs = {
             "request": self._request,
             "actions": self._item_actions(obj),
-            "readonly": form.readonly,
+            "readonly": readonly,
         }
         if (
             'msg_col' in self._request.params.keys() and
@@ -411,7 +410,6 @@ class AbstractViews():
         kwargs = {
             "request": self._request,
             "actions": self._item_actions(dest),
-            "readonly": form.readonly,
             "msg_col": [self.MSG_COL['copy_ok']],
         }
 
@@ -448,7 +446,6 @@ class AbstractViews():
             kwargs = {
                 "request": self._request,
                 "actions": self._item_actions(obj),
-                "readonly": form.readonly,
             }
             return {
                 'title': form.title,
