@@ -19,21 +19,27 @@
   i18n:domain="deform"
   >
 
-  <fieldset class="deform-form-fieldset">
+  <div class="panel panel-default form-panel">
+    <div class="panel-body">
 
-    <div class="alert alert-success" tal:condition="exists: msg_col">
-      <tal:loop tal:repeat="msg msg_col">
-        <div class="msg-lbl">${msg}</div>
-      </tal:loop>
+      <fieldset class="deform-form-fieldset">
+
+        <div class="alert alert-success" tal:condition="exists: msg_col">
+          <tal:loop tal:repeat="msg msg_col">
+            <div class="msg-lbl">${msg}</div>
+          </tal:loop>
+        </div>
+
+        <p class="section first" tal:condition="description">
+          ${description}
+        </p>
+
+        <div tal:repeat="child field"
+             tal:replace="structure child.render_template(item_template)"/>
+
+      </fieldset>
+
     </div>
-
-    <p class="section first" tal:condition="description">
-      ${description}
-    </p>
-
-    <div tal:repeat="child field"
-         tal:replace="structure child.render_template(item_template)"/>
-
-  </fieldset>
+  </div>
 
 </form>
