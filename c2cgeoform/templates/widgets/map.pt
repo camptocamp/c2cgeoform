@@ -15,84 +15,35 @@
         width: 100%;
       }
     </style>
-    <script type="text/javascript">
-      deform.addCallback(
-        '${oid}',
-        function (oid) {
-          if (oid in c2cgeoform.maps) return true;
+    <script>
+      (function() {
+        // Translations
+        const controlsDefinition = ${controls_definition}
+        controlsDefinition['drawPointTooltip'] = '${_('Draw point')}'
+        controlsDefinition['drawLineTooltip'] = '${_('Draw line')}'
+        controlsDefinition['drawPolygonTooltip'] = '${_('Draw polygon')}'
+        controlsDefinition['modifyTooltip'] = '${_('Modify')}'
+        controlsDefinition['clearTooltip'] = '${_('Remove all')}'
+        console.log(controlsDefinition)
+        c2cgeoform.i18n = {}
+        c2cgeoform.i18n['zoomInTipLabel'] = '${_('Zoom In')}'
+        c2cgeoform.i18n['zoomOutTipLabel'] = '${_('Zoom Out')}'
+        c2cgeoform.i18n['attributionTipLabel'] = '${_('Attributions')}'
 
-          var controlsDefinition = ${controls_definition};
-          var geoJson = '${cstruct}';
-
-          /** Translations */
-          c2cgeoform.i18n = {};
-          c2cgeoform.i18n['zoomInTipLabel'] = '${_('Zoom In')}';
-          c2cgeoform.i18n['zoomOutTipLabel'] = '${_('Zoom Out')}';
-          c2cgeoform.i18n['attributionTipLabel'] = '${_('Attributions')}';
-          controlsDefinition['drawPointTooltip'] = '${_('Draw point')}';
-          controlsDefinition['drawLineTooltip'] = '${_('Draw line')}';
-          controlsDefinition['drawPolygonTooltip'] = '${_('Draw polygon')}';
-          controlsDefinition['modifyTooltip'] = '${_('Modify')}';
-          controlsDefinition['clearTooltip'] = '${_('Remove all')}';
-
-          var source = new ol.source.Vector();
-          var vector = new ol.layer.Vector({
-            source: source,
-            style: [
-              new ol.style.Style({
-                stroke: new ol.style.Stroke({
-                  color: 'blue',
-                  width: 3
-                }),
-                fill: new ol.style.Fill({
-                  color: 'rgba(0, 0, 255, 0.1)'
-                }),
-                image: new ol.style.Circle({
-                  radius: 6,
-                  stroke: new ol.style.Stroke({
-                    width: 1.5,
-                    color: 'rgba(0, 0, 255, 1)'
-                  }),
-                  fill: new ol.style.Fill({
-                    color: 'rgba(0, 0, 255, 0.4)'
-                  })
-                })
-              })
-            ]
-          });
-
-          var map = new ol.Map({
-            target: 'map_'+oid,
-            layers: [
-              ${structure: field.widget.base_layer},
-              vector
-            ],
-            view: new ol.View({
+        // Defer widget creation
+        deform.addCallback('${oid}', function (oid) {
+          if (c2cgeoform.exists(oid)) return true
+          c2cgeoform.init_form(oid, {
+            geojson: '${cstruct}',
+            base_layer: ${structure: field.widget.base_layer},
+            view: {
               center: ${structure: json.dumps(field.widget.center) },
-              zoom: ${structure: json.dumps(field.widget.zoom) }
-            }),
-            controls: ol.control.defaults({
-              zoomOptions: {
-                zoomInTipLabel: c2cgeoform.i18n['zoomInTipLabel'],
-                zoomOutTipLabel: c2cgeoform.i18n['zoomOutTipLabel']
-              },
-              attributionOptions: {
-                tipLabel: c2cgeoform.i18n['attributionTipLabel'],
-                collapsible: false
-              }
-            })
-          });
-
-          var fit_max_zoom = ${structure: json.dumps(field.widget.fit_max_zoom) };
-          c2cgeoform.addFeature(map, source, geoJson, fit_max_zoom, controlsDefinition);
-          c2cgeoform.initializeToolbar(map, source, {
-            controlsDefinition: controlsDefinition,
-            updateField: function(newGeoJson) {
-              $('#' + oid).val(newGeoJson);
+              zoom: ${structure: json.dumps(field.widget.zoom) },
+              fit_max_zoom: ${structure: json.dumps(field.widget.fit_max_zoom) },
             }
-          });
-          c2cgeoform.maps[oid] = map;
-        }
-      );
+          })
+
+        })
+      })()
     </script>
 </span>

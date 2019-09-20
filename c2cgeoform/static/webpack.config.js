@@ -1,25 +1,24 @@
 const path = require('path')
-const HtmlWebpackPlugin = require('html-webpack-plugin')
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 
 module.exports = {
   mode: 'development',
   entry: {
-    polyfills: path.resolve(__dirname, 'src','polyfills.js'),
-    index: [ '@babel/polyfill/noConflict', path.resolve(__dirname, 'src', 'index.js')],
-    styles: path.resolve(__dirname, 'src', 'scss', 'main.scss'),
+    index: [
+      '@babel/polyfill/noConflict',
+      path.resolve(__dirname, 'src', 'index.js'),
+    ],
+    styles: path.resolve(__dirname, 'src', 'main.scss'),
   },
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: '[name].js',
+    libraryTarget: 'var',
+    library: 'c2cgeoform',
   },
   plugins: [
     new CleanWebpackPlugin(),
-    new HtmlWebpackPlugin({
-      title: 'Development',
-      template: 'src/index.html',
-    }),
     new MiniCssExtractPlugin(),
   ],
   devServer: {
@@ -48,8 +47,7 @@ module.exports = {
         use: {
           loader: 'babel-loader',
           options: {
-            presets: ['@babel/preset-env', {
-            }],
+            presets: ['@babel/preset-env', {}],
           },
         },
       },

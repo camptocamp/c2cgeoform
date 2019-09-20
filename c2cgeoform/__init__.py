@@ -60,18 +60,6 @@ def init_deform(root_package):
 
     registry = widget.default_resource_registry
     registry.set_js_resources(
-        'openlayers', '3.0.0',
-        '{}/openlayers/dist/ol.js'.format(node_modules_root))
-    registry.set_css_resources(
-        'openlayers', '3.0.0',
-        '{}/openlayers/dist/ol.css'.format(node_modules_root))
-    registry.set_js_resources(
-        'c2cgeoform.deform_map', None,
-        'c2cgeoform:static/deform_map/controls.js')
-    registry.set_css_resources(
-        'c2cgeoform.deform_map', None,
-        'c2cgeoform:static/deform_map/style.css')
-    registry.set_js_resources(
         'typeahead', '0.10.5',
         '{}/typeahead.js/dist/typeahead.bundle.min.js'.
         format(node_modules_root))
