@@ -18,17 +18,18 @@
     <script>
       (function() {
         // Translations
-        const controlsDefinition = ${controls_definition}
-        controlsDefinition['drawPointTooltip'] = '${_('Draw point')}'
-        controlsDefinition['drawLineTooltip'] = '${_('Draw line')}'
-        controlsDefinition['drawPolygonTooltip'] = '${_('Draw polygon')}'
-        controlsDefinition['modifyTooltip'] = '${_('Modify')}'
-        controlsDefinition['clearTooltip'] = '${_('Remove all')}'
-        console.log(controlsDefinition)
-        c2cgeoform.i18n = {}
-        c2cgeoform.i18n['zoomInTipLabel'] = '${_('Zoom In')}'
-        c2cgeoform.i18n['zoomOutTipLabel'] = '${_('Zoom Out')}'
-        c2cgeoform.i18n['attributionTipLabel'] = '${_('Attributions')}'
+        var controlsDefinition = Object.assign(${controls_definition}, {
+          drawPointTooltip: '${_('Draw point')}',
+          drawLineTooltip: '${_('Draw line')}',
+          drawPolygonTooltip: '${_('Draw polygon')}',
+          modifyTooltip: '${_('Modify')}',
+          clearTooltip: '${_('Remove all')}',
+        })
+        c2cgeoform.i18n = {
+          zoomInTipLabel: '${_('Zoom In')}',
+          zoomOutTipLabel: '${_('Zoom Out')}',
+          attributionTipLabel: '${_('Attributions')}',
+        }
 
         // Defer widget creation
         deform.addCallback('${oid}', function (oid) {
@@ -41,7 +42,7 @@
               zoom: ${structure: json.dumps(field.widget.zoom) },
               fit_max_zoom: ${structure: json.dumps(field.widget.fit_max_zoom) },
             }
-          })
+          }, controlsDefinition)
 
         })
       })()

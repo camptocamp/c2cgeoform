@@ -1,6 +1,6 @@
 import { Circle, Fill, Stroke, Style } from 'ol/style.js'
 
-export function get_default_styles() {
+export function getDefaultStyles() {
   return [
     new Style({
       stroke: new Stroke({
