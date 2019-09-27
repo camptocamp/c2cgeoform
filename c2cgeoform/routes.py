@@ -39,8 +39,7 @@ class Application():
 class ApplicationRoutePredicate(object):
     """
     Internal route predicate which checks application segment match a
-    registered application and set request.application to the matched application
-    object.
+    registered application.
     """
     def __init__(self, val, config):  # pylint: disable=unused-argument
         self._val = val
@@ -54,7 +53,7 @@ class ApplicationRoutePredicate(object):
         app_segment = context['match'].get('application', 'default')
         for application in request.registry['c2cgeoform_applications']:
             if application.url_segment() == app_segment:
-                request.application = application
+                request._c2cgeoform_application = application
                 return True
         return False
 
@@ -83,10 +82,15 @@ def add_c2cgeoform_application(config, name, models, url_segment=None):
     )
 
 
+def get_application(request):
+    return getattr(request, '_c2cgeoform_application', None)
+
+
 def includeme(config):
     config.registry['c2cgeoform_applications'] = []
     config.add_directive('add_c2cgeoform_application', add_c2cgeoform_application)
     config.add_route_predicate('c2cgeoform_application', ApplicationRoutePredicate)
+    config.add_request_method(get_application, 'c2cgeoform_application', reify=True)
 
 
 def register_route(config, route, pattern):

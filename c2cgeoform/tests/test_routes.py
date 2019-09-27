@@ -8,7 +8,7 @@ from pyramid.exceptions import ConfigurationConflictError
 from pyramid.interfaces import IRoutesMapper
 
 from c2cgeoform.routes import (
-    Application, ApplicationRoutePredicate, register_models, register_routes,
+    Application, ApplicationRoutePredicate, register_models, register_routes, get_application
 )
 
 
@@ -65,8 +65,9 @@ class TestApplicationRoutePredicate(TestCase):
             self.assertTrue(pred(context, request))
 
             # We should have matched application in request.application
-            self.assertTrue(isinstance(request.application, Application))
-            self.assertEqual('app', request.application.name())
+            application = get_application(request)
+            self.assertTrue(isinstance(application, Application))
+            self.assertEqual('app', application.name())
 
     def test_url_segment_not_match(self):
         with testing.testConfig() as config:
@@ -92,9 +93,10 @@ class TestApplicationRoutePredicate(TestCase):
             request = testing.DummyRequest()
             self.assertTrue(pred(context, request))
 
-            # We should have matched application in request.application
-            self.assertTrue(isinstance(request.application, Application))
-            self.assertEqual('app', request.application.name())
+            # We should have matched application in request.c2cgeoform_application
+            application = get_application(request)
+            self.assertTrue(isinstance(application, Application))
+            self.assertEqual('app', application.name())
 
 
 class TestPregenerator(TestCase):
@@ -134,8 +136,9 @@ class TestSingleApp(TestCase):
             self.assertEqual('c2cgeoform_index', route.name)
             self.assertEqual('mytable', match['table'])
 
-            # We should have the single application in request.application
-            self.assertTrue(isinstance(request.application, Application))
-            self.assertEqual('mytable', request.application.tables()[0]['key'])
+            # We should have the single application in request.c2cgeoform_application
+            application = get_application(request)
+            self.assertTrue(isinstance(application, Application))
+            self.assertEqual('mytable', application.tables()[0]['key'])
 
             self.assertEqual('http://example.com/table', request.route_url('c2cgeoform_index', table='table'))
