@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "license": "MIT",
   "scripts": {
-    "start": "webpack-dev-server",
+    "start": "webpack -d -w",
     "build": "webpack -p",
     "prettier": "prettier 'src/**/*.js' 'src/**/*.scss' -l",
     "test": "jest"
