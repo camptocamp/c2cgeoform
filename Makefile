@@ -31,7 +31,7 @@ help:
 	@echo
 
 .PHONY: build
-build: .build/requirements.timestamp compile-catalog
+build: .build/requirements.timestamp compile-catalog webpack
 
 .PHONY: check
 check: flake8 check_c2cgeoform_demo
@@ -39,6 +39,10 @@ check: flake8 check_c2cgeoform_demo
 .PHONY: flake8
 flake8: .build/requirements-dev.timestamp
 	$(VENV_BIN)/flake8 c2cgeoform
+
+.PHONY: webpack
+webpack:
+	cd c2cgeoform/static/ && ./node_modules/.bin/webpack -p && cd -
 
 .PHONY: check_c2cgeoform_demo
 check_c2cgeoform_demo: $(BUILD_DIR)/c2cgeoform_demo
@@ -110,6 +114,10 @@ cleanall: clean
 .PHONY: initdb
 initdb: $(BUILD_DIR)/c2cgeoform_demo
 	make -C $(BUILD_DIR)/c2cgeoform_demo -f dev.mk initdb
+
+.PHONY: webpack-dev
+webpack-dev:
+	cd c2cgeoform/static/ && ./node_modules/.bin/webpack -d -w
 
 .PHONY: serve
 serve: $(BUILD_DIR)/c2cgeoform_demo
