@@ -6,7 +6,8 @@
     "start": "webpack -d -w",
     "build": "webpack -p",
     "prettier": "prettier 'src/**/*.js' 'src/**/*.scss' -l",
-    "test": "jest"
+    "test": "jest",
+    "postinstall": "webpack -p"
   },
   "private": true,
   "dependencies": {
