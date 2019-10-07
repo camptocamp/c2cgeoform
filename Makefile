@@ -31,18 +31,18 @@ help:
 	@echo
 
 .PHONY: build
-build: .build/requirements.timestamp compile-catalog webpack
+build: .build/requirements.timestamp compile-catalog webpack-build
 
 .PHONY: check
 check: flake8 check_c2cgeoform_demo
 
 .PHONY: flake8
 flake8: .build/requirements-dev.timestamp
-	$(VENV_BIN)/flake8 c2cgeoform
+	$(VENV_BIN)/flake8 --exclude=node_modules c2cgeoform
 
-.PHONY: webpack
-webpack:
-	cd c2cgeoform/static/ && ./node_modules/.bin/webpack -p && cd -
+.PHONY: webpack-build
+webpack-build:
+	cd c2cgeoform/static/ && npm install && cd -
 
 .PHONY: check_c2cgeoform_demo
 check_c2cgeoform_demo: $(BUILD_DIR)/c2cgeoform_demo
