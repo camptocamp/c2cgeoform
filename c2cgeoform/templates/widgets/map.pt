@@ -29,7 +29,7 @@
         // Defer widget creation
         deform.addCallback('${oid}', function (oid) {
           if (c2cgeoform.exists(oid)) return true
-          c2cgeoform.init_form(oid, {
+          c2cgeoform.initForm(oid, {
             geojson: '${cstruct}',
             baselayer: ${structure: field.widget.base_layer},
             view: {

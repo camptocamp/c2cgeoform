@@ -22,7 +22,7 @@ register(proj4)
 const format = new GeoJSONFormat()
 const maps = []
 
-export function init_form(oid, options, defs) {
+export function initForm(oid, options, defs) {
   const { center, zoom, fit_max_zoom } = options.view
   const geometry = options.geojson ? format.readGeometry(options.geojson) : null
   const target = document.querySelector(`#map_${oid}`)
