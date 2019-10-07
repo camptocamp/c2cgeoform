@@ -51,3 +51,6 @@ export function init_form(oid, options, defs) {
 export function exists(oid) {
   return oid in maps
 }
+
+// Backwards compatibility
+export const searchfields = {}

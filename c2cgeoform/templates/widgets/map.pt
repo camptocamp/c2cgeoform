@@ -25,11 +25,6 @@
           modifyTooltip: '${_('Modify')}',
           clearTooltip: '${_('Remove all')}',
         })
-        c2cgeoform.i18n = {
-          zoomInTipLabel: '${_('Zoom In')}',
-          zoomOutTipLabel: '${_('Zoom Out')}',
-          attributionTipLabel: '${_('Attributions')}',
-        }
 
         // Defer widget creation
         deform.addCallback('${oid}', function (oid) {
@@ -41,7 +36,12 @@
               center: ${structure: json.dumps(field.widget.center) },
               zoom: ${structure: json.dumps(field.widget.zoom) },
               fit_max_zoom: ${structure: json.dumps(field.widget.fit_max_zoom) },
-            }
+            },
+            translations: {
+              zoomInTipLabel: '${_('Zoom In')}',
+              zoomOutTipLabel: '${_('Zoom Out')}',
+              attributionTipLabel: '${_('Attributions')}',
+            },
           }, controlsDefinition)
 
         })
