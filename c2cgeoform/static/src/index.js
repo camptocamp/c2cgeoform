@@ -39,10 +39,12 @@ export function init_form(oid, options, defs) {
   // Existing geometry
   if (geometry) {
     source.addFeature(new Feature({ geometry }))
-    map.getView().fit(geometry, { maxZoom: fit_max_zoom || 18, })
+    map.getView().fit(geometry, { maxZoom: fit_max_zoom || 18 })
   }
-  addClearButton(target, defs.clearTooltip, source)
-  addDrawInteraction(map, source, type, input)
+  if (!defs.readonly) {
+    addClearButton(target, defs.clearTooltip, source)
+    addDrawInteraction(map, source, type, input)
+  }
   maps.push(oid)
 }
 
