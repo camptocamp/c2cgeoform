@@ -4,3 +4,12 @@
   bottom: 0.5em;
   left: calc(50% - 1em);
 }
+
+.ol-attribution {
+  &.ol-uncollapsible {
+    height: 1.5em;
+  }
+  ul {
+    font-size: 1.2rem;
+  }
+}
