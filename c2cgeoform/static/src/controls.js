@@ -6,13 +6,17 @@ function createButton(options) {
   btn.title = title
   btn.innerHTML = content
   btn.type = 'button'
+  btn.addEventListener('click', e => {
+    e.stopPropagation()
+    callback()
+  })
   container.appendChild(btn)
   return container
 }
 
 export function addClearButton(el, title, source) {
   const content = '&times;'
-  el.querySelector('.ol-viewport').appendChild(
+  el.appendChild(
     createButton({
       content,
       title,

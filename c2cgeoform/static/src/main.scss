@@ -1,5 +1,11 @@
 @import '../node_modules/ol/ol.css';
 
+.map {
+  height: 400px;
+  width: 100%;
+  position: relative;
+}
+
 .c2cgeoform-delete {
   bottom: 0.5em;
   left: calc(50% - 1em);

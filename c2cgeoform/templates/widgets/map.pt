@@ -9,12 +9,6 @@
                            style style"
            id="${oid}"/>
     <div id="map_${oid}" class="map"></div>
-    <style>
-      .map {
-        height: 400px;
-        width: 100%;
-      }
-    </style>
     <script>
       (function() {
         // Translations
