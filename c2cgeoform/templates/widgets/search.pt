@@ -21,10 +21,7 @@
               // times. We don't want to typeahead'ify the input element
               // multiples times so we return immediately if that input
               // element was already typeahead'ified.
-              if (oid in c2cgeoform.searchfields) {
-                return;
-              }
-              c2cgeoform.searchfields[oid] = true;
+              if (c2cgeoform.checkInitialized(oid)) { return }
 
               var hiddenInputSelector = '#' + oid;
               var typeaheadSelector = '#typeahead-' + oid;

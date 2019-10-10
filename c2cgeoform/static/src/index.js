@@ -20,9 +20,10 @@ proj4.defs(
 register(proj4)
 
 const format = new GeoJSONFormat()
-const maps = []
+const widgets = []
 
 export function initMapWidget(oid, options, defs) {
+  if (checkInitialized(oid)) return
   const { center, zoom, fit_max_zoom } = options.view
   const geometry = options.geojson ? format.readGeometry(options.geojson) : null
   const target = document.querySelector(`#map_${oid}`)
@@ -45,12 +46,10 @@ export function initMapWidget(oid, options, defs) {
     addClearButton(target, defs.clearTooltip, source)
     addDrawInteraction(map, source, type, input)
   }
-  maps.push(oid)
 }
 
-export function exists(oid) {
-  return oid in maps
+export function checkInitialized(oid) {
+  const initialized = widgets.includes(oid)
+  widgets.push(oid)
+  return initialized
 }
-
-// Backwards compatibility
-export const searchfields = {}
