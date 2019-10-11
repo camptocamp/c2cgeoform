@@ -39,7 +39,7 @@ export function initMapWidget(oid, options, defs) {
   }
   if (!defs.readonly) {
     addClearButton(target, defs.clearTooltip, source)
-    addDrawInteraction({map, source, type, input, multi})
+    addDrawInteraction({ map, source, type, input, multi })
   }
 }
 

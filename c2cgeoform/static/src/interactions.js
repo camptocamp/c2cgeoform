@@ -25,13 +25,13 @@ export function addDrawInteraction(options) {
 }
 
 function getGeometryJSON(geometry, multi) {
-   const classes = {
-     'Point': MultiPoint,
-     'LineString': MultiLineString,
-     'Polygon': MultiPolygon,
-   }
+  const classes = {
+    Point: MultiPoint,
+    LineString: MultiLineString,
+    Polygon: MultiPolygon,
+  }
   if (multi) {
-    geometry = new classes[geometry.getType()]([geometry.getCoordinates()])
+    geometry = new classes[(geometry.getType())]([geometry.getCoordinates()])
   }
   return format.writeGeometry(geometry)
 }
