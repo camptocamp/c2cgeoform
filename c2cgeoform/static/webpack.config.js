@@ -1,5 +1,4 @@
 const path = require('path')
-const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 
 module.exports = {
@@ -17,26 +16,8 @@ module.exports = {
     library: 'c2cgeoform',
   },
   plugins: [
-    new CleanWebpackPlugin(),
     new MiniCssExtractPlugin(),
   ],
-  devServer: {
-    contentBase: path.resolve(__dirname, 'public'),
-    port: 4200,
-    proxy: {
-      '/rest-api': {
-        target: 'http://localhost:8181',
-        secure: false,
-      },
-      '/proxy': {
-        target: 'http://localhost:8282',
-        secure: false,
-        pathRewrite: {
-          '^/proxy': '/',
-        },
-      },
-    },
-  },
   devtool: 'source-map',
   module: {
     rules: [
