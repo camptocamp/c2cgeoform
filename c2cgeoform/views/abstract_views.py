@@ -161,6 +161,7 @@ class AbstractViews():
 
     _model = None  # sqlalchemy model
     _list_fields = []  # Fields in list
+    _list_ordered_fields = []  # Fields in list used for default orderby
     _id_field = None  # Primary key
     _base_schema = None  # base colander schema
 
@@ -225,27 +226,28 @@ class AbstractViews():
         return query
 
     def _sort_query(self, query, sort, order):
-        criteria = []
         for field in self._list_fields:
             if field.id() == sort:
-                criterion = field.sort_column()
                 if order == 'desc':
-                    criterion = desc(criterion)
-                criteria.append(criterion)
-
-        # Sort on primary key as subqueryload with limit need deterministic order
-        for pkey_column in inspect(self._model).primary_key:
-            criteria.append(pkey_column)
-
-        return query.order_by(*criteria)
+                    query = query.order_by(desc(field.sort_column()))
+                else:
+                    query = query.order_by(field.sort_column())
+        # default order by
+        for order_field in self._list_ordered_fields:
+            query = query.order_by(order_field)
+        return query
 
     def _grid_rows(self, query, offset, limit):
-        entities = query
+        # Sort on primary key as subqueryload with limit need deterministic order
+        for pkey_column in inspect(self._model).primary_key:
+            query = query.order_by(pkey_column)
+
         if limit != -1:
-            entities = entities.limit(limit) \
+            query = query.limit(limit) \
                 .offset(offset)
         rows = []
-        for entity in entities:
+
+        for entity in query:
             row = {
                 f.id(): f.value(entity) for f in (
                     self._list_fields + [ListField(self._model, self._id_field, key='_id_')]
