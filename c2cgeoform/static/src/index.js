@@ -23,6 +23,7 @@ export function initMapWidget(oid, options, defs) {
   const target = document.querySelector(`#map_${oid}`)
   const input = document.querySelector(`#${oid}`)
   const type = defs.point ? 'Point' : defs.line ? 'Line' : 'Polygon'
+  const multi = defs.isMultiGeometry
 
   const source = new VectorSource()
   const map = new Map({
@@ -38,7 +39,7 @@ export function initMapWidget(oid, options, defs) {
   }
   if (!defs.readonly) {
     addClearButton(target, defs.clearTooltip, source)
-    addDrawInteraction(map, source, type, input)
+    addDrawInteraction({map, source, type, input, multi})
   }
 }
 
