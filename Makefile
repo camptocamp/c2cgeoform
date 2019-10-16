@@ -41,11 +41,11 @@ flake8: .build/requirements-dev.timestamp
 	$(VENV_BIN)/flake8 --exclude=node_modules c2cgeoform
 
 .build/node_modules.timestamp: c2cgeoform/static/package.json
-	cd c2cgeoform/static/ && npm install && cd -
+	cd c2cgeoform/static/ && npm install
 	touch $@
 
 c2cgeoform/static/dist/index.js: .build/node_modules.timestamp c2cgeoform/static/src/*
-	cd c2cgeoform/static/ && npm run build && cd -
+	cd c2cgeoform/static/ && npm run build
 
 .PHONY: check_c2cgeoform_demo
 check_c2cgeoform_demo: $(BUILD_DIR)/c2cgeoform_demo
