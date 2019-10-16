@@ -20,7 +20,7 @@ log = logging.getLogger(__name__)
 class MapWidget(Widget):
     """
     A Deform widget that fits with GeoAlchemy 2 geometry columns and shows
-    an OpenLayers 3 map which allows to draw and modify geometries.
+    an OpenLayers map which allows to draw and modify geometries.
 
     Example usage
 
@@ -43,7 +43,7 @@ class MapWidget(Widget):
 
     **Attributes/Arguments**
 
-    base_layer (str, optional):
+    base_layer (dict, optional):
         Javascript code returning the map base layer.
 
     center ([x, y], optional):
@@ -55,11 +55,9 @@ class MapWidget(Widget):
     fit_max_zoom (int, optional):
         Maximum zoom when fitting to given geometry.
     """
-    requirements = (
-        ('openlayers', '3.0.0'),
-        ('c2cgeoform.deform_map', None))
+    requirements = tuple()
 
-    base_layer = 'new ol.layer.Tile({ source: new ol.source.OSM() })'
+    base_layer = {'type_': "OSM"}
     center = [829170, 5933942]
     zoom = 7
     fit_max_zoom = 14

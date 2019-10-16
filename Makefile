@@ -31,14 +31,21 @@ help:
 	@echo
 
 .PHONY: build
-build: .build/requirements.timestamp compile-catalog
+build: .build/requirements.timestamp compile-catalog c2cgeoform/static/dist/index.js
 
 .PHONY: check
 check: flake8 check_c2cgeoform_demo
 
 .PHONY: flake8
 flake8: .build/requirements-dev.timestamp
-	$(VENV_BIN)/flake8 c2cgeoform
+	$(VENV_BIN)/flake8 --exclude=node_modules c2cgeoform
+
+.build/node_modules.timestamp: c2cgeoform/static/package.json
+	cd c2cgeoform/static/ && npm install
+	touch $@
+
+c2cgeoform/static/dist/index.js: .build/node_modules.timestamp c2cgeoform/static/src/*
+	cd c2cgeoform/static/ && npm run build
 
 .PHONY: check_c2cgeoform_demo
 check_c2cgeoform_demo: $(BUILD_DIR)/c2cgeoform_demo
@@ -110,6 +117,10 @@ cleanall: clean
 .PHONY: initdb
 initdb: $(BUILD_DIR)/c2cgeoform_demo
 	make -C $(BUILD_DIR)/c2cgeoform_demo -f dev.mk initdb
+
+.PHONY: webpack-dev
+webpack-dev:
+	cd c2cgeoform/static/ && ./node_modules/.bin/webpack -d -w
 
 .PHONY: serve
 serve: $(BUILD_DIR)/c2cgeoform_demo
