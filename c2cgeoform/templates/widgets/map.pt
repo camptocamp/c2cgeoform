@@ -24,7 +24,7 @@
         deform.addCallback('${oid}', function (oid) {
           c2cgeoform.initMapWidget(oid, {
             geojson: '${cstruct}',
-            baselayer: ${structure: field.widget.base_layer},
+            baselayer: ${structure: json.dumps(field.widget.base_layer)},
             view: {
               center: ${structure: json.dumps(field.widget.center) },
               zoom: ${structure: json.dumps(field.widget.zoom) },
