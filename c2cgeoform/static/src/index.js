@@ -7,8 +7,8 @@ import proj4 from 'proj4'
 import { defaults } from 'ol/interaction'
 import { register } from 'ol/proj/proj4'
 
-import { addClearButton } from './controls'
-import { addDrawInteraction } from './interactions'
+import { addControls } from './controls'
+import { addInteractions } from './interactions'
 import { createBaseLayer, createVectorLayer } from './layers.js'
 
 register(proj4)
@@ -38,8 +38,13 @@ export function initMapWidget(oid, options, defs) {
     map.getView().fit(geometry, { maxZoom: fit_max_zoom || 18 })
   }
   if (!defs.readonly) {
-    addClearButton(target, defs.clearTooltip, source)
-    addDrawInteraction({ map, source, type, input, multi })
+    const interactions = addInteractions({ map, source, type, input, multi })
+    addControls({
+      target,
+      interactions,
+      i18n: { clear: defs.clearTooltip },
+      source,
+    })
   }
 }
 

@@ -6,9 +6,10 @@
   position: relative;
 }
 
-.c2cgeoform-delete {
+.c2cgeoform-controls {
   bottom: 0.5em;
   left: calc(50% - 1em);
+  display: flex;
 }
 
 .ol-attribution {
