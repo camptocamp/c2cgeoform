@@ -43,16 +43,17 @@ class AbstractViewsTests():
         assert 1 == len(list(filter(lambda x: str(x.contents) == "['New']",
                                     resp.html.findAll('a'))))
 
-    def check_search(self, test_app, search='', offset=0, limit=10, sort='', order='', total=None):
-        json = test_app.post(
+    def check_search(self, test_app, search='', offset=0, limit=10, sort='', order='', total=None, **kwargs):
+        json = test_app.get(
             '{}/grid.json'.format(self._prefix),
-            params={
-                'offset': offset,
-                'limit': limit,
-                'search': search,
-                'sort': sort,
-                'order': order
-            },
+            params=dict(
+                offset=offset,
+                limit=limit,
+                search=search,
+                sort=sort,
+                order=order,
+                **kwargs
+            ),
             status=200
         ).json
         if total is not None:
