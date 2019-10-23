@@ -41,7 +41,7 @@ function getGeometryJSON(geometry, multi) {
     LineString: MultiLineString,
     Polygon: MultiPolygon,
   }
-  if (multi) {
+  if (multi && geometry.getType() in classes) {
     geometry = new classes[(geometry.getType())]([geometry.getCoordinates()])
   }
   return format.writeGeometry(geometry)
