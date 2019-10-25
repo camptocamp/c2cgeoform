@@ -39,4 +39,3 @@ export function addControls(options) {
   })
   target.appendChild(container)
 }
-

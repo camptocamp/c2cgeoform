@@ -4,17 +4,57 @@ import Map from 'ol/Map'
 import VectorSource from 'ol/source/Vector'
 import View from 'ol/View'
 import proj4 from 'proj4'
-import { defaults } from 'ol/interaction'
 import { register } from 'ol/proj/proj4'
-
+import { click, pointerMove } from 'ol/events/condition.js'
+import Select from 'ol/interaction/Select.js'
 import { addControls } from './controls'
 import { addInteractions } from './interactions'
 import { createBaseLayer, createVectorLayer } from './layers.js'
-
-register(proj4)
+import { getDefaultIconStyle } from './styles'
 
 const format = new GeoJSONFormat()
 const widgets = []
+
+export function initMap(target, options) {
+  const source = new VectorSource()
+  const url = options.url || null // base url to redirect
+  let vectorLayer = createVectorLayer(
+    source,
+    getDefaultIconStyle({ opacity: 0.01 })
+  )
+
+  let map = new Map({
+    layers: [createBaseLayer(options.baselayer), vectorLayer],
+    target: target,
+    view: new View({
+      center: [0, 0],
+      zoom: 2,
+    }),
+  })
+  fetch(url)
+    .then(resp => resp.json())
+    .then(json => {
+      source.addFeatures(format.readFeatures(json))
+      map.getView().fit(source.getExtent())
+    })
+  // Change feature style on Hover
+  const selectPointerMove = new Select({
+    condition: pointerMove,
+    style: getDefaultIconStyle({ opacity: 1 }),
+  })
+  map.addInteraction(selectPointerMove)
+
+  // On feature click redirect to url in feature property
+  map.on('click', function(evt) {
+    let feature = map.forEachFeatureAtPixel(evt.pixel, function(feature) {
+      return feature
+    })
+    if (feature) {
+      window.location.href = feature.getProperties()['url']
+    }
+  })
+  return map
+}
 
 export function initMapWidget(oid, options, defs) {
   if (checkInitialized(oid)) return
@@ -56,4 +96,5 @@ export function checkInitialized(oid) {
 
 export function registerProjection(epsg, def) {
   proj4.defs(epsg, def)
+  register(proj4)
 }
