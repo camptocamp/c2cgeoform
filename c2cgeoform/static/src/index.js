@@ -18,18 +18,15 @@ const widgets = []
 export function initMap(target, options) {
   const source = new VectorSource()
   const url = options.url || null // base url to redirect
-  let vectorLayer = createVectorLayer(
-    source,
-    getDefaultIconStyle({ opacity: 0.01 })
-  )
+  let vectorLayer = createVectorLayer(source)
+  vectorLayer.setStyle(function(feature) {
+    return getDefaultIconStyle(feature, (options = { opacity: 0.5 }))
+  })
 
   let map = new Map({
     layers: [createBaseLayer(options.baselayer), vectorLayer],
     target: target,
-    view: new View({
-      center: [0, 0],
-      zoom: 2,
-    }),
+    view: new View(),
   })
   fetch(url)
     .then(resp => resp.json())
@@ -40,7 +37,9 @@ export function initMap(target, options) {
   // Change feature style on Hover
   const selectPointerMove = new Select({
     condition: pointerMove,
-    style: getDefaultIconStyle({ opacity: 1 }),
+    style: function(feature) {
+      return getDefaultIconStyle(feature, (options = { opacity: 1 }))
+    },
   })
   map.addInteraction(selectPointerMove)
 

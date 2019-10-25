@@ -27,17 +27,16 @@ export function getDefaultStyle() {
   ]
 }
 
-export function getDefaultIconStyle(options) {
+export function getDefaultIconStyle(feature, options) {
   let opacity = options.opacity ? options.opacity : 1
   let iconUrl = options.url ? options.iconUrl : defaultIconUrl
   return [
     new Style({
       image: new Icon({
-        anchor: [0.5, 46],
         anchorXUnits: 'fraction',
         anchorYUnits: 'pixels',
-        src: iconUrl,
-        opacity: opacity,
+        src: feature.get('icon') || iconUrl,
+        opacity,
       }),
     }),
   ]

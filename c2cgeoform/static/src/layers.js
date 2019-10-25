@@ -20,6 +20,6 @@ export function createBaseLayer(config) {
   return new TileLayer({ source })
 }
 
-export function createVectorLayer(source, style = getDefaultStyle()) {
+export function createVectorLayer(source, style) {
   return new VectorLayer({ source, style })
 }
