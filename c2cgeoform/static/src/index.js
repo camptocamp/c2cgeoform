@@ -5,55 +5,46 @@ import VectorSource from 'ol/source/Vector'
 import View from 'ol/View'
 import proj4 from 'proj4'
 import { register } from 'ol/proj/proj4'
-import { click, pointerMove } from 'ol/events/condition.js'
+import { pointerMove } from 'ol/events/condition.js'
 import Select from 'ol/interaction/Select.js'
 import { addControls } from './controls'
 import { addInteractions } from './interactions'
 import { createBaseLayer, createVectorLayer } from './layers.js'
-import { getDefaultIconStyle } from './styles'
+import { getStyleFunction } from './styles'
 
 const format = new GeoJSONFormat()
 const widgets = []
 
 export function initMap(target, options) {
   const source = new VectorSource()
-  const url = options.url || null // base url to redirect
+  source.on('addfeature', () => map.getView().fit(source.getExtent()))
   let vectorLayer = createVectorLayer(source)
-  vectorLayer.setStyle(function(feature) {
-    return getDefaultIconStyle(feature, (options = { opacity: 0.5 }))
-  })
+  vectorLayer.setStyle(getStyleFunction({ opacity: 0.5 }))
 
   let map = new Map({
     layers: [createBaseLayer(options.baselayer), vectorLayer],
-    target: target,
+    target,
     view: new View(),
   })
-  fetch(url)
-    .then(resp => resp.json())
-    .then(json => {
-      source.addFeatures(format.readFeatures(json))
-      map.getView().fit(source.getExtent())
-    })
+  if (options.url)
+    fetch(options.url)
+      .then(resp => resp.json())
+      .then(json => source.addFeatures(format.readFeatures(json)))
+
   // Change feature style on Hover
   const selectPointerMove = new Select({
     condition: pointerMove,
-    style: function(feature) {
-      return getDefaultIconStyle(feature, (options = { opacity: 1 }))
-    },
+    style: getStyleFunction({ opacity: 1 }),
   })
   map.addInteraction(selectPointerMove)
+
   // On feature click redirect to url in feature property
-  map.on('click', function(evt) {
-    let feature = map.forEachFeatureAtPixel(evt.pixel, function(feature) {
-      return feature
-    })
-    if (feature) {
-      window.location.href = feature.getProperties()['url']
-    }
-    else if (feature && !feature.hasOwnProperty('url')) {
-      console.warn('No url property found in clicked feature')
-    }
-  })
+  map.on('click', e =>
+    map.forEachFeatureAtPixel(
+      e.pixel,
+      f => (window.location.href = f.getProperties()['url'])
+    )
+  )
   return map
 }
 
