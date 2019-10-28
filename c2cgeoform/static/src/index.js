@@ -42,7 +42,6 @@ export function initMap(target, options) {
     },
   })
   map.addInteraction(selectPointerMove)
-
   // On feature click redirect to url in feature property
   map.on('click', function(evt) {
     let feature = map.forEachFeatureAtPixel(evt.pixel, function(feature) {
@@ -50,6 +49,9 @@ export function initMap(target, options) {
     })
     if (feature) {
       window.location.href = feature.getProperties()['url']
+    }
+    else if (feature && !feature.hasOwnProperty('url')) {
+      console.warn('No url property found in clicked feature')
     }
   })
   return map
