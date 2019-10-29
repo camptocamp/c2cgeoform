@@ -4,6 +4,9 @@
   height: 400px;
   width: 100%;
   position: relative;
+  &.hovering:hover {
+    cursor: pointer;
+  }
 }
 
 .c2cgeoform-controls {

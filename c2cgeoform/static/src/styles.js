@@ -32,7 +32,7 @@ export function getStyleFunction(options) {
         anchorXUnits: 'fraction',
         anchorYUnits: 'pixels',
         src: feature.get('icon') || options.icon || defaultIconUrl,
-        opacity: options.opacity || 1,
+        opacity: feature == options.context.feature ? 1 : options.opacity,
       }),
     })
 }

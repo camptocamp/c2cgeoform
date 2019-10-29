@@ -5,8 +5,6 @@ import VectorSource from 'ol/source/Vector'
 import View from 'ol/View'
 import proj4 from 'proj4'
 import { register } from 'ol/proj/proj4'
-import { pointerMove } from 'ol/events/condition.js'
-import Select from 'ol/interaction/Select.js'
 import { addControls } from './controls'
 import { addInteractions } from './interactions'
 import { createBaseLayer, createVectorLayer } from './layers.js'
@@ -20,7 +18,8 @@ export function initMap(target, options) {
   const source = new VectorSource()
   source.on('addfeature', () => map.getView().fit(source.getExtent()))
   let vectorLayer = createVectorLayer(source)
-  vectorLayer.setStyle(getStyleFunction({ opacity: 0.5 }))
+  const context = { feature: null }
+  vectorLayer.setStyle(getStyleFunction({ opacity: 0.5, context }))
 
   let map = new Map({
     layers: [createBaseLayer(options.baselayer), vectorLayer],
@@ -33,11 +32,16 @@ export function initMap(target, options) {
       .then(json => source.addFeatures(format.readFeatures(json)))
 
   // Change feature style on Hover
-  const selectPointerMove = new Select({
-    condition: pointerMove,
-    style: getStyleFunction({ opacity: 1 }),
+  map.on('pointermove', e => {
+    if (e.dragging) return
+    let feature
+    map.forEachFeatureAtPixel(e.pixel, f => (feature = f), { hitTolerance: 3 })
+    map.getTargetElement().classList.toggle('hovering', feature)
+    if (feature) {
+      context.feature = feature
+      vectorLayer.changed()
+    }
   })
-  map.addInteraction(selectPointerMove)
 
   // On feature click redirect to url in feature property
   map.on('click', e =>
