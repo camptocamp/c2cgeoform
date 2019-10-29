@@ -36,11 +36,9 @@ export function initMap(target, options) {
     if (e.dragging) return
     let feature
     map.forEachFeatureAtPixel(e.pixel, f => (feature = f), { hitTolerance: 3 })
-    map.getTargetElement().classList.toggle('hovering', feature)
-    if (feature) {
-      context.feature = feature
-      vectorLayer.changed()
-    }
+    map.getTargetElement().classList.toggle('hovering', !!feature)
+    context.feature = feature
+    vectorLayer.changed()
   })
 
   // On feature click redirect to url in feature property
