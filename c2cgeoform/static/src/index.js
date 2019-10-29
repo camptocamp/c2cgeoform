@@ -14,6 +14,7 @@ import { getStyleFunction } from './styles'
 
 const format = new GeoJSONFormat()
 const widgets = []
+let itemIcon
 
 export function initMap(target, options) {
   const source = new VectorSource()
@@ -58,8 +59,9 @@ export function initMapWidget(oid, options, defs) {
   const multi = defs.isMultiGeometry
 
   const source = new VectorSource()
+  const layer = createVectorLayer(source)
   const map = new Map({
-    layers: [createBaseLayer(options.baselayer), createVectorLayer(source)],
+    layers: [createBaseLayer(options.baselayer), layer],
     target,
     view: new View({ center, zoom }),
   })
@@ -78,6 +80,8 @@ export function initMapWidget(oid, options, defs) {
       source,
     })
   }
+  // Force style to specific Icon
+  if (itemIcon) layer.setStyle(getStyleFunction({ icon: itemIcon }))
 }
 
 export function checkInitialized(oid) {
@@ -89,4 +93,8 @@ export function checkInitialized(oid) {
 export function registerProjection(epsg, def) {
   proj4.defs(epsg, def)
   register(proj4)
+}
+
+export function setItemIcon(url) {
+  itemIcon = url
 }

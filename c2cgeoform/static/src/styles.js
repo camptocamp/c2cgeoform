@@ -31,7 +31,7 @@ export function getStyleFunction(options) {
       image: new Icon({
         anchorXUnits: 'fraction',
         anchorYUnits: 'pixels',
-        src: feature.get('icon') || defaultIconUrl,
+        src: feature.get('icon') || options.icon || defaultIconUrl,
         opacity: options.opacity || 1,
       }),
     })
