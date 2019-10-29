@@ -4,17 +4,52 @@ import Map from 'ol/Map'
 import VectorSource from 'ol/source/Vector'
 import View from 'ol/View'
 import proj4 from 'proj4'
-import { defaults } from 'ol/interaction'
 import { register } from 'ol/proj/proj4'
-
-import { addClearButton } from './controls'
-import { addDrawInteraction } from './interactions'
+import { addControls } from './controls'
+import { addInteractions } from './interactions'
 import { createBaseLayer, createVectorLayer } from './layers.js'
-
-register(proj4)
+import { getStyleFunction } from './styles'
 
 const format = new GeoJSONFormat()
 const widgets = []
+let itemIcon
+
+export function initMap(target, options) {
+  const source = new VectorSource()
+  source.on('addfeature', () => map.getView().fit(source.getExtent()))
+  let vectorLayer = createVectorLayer(source)
+  const context = { feature: null }
+  vectorLayer.setStyle(getStyleFunction({ opacity: 0.5, context }))
+
+  let map = new Map({
+    layers: [createBaseLayer(options.baselayer), vectorLayer],
+    target,
+    view: new View(),
+  })
+  if (options.url)
+    fetch(options.url)
+      .then(resp => resp.json())
+      .then(json => source.addFeatures(format.readFeatures(json)))
+
+  // Change feature style on Hover
+  map.on('pointermove', e => {
+    if (e.dragging) return
+    let feature
+    map.forEachFeatureAtPixel(e.pixel, f => (feature = f), { hitTolerance: 3 })
+    map.getTargetElement().classList.toggle('hovering', !!feature)
+    context.feature = feature
+    vectorLayer.changed()
+  })
+
+  // On feature click redirect to url in feature property
+  map.on('click', e =>
+    map.forEachFeatureAtPixel(
+      e.pixel,
+      f => (window.location.href = f.getProperties()['url'])
+    )
+  )
+  return map
+}
 
 export function initMapWidget(oid, options, defs) {
   if (checkInitialized(oid)) return
@@ -26,8 +61,9 @@ export function initMapWidget(oid, options, defs) {
   const multi = defs.isMultiGeometry
 
   const source = new VectorSource()
+  const layer = createVectorLayer(source)
   const map = new Map({
-    layers: [createBaseLayer(options.baselayer), createVectorLayer(source)],
+    layers: [createBaseLayer(options.baselayer), layer],
     target,
     view: new View({ center, zoom }),
   })
@@ -38,9 +74,16 @@ export function initMapWidget(oid, options, defs) {
     map.getView().fit(geometry, { maxZoom: fit_max_zoom || 18 })
   }
   if (!defs.readonly) {
-    addClearButton(target, defs.clearTooltip, source)
-    addDrawInteraction({ map, source, type, input, multi })
+    const interactions = addInteractions({ map, source, type, input, multi })
+    addControls({
+      target,
+      interactions,
+      i18n: { clear: defs.clearTooltip },
+      source,
+    })
   }
+  // Force style to specific Icon
+  if (itemIcon) layer.setStyle(getStyleFunction({ icon: itemIcon }))
 }
 
 export function checkInitialized(oid) {
@@ -51,4 +94,9 @@ export function checkInitialized(oid) {
 
 export function registerProjection(epsg, def) {
   proj4.defs(epsg, def)
+  register(proj4)
+}
+
+export function setItemIcon(url) {
+  itemIcon = url
 }

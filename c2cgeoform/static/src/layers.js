@@ -3,7 +3,6 @@ import WMTS from 'ol/source/WMTS'
 import WMTSTileGrid from 'ol/tilegrid/WMTS'
 import VectorLayer from 'ol/layer/Vector'
 import TileLayer from 'ol/layer/Tile'
-import { getDefaultStyle } from './styles'
 
 export function createBaseLayer(config) {
   let source
@@ -20,6 +19,6 @@ export function createBaseLayer(config) {
   return new TileLayer({ source })
 }
 
-export function createVectorLayer(source) {
-  return new VectorLayer({ source, style: getDefaultStyle() })
+export function createVectorLayer(source, style) {
+  return new VectorLayer({ source, style })
 }
