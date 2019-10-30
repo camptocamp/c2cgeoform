@@ -29,7 +29,11 @@ export function initMap(target, options) {
   if (options.url)
     fetch(options.url)
       .then(resp => resp.json())
-      .then(json => source.addFeatures(format.readFeatures(json)))
+      .then(json => format.readFeatures(json))
+      .then(features => {
+        source.addFeatures(features)
+        options.onFeatureLoad(features)
+      })
 
   // Change feature style on Hover
   map.on('pointermove', e => {
