@@ -5,7 +5,7 @@ import VectorSource from 'ol/source/Vector'
 import View from 'ol/View'
 import proj4 from 'proj4'
 import { register } from 'ol/proj/proj4'
-import { addControls } from './controls'
+import { addControls, addGeolocation } from './controls'
 import { addInteractions } from './interactions'
 import { createBaseLayer, createVectorLayer } from './layers.js'
 import { getStyleFunction } from './styles'
@@ -52,6 +52,7 @@ export function initMap(target, options) {
       f => (window.location.href = f.getProperties()['url'])
     )
   )
+  addGeolocation(map.getView())
   return map
 }
 
@@ -88,6 +89,7 @@ export function initMapWidget(oid, options, defs) {
   }
   // Force style to specific Icon
   if (itemIcon) layer.setStyle(getStyleFunction({ icon: itemIcon }))
+  addGeolocation(map.getView())
 }
 
 export function checkInitialized(oid) {

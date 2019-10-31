@@ -1,3 +1,5 @@
+import { fromLonLat } from 'ol/proj'
+
 export function addControls(options) {
   const { target, i18n, interactions, source } = options
   const { draw, modify } = interactions
@@ -38,4 +40,32 @@ export function addControls(options) {
     callback: () => source.clear(),
   })
   target.appendChild(container)
+}
+
+export function addGeolocation(view) {
+  // create dom element
+  let button = $('<div/>', {
+    class: 'ol-control c2cgeoform-locate-me-btn',
+  }).append(
+    $('<button/>', { type: 'button' }).append(
+      $('<i/>', { class: 'glyphicon glyphicon-record' })
+    )
+  )
+  $('.map').append(button)
+  button.on('click', () =>
+    navigator.geolocation.getCurrentPosition(
+      position => {
+        const { latitude, longitude } = position.coords
+        view.animate({
+          center: fromLonLat([longitude, latitude]),
+          duration: 1500,
+          zoom: 18,
+        })
+      },
+      err => console.warn(`ERROR(${err.code}): ${err.message}`),
+      {
+        enableHighAccuracy: true,
+      }
+    )
+  )
 }
