@@ -5,6 +5,8 @@ import VectorLayer from 'ol/layer/Vector'
 import TileLayer from 'ol/layer/Tile'
 import XYZ from 'ol/source/XYZ'
 
+const DEFAULT_OPACITY = 0.8
+
 export function createBaseLayer(config) {
   let source
   switch (config.type_) {
@@ -22,7 +24,7 @@ export function createBaseLayer(config) {
     default:
       source = new OSM()
   }
-  return new TileLayer({ source, opacity: 0.8 })
+  return new TileLayer({ source, opacity: config.opacity || DEFAULT_OPACITY })
 }
 
 export function createVectorLayer(source, style) {

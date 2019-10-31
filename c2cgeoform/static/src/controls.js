@@ -45,8 +45,7 @@ export function addControls(options) {
 export function addGeolocation(map) {
   // getCurrentPosition is only available with HTTPS
   if (location.protocol !== 'https:' && location.hostname !== 'localhost') {
-    console.warn('Geolocation is only available with HTTPS protocol')
-    return
+    return console.warn('Geolocation is only available with HTTPS protocol')
   }
   let container = document.createElement('div')
   container.classList.add('ol-control', 'c2cgeoform-locate-me-btn')
@@ -62,7 +61,7 @@ export function addGeolocation(map) {
             zoom: 18,
           })
         },
-        err => console.warn(`ERROR(${err.code}): ${err.message}`),
+        console.warn,
         {
           enableHighAccuracy: true,
         }
