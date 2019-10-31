@@ -52,7 +52,7 @@ export function initMap(target, options) {
       f => (window.location.href = f.getProperties()['url'])
     )
   )
-  addGeolocation(map.getView())
+  addGeolocation(map)
   return map
 }
 
@@ -89,7 +89,8 @@ export function initMapWidget(oid, options, defs) {
   }
   // Force style to specific Icon
   if (itemIcon) layer.setStyle(getStyleFunction({ icon: itemIcon }))
-  addGeolocation(map.getView())
+
+  addGeolocation(map)
 }
 
 export function checkInitialized(oid) {
