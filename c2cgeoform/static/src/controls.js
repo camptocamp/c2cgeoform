@@ -51,6 +51,7 @@ export function addGeolocation(map) {
   container.classList.add('ol-control', 'c2cgeoform-locate-me-btn')
   createButton(container, {
     content: '<i class="glyphicon glyphicon-record"></i>',
+    title: 'Zoom to current location',
     callback: () =>
       navigator.geolocation.getCurrentPosition(
         position => {
