@@ -43,7 +43,12 @@ export function addControls(options) {
 }
 
 export function addGeolocation(view) {
-  // create dom element
+  // getCurrentPosition is only available with HTTPS
+  if (location.protocol !== 'https:' && location.hostname !== 'localhost') {
+    console.warn('Geolocation is only available with HTTPS protocol')
+    return
+  }
+
   let button = $('<div/>', {
     class: 'ol-control c2cgeoform-locate-me-btn',
   }).append(
