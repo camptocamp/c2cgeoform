@@ -29,10 +29,6 @@ After you fix the problem, please restart the Pyramid application to
 try it again.
 """
 
-MSG_COL = {
-    'submit_ok': _('Your submission has been taken into account.'),
-    'copy_ok': _('Please check that the copy fits before submitting.')}
-
 
 def model_attr_info(attr, *keys, default=None):
     if attr is None:
@@ -165,8 +161,14 @@ class AbstractViews():
 
     _model = None  # sqlalchemy model
     _list_fields = []  # Fields in list
+    _list_ordered_fields = []  # Fields in list used for default orderby
     _id_field = None  # Primary key
     _base_schema = None  # base colander schema
+
+    MSG_COL = {
+        'submit_ok': _('Your submission has been taken into account.'),
+        'copy_ok': _('Please check that the copy fits before submitting.'),
+    }
 
     def __init__(self, request):
         self._request = request
@@ -174,16 +176,10 @@ class AbstractViews():
         self._appstruct = None
         self._obj = None
 
-        self._request.response.cache_control.no_cache = True
-        self._request.response.cache_control.max_age = 0
-        self._request.response.cache_control.private = True
-
     def index(self):
-        self._request.response.cache_control.no_cache = False
-        self._request.response.cache_control.max_age = 3600  # one hour
-        self._request.response.cache_control.private = True
         return {
-            'list_fields': self._list_fields
+            'grid_actions': self._grid_actions(),
+            'list_fields': self._list_fields,
         }
 
     def grid(self):
@@ -230,27 +226,28 @@ class AbstractViews():
         return query
 
     def _sort_query(self, query, sort, order):
-        criteria = []
         for field in self._list_fields:
             if field.id() == sort:
-                criterion = field.sort_column()
                 if order == 'desc':
-                    criterion = desc(criterion)
-                criteria.append(criterion)
-
-        # Sort on primary key as subqueryload with limit need deterministic order
-        for pkey_column in inspect(self._model).primary_key:
-            criteria.append(pkey_column)
-
-        return query.order_by(*criteria)
+                    query = query.order_by(desc(field.sort_column()))
+                else:
+                    query = query.order_by(field.sort_column())
+        # default order by
+        for order_field in self._list_ordered_fields:
+            query = query.order_by(order_field)
+        return query
 
     def _grid_rows(self, query, offset, limit):
-        entities = query
+        # Sort on primary key as subqueryload with limit need deterministic order
+        for pkey_column in inspect(self._model).primary_key:
+            query = query.order_by(pkey_column)
+
         if limit != -1:
-            entities = entities.limit(limit) \
+            query = query.limit(limit) \
                 .offset(offset)
         rows = []
-        for entity in entities:
+
+        for entity in query:
             row = {
                 f.id(): f.value(entity) for f in (
                     self._list_fields + [ListField(self._model, self._id_field, key='_id_')]
@@ -260,18 +257,17 @@ class AbstractViews():
             rows.append(row)
         return rows
 
-    def _form(self, **kwargs):
-        self._schema = self._base_schema.bind(
+    def _form(self, schema=None, **kwargs):
+        self._schema = schema or self._base_schema.bind(
             request=self._request,
             dbsession=self._request.dbsession)
 
-        buttons = [Button(name='formsubmit', title=_('Submit'))]
-
         form = Form(
             self._schema,
-            buttons=buttons,
+            buttons=[Button(name='formsubmit', title=_('Submit'))],
             **kwargs
         )
+
         return form
 
     def _populate_widgets(self, node):
@@ -299,6 +295,16 @@ class AbstractViews():
 
     def _model_config(self):
         return getattr(inspect(self._model).class_, '__c2cgeoform_config__', {})
+
+    def _grid_actions(self):
+        return [
+            ItemAction(
+                name='new',
+                label=_('New'),
+                css_class='btn btn-primary btn-new',
+                url=self._request.route_url('c2cgeoform_item', id='new')
+            )
+        ]
 
     def _grid_item_actions(self, item):
         actions = self._item_actions(item)
@@ -340,27 +346,29 @@ class AbstractViews():
 
         return actions
 
-    def edit(self):
+    def edit(self, schema=None, readonly=False):
         obj = self._get_object()
-        form = self._form()
+        form = self._form(schema=schema,
+                          readonly=readonly)
         self._populate_widgets(form.schema)
         dict_ = form.schema.dictify(obj)
         if self._is_new():
             dict_.update(self._request.GET)
-        if 'msg_col' in self._request.params.keys() and self._request.params['msg_col'] in MSG_COL.keys():
-            rendered = form.render(
-                dict_,
-                request=self._request,
-                actions=self._item_actions(obj),
-                msg_col=[MSG_COL[self._request.params['msg_col']]])
-        else:
-            rendered = form.render(
-                dict_,
-                request=self._request,
-                actions=self._item_actions(obj))
+        kwargs = {
+            "request": self._request,
+            "actions": self._item_actions(obj),
+            "readonly": readonly,
+        }
+        if (
+            'msg_col' in self._request.params.keys() and
+            self._request.params['msg_col'] in self.MSG_COL.keys()
+        ):
+            kwargs.update({'msg_col': [self.MSG_COL[self._request.params['msg_col']]]})
         return {
             'title': form.title,
-            'form': rendered,
+            'form': form,
+            'form_render_args': (dict_,),
+            'form_render_kwargs': kwargs,
             'deform_dependencies': form.get_widget_resources()
         }
 
@@ -401,14 +409,17 @@ class AbstractViews():
                 self._request.dbsession.expire_all()
 
         self._populate_widgets(form.schema)
-        rendered = form.render(dict_,
-                               request=self._request,
-                               actions=self._item_actions(dest),
-                               msg_col=[MSG_COL['copy_ok']])
+        kwargs = {
+            "request": self._request,
+            "actions": self._item_actions(dest),
+            "msg_col": [self.MSG_COL['copy_ok']],
+        }
 
         return {
             'title': form.title,
-            'form': rendered,
+            'form': form,
+            'form_render_args': (dict_,),
+            'form_render_kwargs': kwargs,
             'deform_dependencies': form.get_widget_resources()
         }
 
@@ -433,16 +444,16 @@ class AbstractViews():
                     id=self._obj.__getattribute__(self._id_field),
                     _query=[('msg_col', 'submit_ok')]))
         except ValidationFailure as e:
-            # FIXME see https://github.com/Pylons/deform/pull/243
             self._populate_widgets(form.schema)
-            rendered = e.field.widget.serialize(
-                e.field,
-                e.cstruct,
-                request=self._request,
-                actions=self._item_actions(obj))
+            kwargs = {
+                "request": self._request,
+                "actions": self._item_actions(obj),
+            }
             return {
                 'title': form.title,
-                'form': rendered,
+                'form': e,
+                'form_render_args': tuple(),
+                'form_render_kwargs': kwargs,
                 'deform_dependencies': form.get_widget_resources()
             }
 

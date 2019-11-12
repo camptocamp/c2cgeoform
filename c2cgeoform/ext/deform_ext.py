@@ -10,6 +10,8 @@ from sqlalchemy import inspect
 import urllib
 import json
 import logging
+import os
+from io import BytesIO, BufferedRandom
 
 _ = TranslationStringFactory('c2cgeoform')
 log = logging.getLogger(__name__)
@@ -18,7 +20,7 @@ log = logging.getLogger(__name__)
 class MapWidget(Widget):
     """
     A Deform widget that fits with GeoAlchemy 2 geometry columns and shows
-    an OpenLayers 3 map which allows to draw and modify geometries.
+    an OpenLayers map which allows to draw and modify geometries.
 
     Example usage
 
@@ -41,7 +43,7 @@ class MapWidget(Widget):
 
     **Attributes/Arguments**
 
-    base_layer (str, optional):
+    base_layer (dict, optional):
         Javascript code returning the map base layer.
 
     center ([x, y], optional):
@@ -53,11 +55,9 @@ class MapWidget(Widget):
     fit_max_zoom (int, optional):
         Maximum zoom when fitting to given geometry.
     """
-    requirements = (
-        ('openlayers', '3.0.0'),
-        ('c2cgeoform.deform_map', None))
+    requirements = tuple()
 
-    base_layer = 'new ol.layer.Tile({ source: new ol.source.OSM() })'
+    base_layer = {'type_': "OSM"}
     center = [829170, 5933942]
     zoom = 7
     fit_max_zoom = 14
@@ -531,6 +531,52 @@ class RelationRadioChoiceWidget(RadioChoiceWidget, RelationSelectMixin):
         RadioChoiceWidget.__init__(self, **kw)
 
 
+class FileUploadTempStore():
+
+    def __init__(self, session):
+        super().__init__()
+        self.session = session
+
+    def get(self, name, default=None):
+        return self.deserialize(self.session.get(name, default))
+
+    def __getitem__(self, name):
+        return self.deserialize(self.session[name])
+
+    def __setitem__(self, name, value):
+        self.session[name] = self.serialize(value)
+        self.session.save()
+
+    def __contains__(self, name):
+        return name in self.session
+
+    def serialize(self, data):
+        if isinstance(data, dict):
+            return {
+                k: self.serialize(v)
+                for k, v in data.items()
+            }
+        if isinstance(data, (BufferedRandom, BytesIO)):
+            value = data.read()
+            # set the file position back to 0, so that the file can be read again
+            data.seek(0, os.SEEK_SET)
+            return value
+        return data
+
+    def deserialize(self, data):
+        if isinstance(data, dict):
+            return {
+                k: self.deserialize(v)
+                for k, v in data.items()
+            }
+        if isinstance(data, bytes):
+            return BytesIO(data)
+        return data
+
+    def preview_url(self, name):
+        return None
+
+
 class FileUploadWidget(DeformFileUploadWidget):
     """ Extension of ``deform.widget.FileUploadWidget`` to be used in a model
     class that extends the ``models.FileData`` mixin class.
@@ -573,12 +619,13 @@ class FileUploadWidget(DeformFileUploadWidget):
             )
     """
 
-    def __init__(self, tmpstore, get_url=None, **kw):
-        DeformFileUploadWidget.__init__(self, tmpstore, **kw)
+    def __init__(self, get_url=None, **kw):
+        DeformFileUploadWidget.__init__(self, None, **kw)
         self.get_url = get_url
 
     def populate(self, session, request):
         self.request = request
+        self.tmpstore = FileUploadTempStore(request.session)
 
     def serialize(self, field, cstruct, **kw):
         if cstruct in (null, None):
@@ -593,7 +640,7 @@ class FileUploadWidget(DeformFileUploadWidget):
     def deserialize(self, field, pstruct):
         value = DeformFileUploadWidget.deserialize(self, field, pstruct)
         if value != null and 'fp' in value:
-            value['data'] = value['fp']
+            value['data'] = value.pop('fp')
         return value
 
 

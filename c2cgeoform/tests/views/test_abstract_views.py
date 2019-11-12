@@ -16,6 +16,10 @@ from c2cgeoform.views.abstract_views import AbstractViews, ListField
 _list_field = partial(ListField, Person)
 
 
+def get_rendered_form(response):
+    return response['form'].render(*response['form_render_args'], **response['form_render_kwargs'])
+
+
 class TestListField(TestCase):
 
     def test_title_default_to_attr_key(self):
@@ -61,6 +65,7 @@ class TestAbstractViews(DatabaseTestCase):
         DBSession.flush()
 
     def test_index(self):
+        self.request.route_url = Mock(return_value='person/new')
         views = ConcreteViews(self.request)
         response = views.index()
         self.assertIn('list_fields', response)
@@ -201,7 +206,7 @@ class TestAbstractViews(DatabaseTestCase):
 
         self.assertIn('form', response)
         self.assertIn('deform_dependencies', response)
-        form = BeautifulSoup(response['form'], 'html.parser')
+        form = BeautifulSoup(get_rendered_form(response), 'html.parser')
         # self.assertEqual('', form.select_one('form').attrs['action'])
         self.assertEqual('', form.select_one('input[name=id]').attrs['value'])
         self.assertEqual(self.person1.name,
@@ -221,7 +226,7 @@ class TestAbstractViews(DatabaseTestCase):
         views = ConcreteViews(self.request)
 
         response = views.copy(person2)
-        form = BeautifulSoup(response['form'], 'html.parser')
+        form = BeautifulSoup(get_rendered_form(response), 'html.parser')
 
         self.assertEqual(person2.name,
                          form.select_one('input[name=name]').attrs['value'])
@@ -230,7 +235,7 @@ class TestAbstractViews(DatabaseTestCase):
         self.assertEqual('', form.select_one('input[name=age]').attrs['value'])
 
         response = views.copy(person2, ['first_name'])
-        form = BeautifulSoup(response['form'], 'html.parser')
+        form = BeautifulSoup(get_rendered_form(response), 'html.parser')
 
         self.assertEqual(person2.name,
                          form.select_one('input[name=name]').attrs['value'])

@@ -1,9 +1,8 @@
 # c2cgeoform
 
 c2cgeoform is a framework easing the creation of web pages with forms. Users
-of c2cgeoform declaratively create *models*
-([example](c2cgeoform/pully/model.py)), from which the framework
-can create forms, views, lists, …
+of c2cgeoform declaratively create *models*, from which the framework
+can create forms, views, lists, ...
 
 c2cgeoform supports various data types, including *geometry* types (points,
 lines, polygons). For geometry types `c2geoform` generates maps with editing

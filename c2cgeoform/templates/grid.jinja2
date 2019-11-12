@@ -1,9 +1,13 @@
+{% block grid %}
 <div class="list-grid">
 
   <div id="toolbar">
-    <a class="btn btn-primary btn-new"
-       href="{{request.route_url('c2cgeoform_item', action='edit', id='new')}}"
-       >{{_('New')}}</a>
+    {% for action in grid_actions %}
+    <a class="{{action.name()}} {{action.css_class()}}"
+       href="{{action.url()}}">
+       <span class="{{action.icon()}}"></span>{{_(action.label())}}
+    </a>
+    {% endfor %}
   </div>
 
   <table id="grid" class="table table-condensed table-hover table-striped">
@@ -30,9 +34,15 @@
 
     const namespace = '{{ request.registry.package_name }}';
 
+    const calculateTableHeight = function() {
+      {% block calculateTableHeightJS %}
+      return $(window).height() - $('nav').height() - 30
+      {% endblock %}
+    }
+
     const $grid = $('#grid');
     $grid.bootstrapTable({
-      height: $(window).height() - $('nav').height() - 30,
+      height: calculateTableHeight(),
       url: "{{request.route_url('c2cgeoform_grid')}}",
 
       toolbar: "#toolbar",
@@ -95,7 +105,6 @@
               </div>';
 
             return content
-            return value;
           }
         }
       ]
@@ -103,7 +112,7 @@
 
     $(window).resize(function() {
       $grid.bootstrapTable('resetView', {
-        height: $(window).height() - $('nav').height() - 30
+        height: calculateTableHeight()
       });
     });
 
@@ -153,3 +162,4 @@
   });
   </script>
 </div>
+{% endblock %}

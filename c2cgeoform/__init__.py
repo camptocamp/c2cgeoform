@@ -34,6 +34,8 @@ def includeme(config):
     """
     config.include('pyramid_chameleon')
     config.include('pyramid_beaker')  # use Beaker for session storage
+    config.include('.routes')
+    config.include('.views')
     config.add_static_view('c2cgeoform_static', 'static', cache_max_age=3600)
     config.add_static_view('deform_static', 'deform:static')
     config.add_route('locale', '/locale/')
@@ -57,18 +59,6 @@ def init_deform(root_package):
     node_modules_root = '{}:node_modules'.format(root_package)
 
     registry = widget.default_resource_registry
-    registry.set_js_resources(
-        'openlayers', '3.0.0',
-        '{}/openlayers/dist/ol.js'.format(node_modules_root))
-    registry.set_css_resources(
-        'openlayers', '3.0.0',
-        '{}/openlayers/dist/ol.css'.format(node_modules_root))
-    registry.set_js_resources(
-        'c2cgeoform.deform_map', None,
-        'c2cgeoform:static/deform_map/controls.js')
-    registry.set_css_resources(
-        'c2cgeoform.deform_map', None,
-        'c2cgeoform:static/deform_map/style.css')
     registry.set_js_resources(
         'typeahead', '0.10.5',
         '{}/typeahead.js/dist/typeahead.bundle.min.js'.
