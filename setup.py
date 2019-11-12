@@ -23,6 +23,7 @@ setup(
     version='2.0',
     description='c2cgeoform',
     long_description=README + '\n\n' + CHANGES,
+    long_description_content_type="text/markdown",
     classifiers=[
         'Programming Language :: Python',
         'Framework :: Pyramid',
