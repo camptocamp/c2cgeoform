@@ -57,6 +57,7 @@ class MapWidget(Widget):
     """
     requirements = tuple()
 
+    projection = 'EPSG:3857'
     base_layer = {'type_': "OSM"}
     center = [829170, 5933942]
     zoom = 7
