@@ -13,11 +13,13 @@
     <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
       <ul class="nav navbar-nav">
+        {% if request.c2cgeoform_application %}
         {% for table in request.c2cgeoform_application.tables() %}
         <li role="presentation" class="{{'active' if request.matchdict and request.matchdict.get('table') == table['key'] else ''}}">
           <a href="{{request.route_url('c2cgeoform_index', table=table['key'])}}">{{request.localizer.translate(table['plural'])}}</a>
         </li>
         {% endfor %}
+        {% endif %}
       </ul>
 
       <ul class="nav navbar-nav navbar-right">
