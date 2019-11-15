@@ -66,9 +66,6 @@ def init_deform(root_package):
     registry.set_css_resources(
         'typeahead', '0.10.5',
         'c2cgeoform:static/js/typeaheadjs.css')
-    registry.set_js_resources(
-        'c2cgeoform.deform_search', None,
-        'c2cgeoform:static/deform_search/search.js')
 
     widget.MappingWidget.fields_template = 'mapping_fields'
     widget.FormWidget.fields_template = 'mapping_fields'
