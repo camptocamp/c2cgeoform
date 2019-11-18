@@ -76,7 +76,10 @@ export function initMapWidget(oid, options, defs) {
   // Existing geometry
   if (geometry) {
     source.addFeature(new Feature({ geometry }))
-    map.getView().fit(geometry, { maxZoom: fit_max_zoom || 18 })
+    map.getView().fit(geometry, {
+      maxZoom: fit_max_zoom || 18,
+      padding: [20, 20, 20, 20],
+    })
   }
   if (!defs.readonly) {
     const interactions = addInteractions({ map, source, type, input, multi })
