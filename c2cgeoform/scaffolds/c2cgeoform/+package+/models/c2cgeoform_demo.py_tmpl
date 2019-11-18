@@ -310,6 +310,7 @@ class Excavation(Base):
                 'typ': colander_ext.Geometry(
                     'MULTIPOLYGON', srid=4326, map_srid=21781),
                 'widget': deform_ext.MapWidget(
+                    projection='EPSG:21781',
                     base_layer={
                         'type_': 'WMTS',
                         'attributions': 'ASITVD',

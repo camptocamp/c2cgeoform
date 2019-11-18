@@ -57,6 +57,7 @@ class MapWidget(Widget):
     """
     requirements = tuple()
 
+    projection = 'EPSG:3857'
     base_layer = {'type_': "OSM"}
     center = [829170, 5933942]
     zoom = 7
@@ -783,8 +784,7 @@ class RelationSearchWidget(Widget):
     readonly_template = 'readonly/textinput'
     strip = True
     template = 'search'
-    requirements = (('typeahead', '0.10.5'),
-                    ('c2cgeoform.deform_search', None))
+    requirements = (('typeahead', '0.10.5'),)
 
     def __init__(self, url, **kw):
         Widget.__init__(self, **kw)

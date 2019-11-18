@@ -66,7 +66,7 @@ def pregenerator(request, elements, kw):
     if 'application' not in kw:
         kw['application'] = request.matchdict.get('application', 'default')
     if 'table' not in kw:
-        kw['table'] = request.matchdict['table']
+        kw['table'] = request.matchdict.get('table', None)
     return elements, kw
 
 

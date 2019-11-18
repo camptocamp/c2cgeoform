@@ -13,19 +13,22 @@
     <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
       <ul class="nav navbar-nav">
+        {% if request.c2cgeoform_application %}
         {% for table in request.c2cgeoform_application.tables() %}
         <li role="presentation" class="{{'active' if request.matchdict and request.matchdict.get('table') == table['key'] else ''}}">
           <a href="{{request.route_url('c2cgeoform_index', table=table['key'])}}">{{request.localizer.translate(table['plural'])}}</a>
         </li>
         {% endfor %}
+        {% endif %}
       </ul>
 
       <ul class="nav navbar-nav navbar-right">
         <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{ request.locale_name }} <span class="caret"></span></a>
           <ul class="dropdown-menu">
-            <li><a href="{{request.route_url('locale', _query=(('language', 'en'),))}}">en</a></li>
-            <li><a href="{{request.route_url('locale', _query=(('language', 'fr'),))}}">fr</a></li>
+            {% for locale in request.registry.settings['pyramid.available_languages'].split(' ') %}
+            <li><a href="{{request.route_url('locale', _query=(('language', locale),))}}">{{locale}}</a></li>
+            {% endfor %}
           </ul>
         </li>
       </ul>

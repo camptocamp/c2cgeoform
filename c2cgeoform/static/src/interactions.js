@@ -13,8 +13,15 @@ export function addInteractions(options) {
   const modify = addModifyInteraction(interactionOptions)
   modify.setActive(false)
   options.source.on(
-    ['addfeature', 'changefeature'],
-    e => (input.value = getGeometryJSON(e.feature.getGeometry(), multi))
+    'change',
+    e =>
+      (input.value =
+        options.source.getFeatures().length > 0
+          ? getGeometryJSON(
+              options.source.getFeatures()[0].getGeometry(),
+              multi
+            )
+          : '')
   )
   return { draw, modify }
 }

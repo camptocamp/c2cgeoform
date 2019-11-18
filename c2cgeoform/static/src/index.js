@@ -58,7 +58,7 @@ export function initMap(target, options) {
 
 export function initMapWidget(oid, options, defs) {
   if (checkInitialized(oid)) return
-  const { center, zoom, fit_max_zoom } = options.view
+  const { center, zoom, fit_max_zoom, projection } = options.view
   const geometry = options.geojson ? format.readGeometry(options.geojson) : null
   const target = document.querySelector(`#map_${oid}`)
   const input = document.querySelector(`#${oid}`)
@@ -70,13 +70,16 @@ export function initMapWidget(oid, options, defs) {
   const map = new Map({
     layers: [createBaseLayer(options.baselayer), layer],
     target,
-    view: new View({ center, zoom }),
+    view: new View({ center, zoom, projection }),
   })
 
   // Existing geometry
   if (geometry) {
     source.addFeature(new Feature({ geometry }))
-    map.getView().fit(geometry, { maxZoom: fit_max_zoom || 18 })
+    map.getView().fit(geometry, {
+      maxZoom: fit_max_zoom || 18,
+      padding: [20, 20, 20, 20],
+    })
   }
   if (!defs.readonly) {
     const interactions = addInteractions({ map, source, type, input, multi })

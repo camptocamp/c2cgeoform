@@ -26,6 +26,7 @@
             geojson: '${cstruct}',
             baselayer: ${structure: json.dumps(field.widget.base_layer)},
             view: {
+              projection: ${structure: json.dumps(field.widget.projection) },
               center: ${structure: json.dumps(field.widget.center) },
               zoom: ${structure: json.dumps(field.widget.zoom) },
               fit_max_zoom: ${structure: json.dumps(field.widget.fit_max_zoom) },
