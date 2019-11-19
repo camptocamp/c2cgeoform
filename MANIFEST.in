@@ -1,4 +1,4 @@
 include *.txt *.ini *.cfg *.rst
 recursive-include c2cgeoform *.ico *.png *.css *.jpeg *.pt *.txt *.mako *.js *.html *.mo *.jinja2
-recursive-exclude c2cgeoform/static/node_modules
+prune c2cgeoform/static/node_modules
 graft c2cgeoform/scaffolds/c2cgeoform
