@@ -1,6 +1,6 @@
 BUILD_DIR?=.build
 VENV?=${BUILD_DIR}/venv
-MO_FILES = $(addprefix c2cgeoform/locale/, fr/LC_MESSAGES/c2cgeoform.mo de/LC_MESSAGES/c2cgeoform.mo)
+MO_FILES = $(addprefix c2cgeoform/locale/, fr/LC_MESSAGES/c2cgeoform.mo de/LC_MESSAGES/c2cgeoform.mo it/LC_MESSAGES/c2cgeoform.mo)
 
 ifneq (,$(findstring CYGWIN, $(shell uname)))
 PYTHON3 =
@@ -74,6 +74,7 @@ update-catalog: .build/requirements.timestamp
 	    c2cgeoform/templates/
 	msgmerge --update c2cgeoform/locale/fr/LC_MESSAGES/c2cgeoform.po c2cgeoform/locale/c2cgeoform.pot
 	msgmerge --update c2cgeoform/locale/de/LC_MESSAGES/c2cgeoform.po c2cgeoform/locale/c2cgeoform.pot
+	msgmerge --update c2cgeoform/locale/it/LC_MESSAGES/c2cgeoform.po c2cgeoform/locale/c2cgeoform.pot
 
 .PHONY: compile-catalog
 compile-catalog: $(MO_FILES)
