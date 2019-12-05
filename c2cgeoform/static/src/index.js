@@ -15,6 +15,7 @@ const widgets = []
 let itemIcon
 
 export function initMap(target, options) {
+  const { center, zoom, fit_max_zoom, projection } = options.view
   const source = new VectorSource()
   source.on('addfeature', () => map.getView().fit(source.getExtent()))
   let vectorLayer = createVectorLayer(source)
@@ -24,7 +25,7 @@ export function initMap(target, options) {
   let map = new Map({
     layers: [createBaseLayer(options.baselayer), vectorLayer],
     target,
-    view: new View(),
+    view: new View({ center, zoom, projection }),
   })
   if (options.url)
     fetch(options.url)
