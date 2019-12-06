@@ -3,6 +3,7 @@ import GeoJSONFormat from 'ol/format/GeoJSON'
 import Map from 'ol/Map'
 import VectorSource from 'ol/source/Vector'
 import View from 'ol/View'
+import { defaults } from 'ol/interaction'
 import proj4 from 'proj4'
 import { register } from 'ol/proj/proj4'
 import { addControls, addGeolocation } from './controls'
@@ -71,7 +72,9 @@ export function initMapWidget(oid, options, defs) {
     layers: [createBaseLayer(options.baselayer), layer],
     target,
     view: new View({ center, zoom, projection }),
+    interactions: defaults({ onFocusOnly: options.onFocusOnly }),
   })
+  if (options.onFocusOnly) map.getTargetElement().setAttribute('tabindex', '0')
 
   // Existing geometry
   if (geometry) {
