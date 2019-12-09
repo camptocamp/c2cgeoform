@@ -108,7 +108,7 @@ docs: .build/requirements.timestamp .build/requirements-dev.timestamp
 .PHONY: clean
 clean:
 	rm -f $(MO_FILES)
-	make -C docs clean
+	rm -rf docs/_build
 
 .PHONY: cleanall
 cleanall: clean
