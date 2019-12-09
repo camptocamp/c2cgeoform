@@ -15,7 +15,7 @@ const widgets = []
 let itemIcon
 
 export function initMap(target, options) {
-  const { center, zoom, fit_max_zoom, projection } = options.view
+  const { center, zoom, projection } = options.view
   const source = new VectorSource()
   source.on('addfeature', () => map.getView().fit(source.getExtent()))
   let vectorLayer = createVectorLayer(source)
