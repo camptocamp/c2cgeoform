@@ -20,7 +20,7 @@ requires = [
 
 setup(
     name='c2cgeoform',
-    version='2.0',
+    version='2.0.1',
     description='c2cgeoform',
     long_description=README + '\n\n' + CHANGES,
     classifiers=[
