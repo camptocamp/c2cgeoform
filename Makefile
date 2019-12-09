@@ -1,6 +1,13 @@
 BUILD_DIR?=.build
 VENV?=${BUILD_DIR}/venv
-MO_FILES = $(addprefix c2cgeoform/locale/, fr/LC_MESSAGES/c2cgeoform.mo de/LC_MESSAGES/c2cgeoform.mo it/LC_MESSAGES/c2cgeoform.mo)
+LANGUAGES = fr de it
+
+MO_FILES = $(addprefix c2cgeoform/locale/, $(addsuffix /LC_MESSAGES/c2cgeoform.mo, $(LANGUAGES)))
+PO_FILES = $(addprefix c2cgeoform/locale/, $(addsuffix /LC_MESSAGES/c2cgeoform.po, $(LANGUAGES)))
+
+L10N_SOURCE_FILES += c2cgeoform/models.py c2cgeoform/views/abstract_views.py
+L10N_SOURCE_FILES += $(shell find c2cgeoform/templates/ -type f -name '*.pt')
+L10N_SOURCE_FILES += $(shell find c2cgeoform/templates/ -type f -name '*.jinja2')
 
 ifneq (,$(findstring CYGWIN, $(shell uname)))
 PYTHON3 =
@@ -59,15 +66,16 @@ $(BUILD_DIR)/c2cgeoform_demo: build c2cgeoform/scaffolds/c2cgeoform c2cgeoform_d
 	$(VENV_BIN)/pcreate -s c2cgeoform --overwrite $(BUILD_DIR)/c2cgeoform_demo > /dev/null
 	cp c2cgeoform_demo_dev.mk $(BUILD_DIR)/c2cgeoform_demo/dev.mk
 
+c2cgeoform/locale/c2cgeoform.pot: .build/requirements.timestamp $(L10N_SOURCE_FILES)
+	$(VENV_BIN)/pot-create -c lingua.cfg --keyword _ -o $@ $(L10N_SOURCE_FILES)
+
+c2cgeoform/locale/%/LC_MESSAGES/c2cgeoform.po: \
+		c2cgeoform/locale/c2cgeoform.pot \
+		.build/requirements.timestamp
+	msgmerge --update $@ $<
+
 .PHONY: update-catalog
-update-catalog: .build/requirements.timestamp
-	$(VENV_BIN)/pot-create -c lingua.cfg --keyword _ -o c2cgeoform/locale/c2cgeoform.pot \
-	    c2cgeoform/models.py \
-	    c2cgeoform/views/abstract_views.py \
-	    c2cgeoform/templates/
-	msgmerge --update c2cgeoform/locale/fr/LC_MESSAGES/c2cgeoform.po c2cgeoform/locale/c2cgeoform.pot
-	msgmerge --update c2cgeoform/locale/de/LC_MESSAGES/c2cgeoform.po c2cgeoform/locale/c2cgeoform.pot
-	msgmerge --update c2cgeoform/locale/it/LC_MESSAGES/c2cgeoform.po c2cgeoform/locale/c2cgeoform.pot
+update-catalog: $(PO_FILES)
 
 .PHONY: compile-catalog
 compile-catalog: $(MO_FILES)
