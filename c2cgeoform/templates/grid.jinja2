@@ -5,7 +5,7 @@
     {% for action in grid_actions %}
     <a class="{{action.name()}} {{action.css_class()}}"
        href="{{action.url()}}">
-       <span class="{{action.icon()}}"></span>{{_(action.label())}}
+       <span class="{{action.icon()}}"></span>{{request.translate(action.label())}}
     </a>
     {% endfor %}
   </div>

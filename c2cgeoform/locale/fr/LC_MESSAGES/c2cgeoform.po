@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2018-03-19 19:17+0100\n"
+"POT-Creation-Date: 2019-12-09 17:22+0100\n"
 "PO-Revision-Date: 2014-07-31 11:13+0200\n"
 "Last-Translator: Tobias Sauerwein <tobias.sauerwein@camptocamp.com>\n"
 "Language-Team: French\n"
@@ -15,29 +15,92 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: c2cgeoform/views/abstract_views.py:257
+#: c2cgeoform/views/abstract_views.py:169
+msgid "Your submission has been taken into account."
+msgstr ""
+
+#: c2cgeoform/views/abstract_views.py:170
+msgid "Please check that the copy fits before submitting."
+msgstr ""
+
+#: c2cgeoform/views/abstract_views.py:267
 msgid "Submit"
 msgstr "Soumettre"
 
-#: c2cgeoform/views/abstract_views.py:296 c2cgeoform/templates/grid.pt:103
+#: c2cgeoform/views/abstract_views.py:303 c2cgeoform/templates/grid.pt:7
+msgid "New"
+msgstr "Nouveau"
+
+#: c2cgeoform/views/abstract_views.py:313 c2cgeoform/templates/grid.pt:103
 msgid "Edit"
 msgstr "Modifier"
 
-#: c2cgeoform/views/abstract_views.py:313
+#: c2cgeoform/views/abstract_views.py:330
 msgid "Duplicate"
 msgstr "Dupliquer"
 
-#: c2cgeoform/views/abstract_views.py:322 c2cgeoform/templates/grid.pt:105
+#: c2cgeoform/views/abstract_views.py:339 c2cgeoform/templates/grid.pt:105
 msgid "Delete"
 msgstr "Supprimer"
 
-#: c2cgeoform/views/abstract_views.py:328
+#: c2cgeoform/views/abstract_views.py:345
 msgid "Are your sure you want to delete this record ?"
 msgstr "Est-vous sûr de vouloir supprimer cet enregistrement ?"
 
-#: c2cgeoform/templates/grid.jinja2:6 c2cgeoform/templates/grid.pt:7
-msgid "New"
-msgstr "Nouveau"
+#: c2cgeoform/templates/widgets/map_select.pt:37
+#: c2cgeoform/templates/widgets/map.pt:25
+msgid "Zoom In"
+msgstr "Zoomer"
+
+#: c2cgeoform/templates/widgets/map_select.pt:37
+#: c2cgeoform/templates/widgets/map.pt:25
+msgid "Zoom Out"
+msgstr "Dézoomer"
+
+#: c2cgeoform/templates/widgets/map_select.pt:37
+#: c2cgeoform/templates/widgets/map.pt:25
+msgid "Attributions"
+msgstr "Copyright"
+
+#: c2cgeoform/templates/widgets/map_select.pt:37
+msgid "Selected:"
+msgstr "Choisi:"
+
+#: c2cgeoform/templates/widgets/map_select.pt:37
+msgid "Please select an item on the map!"
+msgstr "Veuillez choisir un objet sur la carte !"
+
+#: c2cgeoform/templates/widgets/map.pt:25
+msgid "Draw point"
+msgstr "Créer point"
+
+#: c2cgeoform/templates/widgets/map.pt:25
+msgid "Draw line"
+msgstr "Créer ligne"
+
+#: c2cgeoform/templates/widgets/map.pt:25
+msgid "Draw polygon"
+msgstr "Créer polygone"
+
+#: c2cgeoform/templates/widgets/map.pt:25
+msgid "Modify"
+msgstr "Modifier"
+
+#: c2cgeoform/templates/widgets/map.pt:25
+msgid "Remove all"
+msgstr "Effacer tous les objets"
+
+#: c2cgeoform/templates/widgets/mapping.pt:13
+msgid "There was a problem with this section"
+msgstr ""
+
+#: c2cgeoform/templates/widgets/form.pt:36
+msgid "There was a problem with your submission"
+msgstr ""
+
+#: c2cgeoform/templates/widgets/form.pt:38
+msgid "Errors have been highlighted below"
+msgstr ""
 
 #: c2cgeoform/templates/grid.pt:21
 msgid "Commands"
@@ -66,61 +129,6 @@ msgstr "Actualiser"
 #: c2cgeoform/templates/grid.pt:33
 msgid "Search"
 msgstr "Rechercher"
-
-#: c2cgeoform/templates/widgets/form.pt:36
-msgid "There was a problem with your submission"
-msgstr ""
-
-#: c2cgeoform/templates/widgets/form.pt:38
-msgid "Errors have been highlighted below"
-msgstr ""
-
-#: c2cgeoform/templates/widgets/map_select.pt:37
-#: c2cgeoform/templates/widgets/map.pt:37
-msgid "Zoom In"
-msgstr "Zoomer"
-
-#: c2cgeoform/templates/widgets/map_select.pt:37
-#: c2cgeoform/templates/widgets/map.pt:37
-msgid "Zoom Out"
-msgstr "Dézoomer"
-
-#: c2cgeoform/templates/widgets/map_select.pt:37
-#: c2cgeoform/templates/widgets/map.pt:37
-msgid "Attributions"
-msgstr "Copyright"
-
-#: c2cgeoform/templates/widgets/map_select.pt:37
-msgid "Selected:"
-msgstr "Choisi:"
-
-#: c2cgeoform/templates/widgets/map_select.pt:37
-msgid "Please select an item on the map!"
-msgstr "Veuillez choisir un objet sur la carte !"
-
-#: c2cgeoform/templates/widgets/mapping.pt:13
-msgid "There was a problem with this section"
-msgstr ""
-
-#: c2cgeoform/templates/widgets/map.pt:37
-msgid "Draw point"
-msgstr "Créer point"
-
-#: c2cgeoform/templates/widgets/map.pt:37
-msgid "Draw line"
-msgstr "Créer ligne"
-
-#: c2cgeoform/templates/widgets/map.pt:37
-msgid "Draw polygon"
-msgstr "Créer polygone"
-
-#: c2cgeoform/templates/widgets/map.pt:37
-msgid "Modify"
-msgstr "Modifier"
-
-#: c2cgeoform/templates/widgets/map.pt:37
-msgid "Remove all"
-msgstr "Effacer tous les objets"
 
 #~ msgid "Submission successful"
 #~ msgstr "Formulaire envoyé avec succès"
