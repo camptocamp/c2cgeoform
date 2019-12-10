@@ -7,16 +7,8 @@ with open(os.path.join(here, 'README.md')) as f:
     README = f.read()
 with open(os.path.join(here, 'CHANGES.txt')) as f:
     CHANGES = f.read()
-
-requires = [
-    'babel',
-    'deform>=2.0.4',
-    'lingua>=2.4',
-    'pyramid',
-    'pyramid_beaker',
-    'pyramid_chameleon',
-    'pyramid_jinja2'
-]
+with open(os.path.join(here, "requirements.txt")) as f:
+    REQUIRES = f.read()
 
 setup(
     name='c2cgeoform',
@@ -38,7 +30,7 @@ setup(
     include_package_data=True,
     zip_safe=False,
     test_suite='c2cgeoform',
-    install_requires=requires,
+    install_requires=REQUIRES,
     entry_points={
         'paste.app_factory': [
             'main=c2cgeoform:main',
