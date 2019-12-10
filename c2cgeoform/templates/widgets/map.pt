@@ -36,6 +36,7 @@
               zoomOutTipLabel: '${_('Zoom Out')}',
               attributionTipLabel: '${_('Attributions')}',
             },
+            onFocusOnly: ${structure: json.dumps(field.widget.focus_only) },
           }, controlsDefinition)
         })
       })()

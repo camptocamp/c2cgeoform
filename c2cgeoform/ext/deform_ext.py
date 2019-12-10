@@ -54,6 +54,9 @@ class MapWidget(Widget):
 
     fit_max_zoom (int, optional):
         Maximum zoom when fitting to given geometry.
+
+    focus_only (boolean, optional):
+        If map has to be focused for interactions to work.
     """
     requirements = tuple()
 
@@ -62,6 +65,7 @@ class MapWidget(Widget):
     center = [829170, 5933942]
     zoom = 7
     fit_max_zoom = 14
+    focus_only = False
 
     def serialize(self, field, cstruct, readonly=False, **kw):
         if cstruct is null:
