@@ -1,5 +1,5 @@
-BUILD_DIR?=.build
-VENV?=${BUILD_DIR}/venv
+BUILD_DIR ?= .build
+VENV ?= ${BUILD_DIR}/venv
 LANGUAGES = fr de it
 
 MO_FILES = $(addprefix c2cgeoform/locale/, $(addsuffix /LC_MESSAGES/c2cgeoform.mo, $(LANGUAGES)))
@@ -48,6 +48,7 @@ flake8: .build/requirements-dev.timestamp
 	$(VENV_BIN)/flake8 --exclude=node_modules c2cgeoform
 
 .build/node_modules.timestamp: c2cgeoform/static/package.json
+	mkdir -p $(BUILD_DIR)
 	cd c2cgeoform/static/ && npm install
 	touch $@
 
