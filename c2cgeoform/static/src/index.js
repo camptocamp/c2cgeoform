@@ -49,20 +49,19 @@ export function initMap(target, options) {
   // Change feature style on Hover
   map.on('pointermove', e => {
     if (e.dragging) return
+    if (context.feature) {
+      context.feature.__over = false
+    }
     let feature
     map.forEachFeatureAtPixel(e.pixel, f => (feature = f), { hitTolerance: 3 })
     map.getTargetElement().classList.toggle('hovering', !!feature)
     context.feature = feature
+    if (context.feature) {
+      context.feature.__over = true
+    }
     vectorLayer.changed()
   })
 
-  // On feature click redirect to url in feature property
-  map.on('click', e =>
-    map.forEachFeatureAtPixel(
-      e.pixel,
-      f => (window.location.href = f.getProperties()['url'])
-    )
-  )
   addGeolocation(map)
   return map
 }

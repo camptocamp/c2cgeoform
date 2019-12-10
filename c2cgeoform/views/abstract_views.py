@@ -2,6 +2,7 @@ import logging
 from deform import Form, ValidationFailure  # , ZPTRendererFactory
 from deform.form import Button
 from geoalchemy2.elements import WKBElement
+from geoalchemy2.shape import to_shape
 from pyramid.httpexceptions import HTTPNotFound
 from pyramid.httpexceptions import HTTPFound
 from pyramid.response import Response
@@ -9,6 +10,7 @@ from sqlalchemy import desc, or_, types
 from sqlalchemy.exc import DBAPIError
 from sqlalchemy.inspection import inspect
 from sqlalchemy.orm.properties import ColumnProperty, RelationshipProperty
+from geojson import FeatureCollection, Feature
 from c2cgeoform import _
 
 logger = logging.getLogger(__name__)
@@ -163,6 +165,7 @@ class AbstractViews():
     _list_fields = []  # Fields in list
     _list_ordered_fields = []  # Fields in list used for default orderby
     _id_field = None  # Primary key
+    _geometry_field = None  # Geometry field
     _base_schema = None  # base colander schema
 
     MSG_COL = {
@@ -205,6 +208,39 @@ class AbstractViews():
         except DBAPIError as e:
             logger.error(str(e), exc_info=True)
             return Response(db_err_msg, content_type='text/plain', status=500)
+
+    def map(self, map_settings):
+        return {
+            'url': self._request.route_url(
+                'c2cgeoform_geojson',
+                _query={
+                    'srid': map_settings.get('srid', 3857),
+                },
+            ),
+            'baselayers': map_settings.get('base_layers', []),
+            'view': map_settings.get('view', {})
+        }
+
+    def geojson(self):
+        srid = int(self._request.params.get("srid", 3857))
+
+        query = self._base_query().add_column(
+            getattr(self._model, self._geometry_field).
+            ST_Transform(srid).
+            label('_geometry')
+        )
+
+        features = list()
+        for entity, geometry in query:
+            features.append(Feature(
+                id=getattr(entity, self._id_field),
+                geometry=to_shape(geometry) if geometry is not None else None,
+                properties={
+                    f.id(): f.value(entity)
+                    for f in self._list_fields
+                }
+            ))
+        return FeatureCollection(features)
 
     def _base_query(self):
         return self._request.dbsession.query(self._model)

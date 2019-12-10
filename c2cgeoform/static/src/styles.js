@@ -26,13 +26,18 @@ export function getDefaultStyle() {
 }
 
 export function getStyleFunction(options) {
-  return feature =>
-    new Style({
-      image: new Icon({
-        anchorXUnits: 'fraction',
-        anchorYUnits: 'pixels',
-        src: feature.get('icon') || options.icon || defaultIconUrl,
-        opacity: feature == options.context?.feature ? 1 : options.opacity,
-      }),
-    })
+  return feature => {
+    if (feature.getGeometry().getType() == 'Point') {
+      return new Style({
+        image: new Icon({
+          anchorXUnits: 'fraction',
+          anchorYUnits: 'pixels',
+          src: feature.get('icon') || options.icon || defaultIconUrl,
+          opacity: feature.__over ? 1 : options.opacity,
+        }),
+      })
+    } else {
+      return getDefaultStyle()
+    }
+  }
 }
