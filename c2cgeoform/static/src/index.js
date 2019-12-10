@@ -90,7 +90,11 @@ export function initMapWidget(oid, options, defs) {
     addControls({
       target,
       interactions,
-      i18n: { clear: defs.clearTooltip },
+      i18n: {
+        draw: defs[`draw${type}Tooltip`],
+        edit: defs.modifyTooltip,
+        clear: defs.clearTooltip,
+      },
       source,
     })
   }
