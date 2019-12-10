@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2018-03-19 19:17+0100\n"
+"POT-Creation-Date: 2019-12-09 17:22+0100\n"
 "PO-Revision-Date: 2014-07-31 11:14+0200\n"
 "Last-Translator: Tobias Sauerwein <tobias.sauerwein@camptocamp.com>\n"
 "Language-Team: German\n"
@@ -15,29 +15,92 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: c2cgeoform/views/abstract_views.py:257
+#: c2cgeoform/views/abstract_views.py:169
+msgid "Your submission has been taken into account."
+msgstr ""
+
+#: c2cgeoform/views/abstract_views.py:170
+msgid "Please check that the copy fits before submitting."
+msgstr ""
+
+#: c2cgeoform/views/abstract_views.py:267
 msgid "Submit"
 msgstr "Absenden"
 
-#: c2cgeoform/views/abstract_views.py:296 c2cgeoform/templates/grid.pt:103
+#: c2cgeoform/views/abstract_views.py:303 c2cgeoform/templates/grid.pt:7
+msgid "New"
+msgstr "Neu"
+
+#: c2cgeoform/views/abstract_views.py:313 c2cgeoform/templates/grid.pt:103
 msgid "Edit"
 msgstr "Bearbeiten"
 
-#: c2cgeoform/views/abstract_views.py:313
+#: c2cgeoform/views/abstract_views.py:330
 msgid "Duplicate"
 msgstr "Kopie erstellen"
 
-#: c2cgeoform/views/abstract_views.py:322 c2cgeoform/templates/grid.pt:105
+#: c2cgeoform/views/abstract_views.py:339 c2cgeoform/templates/grid.pt:105
 msgid "Delete"
 msgstr "Löschen"
 
-#: c2cgeoform/views/abstract_views.py:328
+#: c2cgeoform/views/abstract_views.py:345
 msgid "Are your sure you want to delete this record ?"
 msgstr "Sind Sie sicher, dass Sie diesen Eintrag löschen wollen?"
 
-#: c2cgeoform/templates/grid.jinja2:6 c2cgeoform/templates/grid.pt:7
-msgid "New"
-msgstr "Neu"
+#: c2cgeoform/templates/widgets/map_select.pt:37
+#: c2cgeoform/templates/widgets/map.pt:25
+msgid "Zoom In"
+msgstr "Vergrössern"
+
+#: c2cgeoform/templates/widgets/map_select.pt:37
+#: c2cgeoform/templates/widgets/map.pt:25
+msgid "Zoom Out"
+msgstr "Verkleinern"
+
+#: c2cgeoform/templates/widgets/map_select.pt:37
+#: c2cgeoform/templates/widgets/map.pt:25
+msgid "Attributions"
+msgstr "Copyright"
+
+#: c2cgeoform/templates/widgets/map_select.pt:37
+msgid "Selected:"
+msgstr "Selektiert:"
+
+#: c2cgeoform/templates/widgets/map_select.pt:37
+msgid "Please select an item on the map!"
+msgstr "Bitte Objekt auf der Karte selektieren!"
+
+#: c2cgeoform/templates/widgets/map.pt:25
+msgid "Draw point"
+msgstr "Punkt zeichnen"
+
+#: c2cgeoform/templates/widgets/map.pt:25
+msgid "Draw line"
+msgstr "Linie zeichnen"
+
+#: c2cgeoform/templates/widgets/map.pt:25
+msgid "Draw polygon"
+msgstr "Polygon zeichnen"
+
+#: c2cgeoform/templates/widgets/map.pt:25
+msgid "Modify"
+msgstr "Bearbeiten"
+
+#: c2cgeoform/templates/widgets/map.pt:25
+msgid "Remove all"
+msgstr "Alles löschen"
+
+#: c2cgeoform/templates/widgets/mapping.pt:13
+msgid "There was a problem with this section"
+msgstr "Dieser Bereich konnte nicht verarbeitet werden"
+
+#: c2cgeoform/templates/widgets/form.pt:36
+msgid "There was a problem with your submission"
+msgstr "Ihre Eingabe konnte nicht verarbeitet werden"
+
+#: c2cgeoform/templates/widgets/form.pt:38
+msgid "Errors have been highlighted below"
+msgstr "Fehler sind im weiteren Verlauf hervorgehoben"
 
 #: c2cgeoform/templates/grid.pt:21
 msgid "Commands"
@@ -68,61 +131,6 @@ msgstr "Aktualisieren"
 #: c2cgeoform/templates/grid.pt:33
 msgid "Search"
 msgstr "Suchen"
-
-#: c2cgeoform/templates/widgets/form.pt:36
-msgid "There was a problem with your submission"
-msgstr "Ihre Eingabe konnte nicht verarbeitet werden"
-
-#: c2cgeoform/templates/widgets/form.pt:38
-msgid "Errors have been highlighted below"
-msgstr "Fehler sind im weiteren Verlauf hervorgehoben"
-
-#: c2cgeoform/templates/widgets/map_select.pt:37
-#: c2cgeoform/templates/widgets/map.pt:37
-msgid "Zoom In"
-msgstr "Vergrössern"
-
-#: c2cgeoform/templates/widgets/map_select.pt:37
-#: c2cgeoform/templates/widgets/map.pt:37
-msgid "Zoom Out"
-msgstr "Verkleinern"
-
-#: c2cgeoform/templates/widgets/map_select.pt:37
-#: c2cgeoform/templates/widgets/map.pt:37
-msgid "Attributions"
-msgstr "Copyright"
-
-#: c2cgeoform/templates/widgets/map_select.pt:37
-msgid "Selected:"
-msgstr "Selektiert:"
-
-#: c2cgeoform/templates/widgets/map_select.pt:37
-msgid "Please select an item on the map!"
-msgstr "Bitte Objekt auf der Karte selektieren!"
-
-#: c2cgeoform/templates/widgets/mapping.pt:13
-msgid "There was a problem with this section"
-msgstr "Dieser Bereich konnte nicht verarbeitet werden"
-
-#: c2cgeoform/templates/widgets/map.pt:37
-msgid "Draw point"
-msgstr "Punkt zeichnen"
-
-#: c2cgeoform/templates/widgets/map.pt:37
-msgid "Draw line"
-msgstr "Linie zeichnen"
-
-#: c2cgeoform/templates/widgets/map.pt:37
-msgid "Draw polygon"
-msgstr "Polygon zeichnen"
-
-#: c2cgeoform/templates/widgets/map.pt:37
-msgid "Modify"
-msgstr "Bearbeiten"
-
-#: c2cgeoform/templates/widgets/map.pt:37
-msgid "Remove all"
-msgstr "Alles löschen"
 
 #~ msgid "Submission successful"
 #~ msgstr "Übertragung erfolgreich"

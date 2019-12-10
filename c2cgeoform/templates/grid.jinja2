@@ -5,7 +5,7 @@
     {% for action in grid_actions %}
     <a class="{{action.name()}} {{action.css_class()}}"
        href="{{action.url()}}">
-       <span class="{{action.icon()}}"></span>{{_(action.label())}}
+       <span class="{{action.icon()}}"></span>{{request.translate(action.label())}}
     </a>
     {% endfor %}
   </div>
@@ -60,6 +60,7 @@
           'de': 'de-DE',
           'en': 'en-US',
           'fr': 'fr-FR',
+          'it': 'it-IT',
       } %}
       locale: '{{ bootstrap_table_locales[request.locale_name] }}',
 
