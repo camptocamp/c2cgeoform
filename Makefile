@@ -134,7 +134,7 @@ webpack-dev:
 	cd c2cgeoform/static/ && ./node_modules/.bin/webpack -d -w
 
 .PHONY: serve
-serve: $(BUILD_DIR)/c2cgeoform_demo
+serve: build $(BUILD_DIR)/c2cgeoform_demo
 	make -C $(BUILD_DIR)/c2cgeoform_demo -f dev.mk serve
 
 .PHONY: modwsgi
