@@ -43,14 +43,11 @@ class MapWidget(Widget):
 
     **Attributes/Arguments**
 
-    base_layer (dict, optional):
-        Javascript code returning the map base layer.
+    base_layers (list, optional):
+        List of layer definitions.
 
-    center ([x, y], optional):
-        Initial center when no geometry is given.
-
-    zoom (int, optional):
-        Initial zoom when no geometry is given.
+    view (dict, optional)
+        View parameters (projection, center, zoom)
 
     fit_max_zoom (int, optional):
         Maximum zoom when fitting to given geometry.
@@ -60,10 +57,12 @@ class MapWidget(Widget):
     """
     requirements = tuple()
 
-    projection = 'EPSG:3857'
-    base_layer = {'type_': "OSM"}
-    center = [829170, 5933942]
-    zoom = 7
+    base_layers = [{'type_': "OSM"}]
+    view = {
+        'projection': 'EPSG:3857',
+        'center': [829170, 5933942],
+        'zoom': 7,
+    }
     fit_max_zoom = 14
     focus_only = False
 

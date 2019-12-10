@@ -16,25 +16,34 @@ const widgets = []
 let itemIcon
 
 export function initMap(target, options) {
-  const { center, zoom, projection } = options.view
   const source = new VectorSource()
-  source.on('addfeature', () => map.getView().fit(source.getExtent()))
   let vectorLayer = createVectorLayer(source)
   const context = { feature: null }
   vectorLayer.setStyle(getStyleFunction({ opacity: 0.5, context }))
 
   let map = new Map({
-    layers: [createBaseLayer(options.baselayer), vectorLayer],
+    layers: options.baselayers
+      .map(def => createBaseLayer(def))
+      .concat([vectorLayer]),
     target,
-    view: new View({ center, zoom, projection }),
+    view: new View(options.view || {}),
   })
+  if (options.view.extent) {
+    map.getView().fit(extent)
+  }
+
   if (options.url)
     fetch(options.url)
       .then(resp => resp.json())
       .then(json => format.readFeatures(json))
       .then(features => {
         source.addFeatures(features)
-        options.onFeatureLoad(features)
+        if (options.fit_source) {
+          map.getView().fit(source.getExtent())
+        }
+        if (options.onFeaturesLoaded) {
+          options.onFeaturesLoaded(features)
+        }
       })
 
   // Change feature style on Hover
@@ -60,7 +69,6 @@ export function initMap(target, options) {
 
 export function initMapWidget(oid, options, defs) {
   if (checkInitialized(oid)) return
-  const { center, zoom, fit_max_zoom, projection } = options.view
   const geometry = options.geojson ? format.readGeometry(options.geojson) : null
   const target = document.querySelector(`#map_${oid}`)
   const input = document.querySelector(`#${oid}`)
@@ -70,20 +78,25 @@ export function initMapWidget(oid, options, defs) {
   const source = new VectorSource()
   const layer = createVectorLayer(source)
   const map = new Map({
-    layers: [createBaseLayer(options.baselayer), layer],
+    layers: options.baselayers.map(def => createBaseLayer(def)).concat([layer]),
     target,
-    view: new View({ center, zoom, projection }),
+    view: new View(options.view || {}),
     interactions: defaults({ onFocusOnly: options.onFocusOnly }),
   })
+
   if (options.onFocusOnly) map.getTargetElement().setAttribute('tabindex', '0')
 
   // Existing geometry
   if (geometry) {
     source.addFeature(new Feature({ geometry }))
     map.getView().fit(geometry, {
-      maxZoom: fit_max_zoom || 18,
+      maxZoom: options.fit_max_zoom || 18,
       padding: [20, 20, 20, 20],
     })
+  } else {
+    if (options.view.extent) {
+      map.getView().fit(extent)
+    }
   }
   if (!defs.readonly) {
     const interactions = addInteractions({ map, source, type, input, multi })
