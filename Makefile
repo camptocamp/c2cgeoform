@@ -73,16 +73,13 @@ $(BUILD_DIR)/c2cgeoform_demo: build c2cgeoform/scaffolds/c2cgeoform c2cgeoform_d
 	$(VENV_BIN)/pcreate -s c2cgeoform --overwrite $(BUILD_DIR)/c2cgeoform_demo > /dev/null
 	cp c2cgeoform_demo_dev.mk $(BUILD_DIR)/c2cgeoform_demo/dev.mk
 
-c2cgeoform/locale/c2cgeoform.pot: .build/requirements.timestamp $(L10N_SOURCE_FILES)
-	$(VENV_BIN)/pot-create -c lingua.cfg --keyword _ -o $@ $(L10N_SOURCE_FILES)
-
-c2cgeoform/locale/%/LC_MESSAGES/c2cgeoform.po: \
-		c2cgeoform/locale/c2cgeoform.pot \
-		.build/requirements.timestamp
-	msgmerge --update $@ $<
-
 .PHONY: update-catalog
-update-catalog: $(PO_FILES)
+update-catalog: .build/requirements.timestamp
+	$(VENV_BIN)/pot-create -c lingua.cfg --keyword _ -o c2cgeoform/locale/c2cgeoform.pot $(L10N_SOURCE_FILES)
+	make $(PO_FILES)
+
+c2cgeoform/locale/%/LC_MESSAGES/c2cgeoform.po: c2cgeoform/locale/c2cgeoform.pot
+	msgmerge --update $@ $<
 
 .PHONY: compile-catalog
 compile-catalog: $(MO_FILES)
