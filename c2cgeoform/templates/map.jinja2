@@ -8,9 +8,5 @@
 </div>
 <div id="map" class="map"></div>
 <script>
-  let map = c2cgeoform.initMap('map',{
-    url: {{ url | tojson }},
-    baselayers: {{ baselayers | tojson }},
-    view: {{ view | tojson }}
-  })
+  let map = c2cgeoform.initMap('map', {{ map_options | tojson }})
 </script>

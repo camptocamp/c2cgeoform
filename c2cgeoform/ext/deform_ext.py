@@ -13,6 +13,8 @@ import logging
 import os
 from io import BytesIO, BufferedRandom
 
+from c2cgeoform import default_map_settings
+
 _ = TranslationStringFactory('c2cgeoform')
 log = logging.getLogger(__name__)
 
@@ -32,46 +34,46 @@ class MapWidget(Widget):
                     'typ': colander_ext.Geometry(
                         'POLYGON', srid=4326, map_srid=3857),
                     'widget': deform_ext.MapWidget(
-                        base_layer='new ol.layer.Tile({ source: new ol.source.OSM() })',
-                        center=[829170, 5933942],
-                        zoom=7,
-                        fit_max_zoom=14
+                        map_options={
+                            'baseLayers': [{'type_': 'OSM'}],
+                            'view':
+                                'projection': 'EPSG:3857',
+                                'center': [829170, 5933942],
+                                'zoom': 7,
+                            'fitMaxZoom': 14,
+                            'focusOnly': False
+                        }
                     )
                 }})
 
-    To customize the map, the template file `map.pt` has to be overwritten.
-
     **Attributes/Arguments**
 
-    base_layers (list, optional):
-        List of layer definitions.
+    map_options (dict, optional):
+        Options for the map with:
 
-    view (dict, optional)
-        View parameters (projection, center, zoom)
+        - baseLayers (list, optional): List of layer definitions.
 
-    fit_max_zoom (int, optional):
-        Maximum zoom when fitting to given geometry.
+        - view (dict, optional): View parameters (projection, center, zoom)
 
-    focus_only (boolean, optional):
-        If map has to be focused for interactions to work.
+        - fitMaxZoom (int, optional): Maximum zoom when fitting to given geometry.
+
+        - focusOnly (boolean, optional): If map has to be focused for interactions to work.
+
+    If those parameters are not sufficient to customize the map,
+    the template file `map.pt` can to be overwritten in application project.
     """
     requirements = tuple()
 
-    base_layers = [{'type_': "OSM"}]
-    view = {
-        'projection': 'EPSG:3857',
-        'center': [829170, 5933942],
-        'zoom': 7,
-    }
-    fit_max_zoom = 14
-    focus_only = False
+    map_options = default_map_settings
 
     def serialize(self, field, cstruct, readonly=False, **kw):
         if cstruct is null:
             cstruct = u''
         values = self.get_template_values(field, cstruct, kw)
-        values['controls_definition'] = \
-            self._get_controls_definition(field, readonly)
+        values['map_options'] = {
+            **self._get_controls_definition(field, readonly),
+            **self.map_options
+        }
         # make `_` available in template for i18n messages
         values['_'] = _
         return field.renderer('map', **values)
@@ -102,13 +104,13 @@ class MapWidget(Widget):
                 or geometry_type == 'GEOMETRYCOLLECTION':
             is_multi_geometry = True
 
-        return json.dumps({
+        return {
             'point': point,
             'line': line,
             'polygon': polygon,
             'isMultiGeometry': is_multi_geometry,
             'readonly': readonly
-        })
+        }
 
 
 class RelationSelectMixin(object):

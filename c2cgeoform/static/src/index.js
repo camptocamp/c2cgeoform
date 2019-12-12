@@ -22,14 +22,14 @@ export function initMap(target, options) {
   vectorLayer.setStyle(getStyleFunction({ opacity: 0.5, context }))
 
   let map = new Map({
-    layers: options.baselayers
+    layers: options.baseLayers
       .map(def => createBaseLayer(def))
       .concat([vectorLayer]),
     target,
     view: new View(options.view || {}),
   })
-  if (options.view.extent) {
-    map.getView().fit(extent)
+  if (options.view.initialExtent) {
+    map.getView().fit(options.view.initialExtent)
   }
 
   if (options.url)
@@ -38,8 +38,10 @@ export function initMap(target, options) {
       .then(json => format.readFeatures(json))
       .then(features => {
         source.addFeatures(features)
-        if (options.fit_source) {
-          map.getView().fit(source.getExtent())
+        if (options.fitSource) {
+          map.getView().fit(source.getExtent(), {
+            maxZoom: options.fitMaxZoom || 18,
+          })
         }
         if (options.onFeaturesLoaded) {
           options.onFeaturesLoaded(features)
@@ -66,18 +68,18 @@ export function initMap(target, options) {
   return map
 }
 
-export function initMapWidget(oid, options, defs) {
+export function initMapWidget(oid, options) {
   if (checkInitialized(oid)) return
   const geometry = options.geojson ? format.readGeometry(options.geojson) : null
   const target = document.querySelector(`#map_${oid}`)
   const input = document.querySelector(`#${oid}`)
-  const type = defs.point ? 'Point' : defs.line ? 'Line' : 'Polygon'
-  const multi = defs.isMultiGeometry
+  const type = options.point ? 'Point' : options.line ? 'Line' : 'Polygon'
+  const multi = options.isMultiGeometry
 
   const source = new VectorSource()
   const layer = createVectorLayer(source)
   const map = new Map({
-    layers: options.baselayers.map(def => createBaseLayer(def)).concat([layer]),
+    layers: options.baseLayers.map(def => createBaseLayer(def)).concat([layer]),
     target,
     view: new View(options.view || {}),
     interactions: defaults({ onFocusOnly: options.onFocusOnly }),
@@ -89,23 +91,21 @@ export function initMapWidget(oid, options, defs) {
   if (geometry) {
     source.addFeature(new Feature({ geometry }))
     map.getView().fit(geometry, {
-      maxZoom: options.fit_max_zoom || 18,
+      maxZoom: options.fitMaxZoom || 18,
       padding: [20, 20, 20, 20],
     })
-  } else {
-    if (options.view.extent) {
-      map.getView().fit(extent)
-    }
+  } else if (options.view.initialExtent) {
+    map.getView().fit(options.view.initialExtent)
   }
-  if (!defs.readonly) {
+  if (!options.readonly) {
     const interactions = addInteractions({ map, source, type, input, multi })
     addControls({
       target,
       interactions,
       i18n: {
-        draw: defs[`draw${type}Tooltip`],
-        edit: defs.modifyTooltip,
-        clear: defs.clearTooltip,
+        draw: options[`draw${type}Tooltip`],
+        edit: options.modifyTooltip,
+        clear: options.clearTooltip,
       },
       source,
     })

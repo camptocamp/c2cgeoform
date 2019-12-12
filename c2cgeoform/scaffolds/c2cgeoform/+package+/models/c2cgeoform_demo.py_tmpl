@@ -311,7 +311,7 @@ class Excavation(Base):
                     'MULTIPOLYGON', srid=4326, map_srid=21781),
                 'widget': deform_ext.MapWidget(
                     projection='EPSG:21781',
-                    base_layers=[{
+                    baseLayers=[{
                         'type_': 'WMTS',
                         'attributions': 'ASITVD',
                         'url': 'https://ows.asitvd.ch/wmts?',
@@ -342,7 +342,7 @@ class Excavation(Base):
                         'center': [541081, 152834],
                         'zoom': 10,
                     },
-                    fit_max_zoom=14
+                    fitMaxZoom=14
                 )}})
 
     # Photo
