@@ -16,6 +16,20 @@ default_search_paths = (
     resource_filename('deform', 'templates'))
 
 
+default_map_settings = {
+    'srid': 3857,
+    'baseLayers': [{'type_': "OSM"}],
+    'view': {
+        'projection': 'EPSG:3857',
+        'center': [829170, 5933942],
+        'zoom': 7,
+    },
+    'fitSource': False,
+    'fitMaxZoom': 14,
+    'focusOnly': False
+}
+
+
 def main(global_config, **settings):
     """
     This function returns a Pyramid WSGI application.

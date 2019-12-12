@@ -33,7 +33,7 @@ export function getStyleFunction(options) {
           anchorXUnits: 'fraction',
           anchorYUnits: 'pixels',
           src: feature.get('icon') || options.icon || defaultIconUrl,
-          opacity: feature.__over ? 1 : options.opacity,
+          opacity: feature == options.context?.feature ? 1 : options.opacity,
         }),
       })
     } else {

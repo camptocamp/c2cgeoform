@@ -85,12 +85,7 @@ class ExcavationViews(AbstractViews):
     @view_config(route_name='c2cgeoform_map',
                  renderer='../templates/map.jinja2')
     def map(self):
-        map_widget = Excavation.work_footprint.info['colanderalchemy']['widget']
-        return super().map({
-            'srid': 21781,
-            'base_layers': map_widget.base_layers,
-            'view': map_widget.view,
-        })
+        return super().map({})
 
     @view_config(route_name='c2cgeoform_geojson',
                  renderer='json')

@@ -11,7 +11,7 @@ from sqlalchemy.exc import DBAPIError
 from sqlalchemy.inspection import inspect
 from sqlalchemy.orm.properties import ColumnProperty, RelationshipProperty
 from geojson import FeatureCollection, Feature
-from c2cgeoform import _
+from c2cgeoform import _, default_map_settings
 
 logger = logging.getLogger(__name__)
 
@@ -209,16 +209,20 @@ class AbstractViews():
             logger.error(str(e), exc_info=True)
             return Response(db_err_msg, content_type='text/plain', status=500)
 
-    def map(self, map_settings):
+    def map(self, map_settings={}):
         return {
-            'url': self._request.route_url(
-                'c2cgeoform_geojson',
-                _query={
-                    'srid': map_settings.get('srid', 3857),
+            "map_options": {
+                **default_map_settings,
+                **{
+                    'url': self._request.route_url(
+                        'c2cgeoform_geojson',
+                        _query={
+                            'srid': map_settings.get('srid', default_map_settings['srid']),
+                        },
+                    ),
                 },
-            ),
-            'baselayers': map_settings.get('base_layers', []),
-            'view': map_settings.get('view', {})
+                **map_settings
+            }
         }
 
     def geojson(self):
