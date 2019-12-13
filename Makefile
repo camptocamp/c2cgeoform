@@ -109,7 +109,8 @@ prettier:
 	touch $@
 
 .build/requirements.timestamp: .build/venv.timestamp setup.py requirements.txt
-	$(VENV_BIN)/pip install -r requirements.txt -e .
+	$(VENV_BIN)/pip install -r requirements.txt
+	$(VENV_BIN)/pip install -e .
 	touch $@
 
 .build/requirements-dev.timestamp: .build/venv.timestamp requirements-dev.txt
