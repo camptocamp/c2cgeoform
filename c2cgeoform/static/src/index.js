@@ -16,25 +16,36 @@ const widgets = []
 let itemIcon
 
 export function initMap(target, options) {
-  const { center, zoom, projection } = options.view
   const source = new VectorSource()
-  source.on('addfeature', () => map.getView().fit(source.getExtent()))
   let vectorLayer = createVectorLayer(source)
   const context = { feature: null }
   vectorLayer.setStyle(getStyleFunction({ opacity: 0.5, context }))
 
   let map = new Map({
-    layers: [createBaseLayer(options.baselayer), vectorLayer],
+    layers: options.baseLayers
+      .map(def => createBaseLayer(def))
+      .concat([vectorLayer]),
     target,
-    view: new View({ center, zoom, projection }),
+    view: new View(options.view || {}),
   })
+  if (options.view.initialExtent) {
+    map.getView().fit(options.view.initialExtent)
+  }
+
   if (options.url)
     fetch(options.url)
       .then(resp => resp.json())
       .then(json => format.readFeatures(json))
       .then(features => {
         source.addFeatures(features)
-        options.onFeatureLoad(features)
+        if (options.fitSource) {
+          map.getView().fit(source.getExtent(), {
+            maxZoom: options.fitMaxZoom || 18,
+          })
+        }
+        if (options.onFeaturesLoaded) {
+          options.onFeaturesLoaded(features)
+        }
       })
 
   // Change feature style on Hover
@@ -47,53 +58,48 @@ export function initMap(target, options) {
     vectorLayer.changed()
   })
 
-  // On feature click redirect to url in feature property
-  map.on('click', e =>
-    map.forEachFeatureAtPixel(
-      e.pixel,
-      f => (window.location.href = f.getProperties()['url'])
-    )
-  )
   addGeolocation(map)
   return map
 }
 
-export function initMapWidget(oid, options, defs) {
+export function initMapWidget(oid, options) {
   if (checkInitialized(oid)) return
-  const { center, zoom, fit_max_zoom, projection } = options.view
   const geometry = options.geojson ? format.readGeometry(options.geojson) : null
   const target = document.querySelector(`#map_${oid}`)
   const input = document.querySelector(`#${oid}`)
-  const type = defs.point ? 'Point' : defs.line ? 'Line' : 'Polygon'
-  const multi = defs.isMultiGeometry
+  const type = options.point ? 'Point' : options.line ? 'Line' : 'Polygon'
+  const multi = options.isMultiGeometry
 
   const source = new VectorSource()
   const layer = createVectorLayer(source)
   const map = new Map({
-    layers: [createBaseLayer(options.baselayer), layer],
+    layers: options.baseLayers.map(def => createBaseLayer(def)).concat([layer]),
     target,
-    view: new View({ center, zoom, projection }),
+    view: new View(options.view || {}),
     interactions: defaults({ onFocusOnly: options.onFocusOnly }),
   })
+
   if (options.onFocusOnly) map.getTargetElement().setAttribute('tabindex', '0')
 
   // Existing geometry
   if (geometry) {
     source.addFeature(new Feature({ geometry }))
     map.getView().fit(geometry, {
-      maxZoom: fit_max_zoom || 18,
+      maxZoom: options.fitMaxZoom || 18,
       padding: [20, 20, 20, 20],
     })
+  } else if (options.view.initialExtent) {
+    map.getView().fit(options.view.initialExtent)
   }
-  if (!defs.readonly) {
+  if (!options.readonly) {
     const interactions = addInteractions({ map, source, type, input, multi })
     addControls({
       target,
       interactions,
       i18n: {
-        draw: defs[`draw${type}Tooltip`],
-        edit: defs.modifyTooltip,
-        clear: defs.clearTooltip,
+        draw: options[`draw${type}Tooltip`],
+        edit: options.modifyTooltip,
+        clear: options.clearTooltip,
       },
       source,
     })

@@ -5,7 +5,7 @@ sudo: false
 dist: trusty
 
 python:
-  - "3.4"
+  - "3.5"
 
 addons:
   postgresql: "9.6"
@@ -21,7 +21,7 @@ env:
   - secure: "XqebytZsr/yLZ/CfRywgtjVMAFpcBB2NwWmJiTwvyVucRTvsjzSARwm/hY62apdZIDtDeA6KWNdriMRHlABBPvUkGIxyOL7KQWGsMHgOWzcTfla2igeiRfxHvzIcPoKXGbzJd+WZWo6LFKGmIJ1vvI0AqJRxfLrg+syOI3cD2J8="
 
 install:
-- rm -rf ~/.nvm && git clone https://github.com/creationix/nvm.git ~/.nvm && (cd ~/.nvm && git checkout `git describe --abbrev=0 --tags`) && source ~/.nvm/nvm.sh && nvm install 6
+- rm -rf ~/.nvm && git clone https://github.com/creationix/nvm.git ~/.nvm && (cd ~/.nvm && git checkout `git describe --abbrev=0 --tags`) && source ~/.nvm/nvm.sh && nvm install 10
 - npm -version
 - make build
 

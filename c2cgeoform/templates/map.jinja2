@@ -1,0 +1,12 @@
+<div id="toolbar">
+  {% for action in grid_actions %}
+  <a class="{{action.name()}} {{action.css_class()}}"
+     href="{{action.url()}}">
+     <span class="{{action.icon()}}"></span>{{request.translate(action.label())}}
+  </a>
+  {% endfor %}
+</div>
+<div id="map" class="map"></div>
+<script>
+  let map = c2cgeoform.initMap('map', {{ map_options | tojson }})
+</script>

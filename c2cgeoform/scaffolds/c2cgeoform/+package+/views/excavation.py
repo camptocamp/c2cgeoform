@@ -11,9 +11,10 @@ from c2cgeoform.schema import (
     manytomany_validator,
 )
 from c2cgeoform.ext.deform_ext import RelationCheckBoxListWidget
-from c2cgeoform.views.abstract_views import AbstractViews, ListField
+from c2cgeoform.views.abstract_views import AbstractViews, ListField, ItemAction
 
 from ..models.c2cgeoform_demo import Excavation, Situation
+from ..i18n import _
 
 _list_field = partial(ListField, Excavation)
 
@@ -42,6 +43,7 @@ class ExcavationViews(AbstractViews):
     _model = Excavation
     _base_schema = base_schema
     _id_field = 'hash'
+    _geometry_field = 'work_footprint'
 
     _list_fields = [
         _list_field('reference_number'),
@@ -69,6 +71,26 @@ class ExcavationViews(AbstractViews):
                  renderer='json')
     def grid(self):
         return super().grid()
+
+    def _grid_actions(self):
+        return super()._grid_actions() + [
+            ItemAction(
+                name='action_map',
+                label=_('Map'),
+                css_class='btn btn-primary btn-map',
+                url=self._request.route_url('c2cgeoform_map')
+            )
+        ]
+
+    @view_config(route_name='c2cgeoform_map',
+                 renderer='../templates/map.jinja2')
+    def map(self):
+        return super().map({})
+
+    @view_config(route_name='c2cgeoform_geojson',
+                 renderer='json')
+    def geojson(self):
+        return super().geojson()
 
     @view_config(route_name='c2cgeoform_item',
                  request_method='GET',

@@ -109,6 +109,8 @@ def register_routes(config, multi_application=True):
 
     register_route(config, 'c2cgeoform_index', base_route)
     register_route(config, 'c2cgeoform_grid', '{}/grid.json'.format(base_route))
+    register_route(config, 'c2cgeoform_map', '{}/map'.format(base_route))
+    register_route(config, 'c2cgeoform_geojson', '{}/geojson.json'.format(base_route))
     register_route(config, 'c2cgeoform_item', '{}/{{id}}'.format(base_route))
     register_route(config, 'c2cgeoform_item_duplicate', '{}/{{id}}/duplicate'.format(base_route))
 

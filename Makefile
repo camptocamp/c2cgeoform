@@ -1,5 +1,5 @@
-BUILD_DIR?=.build
-VENV?=${BUILD_DIR}/venv
+BUILD_DIR ?= .build
+VENV ?= ${BUILD_DIR}/venv
 LANGUAGES = fr de it
 
 MO_FILES = $(addprefix c2cgeoform/locale/, $(addsuffix /LC_MESSAGES/c2cgeoform.mo, $(LANGUAGES)))
@@ -48,6 +48,7 @@ flake8: .build/requirements-dev.timestamp
 	$(VENV_BIN)/flake8 --exclude=node_modules c2cgeoform
 
 .build/node_modules.timestamp: c2cgeoform/static/package.json
+	mkdir -p $(BUILD_DIR)
 	cd c2cgeoform/static/ && npm install
 	touch $@
 
@@ -73,16 +74,13 @@ $(BUILD_DIR)/c2cgeoform_demo: build c2cgeoform/scaffolds/c2cgeoform c2cgeoform_d
 	$(VENV_BIN)/pcreate -s c2cgeoform --overwrite $(BUILD_DIR)/c2cgeoform_demo > /dev/null
 	cp c2cgeoform_demo_dev.mk $(BUILD_DIR)/c2cgeoform_demo/dev.mk
 
-c2cgeoform/locale/c2cgeoform.pot: .build/requirements.timestamp $(L10N_SOURCE_FILES)
-	$(VENV_BIN)/pot-create -c lingua.cfg --keyword _ -o $@ $(L10N_SOURCE_FILES)
-
-c2cgeoform/locale/%/LC_MESSAGES/c2cgeoform.po: \
-		c2cgeoform/locale/c2cgeoform.pot \
-		.build/requirements.timestamp
-	msgmerge --update $@ $<
-
 .PHONY: update-catalog
-update-catalog: $(PO_FILES)
+update-catalog: .build/requirements.timestamp
+	$(VENV_BIN)/pot-create -c lingua.cfg --keyword _ -o c2cgeoform/locale/c2cgeoform.pot $(L10N_SOURCE_FILES)
+	make $(PO_FILES)
+
+c2cgeoform/locale/%/LC_MESSAGES/c2cgeoform.po: c2cgeoform/locale/c2cgeoform.pot
+	msgmerge --update $@ $<
 
 .PHONY: compile-catalog
 compile-catalog: $(MO_FILES)
@@ -94,6 +92,10 @@ dist: .build/requirements-dev.timestamp compile-catalog
 .PHONY: docs
 docs: .build/requirements.timestamp .build/requirements-dev.timestamp
 	make -C docs html
+
+.PHONY: prettier
+prettier:
+	./c2cgeoform/static/node_modules/.bin/prettier --write ./c2cgeoform/static/src/*.js
 
 %.mo: %.po
 	msgfmt $< --output-file=$@
@@ -107,7 +109,8 @@ docs: .build/requirements.timestamp .build/requirements-dev.timestamp
 	touch $@
 
 .build/requirements.timestamp: .build/venv.timestamp setup.py requirements.txt
-	$(VENV_BIN)/pip install -r requirements.txt -e .
+	$(VENV_BIN)/pip install -r requirements.txt
+	$(VENV_BIN)/pip install -e .
 	touch $@
 
 .build/requirements-dev.timestamp: .build/venv.timestamp requirements-dev.txt
@@ -132,7 +135,7 @@ webpack-dev:
 	cd c2cgeoform/static/ && ./node_modules/.bin/webpack -d -w
 
 .PHONY: serve
-serve: $(BUILD_DIR)/c2cgeoform_demo
+serve: build $(BUILD_DIR)/c2cgeoform_demo
 	make -C $(BUILD_DIR)/c2cgeoform_demo -f dev.mk serve
 
 .PHONY: modwsgi

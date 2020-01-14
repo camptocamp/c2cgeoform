@@ -11,33 +11,19 @@
     <div id="map_${oid}" class="map"></div>
     <script>
       (function() {
-        // Translations
-        var controlsDefinition = Object.assign(${controls_definition}, {
-          drawPointTooltip: '${_('Draw point')}',
-          drawLineTooltip: '${_('Draw line')}',
-          drawPolygonTooltip: '${_('Draw polygon')}',
-          modifyTooltip: '${_('Modify')}',
-          clearTooltip: '${_('Remove all')}',
-        })
-
         // Defer widget creation
         deform.addCallback('${oid}', function (oid) {
-          c2cgeoform.initMapWidget(oid, {
-            geojson: '${cstruct}',
-            baselayer: ${structure: json.dumps(field.widget.base_layer)},
-            view: {
-              projection: ${structure: json.dumps(field.widget.projection) },
-              center: ${structure: json.dumps(field.widget.center) },
-              zoom: ${structure: json.dumps(field.widget.zoom) },
-              fit_max_zoom: ${structure: json.dumps(field.widget.fit_max_zoom) },
-            },
-            translations: {
-              zoomInTipLabel: '${_('Zoom In')}',
-              zoomOutTipLabel: '${_('Zoom Out')}',
-              attributionTipLabel: '${_('Attributions')}',
-            },
-            onFocusOnly: ${structure: json.dumps(field.widget.focus_only) },
-          }, controlsDefinition)
+          c2cgeoform.initMapWidget(oid, Object.assign(
+            ${json.dumps(map_options)},
+            {
+              geojson: '${cstruct}',
+              drawPointTooltip: '${_('Draw point')}',
+              drawLineTooltip: '${_('Draw line')}',
+              drawPolygonTooltip: '${_('Draw polygon')}',
+              modifyTooltip: '${_('Modify')}',
+              clearTooltip: '${_('Remove all')}',
+            }
+          ))
         })
       })()
     </script>
