@@ -39,11 +39,11 @@ deploy:
   on:
     tags: true
     repo: camptocamp/c2cgeoform
-    python: '3.4'
+    python: '3.5'
 - provider: script
   skip_cleanup: true
   script: travis/deploy-pypi
   on:
     condition: '"${TRAVIS_EVENT_TYPE}" = cron'
     repo: camptocamp/c2cgeoform
-    python: '3.4'
+    python: '3.5'
