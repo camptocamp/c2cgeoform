@@ -1,6 +1,8 @@
 from pyramid.httpexceptions import HTTPFound
+from pyramid.view import view_config
 
 
+@view_config(route_name='c2cgeoform_locale')
 def set_locale_cookie(request):
     """ View to change the preferred language.
     """

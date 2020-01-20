@@ -104,8 +104,10 @@ def register_route(config, route, pattern):
 def register_routes(config, multi_application=True):
     if multi_application:
         base_route = '/{application}/{table}'
+        register_route(config, 'c2cgeoform_locale', '/{application}/locale')
     else:
         base_route = '/{table}'
+        register_route(config, 'c2cgeoform_locale', '/locale')
 
     register_route(config, 'c2cgeoform_index', base_route)
     register_route(config, 'c2cgeoform_grid', '{}/grid.json'.format(base_route))
