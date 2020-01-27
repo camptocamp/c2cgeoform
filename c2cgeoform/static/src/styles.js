@@ -26,7 +26,7 @@ export const defaultStyle = new Style({
 export function getStyleFunction(options) {
   const cache = {}
   return feature => {
-    if (feature.getGeometry().getType() == 'Point') {
+    if (feature.getGeometry().getType() != 'Point') {
       return defaultStyle
     }
     const src = feature.get('icon') || options.icon || defaultIconUrl
