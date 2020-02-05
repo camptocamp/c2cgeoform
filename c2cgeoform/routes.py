@@ -87,7 +87,7 @@ def get_application(request):
 
 
 def includeme(config):
-    config.registry['c2cgeoform_applications'] = []
+    config.registry.setdefault('c2cgeoform_applications', [])
     config.add_directive('add_c2cgeoform_application', add_c2cgeoform_application)
     config.add_route_predicate('c2cgeoform_application', ApplicationRoutePredicate)
     config.add_request_method(get_application, 'c2cgeoform_application', reify=True)
