@@ -13,7 +13,6 @@ pyramid.debug_routematch = false
 pyramid.default_locale_name = en
 pyramid.available_languages = en fr de it
 pyramid.includes =
-    pyramid_debugtoolbar
     pyramid_tm
 
 sqlalchemy.url = postgresql://www-data:www-data@localhost:5432/{{package}}
