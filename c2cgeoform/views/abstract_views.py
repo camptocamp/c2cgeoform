@@ -307,7 +307,7 @@ class AbstractViews():
         return rows
 
     def _form(self, schema=None, **kwargs):
-        self._schema = schema or self._base_schema.bind(
+        self._schema = (schema or self._base_schema).bind(
             request=self._request,
             dbsession=self._request.dbsession)
 
