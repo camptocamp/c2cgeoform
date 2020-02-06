@@ -4,7 +4,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2019-12-09 17:22+0100\n"
+"POT-Creation-Date: 2020-02-06 14:23+0100\n"
 "PO-Revision-Date: 2019-12-03 00:00+0200\n"
 "Last-Translator: Giovanni Degiorgi\n"
 "Language-Team: Italian\n"
@@ -14,50 +14,61 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: c2cgeoform/views/abstract_views.py:169
+#: c2cgeoform/__init__.py:30
+msgid "Zoom to current location"
+msgstr ""
+
+#: c2cgeoform/__init__.py:31
+#, fuzzy
+msgid "Zoom in"
+msgstr "Ingrandimento"
+
+#: c2cgeoform/__init__.py:32
+#, fuzzy
+msgid "Zoom out"
+msgstr "Rimpicciolimento"
+
+#: c2cgeoform/views/abstract_views.py:173
 msgid "Your submission has been taken into account."
 msgstr ""
 
-#: c2cgeoform/views/abstract_views.py:170
+#: c2cgeoform/views/abstract_views.py:174
 msgid "Please check that the copy fits before submitting."
 msgstr ""
 
-#: c2cgeoform/views/abstract_views.py:267
+#: c2cgeoform/views/abstract_views.py:312
 msgid "Submit"
 msgstr "Invia"
 
-#: c2cgeoform/views/abstract_views.py:303 c2cgeoform/templates/grid.pt:7
+#: c2cgeoform/views/abstract_views.py:348 c2cgeoform/templates/grid.pt:7
 msgid "New"
 msgstr "Nuovo"
 
-#: c2cgeoform/views/abstract_views.py:313 c2cgeoform/templates/grid.pt:103
+#: c2cgeoform/views/abstract_views.py:358 c2cgeoform/templates/grid.pt:103
 msgid "Edit"
 msgstr "Modifica"
 
-#: c2cgeoform/views/abstract_views.py:330
+#: c2cgeoform/views/abstract_views.py:375
 msgid "Duplicate"
 msgstr "Duplica"
 
-#: c2cgeoform/views/abstract_views.py:339 c2cgeoform/templates/grid.pt:105
+#: c2cgeoform/views/abstract_views.py:384 c2cgeoform/templates/grid.pt:105
 msgid "Delete"
 msgstr "Cancella"
 
-#: c2cgeoform/views/abstract_views.py:345
+#: c2cgeoform/views/abstract_views.py:390
 msgid "Are your sure you want to delete this record ?"
 msgstr "Sei sicuro di voler cancellare questo record?"
 
 #: c2cgeoform/templates/widgets/map_select.pt:37
-#: c2cgeoform/templates/widgets/map.pt:25
 msgid "Zoom In"
 msgstr "Ingrandimento"
 
 #: c2cgeoform/templates/widgets/map_select.pt:37
-#: c2cgeoform/templates/widgets/map.pt:25
 msgid "Zoom Out"
 msgstr "Rimpicciolimento"
 
 #: c2cgeoform/templates/widgets/map_select.pt:37
-#: c2cgeoform/templates/widgets/map.pt:25
 msgid "Attributions"
 msgstr "Attribuzioni"
 

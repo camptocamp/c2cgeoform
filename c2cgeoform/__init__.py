@@ -26,7 +26,10 @@ default_map_settings = {
     },
     'fitSource': False,
     'fitMaxZoom': 14,
-    'focusOnly': False
+    'focusOnly': False,
+    'geolocationTooltip': _('Zoom to current location'),
+    'zoomInTipLabel': _('Zoom in'),
+    'zoomOutTipLabel': _('Zoom out'),
 }
 
 

@@ -5,7 +5,7 @@ LANGUAGES = fr de it
 MO_FILES = $(addprefix c2cgeoform/locale/, $(addsuffix /LC_MESSAGES/c2cgeoform.mo, $(LANGUAGES)))
 PO_FILES = $(addprefix c2cgeoform/locale/, $(addsuffix /LC_MESSAGES/c2cgeoform.po, $(LANGUAGES)))
 
-L10N_SOURCE_FILES += c2cgeoform/models.py c2cgeoform/views/abstract_views.py
+L10N_SOURCE_FILES += c2cgeoform/__init__.py c2cgeoform/models.py c2cgeoform/views/abstract_views.py
 L10N_SOURCE_FILES += $(shell find c2cgeoform/templates/ -type f -name '*.pt')
 L10N_SOURCE_FILES += $(shell find c2cgeoform/templates/ -type f -name '*.jinja2')
 
