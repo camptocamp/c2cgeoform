@@ -10,6 +10,7 @@ import { addControls, addGeolocation } from './controls'
 import { addInteractions } from './interactions'
 import { createBaseLayer, createVectorLayer } from './layers.js'
 import { getStyleFunction } from './styles'
+import { defaults as controlDefaults } from 'ol/control'
 
 const format = new GeoJSONFormat()
 const widgets = []
@@ -27,6 +28,9 @@ export function initMap(target, options) {
       .concat([vectorLayer]),
     target,
     view: new View(options.view || {}),
+    controls: controlDefaults({
+      zoomOptions: options,
+    }),
   })
   if (options.view.initialExtent) {
     map.getView().fit(options.view.initialExtent)
@@ -58,7 +62,7 @@ export function initMap(target, options) {
     vectorLayer.changed()
   })
 
-  addGeolocation(map)
+  addGeolocation(map, options)
   return map
 }
 
@@ -77,6 +81,9 @@ export function initMapWidget(oid, options) {
     target,
     view: new View(options.view || {}),
     interactions: defaults({ onFocusOnly: options.onFocusOnly }),
+    controls: controlDefaults({
+      zoomOptions: options,
+    }),
   })
 
   if (options.onFocusOnly) map.getTargetElement().setAttribute('tabindex', '0')
@@ -93,21 +100,19 @@ export function initMapWidget(oid, options) {
   }
   if (!options.readonly) {
     const interactions = addInteractions({ map, source, type, input, multi })
-    addControls({
-      target,
-      interactions,
-      i18n: {
-        draw: options[`draw${type}Tooltip`],
-        edit: options.modifyTooltip,
-        clear: options.clearTooltip,
-      },
-      source,
-    })
+    addControls(
+      Object.assign(options, {
+        target,
+        interactions,
+        drawTooltip: options[`draw${type}Tooltip`],
+        source,
+      })
+    )
   }
   // Force style to specific Icon
   if (itemIcon) layer.setStyle(getStyleFunction({ icon: itemIcon }))
 
-  addGeolocation(map)
+  addGeolocation(map, options)
 }
 
 export function checkInitialized(oid) {

@@ -10,6 +10,7 @@ from sqlalchemy import desc, or_, types
 from sqlalchemy.exc import DBAPIError
 from sqlalchemy.inspection import inspect
 from sqlalchemy.orm.properties import ColumnProperty, RelationshipProperty
+from translationstring import TranslationString
 from geojson import FeatureCollection, Feature
 from c2cgeoform import _, default_map_settings
 
@@ -210,18 +211,26 @@ class AbstractViews():
             return Response(db_err_msg, content_type='text/plain', status=500)
 
     def map(self, map_settings={}):
+        map_options = {
+            **default_map_settings,
+            **{
+                'url': self._request.route_url(
+                    'c2cgeoform_geojson',
+                    _query={
+                        'srid': map_settings.get('srid', default_map_settings['srid']),
+                    },
+                ),
+            },
+            **map_settings
+        }
         return {
             "map_options": {
-                **default_map_settings,
-                **{
-                    'url': self._request.route_url(
-                        'c2cgeoform_geojson',
-                        _query={
-                            'srid': map_settings.get('srid', default_map_settings['srid']),
-                        },
-                    ),
-                },
-                **map_settings
+                key: (
+                    self._request.translate(value)
+                    if isinstance(value, TranslationString)
+                    else value
+                )
+                for key, value in map_options.items()
             }
         }
 
@@ -298,7 +307,7 @@ class AbstractViews():
         return rows
 
     def _form(self, schema=None, **kwargs):
-        self._schema = schema or self._base_schema.bind(
+        self._schema = (schema or self._base_schema).bind(
             request=self._request,
             dbsession=self._request.dbsession)
 

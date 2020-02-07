@@ -1,4 +1,4 @@
-from translationstring import TranslationStringFactory
+from translationstring import TranslationStringFactory, TranslationString
 from deform.widget import (
     Widget, SelectWidget, Select2Widget, RadioChoiceWidget,
     CheckboxChoiceWidget)
@@ -70,9 +70,17 @@ class MapWidget(Widget):
         if cstruct is null:
             cstruct = u''
         values = self.get_template_values(field, cstruct, kw)
+        map_options = {
+            key: (
+                field.parent.schema.request.translate(value)
+                if isinstance(value, TranslationString)
+                else value
+            )
+            for key, value in self.map_options.items()
+        }
         values['map_options'] = {
             **self._get_controls_definition(field, readonly),
-            **self.map_options
+            **map_options
         }
         # make `_` available in template for i18n messages
         values['_'] = _
@@ -641,6 +649,8 @@ class FileUploadWidget(DeformFileUploadWidget):
             cstruct['uid'] = cstruct['id']
             if cstruct['id'] != null and self.get_url:
                 kw['url'] = self.get_url(self.request, cstruct['id'])
+        if cstruct.get('filename', None) == null:
+            cstruct['filename'] = ""
         return DeformFileUploadWidget.serialize(self, field, cstruct, **kw)
 
     def deserialize(self, field, pstruct):
