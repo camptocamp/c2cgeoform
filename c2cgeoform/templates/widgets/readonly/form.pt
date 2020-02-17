@@ -34,8 +34,7 @@
           ${description}
         </p>
 
-        <div tal:repeat="child field"
-             tal:replace="structure child.render_template(item_template)"/>
+        <tal metal:use-macro="load:${field.widget.fields_template}.pt"></tal>
 
       </fieldset>
 
