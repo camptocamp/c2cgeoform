@@ -407,6 +407,7 @@ class AbstractViews():
             "request": self._request,
             "actions": self._item_actions(obj),
             "readonly": readonly,
+            "obj": obj,
         }
         if (
             'msg_col' in self._request.params.keys() and
@@ -497,6 +498,7 @@ class AbstractViews():
             kwargs = {
                 "request": self._request,
                 "actions": self._item_actions(obj),
+                "obj": obj
             }
             return {
                 'title': form.title,
