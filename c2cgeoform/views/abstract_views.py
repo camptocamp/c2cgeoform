@@ -481,6 +481,7 @@ class AbstractViews():
         obj = self._get_object()
         try:
             form = self._form()
+            self._populate_widgets(form.schema)
             form_data = self._request.POST.items()
             self._appstruct = form.validate(form_data)
             with self._request.dbsession.no_autoflush:
