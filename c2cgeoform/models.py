@@ -4,10 +4,11 @@ from sqlalchemy.orm import (
     sessionmaker,
     )
 from sqlalchemy.ext.declarative import declarative_base
-from zope.sqlalchemy import ZopeTransactionExtension
+from zope.sqlalchemy import register
 from .ext import colander_ext
 
-DBSession = scoped_session(sessionmaker(extension=ZopeTransactionExtension()))
+DBSession = scoped_session(sessionmaker())
+register(DBSession)
 Base = declarative_base()
 
 
