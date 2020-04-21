@@ -57,7 +57,7 @@ export function addGeolocation(map, options) {
         position => {
           const { latitude, longitude } = position.coords
           map.getView().animate({
-            center: fromLonLat([longitude, latitude]),
+            center: fromLonLat([longitude, latitude], map.getView().getProjection()),
             duration: 1500,
             zoom: 18,
           })
