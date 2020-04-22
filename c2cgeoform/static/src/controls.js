@@ -72,5 +72,5 @@ export function addGeolocation(map, options) {
       ),
   })
 
-  $(map.getTargetElement()).append(container)
+  $(map.getViewport()).append(container)
 }
