@@ -121,10 +121,12 @@ prettier:
 clean:
 	rm -f $(MO_FILES)
 	rm -rf docs/_build
+	rm -rf c2cgeoform/static/dist
 
 .PHONY: cleanall
 cleanall: clean
 	rm -rf .build
+	rm -rf c2cgeoform/static/node_modules
 
 .PHONY: initdb
 initdb: $(BUILD_DIR)/c2cgeoform_demo
