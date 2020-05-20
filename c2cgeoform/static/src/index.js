@@ -108,6 +108,7 @@ export function initMapWidget(oid, options) {
         interactions,
         drawTooltip: options[`draw${type}Tooltip`],
         source,
+        type,
       })
     )
   }

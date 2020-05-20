@@ -15,7 +15,7 @@ function createButton(container, options) {
 }
 
 export function addControls(options) {
-  const { target, i18n, interactions, source } = options
+  const { target, type, interactions, source } = options
   const { draw, modify } = interactions
   const container = document.createElement('div')
   container.classList.add(
@@ -24,16 +24,18 @@ export function addControls(options) {
     'c2cgeoform-controls'
   )
 
-  createButton(container, {
-    content: '<i class="glyphicon glyphicon-pencil"></i>',
-    title: options.drawTooltip,
-    callback: () => draw.setActive(true) && modify.setActive(false),
-  })
-  createButton(container, {
-    content: '<i class="glyphicon glyphicon-move"></i>',
-    title: options.modifyTooltip,
-    callback: () => modify.setActive(true) && draw.setActive(false),
-  })
+  if (type !== 'Point') {
+    createButton(container, {
+      content: '<i class="glyphicon glyphicon-pencil"></i>',
+      title: options.drawTooltip,
+      callback: () => draw.setActive(true) && modify.setActive(false),
+    })
+    createButton(container, {
+      content: '<i class="glyphicon glyphicon-move"></i>',
+      title: options.modifyTooltip,
+      callback: () => modify.setActive(true) && draw.setActive(false),
+    })
+  }
   createButton(container, {
     content: '<i class="glyphicon glyphicon-remove"></i>',
     title: options.clearTooltip,
