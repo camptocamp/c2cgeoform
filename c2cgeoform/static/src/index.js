@@ -13,7 +13,7 @@ import { getStyleFunction } from './styles'
 import { defaults as controlDefaults } from 'ol/control'
 
 const format = new GeoJSONFormat()
-const widgets = []
+const widgets = {}
 let itemIcon
 
 export function initMap(target, options) {
@@ -85,6 +85,8 @@ export function initMapWidget(oid, options) {
       zoomOptions: options,
     }),
   })
+  //Store map for oid
+  widgets[oid] = map
 
   if (options.onFocusOnly) map.getTargetElement().setAttribute('tabindex', '0')
 
@@ -116,9 +118,11 @@ export function initMapWidget(oid, options) {
 }
 
 export function checkInitialized(oid) {
-  const initialized = widgets.includes(oid)
-  widgets.push(oid)
-  return initialized
+  return oid in widgets
+}
+
+export function getObjectMap(oid) {
+  return widgets[oid]
 }
 
 export function registerProjection(epsg, def) {
