@@ -126,6 +126,14 @@ export function getObjectMap(oid) {
   return widgets[oid]
 }
 
+export function setReadOnly(oid) {
+  const map = getObjectMap(oid)
+  map.getControls().clear()
+  map.getInteractions().clear()
+  map.getTargetElement().classList.add('c2cgeoform-readonly')
+  map.updateSize()
+}
+
 export function registerProjection(epsg, def) {
   proj4.defs(epsg, def)
   register(proj4)

@@ -8,7 +8,8 @@
     cursor: pointer;
   }
   &.cross {
-    &:before, &:after {
+    &:before,
+    &:after {
       position: absolute;
       content: '';
       background: red;
@@ -39,6 +40,9 @@
 }
 .c2cgeoform-locate-me-btn .glyphicon {
   top: 0;
+}
+.c2cgeoform-readonly .c2cgeoform-locate-me-btn {
+  display: none;
 }
 
 .c2cgeoform-controls {
