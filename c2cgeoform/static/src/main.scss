@@ -7,7 +7,29 @@
   &.hovering:hover {
     cursor: pointer;
   }
+  &.cross {
+    &:before, &:after {
+      position: absolute;
+      content: '';
+      background: red;
+      display: block;
+      width: 40%;
+      height: 1px;
+      transform: rotate(-90deg);
+      left: 0;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      margin: auto;
+      z-index: 100;
+    }
+    &:after {
+      transform: rotate(0deg);
+    }
+    height: 60vw;
+  }
 }
+
 .c2cgeoform-locate-me-btn {
   top: 4.5em;
   left: 0.5em;
