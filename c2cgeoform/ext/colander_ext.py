@@ -5,7 +5,6 @@ from geoalchemy2 import WKBElement
 from geoalchemy2.shape import to_shape, from_shape
 from shapely.geometry import mapping, shape
 from shapely.ops import transform
-from functools import partial
 import pyproj
 import json
 from io import BytesIO
@@ -48,14 +47,17 @@ class Geometry(SchemaType):
             self.map_srid = self.srid
 
         if self.srid != self.map_srid:
-            self.project_db_to_map = partial(
-                pyproj.transform,
-                pyproj.Proj(init='epsg:' + str(self.srid)),
-                pyproj.Proj(init='epsg:' + str(self.map_srid)))
-            self.project_map_to_db = partial(
-                pyproj.transform,
-                pyproj.Proj(init='epsg:' + str(self.map_srid)),
-                pyproj.Proj(init='epsg:' + str(self.srid)))
+            self.project_db_to_map = pyproj.Transformer.from_crs(
+                self.srid,
+                self.map_srid,
+                always_xy=True,
+            ).transform
+
+            self.project_map_to_db = pyproj.Transformer.from_crs(
+                self.map_srid,
+                self.srid,
+                always_xy=True,
+            ).transform
 
     def serialize(self, node, appstruct):
         """
