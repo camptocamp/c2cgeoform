@@ -370,7 +370,7 @@ class AbstractViews():
                 'c2cgeoform_item',
                 id=getattr(item, self._id_field))}
 
-    def _item_actions(self, item):
+    def _item_actions(self, item, readonly=False):
         actions = []
 
         if inspect(item).persistent and self._model_config().get('duplicate', False):
@@ -382,7 +382,7 @@ class AbstractViews():
                     'c2cgeoform_item_duplicate',
                     id=getattr(item, self._id_field))))
 
-        if inspect(item).persistent:
+        if inspect(item).persistent and not readonly:
             actions.append(ItemAction(
                 name='delete',
                 label=_('Delete'),
@@ -405,7 +405,7 @@ class AbstractViews():
             dict_.update(self._request.GET)
         kwargs = {
             "request": self._request,
-            "actions": self._item_actions(obj),
+            "actions": self._item_actions(obj, readonly=readonly),
             "readonly": readonly,
             "obj": obj,
         }

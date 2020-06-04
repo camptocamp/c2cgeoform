@@ -1,0 +1,41 @@
+<tal:loop tal:condition="exists: actions" tal:repeat="action actions">
+  <a tal:condition="not action.method()"
+     class="btn btn-default c2cgeoform-item-action ${action.name()} ${action.css_class()}"
+     href="${action.url()}">
+     <span tal:omit-tag="not action.icon()" class="${action.icon()}"></span>
+     ${action.label()}</a>
+  <a tal:condition="action.method()"
+     class="btn btn-default c2cgeoform-item-action c2cgeoform-action-ajax ${action.name()} ${action.css_class()}"
+     href="#"
+     data-url="${action.url()}"
+     data-method="${action.method()}"
+     data-confirmation="${action.confirmation()}">
+     <span tal:omit-tag="not action.icon()" class="${action.icon()}"></span>
+     ${action.label()}</a>
+</tal:loop>
+
+<script type="text/javascript">
+$(function () {
+  $('#${formid} a.c2cgeoform-action-ajax').on('click', function(e) {
+    var execute = function() {
+      $.ajax({
+        url: $(this).data('url'),
+        type: $(this).data('method'),
+        success: function(data) {
+          window.location = data.redirect;
+        }
+      });
+    }.bind(this);
+
+    if ($(this).data('confirmation')) {
+      if (window.confirm($(this).data('confirmation'))) {
+        execute();
+      }
+    } else {
+      execute();
+    }
+
+    return false;
+  });
+});
+</script>

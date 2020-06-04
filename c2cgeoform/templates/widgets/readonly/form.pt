@@ -39,6 +39,12 @@
       </fieldset>
 
     </div>
+
+    <div class="panel-footer clearfix" tal:condition="actions">
+      <div class="pull-right" i18n:domain="c2cgeoform">
+        <tal metal:use-macro="load:_actions.pt"></tal>
+      </div>
+    </div>
   </div>
 
 </form>
