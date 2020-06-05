@@ -70,21 +70,7 @@
       </tal:loop>
 
       <div class="pull-right" i18n:domain="c2cgeoform">
-        <tal:loop tal:condition="exists: actions" tal:repeat="action actions">
-          <a tal:condition="not action.confirmation()"
-             class="btn btn-default c2cgeoform-item-action ${action.name()} ${action.css_class()}"
-             href="${action.url()}">
-             <span tal:omit-tag="not action.icon()" class="${action.icon()}"></span>
-             ${action.label()}</a>
-          <a tal:condition="action.confirmation()"
-             class="btn btn-default c2cgeoform-item-action c2cgeoform-action-ajax ${action.name()} ${action.css_class()}"
-             href="#"
-             data-url="${action.url()}"
-             data-method="${action.method()}"
-             data-confirmation="${action.confirmation()}">
-             <span tal:omit-tag="not action.icon()" class="${action.icon()}"></span>
-             ${action.label()}</a>
-        </tal:loop>
+        <tal metal:use-macro="load:_actions.pt"></tal>
       </div>
     </div>
   </div>
@@ -140,26 +126,6 @@
 $(function () {
   $('#${field.formid} button[type=submit]').click(function (e) {
     $(window).off('beforeunload')
-  });
-
-  $('a.c2cgeoform-action-ajax').on('click', function(e) {
-    var execute = function() {
-      $.ajax({
-        url: $(this).data('url'),
-        type: $(this).data('method'),
-        success: function(data) {
-          window.location = data.redirect;
-        }
-      });
-    }.bind(this);
-
-    if ($(this).data('confirmation')) {
-      if (window.confirm($(this).data('confirmation'))) {
-        execute();
-      }
-    } else {
-      execute();
-    }
   });
 });
 </script>
