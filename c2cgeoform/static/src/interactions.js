@@ -12,6 +12,7 @@ export function addInteractions(options) {
   const { input, multi, ...interactionOptions } = options
   const store = geometry => {
     input.value = geometry ? getGeometryJSON(geometry, multi) : ''
+    input.dispatchEvent(new Event('input', { bubbles: true }))
   }
   const draw = addDrawInteraction(interactionOptions)
   const modify = addModifyInteraction(interactionOptions)
