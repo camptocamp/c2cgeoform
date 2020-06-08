@@ -21,7 +21,7 @@ export function addInteractions(options) {
   )
   // Mobile drawing
   if (
-    window.matchMedia('(max-width: 576px)').matches &&
+    window.matchMedia('(max-width: 767px)').matches &&
     interactionOptions.type === 'Point'
   ) {
     let map = options.map
