@@ -3,11 +3,13 @@ import WMTS from 'ol/source/WMTS'
 import WMTSTileGrid from 'ol/tilegrid/WMTS'
 import VectorLayer from 'ol/layer/Vector'
 import TileLayer from 'ol/layer/Tile'
+import Image from 'ol/layer/Image'
 import XYZ from 'ol/source/XYZ'
+import ImageWMS from 'ol/source/ImageWMS'
 
 const DEFAULT_OPACITY = 0.8
 
-export function createBaseLayer(config) {
+export function createLayer(config) {
   let source
   switch (config.type_) {
     case 'WMTS':
@@ -20,6 +22,11 @@ export function createBaseLayer(config) {
         url: config.url,
       })
       break
+    case 'WMS':
+      source = new ImageWMS({
+        url: config.url,
+      })
+      return new Image({ source })
     case 'OSM':
     default:
       source = new OSM()

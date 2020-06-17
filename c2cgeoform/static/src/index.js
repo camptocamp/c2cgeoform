@@ -8,7 +8,7 @@ import proj4 from 'proj4'
 import { register } from 'ol/proj/proj4'
 import { addControls, addGeolocation } from './controls'
 import { addInteractions } from './interactions'
-import { createBaseLayer, createVectorLayer } from './layers.js'
+import { createLayer, createVectorLayer } from './layers.js'
 import { getStyleFunction } from './styles'
 import { defaults as controlDefaults } from 'ol/control'
 
@@ -24,7 +24,7 @@ export function initMap(target, options) {
 
   let map = new Map({
     layers: options.baseLayers
-      .map(def => createBaseLayer(def))
+      .map(def => createLayer(def))
       .concat([vectorLayer]),
     target,
     view: new View(options.view || {}),
@@ -77,7 +77,7 @@ export function initMapWidget(oid, options) {
   const source = new VectorSource()
   const layer = createVectorLayer(source)
   const map = new Map({
-    layers: options.baseLayers.map(def => createBaseLayer(def)).concat([layer]),
+    layers: options.baseLayers.map(def => createLayer(def)).concat([layer]),
     target,
     view: new View(options.view || {}),
     interactions: defaults({ onFocusOnly: options.onFocusOnly }),
@@ -116,6 +116,12 @@ export function initMapWidget(oid, options) {
   if (itemIcon) layer.setStyle(getStyleFunction({ icon: itemIcon }))
 
   addGeolocation(map, options)
+}
+
+export function addLayer(oid, config) {
+  const layer = createLayer(config)
+  getObjectMap(oid).addLayer(layer)
+  return layer
 }
 
 export function checkInitialized(oid) {
