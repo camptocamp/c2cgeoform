@@ -26,7 +26,7 @@ export function createLayer(config) {
       source = new ImageWMS({
         url: config.url,
       })
-      return  new Image({source})
+      return new Image({ source })
     case 'OSM':
     default:
       source = new OSM()
