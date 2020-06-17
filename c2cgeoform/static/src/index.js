@@ -118,8 +118,8 @@ export function initMapWidget(oid, options) {
   addGeolocation(map, options)
 }
 
-export function addLayer(oid, wmsConfig) {
-  const layer = createLayer(wmsConfig)
+export function addLayer(oid, config) {
+  const layer = createLayer(config)
   getObjectMap(oid).addLayer(layer)
   return layer
 }
