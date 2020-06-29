@@ -1,5 +1,6 @@
 babel
 colanderalchemy>=0.3.3
+chameleon<=3.7.4
 deform>=2.0.4
 geoalchemy2>=0.4.0
 geojson
