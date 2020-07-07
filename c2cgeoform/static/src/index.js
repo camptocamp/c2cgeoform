@@ -101,7 +101,10 @@ export function initMapWidget(oid, options) {
     map.getView().fit(options.view.initialExtent)
   }
   if (!options.readonly) {
-    const interactions = addInteractions({ map, source, type, input, multi })
+    const interactions = addInteractions({
+      map, source, type, input, multi,
+      mobile: options.mobile
+    })
     addControls(
       Object.assign(options, {
         target,

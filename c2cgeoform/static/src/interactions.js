@@ -21,10 +21,11 @@ export function addInteractions(options) {
     store(options.source.getFeatures()[0]?.getGeometry())
   )
   // Mobile drawing
-  if (
-    window.matchMedia('(max-width: 767px)').matches &&
-    interactionOptions.type === 'Point'
-  ) {
+  const condition =
+    options.mobile !== undefined
+      ? options.mobile
+      : window.matchMedia('(max-width: 767px)').matches
+  if (condition && interactionOptions.type === 'Point') {
     let map = options.map
     draw.setActive(false)
     modify.setActive(false)
