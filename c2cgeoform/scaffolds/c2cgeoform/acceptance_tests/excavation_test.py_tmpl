@@ -16,7 +16,7 @@ class TestExcavationViews():
             assert [situation.name] == list(label.stripped_strings)
             assert str(situation.id) == input['value']
             if situation in excavation.situations:
-                assert 'True' == input['checked']
+                assert 'checked' == input['checked']
                 assert resp.form.get('situations', index=i).checked
             else:
                 assert 'checked' not in input
