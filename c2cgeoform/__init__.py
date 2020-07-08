@@ -30,6 +30,7 @@ default_map_settings = {
     'geolocationTooltip': _('Zoom to current location'),
     'zoomInTipLabel': _('Zoom in'),
     'zoomOutTipLabel': _('Zoom out'),
+    'mobile': None
 }
 
 

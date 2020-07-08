@@ -23,6 +23,7 @@
       bottom: 0;
       margin: auto;
       z-index: 100;
+      max-width: 10em;
     }
     &:after {
       transform: rotate(0deg);
