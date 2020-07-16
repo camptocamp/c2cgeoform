@@ -12,7 +12,7 @@ with open(os.path.join(here, "requirements.txt")) as f:
 
 setup(
     name='c2cgeoform',
-    version=os.environ.get("VERSION", "2.1.17"),
+    version=os.environ.get("VERSION", "2.1.18"),
     description='c2cgeoform',
     long_description=README + '\n\n' + CHANGES,
     long_description_content_type="text/markdown",
