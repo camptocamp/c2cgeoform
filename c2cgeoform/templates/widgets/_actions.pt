@@ -27,7 +27,7 @@ $(function () {
       });
     }.bind(this);
 
-    if ($(this).data('confirmation')) {
+    if ($(this).data('confirmation') != "") {
       if (window.confirm($(this).data('confirmation'))) {
         execute();
       }

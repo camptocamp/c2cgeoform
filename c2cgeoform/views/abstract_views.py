@@ -117,7 +117,7 @@ class ItemAction():
                  label=None,
                  css_class='',
                  icon=None,
-                 confirmation=False,
+                 confirmation="",
                  ):
         self._name = name
         self._url = url
