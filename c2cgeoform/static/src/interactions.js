@@ -22,7 +22,7 @@ export function addInteractions(options) {
   )
   // Mobile drawing
   const condition =
-    options.mobile !== undefined
+    options.mobile !== null
       ? options.mobile
       : window.matchMedia('(max-width: 767px)').matches
   if (condition && interactionOptions.type === 'Point') {
