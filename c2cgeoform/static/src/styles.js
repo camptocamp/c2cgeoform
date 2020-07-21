@@ -35,8 +35,6 @@ export function getStyleFunction(options) {
     if (cache[key] === undefined) {
       cache[key] = new Style({
         image: new Icon({
-          anchorXUnits: 'fraction',
-          anchorYUnits: 'pixels',
           src: src,
           opacity: opacity,
         }),
