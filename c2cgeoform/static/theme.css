@@ -1,3 +1,8 @@
+@media (max-width: 767px) {
+  .container {
+    width: 100%;
+  }
+}
 
 .panel-body label, .form-group label {
   color: black;
