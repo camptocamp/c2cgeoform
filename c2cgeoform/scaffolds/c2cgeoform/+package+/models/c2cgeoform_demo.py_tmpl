@@ -100,6 +100,7 @@ class Photo(FileData, Base):
     __colanderalchemy_config__ = {
         'title': _('Photo'),
         'unknown': 'preserve',
+        'missing': colander.required,
         'widget': deform_ext.FileUploadWidget(_file_upload_temp_store)
     }
     permission_id = Column(Integer, ForeignKey(EXCAV_ID))
