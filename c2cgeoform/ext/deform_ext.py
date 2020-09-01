@@ -621,6 +621,9 @@ class FileUploadWidget(DeformFileUploadWidget):
 
     **Attributes/Arguments**
 
+    id_field (default to "id")
+        Name of field to pass to get_url.
+
     get_url (optional)
         A callback function `function(request, id) -> string` which returns
         the URL to get the file. Example usage:
@@ -629,9 +632,11 @@ class FileUploadWidget(DeformFileUploadWidget):
 
             'widget': deform_ext.FileUploadWidget(
                 _file_upload_temp_store,
+                id_field="id",
                 get_url=lambda request, id: request.route_url('file', id=id)
             )
     """
+    id_field = "id"
 
     def __init__(self, get_url=None, **kw):
         DeformFileUploadWidget.__init__(self, None, **kw)
@@ -645,10 +650,10 @@ class FileUploadWidget(DeformFileUploadWidget):
         if cstruct in (null, None):
             cstruct = {}
         kw['url'] = None
-        if 'uid' not in cstruct and 'id' in cstruct:
-            cstruct['uid'] = cstruct['id']
-            if cstruct['id'] != null and self.get_url:
-                kw['url'] = self.get_url(self.request, cstruct['id'])
+        if 'uid' not in cstruct and self.id_field in cstruct:
+            cstruct['uid'] = cstruct[self.id_field]
+            if cstruct[self.id_field] != null and self.get_url:
+                kw['url'] = self.get_url(self.request, cstruct[self.id_field])
         if cstruct.get('filename', None) == null:
             cstruct['filename'] = ""
         return DeformFileUploadWidget.serialize(self, field, cstruct, **kw)
