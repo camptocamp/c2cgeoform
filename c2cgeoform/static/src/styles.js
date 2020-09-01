@@ -30,14 +30,15 @@ export function getStyleFunction(options) {
       return defaultStyle
     }
     const src = feature.get('icon') || options.icon || defaultIconUrl
-    const opacity = feature == options.context?.feature ? 1 : options.opacity
-    const key = `${src}:${opacity}`
+    const hover = feature == options.context?.feature
+    const key = `${src}:${hover}`
     if (cache[key] === undefined) {
       cache[key] = new Style({
         image: new Icon({
           src: src,
-          opacity: opacity,
+          scale: hover ? 1.25 : 1,
         }),
+        zIndex: hover ? 100 : undefined,
       })
     }
     return cache[key]

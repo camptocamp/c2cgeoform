@@ -20,7 +20,7 @@ export function initMap(target, options) {
   const source = new VectorSource()
   let vectorLayer = createVectorLayer(source)
   const context = { feature: null }
-  vectorLayer.setStyle(getStyleFunction({ opacity: 0.5, context }))
+  vectorLayer.setStyle(getStyleFunction({ context }))
 
   let map = new Map({
     layers: options.baseLayers
