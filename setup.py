@@ -23,7 +23,7 @@ requires = [
     'psycopg2-binary',
     'geoalchemy2',
     'shapely',
-    'pyproj',
+    'pyproj<3',
     'lingua>=2.4',
     'babel',
     'webhelpers',
