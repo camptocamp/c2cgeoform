@@ -11,5 +11,5 @@ pyramid_chameleon
 pyramid_jinja2
 pyproj
 shapely>=1.5.17
-sqlalchemy>=1.1.13
+SQLAlchemy>=1.1.13
 zope.sqlalchemy>=0.7.7
