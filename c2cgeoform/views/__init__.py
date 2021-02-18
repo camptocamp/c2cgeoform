@@ -2,7 +2,7 @@ from pyramid.httpexceptions import HTTPFound
 from pyramid.view import view_config
 
 
-@view_config(route_name='c2cgeoform_locale')
+@view_config(route_name='c2cgeoform_locale', renderer='json')
 def set_locale_cookie(request):
     """ View to change the preferred language.
     """
@@ -11,8 +11,10 @@ def set_locale_cookie(request):
         request.response.set_cookie('_LOCALE_',
                                     value=language,
                                     max_age=31536000)  # max_age = year
-    return HTTPFound(location=request.referer,
-                     headers=request.response.headers)
+    if request.referer is not None:
+        return HTTPFound(location=request.referer,
+                         headers=request.response.headers)
+    return {"success": True}
 
 
 class ApplicationViewPredicate(object):
