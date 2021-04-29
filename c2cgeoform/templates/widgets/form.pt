@@ -39,11 +39,11 @@
           <p class="error-msg">${field.errormsg}</p>
         </div>
 
-        <div class="alert alert-success" tal:condition="exists: msg_col">
-          <tal:loop tal:repeat="msg msg_col">
-            <div class="msg-lbl">${msg}</div>
-          </tal:loop>
-        </div>
+        <tal:loop tal:repeat="msg msg_col" tal:condition="exists: msg_col">
+          <div class="alert ${msg.css_class()}">
+            <div class="msg-lbl">${msg.text()}</div>
+          </div>
+        </tal:loop>
 
         <p class="section first" tal:condition="description">
           ${description}

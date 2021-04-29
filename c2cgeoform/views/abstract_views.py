@@ -160,6 +160,22 @@ class ItemAction():
         }
 
 
+class UserMessage:
+    def __init__(self, text, css_class="alert-success"):
+        self._text = text
+        self._css_class = css_class
+
+    def text(self):
+        return self._text
+
+    def css_class(self):
+        return self._css_class
+
+    def __str__(self):
+        # For compatibility with old templates
+        return self._text
+
+
 class AbstractViews():
 
     _model = None  # sqlalchemy model
@@ -170,8 +186,8 @@ class AbstractViews():
     _base_schema = None  # base colander schema
 
     MSG_COL = {
-        'submit_ok': _('Your submission has been taken into account.'),
-        'copy_ok': _('Please check that the copy fits before submitting.'),
+        'submit_ok': UserMessage(_('Your submission has been taken into account.'), "alert-success"),
+        'copy_ok': UserMessage(_('Please check that the copy fits before submitting.'), "alert-info"),
     }
 
     def __init__(self, request):
@@ -413,7 +429,11 @@ class AbstractViews():
             'msg_col' in self._request.params.keys() and
             self._request.params['msg_col'] in self.MSG_COL.keys()
         ):
-            kwargs.update({'msg_col': [self.MSG_COL[self._request.params['msg_col']]]})
+            msg = self.MSG_COL[self._request.params['msg_col']]
+            if isinstance(msg, str):
+                # For compatibility with old views
+                msg = UserMessage(msg, "alert-success")
+            kwargs.update({'msg_col': [msg]})
         return {
             'title': form.title,
             'form': form,
