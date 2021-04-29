@@ -5,7 +5,7 @@ geoalchemy2>=0.4.0
 geojson
 lingua>=2.4
 psycopg2-binary>=2.7.7
-pyramid>=1.10
+pyramid<2>=1.10
 pyramid_beaker
 pyramid_chameleon
 pyramid_jinja2
