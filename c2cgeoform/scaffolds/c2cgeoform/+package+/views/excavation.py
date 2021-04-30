@@ -11,7 +11,7 @@ from c2cgeoform.schema import (
     manytomany_validator,
 )
 from c2cgeoform.ext.deform_ext import RelationCheckBoxListWidget
-from c2cgeoform.views.abstract_views import AbstractViews, ListField, ItemAction
+from c2cgeoform.views.abstract_views import AbstractViews, ListField, ItemAction, UserMessage
 
 from ..models.c2cgeoform_demo import Excavation, Situation
 from ..i18n import _
@@ -57,6 +57,11 @@ class ExcavationViews(AbstractViews):
                     filter_column=Situation.name)
     ]
 
+    MSG_COL = {
+        **AbstractViews.MSG_COL,
+        "error": UserMessage(_("This is an error"), "alert-danger")
+    }
+
     def _base_query(self):
         return super()._base_query().distinct(). \
             outerjoin('situations'). \
@@ -81,6 +86,23 @@ class ExcavationViews(AbstractViews):
                 url=self._request.route_url('c2cgeoform_map')
             )
         ]
+
+    def _item_actions(self, item, readonly=False):
+        actions = super()._item_actions(item, readonly)
+        if item is not None:
+            actions.append(
+                ItemAction(
+                    name='error',
+                    label=_('Show an error'),
+                    icon='glyphicon glyphicon-alert',
+                    url=self._request.route_url(
+                        self._request.matched_route.name,
+                        **self._request.matchdict,
+                        _query=[('msg_col', 'error')]
+                    )
+                )
+            )
+        return actions
 
     @view_config(route_name='c2cgeoform_map',
                  renderer='../templates/map.jinja2')

@@ -12,11 +12,11 @@ L10N_SOURCE_FILES += $(shell find c2cgeoform/templates/ -type f -name '*.jinja2'
 ifneq (,$(findstring CYGWIN, $(shell uname)))
 PYTHON3 =
 VENV_BIN = .build/venv/Scripts
-PIP_UPGRADE = python.exe -m pip install --upgrade pip==9.0.1 setuptools==36.5
+PIP_UPGRADE = python.exe -m pip install --upgrade pip==21.1 setuptools==56.0
 else
 PYTHON3 = -p python3
 VENV_BIN = .build/venv/bin
-PIP_UPGRADE = pip install --upgrade pip==9.0.1 setuptools==36.5.0
+PIP_UPGRADE = pip install --upgrade pip==21.1 setuptools==56.0
 endif
 
 
