@@ -553,6 +553,8 @@ class FileUploadWidget(DeformFileUploadWidget):
             cstruct['uid'] = cstruct['id']
             if cstruct['id'] != null and self.get_url:
                 kw['url'] = self.get_url(self.request, cstruct['id'])
+        if cstruct.get('filename', None) == null:
+            cstruct['filename'] = ""
         return DeformFileUploadWidget.serialize(self, field, cstruct, **kw)
 
     def deserialize(self, field, pstruct):
