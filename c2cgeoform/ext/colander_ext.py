@@ -50,12 +50,12 @@ class Geometry(object):
         if self.srid != self.map_srid:
             self.project_db_to_map = partial(
                 pyproj.transform,
-                pyproj.Proj(init='epsg:' + str(self.srid)),
-                pyproj.Proj(init='epsg:' + str(self.map_srid)))
+                pyproj.Proj(pyproj.CRS.from_epsg(self.srid)),
+                pyproj.Proj(pyproj.CRS.from_epsg(self.map_srid)))
             self.project_map_to_db = partial(
                 pyproj.transform,
-                pyproj.Proj(init='epsg:' + str(self.map_srid)),
-                pyproj.Proj(init='epsg:' + str(self.srid)))
+                pyproj.Proj(pyproj.CRS.from_epsg(self.map_srid)),
+                pyproj.Proj(pyproj.CRS.from_epsg(self.srid)))
 
     def serialize(self, node, appstruct):
         """
