@@ -104,7 +104,7 @@ prettier:
 
 .build/venv.timestamp:
 	# Create a Python virtual environment.
-	virtualenv $(PYTHON3) .build/venv
+	python3 -m venv .build/venv
 	# Upgrade packaging tools.
 	$(VENV_BIN)/$(PIP_UPGRADE)
 	$(VENV_BIN)/pip install wheel  # Avoid error when building wheels

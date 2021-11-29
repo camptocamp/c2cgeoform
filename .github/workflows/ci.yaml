@@ -18,6 +18,8 @@ jobs:
       TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
       TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
     steps:
+      - name: Install packages
+        run: sudo apt-get install -y gettext python3-virtualenv
       - uses: actions/checkout@v1
       - name: Build
         run: make build
