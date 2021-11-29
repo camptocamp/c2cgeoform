@@ -38,7 +38,7 @@ help:
 	@echo
 
 .PHONY: build
-build: .build/requirements.timestamp compile-catalog c2cgeoform/static/dist/index.js
+build: docker-build-db .build/requirements.timestamp compile-catalog c2cgeoform/static/dist/index.js
 
 .PHONY: check
 check: flake8 check_c2cgeoform_demo
@@ -64,10 +64,12 @@ test: test_c2cgeoform test_c2cgeoform_demo
 
 .PHONY: test_c2cgeoform
 test_c2cgeoform: build .build/requirements-dev.timestamp
+	docker-compose up -d db
 	$(VENV_BIN)/nosetests --ignore-files=test_views.py
 
 .PHONY: test_c2cgeoform_demo
 test_c2cgeoform_demo: $(BUILD_DIR)/c2cgeoform_demo
+	docker-compose up -d db
 	make -C $(BUILD_DIR)/c2cgeoform_demo -f ./dev.mk test
 
 $(BUILD_DIR)/c2cgeoform_demo: build c2cgeoform/scaffolds/c2cgeoform c2cgeoform_demo_dev.mk
@@ -143,3 +145,9 @@ serve: build $(BUILD_DIR)/c2cgeoform_demo
 .PHONY: modwsgi
 modwsgi: $(BUILD_DIR)/c2cgeoform_demo
 	make -C $(BUILD_DIR)/c2cgeoform_demo modwsgi
+
+
+# Docker builds
+
+docker-build-db:
+	docker build -t camptocamp/c2cgeoform-db:latest db

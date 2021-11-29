@@ -1,0 +1,17 @@
+---
+
+# The project Docker compose file for development.
+
+version: '2.3'
+
+services:
+
+  db:
+    image: camptocamp/c2cgeoform-db:latest
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=www-data
+      - POSTGRES_PASSWORD=www-data
+      - POSTGRES_DB=c2cgeoform_demo_tests
+    ports:
+      - "54321:5432"
