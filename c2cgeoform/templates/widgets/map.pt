@@ -14,7 +14,7 @@
         // Defer widget creation
         deform.addCallback('${oid}', function (oid) {
           c2cgeoform.initMapWidget(oid, Object.assign(
-            ${json.dumps(map_options)},
+            ${structure: json.dumps(map_options)},
             {
               geojson: '${cstruct}',
               drawPointTooltip: '${_('Draw point')}',
