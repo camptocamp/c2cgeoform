@@ -1,13 +1,30 @@
 import os
+import time
 import unittest
 from pyramid import testing
 from pyramid.paster import get_appsettings
-from sqlalchemy import engine_from_config
+from sqlalchemy import engine_from_config, text
 from webob.multidict import MultiDict
 
 from c2cgeoform.models import (DBSession, Base)
 from c2cgeoform.settings import apply_local_settings
 from c2cgeoform import init_deform
+
+
+def wait_for_db(engine):
+    sleep_time = 1
+    max_sleep = 30
+    while sleep_time < max_sleep:
+        try:
+            with engine.connect() as connection:
+                connection.execute(text("SELECT 1;"))
+            return
+        except Exception as e:
+            print(str(e))
+            print("Waiting for the DataBase server to be reachable")
+            time.sleep(sleep_time)
+            sleep_time *= 2
+    exit(1)  # noqa
 
 
 class DatabaseTestCase(unittest.TestCase):
@@ -19,6 +36,8 @@ class DatabaseTestCase(unittest.TestCase):
         apply_local_settings(settings)
         engine = engine_from_config(settings, 'sqlalchemy.')
         DBSession.configure(bind=engine)
+
+        wait_for_db(engine)
 
         from .models_test import Person, EmploymentStatus, Tag  # noqa
         Base.metadata.create_all(engine)

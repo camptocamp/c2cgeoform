@@ -11,8 +11,6 @@ jobs:
     runs-on: ubuntu-18.04
     timeout-minutes: 60
     env:
-      DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
       TX_USR: ${{ secrets.TX_USR }}
       TX_PWD: ${{ secrets.TX_PWD }}
       TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
@@ -20,7 +18,10 @@ jobs:
     steps:
       - name: Install packages
         run: sudo apt-get install -y gettext python3-virtualenv
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 10
       - name: Build
         run: make build
       - name: Lint
@@ -28,7 +29,7 @@ jobs:
       - name: Tests
         run: make test
       - name: Docker compose logs
-        if: ${{ always() }}
+        if: always()
         run: |
           docker-compose logs
           docker-compose down -v --remove-orphans
