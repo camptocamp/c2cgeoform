@@ -5,41 +5,52 @@ name: Continuous integration
 on:
   push:
 
+env:
+  HAS_SECRETS: ${{ secrets.HAS_SECRETS }}
+
 jobs:
   main:
     name: Continuous integration
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     timeout-minutes: 60
-    env:
-      TX_USR: ${{ secrets.TX_USR }}
-      TX_PWD: ${{ secrets.TX_PWD }}
-      TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
-      TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
     steps:
+      - uses: actions/checkout@v3
+
       - name: Install packages
         run: sudo apt-get install -y gettext python3-virtualenv
-      - uses: actions/checkout@v3
+
       - uses: actions/setup-node@v3
         with:
           node-version: 10
+
       - name: Build
         run: make build
+
       - name: Lint
         run: make check
+
       - name: Tests
         run: make test
+
       - name: Docker compose logs
         if: always()
         run: |
           docker-compose logs
           docker-compose down -v --remove-orphans
-      - name: Deploy PyPI
-        if: >
-          github.repository == 'camptocamp/c2cgeoform'
-          && success()
-          && (
-            startsWith(github.ref, 'refs/tags/')
-          )
+
+      - uses: camptocamp/initialise-gopass-summon-action@v2
+        with:
+          ci-gpg-private-key: ${{secrets.CI_GPG_PRIVATE_KEY}}
+          github-gopass-ci-token: ${{secrets.GOPASS_CI_GITHUB_TOKEN}}
+          patterns: pypi
+        if: env.HAS_SECRETS == 'HAS_SECRETS'
+
+      - name: Install c2cciutils
         run: |
-          sudo python3 -m pip install twine wheel
-          scripts/deploy-pypi
+          echo "${HOME}/.local/bin" >> ${GITHUB_PATH}
+          python3 -m pip install --user --upgrade pip
+          python3 -m pip install --user --requirement=ci/requirements.txt
+
+      - name: Publish
+        run: c2cciutils-publish
+        if: env.HAS_SECRETS == 'HAS_SECRETS'

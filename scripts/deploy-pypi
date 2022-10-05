@@ -15,9 +15,10 @@ else
 fi
 
 function deploy_pypi {
+    rm -rf dist/*
     make compile-catalog
     VERSION=$1 python3 setup.py egg_info sdist bdist_wheel
-    twine upload dist/*
+    twine upload -r testpypi dist/*
 }
 
 # Deploy tags

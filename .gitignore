@@ -9,5 +9,6 @@
 *.egg-info
 
 .build/
+build/
 dist/
 docs/_build
