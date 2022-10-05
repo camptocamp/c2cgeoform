@@ -111,7 +111,8 @@ prettier:
 	touch $@
 
 .build/requirements.timestamp: .build/venv.timestamp setup.py requirements.txt
-	$(VENV_BIN)/pip install -r requirements.txt
+	# Workaround before upgrading to Pyramid 2 and cookiecutter
+	$(VENV_BIN)/pip install -r requirements.txt "pyramid<2"
 	$(VENV_BIN)/pip install -e .
 	touch $@
 
