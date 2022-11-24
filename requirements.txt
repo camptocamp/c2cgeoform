@@ -13,3 +13,4 @@ pyproj
 shapely>=1.5.17
 SQLAlchemy>=1.1.13
 zope.sqlalchemy>=0.7.7
+setuptools>=65.5.1 # not directly required, pinned by Snyk to avoid a vulnerability
