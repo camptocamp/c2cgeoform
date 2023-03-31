@@ -8,7 +8,8 @@ with open(os.path.join(here, 'README.md')) as f:
 with open(os.path.join(here, 'CHANGES.txt')) as f:
     CHANGES = f.read()
 with open(os.path.join(here, "requirements.txt")) as f:
-    REQUIRES = f.read()
+    REQUIRES = f.read().split("\n")
+REQUIRES = [r for r in REQUIRES if r != 'pyramid_beaker']
 
 setup(
     name='c2cgeoform',
@@ -31,6 +32,9 @@ setup(
     zip_safe=False,
     test_suite='c2cgeoform',
     install_requires=REQUIRES,
+    extras_require={
+        'upload': ['pyramid_beaker'],
+    },
     entry_points={
         'paste.app_factory': [
             'main=c2cgeoform:main',

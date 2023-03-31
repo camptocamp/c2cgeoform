@@ -4,8 +4,10 @@ from pyramid.threadlocal import get_current_request
 from pyramid.config import Configurator
 from deform import Form, widget
 from translationstring import TranslationStringFactory
+import logging
 
 
+logger = logging.getLogger(__name__)
 _ = TranslationStringFactory('c2cgeoform')
 
 
@@ -51,7 +53,13 @@ def includeme(config):
     This function creates routes and views for c2cgeoform pages.
     """
     config.include('pyramid_chameleon')
-    config.include('pyramid_beaker')  # use Beaker for session storage
+    try:
+        config.include('pyramid_beaker')  # use Beaker for session storage
+    except ModuleNotFoundError:
+        logger.info("""Unable to include pyramid_beaker this probably mean that he is not installer.
+This is not an issue it you don't need to upload files with the forms, it you need it you should install
+c2cgeoform with the upload extra (pip install c2cgeoform[upload])""")
+
     config.include('.routes')
     config.include('.views')
     config.add_static_view('c2cgeoform_static', 'static', cache_max_age=3600)
