@@ -555,6 +555,13 @@ class FileUploadWidget(DeformFileUploadWidget):
                 kw['url'] = self.get_url(self.request, cstruct['id'])
         if cstruct.get('filename', None) == null:
             cstruct['filename'] = ""
+
+        # Avoid storing files in session when readonly
+        readonly = kw.get("readonly", self.readonly)
+        if readonly:
+            if "data" in cstruct:
+                del cstruct["data"]
+
         return DeformFileUploadWidget.serialize(self, field, cstruct, **kw)
 
     def deserialize(self, field, pstruct):
