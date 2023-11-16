@@ -1,1 +1,2 @@
-c2cciutils[publish]==1.3.7
+c2cciutils[publish]==1.6.11
+pre-commit==3.5.0

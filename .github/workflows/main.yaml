@@ -18,6 +18,25 @@ jobs:
       - name: Install packages
         run: sudo apt-get install -y gettext python3-virtualenv
 
+      - name: Install c2cciutils
+        run: |
+          echo "${HOME}/.local/bin" >> ${GITHUB_PATH}
+          python3 -m pip install --user --requirement=ci/requirements.txt
+
+      - uses: actions/cache@v3
+        with:
+          path: ~/.cache/pre-commit
+          key: pre-commit-${{ hashFiles('.pre-commit-config.yaml') }}
+          restore-keys: "pre-commit-${{ hashFiles('.pre-commit-config.yaml') }}\npre-commit-"
+      - run: pre-commit run --all-files
+        env:
+          SKIP: poetry-lock
+      - run: git diff && false
+        if: failure()
+
+      - name: Environment information
+        run: c2cciutils-env
+
       - uses: actions/setup-node@v3
         with:
           node-version: 10
@@ -43,12 +62,6 @@ jobs:
           github-gopass-ci-token: ${{secrets.GOPASS_CI_GITHUB_TOKEN}}
           patterns: pypi
         if: env.HAS_SECRETS == 'HAS_SECRETS'
-
-      - name: Install c2cciutils
-        run: |
-          echo "${HOME}/.local/bin" >> ${GITHUB_PATH}
-          python3 -m pip install --user --upgrade pip
-          python3 -m pip install --user --requirement=ci/requirements.txt
 
       - name: Publish
         run: c2cciutils-publish
