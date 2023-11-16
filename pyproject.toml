@@ -3,5 +3,5 @@ line-length = 110
 target-version = ["py39"]
 
 [tool.isort]
-theme = "black"
+profile = "black"
 line_length = 110

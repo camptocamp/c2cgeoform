@@ -4,7 +4,8 @@
   }
 }
 
-.panel-body label, .form-group label {
+.panel-body label,
+.form-group label {
   color: black;
 }
 
@@ -19,7 +20,8 @@
   color: #42325b;
 }
 
-.deformFileupload span, .deformFileupload input[type=file] {
+.deformFileupload span,
+.deformFileupload input[type='file'] {
   color: #000000;
 }
 
@@ -50,8 +52,7 @@
   min-width: 200px;
 }
 .bootstrap-table th.actions,
-.bootstrap-table td.actions
-{
+.bootstrap-table td.actions {
   width: 30px;
 }
 .dropdown-menu {
@@ -62,6 +63,6 @@
  * Form
  */
 .form-panel > .panel-footer {
-  position:sticky;
+  position: sticky;
   bottom: 0;
 }

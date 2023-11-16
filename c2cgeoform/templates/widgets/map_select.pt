@@ -1,14 +1,21 @@
-<span tal:define="name name|field.name;
+<span
+  tal:define="name name|field.name;
                   css_class css_class|field.widget.css_class;
                   oid oid|field.oid;
                   style style|field.widget.style;"
-      tal:omit-tag="" i18n:domain="c2cgeoform">
-    <input type="hidden" name="${name}" value="${cstruct}"
-           tal:attributes="class string: form-control ${css_class or ''};
+  tal:omit-tag=""
+  i18n:domain="c2cgeoform"
+>
+    <input
+    type="hidden"
+    name="${name}"
+    value="${cstruct}"
+    tal:attributes="class string: form-control ${css_class or ''};
                            style style"
-           id="${oid}"/>
-    <div id="label_${oid}"></div>
-    <div id="map_select_${oid}" class="map"></div>
+    id="${oid}"
+  />
+    <div id="label_${oid}" />
+    <div id="map_select_${oid}" class="map" />
     <style>
       .map {
         height: 400px;

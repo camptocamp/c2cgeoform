@@ -18,11 +18,24 @@
   enctype="multipart/form-data"
   accept-charset="utf-8"
   i18n:domain="deform"
-  >
-  <input type="hidden" name="__submission_id__" id="${formid}_submission_id" value="${submission_id}"/>
-  <input type="hidden" name="__store_form__" id="${formid}_store_form" value="1"/>
+>
+  <input
+    type="hidden"
+    name="__submission_id__"
+    id="${formid}_submission_id"
+    value="${submission_id}"
+  />
+  <input
+    type="hidden"
+    name="__store_form__"
+    id="${formid}_store_form"
+    value="1"
+  />
   <h2 i18n:domain="c2cgeoform" i18n:translate="">Confirmation</h2>
-  <p i18n:domain="c2cgeoform" i18n:translate="">Please confirm your details and submit the form.</p>
+  <p
+    i18n:domain="c2cgeoform"
+    i18n:translate=""
+  >Please confirm your details and submit the form.</p>
 
   <fieldset class="deform-form-fieldset">
 
@@ -32,16 +45,28 @@
       ${description}
     </p>
 
-    <div tal:repeat="child field"
-         tal:replace="structure child.render_template(item_template)"/>
+    <div
+      tal:repeat="child field"
+      tal:replace="structure child.render_template(item_template)"
+    />
 
   </fieldset>
 
   <div class="form-group">
-    <button id="${formid}_submit" name="submit" type="submit" class="btn btn-primary"
-      i18n:domain="c2cgeoform" i18n:translate="">Submit</button>
-    <a class="btn btn-primary" href="${back_link}"
-       i18n:domain="c2cgeoform" i18n:translate="">Back to form</a>
+    <button
+      id="${formid}_submit"
+      name="submit"
+      type="submit"
+      class="btn btn-primary"
+      i18n:domain="c2cgeoform"
+      i18n:translate=""
+    >Submit</button>
+    <a
+      class="btn btn-primary"
+      href="${back_link}"
+      i18n:domain="c2cgeoform"
+      i18n:translate=""
+    >Back to form</a>
   </div>
 
 </form>

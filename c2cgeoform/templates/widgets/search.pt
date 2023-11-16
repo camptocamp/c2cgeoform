@@ -1,18 +1,19 @@
-<span tal:define="name name|field.name;
+<span
+  tal:define="name name|field.name;
                   css_class css_class|field.widget.css_class;
                   oid oid|field.oid;
                   style style|field.widget.style"
-      tal:omit-tag="">
-    <input type="hidden"
-           name="${name}"
-           value="${cstruct}"
-           id="${oid}" />
-    <input type="text"
-           value="${label or ''}"
-           data-provide="typeahead"
-           tal:attributes="class string: form-control ${css_class or ''};
+  tal:omit-tag=""
+>
+    <input type="hidden" name="${name}" value="${cstruct}" id="${oid}" />
+    <input
+    type="text"
+    value="${label or ''}"
+    data-provide="typeahead"
+    tal:attributes="class string: form-control ${css_class or ''};
                            style style"
-           id="typeahead-${oid}"/>
+    id="typeahead-${oid}"
+  />
     <script type="text/javascript">
         deform.addCallback(
           '${field.oid}',

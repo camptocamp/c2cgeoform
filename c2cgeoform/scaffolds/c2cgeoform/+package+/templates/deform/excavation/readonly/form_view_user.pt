@@ -18,9 +18,12 @@
   enctype="multipart/form-data"
   accept-charset="utf-8"
   i18n:domain="deform"
-  >
+>
   <h2 i18n:domain="c2cgeoform" i18n:translate="">Submission successful</h2>
-  <p i18n:domain="c2cgeoform" i18n:translate="">Thank you for your submission. Please find below the information that was stored in our system.</p>
+  <p
+    i18n:domain="c2cgeoform"
+    i18n:translate=""
+  >Thank you for your submission. Please find below the information that was stored in our system.</p>
 
   <fieldset class="deform-form-fieldset">
 
@@ -30,8 +33,10 @@
       ${description}
     </p>
 
-    <div tal:repeat="child field"
-         tal:replace="structure child.render_template(item_template)"/>
+    <div
+      tal:repeat="child field"
+      tal:replace="structure child.render_template(item_template)"
+    />
 
   </fieldset>
 

@@ -6,7 +6,7 @@ function createButton(container, options) {
   btn.title = title
   btn.innerHTML = content
   btn.type = 'button'
-  btn.addEventListener('click', e => {
+  btn.addEventListener('click', (e) => {
     e.stopPropagation()
     callback()
   })
@@ -56,7 +56,7 @@ export function addGeolocation(map, options) {
     title: options.geolocationTooltip,
     callback: () =>
       navigator.geolocation.getCurrentPosition(
-        position => {
+        (position) => {
           const { latitude, longitude } = position.coords
           map.getView().animate({
             center: fromLonLat(
