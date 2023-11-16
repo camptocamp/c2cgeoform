@@ -95,10 +95,6 @@ dist: .build/requirements-dev.timestamp compile-catalog
 docs: .build/requirements.timestamp .build/requirements-dev.timestamp
 	make -C docs html
 
-.PHONY: prettier
-prettier:
-	./c2cgeoform/static/node_modules/.bin/prettier --write ./c2cgeoform/static/src/*.js
-
 %.mo: %.po
 	msgfmt $< --output-file=$@
 
