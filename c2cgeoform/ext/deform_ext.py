@@ -1,11 +1,8 @@
 from translationstring import TranslationStringFactory, TranslationString
-from deform.widget import (
-    Widget, SelectWidget, Select2Widget, RadioChoiceWidget,
-    CheckboxChoiceWidget)
+from deform.widget import Widget, SelectWidget, Select2Widget, RadioChoiceWidget, CheckboxChoiceWidget
 from deform.compat import string_types
-from colander import (Invalid, null)
-from deform.widget import (FileUploadWidget as DeformFileUploadWidget,
-                           MappingWidget)
+from colander import Invalid, null
+from deform.widget import FileUploadWidget as DeformFileUploadWidget, MappingWidget
 from sqlalchemy import inspect
 import urllib
 import json
@@ -15,7 +12,7 @@ from io import BytesIO, BufferedRandom
 
 from c2cgeoform import default_map_settings
 
-_ = TranslationStringFactory('c2cgeoform')
+_ = TranslationStringFactory("c2cgeoform")
 log = logging.getLogger(__name__)
 
 
@@ -62,13 +59,14 @@ class MapWidget(Widget):
     If those parameters are not sufficient to customize the map,
     the template file `map.pt` can to be overwritten in application project.
     """
+
     requirements = tuple()
 
     map_options = default_map_settings
 
     def serialize(self, field, cstruct, readonly=False, **kw):
         if cstruct is null:
-            cstruct = u''
+            cstruct = ""
         values = self.get_template_values(field, cstruct, kw)
         map_options = {
             key: (
@@ -78,13 +76,10 @@ class MapWidget(Widget):
             )
             for key, value in self.map_options.items()
         }
-        values['map_options'] = {
-            **self._get_controls_definition(field, readonly),
-            **map_options
-        }
+        values["map_options"] = {**self._get_controls_definition(field, readonly), **map_options}
         # make `_` available in template for i18n messages
-        values['_'] = _
-        return field.renderer('map', **values)
+        values["_"] = _
+        return field.renderer("map", **values)
 
     def deserialize(self, field, pstruct):
         return pstruct
@@ -97,27 +92,25 @@ class MapWidget(Widget):
         polygon = True
         is_multi_geometry = False
 
-        if 'POINT' in geometry_type:
+        if "POINT" in geometry_type:
             line = False
             polygon = False
-        elif 'LINESTRING' in geometry_type:
+        elif "LINESTRING" in geometry_type:
             point = False
             polygon = False
-        elif 'POLYGON' in geometry_type:
+        elif "POLYGON" in geometry_type:
             point = False
             line = False
 
-        if 'MULTI' in geometry_type \
-                or geometry_type == 'GEOMETRY' \
-                or geometry_type == 'GEOMETRYCOLLECTION':
+        if "MULTI" in geometry_type or geometry_type == "GEOMETRY" or geometry_type == "GEOMETRYCOLLECTION":
             is_multi_geometry = True
 
         return {
-            'point': point,
-            'line': line,
-            'polygon': polygon,
-            'isMultiGeometry': is_multi_geometry,
-            'readonly': readonly
+            "point": point,
+            "line": line,
+            "polygon": polygon,
+            "isMultiGeometry": is_multi_geometry,
+            "readonly": readonly,
         }
 
 
@@ -126,9 +119,7 @@ class RelationSelectMixin(object):
     Mixin class to support relations for select fields.
     """
 
-    def __init__(
-            self, model, id_field, label_field,
-            default_value=None, order_by=None):
+    def __init__(self, model, id_field, label_field, default_value=None, order_by=None):
         self.model = model
         self.id_field = id_field
         self.label_field = label_field
@@ -148,8 +139,8 @@ class RelationSelectMixin(object):
         entities = session.query(model).order_by(order_by)
 
         values = tuple(
-            (getattr(entity, self.id_field), getattr(entity, self.label_field))
-            for entity in entities)
+            (getattr(entity, self.id_field), getattr(entity, self.label_field)) for entity in entities
+        )
 
         if self.default_value is None:
             return values
@@ -294,11 +285,8 @@ class RelationSelectWidget(SelectWidget, RelationMultiSelectMixin):
 
     """
 
-    def __init__(
-            self, model, id_field='id', label_field='label',
-            default_value=None, order_by=None, **kw):
-        RelationMultiSelectMixin.__init__(
-            self, model, id_field, label_field, default_value, order_by)
+    def __init__(self, model, id_field="id", label_field="label", default_value=None, order_by=None, **kw):
+        RelationMultiSelectMixin.__init__(self, model, id_field, label_field, default_value, order_by)
         SelectWidget.__init__(self, **kw)
 
     def deserialize(self, field, pstruct):
@@ -309,8 +297,7 @@ class RelationSelectWidget(SelectWidget, RelationMultiSelectMixin):
 
     def serialize(self, field, cstruct, **kw):
         if self.multiple:
-            cstruct = RelationMultiSelectMixin.serialize(
-                self, field, cstruct, **kw)
+            cstruct = RelationMultiSelectMixin.serialize(self, field, cstruct, **kw)
         return SelectWidget.serialize(self, field, cstruct, **kw)
 
 
@@ -396,11 +383,8 @@ class RelationSelect2Widget(Select2Widget, RelationMultiSelectMixin):
 
     """
 
-    def __init__(
-            self, model, id_field='id', label_field='label',
-            default_value=None, order_by=None, **kw):
-        RelationMultiSelectMixin.__init__(
-            self, model, id_field, label_field, default_value, order_by)
+    def __init__(self, model, id_field="id", label_field="label", default_value=None, order_by=None, **kw):
+        RelationMultiSelectMixin.__init__(self, model, id_field, label_field, default_value, order_by)
         Select2Widget.__init__(self, **kw)
 
     def deserialize(self, field, pstruct):
@@ -411,13 +395,11 @@ class RelationSelect2Widget(Select2Widget, RelationMultiSelectMixin):
 
     def serialize(self, field, cstruct, **kw):
         if self.multiple:
-            cstruct = RelationMultiSelectMixin.serialize(
-                self, field, cstruct, **kw)
+            cstruct = RelationMultiSelectMixin.serialize(self, field, cstruct, **kw)
         return Select2Widget.serialize(self, field, cstruct, **kw)
 
 
-class RelationCheckBoxListWidget(CheckboxChoiceWidget,
-                                 RelationMultiSelectMixin):
+class RelationCheckBoxListWidget(CheckboxChoiceWidget, RelationMultiSelectMixin):
     """
     Extension of the widget ````deform.widget.CheckboxChoiceWidget`` which
     loads the values from the database using a SQLAlchemy model.
@@ -474,19 +456,16 @@ class RelationCheckBoxListWidget(CheckboxChoiceWidget,
     ``deform.widget.Select2Widget`` in the deform documentation:
     <http://deform.readthedocs.org/en/latest/api.html>
     """
-    def __init__(
-            self, model, id_field='id', label_field='label',
-            order_by=None, **kw):
-        RelationMultiSelectMixin.__init__(
-            self, model, id_field, label_field, None, order_by)
+
+    def __init__(self, model, id_field="id", label_field="label", order_by=None, **kw):
+        RelationMultiSelectMixin.__init__(self, model, id_field, label_field, None, order_by)
         CheckboxChoiceWidget.__init__(self, multiple=True, **kw)
 
     def deserialize(self, field, pstruct):
         return RelationMultiSelectMixin.deserialize(self, field, pstruct)
 
     def serialize(self, field, cstruct, **kw):
-        cstruct = RelationMultiSelectMixin.serialize(
-            self, field, cstruct, **kw)
+        cstruct = RelationMultiSelectMixin.serialize(self, field, cstruct, **kw)
         return CheckboxChoiceWidget.serialize(self, field, cstruct, **kw)
 
 
@@ -537,16 +516,12 @@ class RelationRadioChoiceWidget(RadioChoiceWidget, RelationSelectMixin):
 
     """
 
-    def __init__(
-            self, model, id_field='id', label_field='label',
-            order_by=None, **kw):
-        RelationSelectMixin.__init__(
-            self, model, id_field, label_field, None, order_by)
+    def __init__(self, model, id_field="id", label_field="label", order_by=None, **kw):
+        RelationSelectMixin.__init__(self, model, id_field, label_field, None, order_by)
         RadioChoiceWidget.__init__(self, **kw)
 
 
-class FileUploadTempStore():
-
+class FileUploadTempStore:
     def __init__(self, session):
         super().__init__()
         self.session = session
@@ -566,10 +541,7 @@ class FileUploadTempStore():
 
     def serialize(self, data):
         if isinstance(data, dict):
-            return {
-                k: self.serialize(v)
-                for k, v in data.items()
-            }
+            return {k: self.serialize(v) for k, v in data.items()}
         if isinstance(data, (BufferedRandom, BytesIO)):
             value = data.read()
             # set the file position back to 0, so that the file can be read again
@@ -579,10 +551,7 @@ class FileUploadTempStore():
 
     def deserialize(self, data):
         if isinstance(data, dict):
-            return {
-                k: self.deserialize(v)
-                for k, v in data.items()
-            }
+            return {k: self.deserialize(v) for k, v in data.items()}
         if isinstance(data, bytes):
             return BytesIO(data)
         return data
@@ -592,7 +561,7 @@ class FileUploadTempStore():
 
 
 class FileUploadWidget(DeformFileUploadWidget):
-    """ Extension of ``deform.widget.FileUploadWidget`` to be used in a model
+    """Extension of ``deform.widget.FileUploadWidget`` to be used in a model
     class that extends the ``models.FileData`` mixin class.
 
     Note that, contrary to ``deform.widget.FileUploadWidget``, this extension
@@ -636,6 +605,7 @@ class FileUploadWidget(DeformFileUploadWidget):
                 get_url=lambda request, id: request.route_url('file', id=id)
             )
     """
+
     id_field = "id"
 
     def __init__(self, get_url=None, **kw):
@@ -649,19 +619,19 @@ class FileUploadWidget(DeformFileUploadWidget):
     def serialize(self, field, cstruct, **kw):
         if cstruct in (null, None):
             cstruct = {}
-        kw['url'] = None
-        if 'uid' not in cstruct and self.id_field in cstruct:
-            cstruct['uid'] = cstruct[self.id_field]
+        kw["url"] = None
+        if "uid" not in cstruct and self.id_field in cstruct:
+            cstruct["uid"] = cstruct[self.id_field]
             if cstruct[self.id_field] != null and self.get_url:
-                kw['url'] = self.get_url(self.request, cstruct[self.id_field])
-        if cstruct.get('filename', None) == null:
-            cstruct['filename'] = ""
+                kw["url"] = self.get_url(self.request, cstruct[self.id_field])
+        if cstruct.get("filename", None) == null:
+            cstruct["filename"] = ""
         return DeformFileUploadWidget.serialize(self, field, cstruct, **kw)
 
     def deserialize(self, field, pstruct):
         value = DeformFileUploadWidget.deserialize(self, field, pstruct)
-        if value != null and 'fp' in value:
-            value['data'] = value.pop('fp')
+        if value != null and "fp" in value:
+            value["data"] = value.pop("fp")
         return value
 
 
@@ -710,11 +680,13 @@ class RelationSelectMapWidget(Widget):
         Default: ``label``.
 
     """
-    requirements = (
-        ('openlayers', '3.0.0'),
-        ('c2cgeoform.deform_map', None),)
 
-    def __init__(self, url, label_field='label', **kw):
+    requirements = (
+        ("openlayers", "3.0.0"),
+        ("c2cgeoform.deform_map", None),
+    )
+
+    def __init__(self, url, label_field="label", **kw):
         Widget.__init__(self, **kw)
         self.label_field = label_field
         self.get_url = url if callable(url) else lambda request: url
@@ -726,16 +698,14 @@ class RelationSelectMapWidget(Widget):
 
     def serialize(self, field, cstruct, readonly=False, **kw):
         if cstruct is null:
-            cstruct = u''
+            cstruct = ""
         values = self.get_template_values(field, cstruct, kw)
         # make `_` available in template for i18n messages
-        values['_'] = TranslationStringFactory('c2cgeoform')
-        values['widget_config'] = json.dumps({
-            'labelField': self.label_field,
-            'url': self.url,
-            'readonly': readonly
-        })
-        return field.renderer('map_select', **values)
+        values["_"] = TranslationStringFactory("c2cgeoform")
+        values["widget_config"] = json.dumps(
+            {"labelField": self.label_field, "url": self.url, "readonly": readonly}
+        )
+        return field.renderer("map_select", **values)
 
     def deserialize(self, field, pstruct):
         return pstruct
@@ -797,14 +767,15 @@ class RelationSearchWidget(Widget):
         The maximum number of suggestions. Default: 8.
 
     """
-    id_field = 'id'
-    label_field = 'label'
+
+    id_field = "id"
+    label_field = "label"
     limit = 8
     min_length = 1
-    readonly_template = 'readonly/textinput'
+    readonly_template = "readonly/textinput"
     strip = True
-    template = 'search'
-    requirements = (('typeahead', '0.10.5'),)
+    template = "search"
+    requirements = (("typeahead", "0.10.5"),)
 
     def __init__(self, url, **kw):
         Widget.__init__(self, **kw)
@@ -819,32 +790,27 @@ class RelationSearchWidget(Widget):
 
     def serialize(self, field, cstruct, **kw):
         if cstruct in (null, None):
-            cstruct = ''
-            label = ''
+            cstruct = ""
+            label = ""
         else:
             obj = self.session.query(self.model).get(cstruct)
-            label = getattr(obj, kw.get('label_field', self.label_field))
+            label = getattr(obj, kw.get("label_field", self.label_field))
 
-        kw['label'] = label
+        kw["label"] = label
 
         options = {
-            'idField': kw.pop('id_field', self.id_field),
-            'labelField': kw.pop('label_field', self.label_field)
+            "idField": kw.pop("id_field", self.id_field),
+            "labelField": kw.pop("label_field", self.label_field),
         }
-        kw['options'] = json.dumps(options)
+        kw["options"] = json.dumps(options)
 
-        bloodhound_options = {
-            'limit': kw.pop('limit', self.limit),
-            'remote': '%s?term=%%QUERY' % self.url
-        }
-        kw['bloodhound_options'] = json.dumps(bloodhound_options)
+        bloodhound_options = {"limit": kw.pop("limit", self.limit), "remote": "%s?term=%%QUERY" % self.url}
+        kw["bloodhound_options"] = json.dumps(bloodhound_options)
 
-        typeahead_options = {
-            'minLength': kw.pop('min_length', self.min_length)
-        }
-        kw['typeahead_options'] = json.dumps(typeahead_options)
+        typeahead_options = {"minLength": kw.pop("min_length", self.min_length)}
+        kw["typeahead_options"] = json.dumps(typeahead_options)
 
-        readonly = kw.get('readonly', self.readonly)
+        readonly = kw.get("readonly", self.readonly)
 
         # If "readonly" is set then deform's readonly "textinput" template will
         # be used. That template will diplay the value set in "cstruct" so we
@@ -896,16 +862,15 @@ class RecaptchaWidget(MappingWidget):
 
     """
 
-    template = 'recaptcha'
-    readonly_template = 'recaptcha'
+    template = "recaptcha"
+    readonly_template = "recaptcha"
     url = "https://www.google.com/recaptcha/api/siteverify"
 
     def populate(self, session, request):
         self.request = request
 
     def serialize(self, field, cstruct, **kw):
-        kw.update({'public_key': self.public_key,
-                   'locale_name': self.request.locale_name})
+        kw.update({"public_key": self.public_key, "locale_name": self.request.locale_name})
         return MappingWidget.serialize(self, field, cstruct, **kw)
 
     def deserialize(self, field, pstruct):
@@ -915,34 +880,30 @@ class RecaptchaWidget(MappingWidget):
         # get the verification token that is inserted into a hidden input
         # field created by the reCaptcha script. the value is available in
         # `pstruct` because we are inheriting from `MappingWidget`.
-        response = pstruct.get('g-recaptcha-response') or ''
+        response = pstruct.get("g-recaptcha-response") or ""
         if not response:
-            raise Invalid(
-                field.schema,
-                _('Please verify that you are a human!'), pstruct)
+            raise Invalid(field.schema, _("Please verify that you are a human!"), pstruct)
         remoteip = self.request.remote_addr
-        data = urllib.urlencode({'secret': self.private_key,
-                                 'response': response,
-                                 'remoteip': remoteip})
+        data = urllib.urlencode({"secret": self.private_key, "response": response, "remoteip": remoteip})
 
         try:
             resp = urllib.request.urlopen(self.url, data)
         except urllib.error.URLError as e:
-            log.error('reCaptcha connection problem: %s', e.reason)
+            log.error("reCaptcha connection problem: %s", e.reason)
             raise Invalid(field.schema, _("Connection problem"), pstruct)
 
         error_msg = _("Verification has failed")
         if not resp.code == 200:
-            log.error('reCaptcha validation error: %s', resp.code)
+            log.error("reCaptcha validation error: %s", resp.code)
             raise Invalid(field.schema, error_msg, pstruct)
 
         content = resp.read()
         data = json.loads(content)
-        if not data['success']:
-            error_reason = ''
-            if 'error-codes' in data:
-                error_reason = ','.join(data['error-codes'])
-            log.error('reCaptcha validation error: %s', error_reason)
+        if not data["success"]:
+            error_reason = ""
+            if "error-codes" in data:
+                error_reason = ",".join(data["error-codes"])
+            log.error("reCaptcha validation error: %s", error_reason)
             raise Invalid(field.schema, error_msg, pstruct)
 
         return pstruct

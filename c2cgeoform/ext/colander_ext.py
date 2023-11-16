@@ -1,5 +1,4 @@
-
-from colander import (null, Invalid, SchemaType)
+from colander import null, Invalid, SchemaType
 
 from geoalchemy2 import WKBElement
 from geoalchemy2.shape import to_shape, from_shape
@@ -12,7 +11,7 @@ import os
 
 
 class Geometry(SchemaType):
-    """ A Colander type meant to be used with GeoAlchemy 2 geometry columns.
+    """A Colander type meant to be used with GeoAlchemy 2 geometry columns.
 
     Example usage
 
@@ -39,7 +38,8 @@ class Geometry(SchemaType):
         reprojected to this projection.
 
     """
-    def __init__(self, geometry_type='GEOMETRY', srid=-1, map_srid=-1):
+
+    def __init__(self, geometry_type="GEOMETRY", srid=-1, map_srid=-1):
         self.geometry_type = geometry_type.upper()
         self.srid = int(srid)
         self.map_srid = int(map_srid)
@@ -73,7 +73,7 @@ class Geometry(SchemaType):
                 geometry = transform(self.project_db_to_map, geometry)
 
             return json.dumps(mapping(geometry))
-        raise Invalid(node, 'Unexpected value: %r' % appstruct)
+        raise Invalid(node, "Unexpected value: %r" % appstruct)
 
     def deserialize(self, node, cstruct):
         """
@@ -81,14 +81,14 @@ class Geometry(SchemaType):
         Python data structure (a appstruct).
         Or: Converts a GeoJSON string into a `WKBElement`.
         """
-        if cstruct is null or cstruct == '':
+        if cstruct is null or cstruct == "":
             return null
         try:
             # TODO Shapely does not support loading GeometryCollections from
             # GeoJSON, see https://github.com/Toblerity/Shapely/issues/115
             geometry = shape(json.loads(cstruct))
         except Exception:
-            raise Invalid(node, 'Invalid geometry: %r' % cstruct)
+            raise Invalid(node, "Invalid geometry: %r" % cstruct)
 
         if self.srid != self.map_srid:
             geometry = transform(self.project_map_to_db, geometry)
@@ -97,7 +97,7 @@ class Geometry(SchemaType):
 
 
 class BinaryData(SchemaType):
-    """ A Colander type meant to be used with ``LargeBinary`` columns.
+    """A Colander type meant to be used with ``LargeBinary`` columns.
 
     Example usage
 
@@ -128,7 +128,7 @@ class BinaryData(SchemaType):
         In Colander speak: Converts a Python data structure (an appstruct) into
         a serialization (a cstruct).
         """
-        if appstruct is null or appstruct == '':
+        if appstruct is null or appstruct == "":
             return null
         return BytesIO(appstruct)
 
@@ -138,7 +138,7 @@ class BinaryData(SchemaType):
         Python data structure (a appstruct).
         Or: Converts a Python file stream to plain binary data.
         """
-        if cstruct is null or cstruct == '':
+        if cstruct is null or cstruct == "":
             return null
         byte_array = cstruct.read()
         # set the file position back to 0, so that the file can be read again
