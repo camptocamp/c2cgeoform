@@ -450,9 +450,9 @@ class RelationCheckBoxListWidget(CheckboxChoiceWidget, RelationMultiSelectMixin)
         The property of the model that is used for the ``order_by`` clause of
         the SQL query.
         Default: ``None``.
-    edit_url (optionnal)
+    edit_url (optional)
         a function taking request and value as parameter and returning
-        an url to the correponding resource.
+        an url to the corresponding resource.
 
     For further attributes, please refer to the documentation of
     ``deform.widget.Select2Widget`` in the deform documentation:
@@ -815,7 +815,7 @@ class RelationSearchWidget(Widget):
         readonly = kw.get("readonly", self.readonly)
 
         # If "readonly" is set then deform's readonly "textinput" template will
-        # be used. That template will diplay the value set in "cstruct" so we
+        # be used. That template will display the value set in "cstruct" so we
         # just set cstruct to label here.
         if readonly:
             cstruct = label

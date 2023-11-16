@@ -105,7 +105,7 @@ class BinaryData(SchemaType):
 
         class Model():
             id = Column(Integer, primary_key=True)
-            data = Colum(LargeBinary, info={
+            data = Column(LargeBinary, info={
                 'colanderalchemy': {
                     'typ': colander_ext.BinaryData()
                 }})

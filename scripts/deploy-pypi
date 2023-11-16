@@ -2,12 +2,10 @@
 
 if [[ "${GITHUB_ACTIONS}" == "true" ]]; then
   if [[ "${GITHUB_REF}" =~ ^refs/tags/.* ]]; then
+    # shellcheck disable=SC2001
     GIT_TAGS=$(echo "${GITHUB_REF}" | sed 's|^refs/tags/||g')
-  elif [[ "${GITHUB_REF}" =~ ^refs/heads/.* ]]; then
-    GIT_BRANCH=$(echo "${GITHUB_REF}" | sed 's|^refs/heads/||g')
   fi
 else
-  GIT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
   GIT_TAGS=$(git tag --points-at HEAD)
 fi
 
@@ -20,5 +18,5 @@ function deploy_pypi {
 
 # Deploy tags
 for GIT_TAG in ${GIT_TAGS}; do
-  deploy_pypi $GIT_TAG
+  deploy_pypi "${GIT_TAG}"
 done
