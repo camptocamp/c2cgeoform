@@ -1,5 +1,8 @@
+from typing import Any, Union
+
+import pyramid.config
 from deform import Form, widget
-from pkg_resources import resource_filename
+from pkg_resources import resource_filename  # type: ignore[import-untyped]
 from pyramid.config import Configurator
 from pyramid.i18n import get_localizer
 from pyramid.threadlocal import get_current_request
@@ -7,9 +10,12 @@ from translationstring import TranslationStringFactory
 
 _ = TranslationStringFactory("c2cgeoform")
 
+JSON = Union[int, float, str, bool, None, "JSONDict", "JSONList"]  # pylint: disable=invalid-name
+JSONDict = dict[str, JSON]
+JSONList = list[JSON]
 
-""" Default search paths for the form templates.
-"""
+
+""" Default search paths for the form templates. """
 default_search_paths = (
     resource_filename("c2cgeoform", "templates/widgets"),
     resource_filename("deform", "templates"),
@@ -34,16 +40,18 @@ default_map_settings = {
 }
 
 
-def main(global_config, **settings):
+def main(global_config: Any, **settings: Any) -> Any:
     """
     This function returns a Pyramid WSGI application.
     In our case, this is only used for tests.
     """
+    del global_config  # unused
+
     config = Configurator(settings=settings)
     return config.make_wsgi_app()
 
 
-def includeme(config):
+def includeme(config: pyramid.config.Configurator) -> None:
     """
     Function called when "c2cgeoform" is included in a project (with
     ``config.include('c2cgeoform')``).
@@ -63,15 +71,14 @@ def includeme(config):
     config.scan("c2cgeoform.views")
 
 
-def translator(term):
+def translator(term: str) -> str:
     request = get_current_request()
     if request is None:
         return term
-    else:
-        return get_localizer(request).translate(term)
+    return get_localizer(request).translate(term)  # type: ignore[no-any-return]
 
 
-def init_deform(root_package):
+def init_deform(root_package: str) -> None:
     Form.set_zpt_renderer(default_search_paths, translator=translator)
 
     node_modules_root = f"{root_package}:node_modules"

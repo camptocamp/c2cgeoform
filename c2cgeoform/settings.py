@@ -1,8 +1,10 @@
 import configparser
 import os
 
+import pyramid.config.settings
 
-def apply_local_settings(settings):
+
+def apply_local_settings(settings: pyramid.config.settings.Settings) -> None:
     """Apply to the ``settings`` dict the settings found in the local settings
     file.
     """

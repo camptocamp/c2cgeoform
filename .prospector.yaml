@@ -1,22 +1,12 @@
 inherits:
   - duplicated
-
-strictness: veryhigh
-max-line-length: 110
+  - utils:base
+  - utils:no-design-checks
 
 ignore-paths:
   - c2cgeoform/scaffolds/c2cgeoform/+package+
-
-mypy:
-  run: true
-
-mccabe:
-  run: false
+  - c2cgeoform/scaffolds/c2cgeoform/+package+.wsgi
 
 bandit:
-  run: true
   options:
     config: .bandit.yaml
-
-pyorama:
-  run: true

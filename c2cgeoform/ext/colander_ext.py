@@ -1,16 +1,20 @@
+import io
 import json
 import os
 from io import BytesIO
+from typing import Any, Union
 
+import colander
 import pyproj
-from colander import Invalid, SchemaType, null
+from colander import Invalid, SchemaType
 from geoalchemy2 import WKBElement
 from geoalchemy2.shape import from_shape, to_shape
 from shapely.geometry import mapping, shape
 from shapely.ops import transform
+from typing_extensions import Buffer
 
 
-class Geometry(SchemaType):
+class Geometry(SchemaType):  # type: ignore[misc]
     """A Colander type meant to be used with GeoAlchemy 2 geometry columns.
 
     Example usage
@@ -39,7 +43,7 @@ class Geometry(SchemaType):
 
     """
 
-    def __init__(self, geometry_type="GEOMETRY", srid=-1, map_srid=-1):
+    def __init__(self, geometry_type: str = "GEOMETRY", srid: int = -1, map_srid: int = -1) -> None:
         self.geometry_type = geometry_type.upper()
         self.srid = int(srid)
         self.map_srid = int(map_srid)
@@ -59,36 +63,38 @@ class Geometry(SchemaType):
                 always_xy=True,
             ).transform
 
-    def serialize(self, node, appstruct):
+    def serialize(self, node: Any, appstruct: Union[colander.null, WKBElement]) -> Union[colander.null, str]:
         """
         In Colander speak: Converts a Python data structure (an appstruct) into
         a serialization (a cstruct).
         Or: Converts a `WKBElement` into a GeoJSON string.
         """
-        if appstruct is null:
-            return null
+
+        if appstruct is colander.null:
+            return colander.null
         if isinstance(appstruct, WKBElement):
             geometry = to_shape(appstruct)
-            if self.srid != self.map_srid and appstruct.srid != self.map_srid:
+            if self.map_srid not in (self.srid, appstruct.srid):
                 geometry = transform(self.project_db_to_map, geometry)
 
             return json.dumps(mapping(geometry))
         raise Invalid(node, "Unexpected value: %r" % appstruct)
 
-    def deserialize(self, node, cstruct):
+    def deserialize(self, node: Any, cstruct: Union[colander.null, str]) -> Union[colander.null, str]:
         """
         In Colander speak: Converts a serialized value (a cstruct) into a
         Python data structure (a appstruct).
         Or: Converts a GeoJSON string into a `WKBElement`.
         """
-        if cstruct is null or cstruct == "":
-            return null
+
+        if cstruct is colander.null or cstruct == "":
+            return colander.null
         try:
             # TODO Shapely does not support loading GeometryCollections from
             # GeoJSON, see https://github.com/Toblerity/Shapely/issues/115
             geometry = shape(json.loads(cstruct))
-        except Exception:
-            raise Invalid(node, "Invalid geometry: %r" % cstruct)
+        except Exception as exception:
+            raise Invalid(node, f"Invalid geometry: {cstruct:r}") from exception
 
         if self.srid != self.map_srid:
             geometry = transform(self.project_map_to_db, geometry)
@@ -96,7 +102,7 @@ class Geometry(SchemaType):
         return from_shape(geometry, srid=self.srid)
 
 
-class BinaryData(SchemaType):
+class BinaryData(SchemaType):  # type: ignore[misc]
     """A Colander type meant to be used with ``LargeBinary`` columns.
 
     Example usage
@@ -123,23 +129,32 @@ class BinaryData(SchemaType):
 
     """
 
-    def serialize(self, node, appstruct):
+    def serialize(
+        self, node: colander.SchemaNode, appstruct: Union[colander.null, Buffer]
+    ) -> Union[colander.null, io.BytesIO]:
         """
         In Colander speak: Converts a Python data structure (an appstruct) into
         a serialization (a cstruct).
         """
-        if appstruct is null or appstruct == "":
-            return null
+        del node  # unused
+
+        if appstruct is colander.null or appstruct == "":
+            return colander.null
         return BytesIO(appstruct)
 
-    def deserialize(self, node, cstruct):
+    def deserialize(
+        self, node: colander.SchemaNode, cstruct: Union[colander.null, str, io.IOBase]
+    ) -> Union[colander.null, bytes]:
         """
         In Colander speak: Converts a serialized value (a cstruct) into a
         Python data structure (a appstruct).
         Or: Converts a Python file stream to plain binary data.
         """
-        if cstruct is null or cstruct == "":
-            return null
+        del node  # unused
+
+        if cstruct is colander.null or cstruct == "":
+            return colander.null
+        assert isinstance(cstruct, io.IOBase)
         byte_array = cstruct.read()
         # set the file position back to 0, so that the file can be read again
         cstruct.seek(0, os.SEEK_SET)

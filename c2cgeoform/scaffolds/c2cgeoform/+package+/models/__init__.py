@@ -1,3 +1,5 @@
+import pyramid.config.settings
+import sqlalchemy.engine
 import zope.sqlalchemy
 from sqlalchemy import engine_from_config
 from sqlalchemy.orm import configure_mappers, sessionmaker
@@ -11,17 +13,24 @@ from .c2cgeoform_demo import Excavation  # flake8: noqa
 configure_mappers()
 
 
-def get_engine(settings, prefix="sqlalchemy."):
+def get_engine(
+    settings: pyramid.config.settings.Settings, prefix: str = "sqlalchemy."
+) -> sqlalchemy.engine.Engine:
     return engine_from_config(settings, prefix)
 
 
-def get_session_factory(engine):
+def get_session_factory(
+    engine: sqlalchemy.engine.Engine,
+) -> sqlalchemy.orm.sessionmaker[sqlalchemy.orm.session.Session]:
     factory = sessionmaker()
     factory.configure(bind=engine)
     return factory
 
 
-def get_tm_session(session_factory, transaction_manager):
+def get_tm_session(
+    session_factory: sqlalchemy.orm.sessionmaker[sqlalchemy.orm.session.Session],
+    transaction_manager: str,
+) -> sqlalchemy.orm.session.Session:
     """
     Get a ``sqlalchemy.orm.Session`` instance backed by a transaction.
 
@@ -47,7 +56,7 @@ def get_tm_session(session_factory, transaction_manager):
     return dbsession
 
 
-def includeme(config):
+def includeme(config: pyramid.config.Configurator) -> None:
     """
     Initialize the model for a Pyramid app.
 

@@ -23,10 +23,12 @@ classifiers = [
   "Framework :: Pyramid",
   "Topic :: Internet :: WWW/HTTP",
   "Topic :: Internet :: WWW/HTTP :: WSGI :: Application",
+  "Typing :: Typed",
 ]
 authors = ["Camptocamp <info@camptocamp.com>"]
 repository = "https://github.com/camptocamp/c2cgeoform"
 keywords = ["web", "wsgi", "bfg", "pylons", "pyramid"]
+include = ["c2cgeoform/py.typed"]
 
 [tool.poetry.plugins."paste.app_factory"]
 main = "c2cgeoform.server:main"
@@ -52,6 +54,9 @@ pyproj = "3.6.1"
 shapely = "1.5.17"
 sqlalchemy = "2.0.23"
 zope-sqlalchemy = "0.7.7"
+requests = "2.31.0"
+prospector-profile-utils = "1.2.0"
+types-requests = "2.31.0.10"
 
 [tool.poetry.group.dev.dependencies]
 prospector = { version = "1.10.3", extras = [

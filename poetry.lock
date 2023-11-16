@@ -1023,6 +1023,17 @@ files = [
 ]
 
 [[package]]
+name = "prospector-profile-utils"
+version = "1.2.0"
+description = "Some utility Prospector profiles."
+optional = false
+python-versions = "*"
+files = [
+    {file = "prospector_profile_utils-1.2.0-py2.py3-none-any.whl", hash = "sha256:40a15385652cd16b2638c95ed402138987349ff065c4c6f4d282104b81c1377b"},
+    {file = "prospector_profile_utils-1.2.0.tar.gz", hash = "sha256:914bb924cdb283b3da7f2cd290b651ffc47add3947b561266cdfca27126064e7"},
+]
+
+[[package]]
 name = "psycopg2"
 version = "2.8.6"
 description = "psycopg2 - Python-PostgreSQL Database Adapter"
@@ -1952,6 +1963,20 @@ files = [
 ]
 
 [[package]]
+name = "types-requests"
+version = "2.31.0.10"
+description = "Typing stubs for requests"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "types-requests-2.31.0.10.tar.gz", hash = "sha256:dc5852a76f1eaf60eafa81a2e50aefa3d1f015c34cf0cba130930866b1b22a92"},
+    {file = "types_requests-2.31.0.10-py3-none-any.whl", hash = "sha256:b32b9a86beffa876c0c3ac99a4cd3b8b51e973fb8e3bd4e0a6bb32c7efad80fc"},
+]
+
+[package.dependencies]
+urllib3 = ">=2"
+
+[[package]]
 name = "typing-extensions"
 version = "4.8.0"
 description = "Backported and Experimental Type Hints for Python 3.8+"
@@ -2234,4 +2259,4 @@ psycopg2-binary = ["psycopg2-binary"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.9,<3.11"
-content-hash = "9e46b968d4256fabc9acbfacbbe9620c4d2eeda24539eac092f61c43325aa337"
+content-hash = "5fbbf55b9de93d32211c442c0c46733b9f0060b1296718cb79ab7484ea3a7c64"

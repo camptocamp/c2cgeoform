@@ -1,9 +1,16 @@
+from typing import Any, Union
+
+import pyramid.request
+import pyramid.response
+import sqlalchemy.orm
 from pyramid.httpexceptions import HTTPFound
 from pyramid.view import view_config
 
+from c2cgeoform import JSONDict, JSONList
 
-@view_config(route_name="c2cgeoform_locale", renderer="json")
-def set_locale_cookie(request):
+
+@view_config(route_name="c2cgeoform_locale", renderer="json")  # type: ignore[misc]
+def set_locale_cookie(request: pyramid.request.Request) -> Union[JSONDict, pyramid.response.Response]:
     """View to change the preferred language."""
     if request.GET["language"]:
         language = request.GET["language"]
@@ -25,16 +32,17 @@ class ApplicationViewPredicate:
         class AdminViews():
     """
 
-    def __init__(self, application, config):  # pylint: disable=unused-argument
+    def __init__(self, application: str, config: Any):
+        del config
         self._application = application
 
-    def text(self):
+    def text(self) -> str:
         return f"application = {self._application}"
 
     phash = text
 
-    def __call__(self, info, request):  # pylint: disable=unused-argument
-        return request.application.name() == self._application
+    def __call__(self, info: Any, request: pyramid.request.Request) -> bool:
+        return request.application.name() == self._application  # type: ignore[no-any-return]
 
 
 class TableViewPredicate:
@@ -49,18 +57,19 @@ class TableViewPredicate:
         class AdminUserViews():
     """
 
-    def __init__(self, table, config):  # pylint: disable=unused-argument
+    def __init__(self, table: str, config: Any):
+        del config
         self._table = table
 
-    def text(self):
+    def text(self) -> str:
         return f"table = {self._table}"
 
     phash = text
 
-    def __call__(self, info, request):  # pylint: disable=unused-argument
-        return info["match"]["table"] == self._table
+    def __call__(self, info: Any, request: pyramid.request.Request) -> bool:
+        return info["match"]["table"] == self._table  # type: ignore[no-any-return]
 
 
-def includeme(config):
+def includeme(config: pyramid.config.Configurator) -> None:
     config.add_view_predicate("application", ApplicationViewPredicate)
     config.add_view_predicate("table", TableViewPredicate)

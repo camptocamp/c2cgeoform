@@ -2,6 +2,7 @@ import os
 import sys
 from datetime import date, timedelta
 
+import sqlalchemy.orm
 import transaction
 from pyramid.paster import get_appsettings, setup_logging
 from pyramid.scripts.common import parse_vars
@@ -132,7 +133,7 @@ def _excavation(i, dbsession):
     return excavation
 
 
-def _add_bus_stops(dbsession):
+def _add_bus_stops(dbsession: sqlalchemy.orm.Session) -> None:
     """
     Load test data from a GeoJSON file.
     """
