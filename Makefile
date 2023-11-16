@@ -1,5 +1,4 @@
 BUILD_DIR ?= .build
-VENV ?= ${BUILD_DIR}/venv
 LANGUAGES = fr de it
 
 MO_FILES = $(addprefix c2cgeoform/locale/, $(addsuffix /LC_MESSAGES/c2cgeoform.mo, $(LANGUAGES)))
@@ -11,11 +10,9 @@ L10N_SOURCE_FILES += $(shell find c2cgeoform/templates/ -type f -name '*.jinja2'
 
 ifneq (,$(findstring CYGWIN, $(shell uname)))
 PYTHON3 =
-VENV_BIN = .build/venv/Scripts
 PIP_UPGRADE = python.exe -m pip install --upgrade pip==21.1 setuptools==56.0
 else
 PYTHON3 = -p python3
-VENV_BIN = .build/venv/bin
 PIP_UPGRADE = pip install --upgrade pip==21.1 setuptools==56.0
 endif
 
@@ -41,14 +38,18 @@ help:
 build: docker-build-db .build/requirements.timestamp compile-catalog c2cgeoform/static/dist/index.js
 
 .PHONY: check
-check: flake8 check_c2cgeoform_demo
+check: prospector check_c2cgeoform_demo
 
-.PHONY: flake8
-flake8: .build/requirements-dev.timestamp
-	$(VENV_BIN)/flake8 --exclude=node_modules c2cgeoform
+.PHONY: poetry
+poetry:
+	poetry install --with=dev
+
+.PHONY: prospector
+prospector: poetry
+	poetry run prospector --output-format=pylint --die-on-tool-error
 
 .build/node_modules.timestamp: c2cgeoform/static/package.json
-	mkdir -p $(BUILD_DIR)
+	mkdir -p $(dir $@)
 	cd c2cgeoform/static/ && npm install
 	touch $@
 
@@ -65,7 +66,7 @@ test: test_c2cgeoform test_c2cgeoform_demo
 .PHONY: test_c2cgeoform
 test_c2cgeoform: build .build/requirements-dev.timestamp
 	docker-compose up -d db
-	$(VENV_BIN)/nosetests --ignore-files=test_views.py
+	poetry run nosetests --ignore-files=test_views.py
 
 .PHONY: test_c2cgeoform_demo
 test_c2cgeoform_demo: $(BUILD_DIR)/c2cgeoform_demo
@@ -73,12 +74,12 @@ test_c2cgeoform_demo: $(BUILD_DIR)/c2cgeoform_demo
 	make -C $(BUILD_DIR)/c2cgeoform_demo -f ./dev.mk test
 
 $(BUILD_DIR)/c2cgeoform_demo: build c2cgeoform/scaffolds/c2cgeoform c2cgeoform_demo_dev.mk
-	$(VENV_BIN)/pcreate -s c2cgeoform --overwrite $(BUILD_DIR)/c2cgeoform_demo > /dev/null
+	poetry run pcreate -s c2cgeoform --overwrite $(BUILD_DIR)/c2cgeoform_demo > /dev/null
 	cp c2cgeoform_demo_dev.mk $(BUILD_DIR)/c2cgeoform_demo/dev.mk
 
 .PHONY: update-catalog
 update-catalog: .build/requirements.timestamp
-	$(VENV_BIN)/pot-create -c lingua.cfg --keyword _ -o c2cgeoform/locale/c2cgeoform.pot $(L10N_SOURCE_FILES)
+	poetry run pot-create -c lingua.cfg --keyword _ -o c2cgeoform/locale/c2cgeoform.pot $(L10N_SOURCE_FILES)
 	make $(PO_FILES)
 
 c2cgeoform/locale/%/LC_MESSAGES/c2cgeoform.po: c2cgeoform/locale/c2cgeoform.pot
@@ -87,34 +88,12 @@ c2cgeoform/locale/%/LC_MESSAGES/c2cgeoform.po: c2cgeoform/locale/c2cgeoform.pot
 .PHONY: compile-catalog
 compile-catalog: $(MO_FILES)
 
-.PHONY: dist
-dist: .build/requirements-dev.timestamp compile-catalog
-	$(VENV_BIN)/python setup.py sdist
-
 .PHONY: docs
 docs: .build/requirements.timestamp .build/requirements-dev.timestamp
 	make -C docs html
 
 %.mo: %.po
 	msgfmt $< --output-file=$@
-
-.build/venv.timestamp:
-	# Create a Python virtual environment.
-	python3 -m venv .build/venv
-	# Upgrade packaging tools.
-	$(VENV_BIN)/$(PIP_UPGRADE)
-	$(VENV_BIN)/pip install wheel  # Avoid error when building wheels
-	touch $@
-
-.build/requirements.timestamp: .build/venv.timestamp setup.py requirements.txt
-	# Workaround before upgrading to Pyramid 2 and cookiecutter
-	$(VENV_BIN)/pip install -r requirements.txt "pyramid<2"
-	$(VENV_BIN)/pip install -e .
-	touch $@
-
-.build/requirements-dev.timestamp: .build/venv.timestamp requirements-dev.txt
-	$(VENV_BIN)/pip install -r requirements-dev.txt
-	touch $@
 
 .PHONY: clean
 clean:
