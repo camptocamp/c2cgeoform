@@ -26,7 +26,7 @@ class TestView(DatabaseTestCase):
         request = self._get_request()
         request.matchdict["schema"] = "unknown-schema"
 
-        self.assertRaisesRegexp(HTTPNotFound, "invalid schema 'unknown-schema'", form, request)
+        self.assertRaisesRegex(HTTPNotFound, "invalid schema 'unknown-schema'", form, request)
 
     def test_form_show(self):
         from c2cgeoform.views import form
@@ -119,24 +119,24 @@ class TestView(DatabaseTestCase):
 
         person = DBSession.query(Person).one()
         self.assertIsNotNone(person.hash)
-        self.assertEquals("Peter", person.name)
-        self.assertEquals("Smith", person.first_name)
-        self.assertEquals(1, len(person.phones))
+        self.assertEqual("Peter", person.name)
+        self.assertEqual("Smith", person.first_name)
+        self.assertEqual(1, len(person.phones))
         phone = person.phones[0]
-        self.assertEquals("123456789", phone.number)
+        self.assertEqual("123456789", phone.number)
         self.assertIsNotNone(phone.id)
-        self.assertEquals(2, len(person.tags))
+        self.assertEqual(2, len(person.tags))
         tag_for_person1 = person.tags[0]
-        self.assertEquals(0, tag_for_person1.tag_id)
-        self.assertEquals(person.id, tag_for_person1.person_id)
+        self.assertEqual(0, tag_for_person1.tag_id)
+        self.assertEqual(person.id, tag_for_person1.person_id)
         self.assertIsNotNone(tag_for_person1.id)
         tag_for_person2 = person.tags[1]
-        self.assertEquals(1, tag_for_person2.tag_id)
-        self.assertEquals(person.id, tag_for_person2.person_id)
+        self.assertEqual(1, tag_for_person2.tag_id)
+        self.assertEqual(person.id, tag_for_person2.person_id)
         self.assertIsNotNone(tag_for_person2.id)
 
         self.assertTrue(isinstance(response, HTTPFound))
-        self.assertEquals(TestView.BASE_URL + "/form/" + person.hash, response.location)
+        self.assertEqual(TestView.BASE_URL + "/form/" + person.hash, response.location)
 
     def test_form_submit_successful_without_confirmation(self):
         from models_test import Person
@@ -187,24 +187,24 @@ class TestView(DatabaseTestCase):
 
         person = DBSession.query(Person).one()
         self.assertIsNotNone(person.hash)
-        self.assertEquals("Peter", person.name)
-        self.assertEquals("Smith", person.first_name)
-        self.assertEquals(1, len(person.phones))
+        self.assertEqual("Peter", person.name)
+        self.assertEqual("Smith", person.first_name)
+        self.assertEqual(1, len(person.phones))
         phone = person.phones[0]
-        self.assertEquals("123456789", phone.number)
+        self.assertEqual("123456789", phone.number)
         self.assertIsNotNone(phone.id)
-        self.assertEquals(2, len(person.tags))
+        self.assertEqual(2, len(person.tags))
         tag_for_person1 = person.tags[0]
-        self.assertEquals(0, tag_for_person1.tag_id)
-        self.assertEquals(person.id, tag_for_person1.person_id)
+        self.assertEqual(0, tag_for_person1.tag_id)
+        self.assertEqual(person.id, tag_for_person1.person_id)
         self.assertIsNotNone(tag_for_person1.id)
         tag_for_person2 = person.tags[1]
-        self.assertEquals(1, tag_for_person2.tag_id)
-        self.assertEquals(person.id, tag_for_person2.person_id)
+        self.assertEqual(1, tag_for_person2.tag_id)
+        self.assertEqual(person.id, tag_for_person2.person_id)
         self.assertIsNotNone(tag_for_person2.id)
 
         self.assertTrue(isinstance(response, HTTPFound))
-        self.assertEquals(TestView.BASE_URL + "_no_confirmation" + "/form/" + person.hash, response.location)
+        self.assertEqual(TestView.BASE_URL + "_no_confirmation" + "/form/" + person.hash, response.location)
 
     def test_form_submit_confirmation_back(self):
         from models_test import Person
@@ -241,7 +241,7 @@ class TestView(DatabaseTestCase):
 
         # and no row was created
         count = DBSession.query(Person).count()
-        self.assertEquals(0, count)
+        self.assertEqual(0, count)
 
     def test_form_submit_only_validate(self):
         from models_test import Person
@@ -259,7 +259,7 @@ class TestView(DatabaseTestCase):
         count = DBSession.query(Person).count()
 
         # form was valid, but no row was created
-        self.assertEquals(0, count)
+        self.assertEqual(0, count)
 
     def test_list(self):
         from models_test import Person
@@ -275,10 +275,10 @@ class TestView(DatabaseTestCase):
 
         self.assertTrue("entities" in response)
         entities = response["entities"]
-        self.assertEquals(2, len(entities))
+        self.assertEqual(2, len(entities))
 
         schema = response["schema"]
-        self.assertEquals(["id", "name"], schema.list_fields)
+        self.assertEqual(["id", "name"], schema.list_fields)
 
     def test_grid(self):
         from c2cgeoform.views import grid
@@ -291,14 +291,14 @@ class TestView(DatabaseTestCase):
         request.POST["rowCount"] = "5"
         response = grid(request)
 
-        self.assertEquals(1, response["current"])
-        self.assertEquals(5, response["rowCount"])
-        self.assertEquals(22, response["total"])
+        self.assertEqual(1, response["current"])
+        self.assertEqual(5, response["rowCount"])
+        self.assertEqual(22, response["total"])
 
         rows = response["rows"]
-        self.assertEquals(5, len(rows))
+        self.assertEqual(5, len(rows))
         self.assertTrue("_id_" in rows[0])
-        self.assertEquals("Smith", rows[0]["name"])
+        self.assertEqual("Smith", rows[0]["name"])
 
     def test_grid_sort(self):
         from c2cgeoform.views import grid
@@ -312,13 +312,13 @@ class TestView(DatabaseTestCase):
         request.POST["sort[name]"] = "asc"
         response = grid(request)
 
-        self.assertEquals(1, response["current"])
-        self.assertEquals(5, response["rowCount"])
-        self.assertEquals(22, response["total"])
+        self.assertEqual(1, response["current"])
+        self.assertEqual(5, response["rowCount"])
+        self.assertEqual(22, response["total"])
 
         rows = response["rows"]
-        self.assertEquals("Bess", rows[0]["name"])
-        self.assertEquals("Claudio", rows[1]["name"])
+        self.assertEqual("Bess", rows[0]["name"])
+        self.assertEqual("Claudio", rows[1]["name"])
 
     def test_grid_paging(self):
         from c2cgeoform.views import grid
@@ -332,18 +332,18 @@ class TestView(DatabaseTestCase):
         request.POST["sort[name]"] = "asc"
         response = grid(request)
 
-        self.assertEquals(2, response["current"])
-        self.assertEquals(5, response["rowCount"])
-        self.assertEquals(22, response["total"])
+        self.assertEqual(2, response["current"])
+        self.assertEqual(5, response["rowCount"])
+        self.assertEqual(22, response["total"])
 
         rows = response["rows"]
-        self.assertEquals("Elda", rows[0]["name"])
-        self.assertEquals("Eloise", rows[1]["name"])
+        self.assertEqual("Elda", rows[0]["name"])
+        self.assertEqual("Eloise", rows[1]["name"])
 
         # invalid page
         request.POST["current"] = "99"
         response = grid(request)
-        self.assertEquals(5, response["current"])
+        self.assertEqual(5, response["current"])
 
     def test_grid_search(self):
         from c2cgeoform.views import grid
@@ -358,21 +358,21 @@ class TestView(DatabaseTestCase):
         request.POST["searchPhrase"] = "sha"
         response = grid(request)
 
-        self.assertEquals(1, response["current"])
-        self.assertEquals(5, response["rowCount"])
-        self.assertEquals(4, response["total"])
+        self.assertEqual(1, response["current"])
+        self.assertEqual(5, response["rowCount"])
+        self.assertEqual(4, response["total"])
 
         request.POST["searchPhrase"] = "   Smith  "
         response = grid(request)
-        self.assertEquals(1, response["total"])
+        self.assertEqual(1, response["total"])
 
         request.POST["searchPhrase"] = "NOT FOUND"
         response = grid(request)
-        self.assertEquals(0, response["total"])
+        self.assertEqual(0, response["total"])
 
         request.POST["searchPhrase"] = "Peter"
         response = grid(request)
-        self.assertEquals(0, response["total"])
+        self.assertEqual(0, response["total"])
 
     def test_edit_show(self):
         from models_test import Person
@@ -462,30 +462,30 @@ class TestView(DatabaseTestCase):
         response = edit(request)
 
         person = DBSession.query(Person).get(person.id)
-        self.assertEquals("Peter", person.name)
-        self.assertEquals("Smith", person.first_name)
-        self.assertEquals(43, person.age)
-        self.assertEquals(2, len(person.phones))
+        self.assertEqual("Peter", person.name)
+        self.assertEqual("Smith", person.first_name)
+        self.assertEqual(43, person.age)
+        self.assertEqual(2, len(person.phones))
         updated_phone = person.phones[0]
-        self.assertEquals("23456789", updated_phone.number)
-        self.assertEquals(phone.id, updated_phone.id)
+        self.assertEqual("23456789", updated_phone.number)
+        self.assertEqual(phone.id, updated_phone.id)
         new_phone = person.phones[1]
-        self.assertEquals("123456", new_phone.number)
+        self.assertEqual("123456", new_phone.number)
         self.assertIsNotNone(new_phone.id)
-        self.assertEquals(2, len(person.tags))
+        self.assertEqual(2, len(person.tags))
         tag_for_person1 = person.tags[0]
-        self.assertEquals(0, tag_for_person1.tag_id)
-        self.assertEquals(person.id, tag_for_person1.person_id)
+        self.assertEqual(0, tag_for_person1.tag_id)
+        self.assertEqual(person.id, tag_for_person1.person_id)
         self.assertIsNotNone(tag_for_person1.id)
         # a new row is created, also for the old entry
-        self.assertNotEquals(old_tag_for_person_id, tag_for_person1.id)
+        self.assertNotEqual(old_tag_for_person_id, tag_for_person1.id)
         tag_for_person2 = person.tags[1]
-        self.assertEquals(1, tag_for_person2.tag_id)
-        self.assertEquals(person.id, tag_for_person2.person_id)
+        self.assertEqual(1, tag_for_person2.tag_id)
+        self.assertEqual(person.id, tag_for_person2.person_id)
         self.assertIsNotNone(tag_for_person2.id)
         tags_for_persons = DBSession.query(TagsForPerson).all()
         # check that the old entry was deleted, so that there are only 2
-        self.assertEquals(2, len(tags_for_persons))
+        self.assertEqual(2, len(tags_for_persons))
 
         self.assertTrue("schema" in response)
         self.assertTrue("form" in response)

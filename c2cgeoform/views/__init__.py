@@ -13,7 +13,7 @@ def set_locale_cookie(request):
     return {"success": True}
 
 
-class ApplicationViewPredicate(object):
+class ApplicationViewPredicate:
     """
     Predicate which checks request.application.name() match with passed value.
 
@@ -29,7 +29,7 @@ class ApplicationViewPredicate(object):
         self._application = application
 
     def text(self):
-        return "application = %s" % (self._application,)
+        return f"application = {self._application}"
 
     phash = text
 
@@ -37,7 +37,7 @@ class ApplicationViewPredicate(object):
         return request.application.name() == self._application
 
 
-class TableViewPredicate(object):
+class TableViewPredicate:
     """
     Predicate which checks request.matchdict['table'] match with passed value.
 
@@ -53,7 +53,7 @@ class TableViewPredicate(object):
         self._table = table
 
     def text(self):
-        return "table = %s" % (self._table,)
+        return f"table = {self._table}"
 
     phash = text
 

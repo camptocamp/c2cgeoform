@@ -259,7 +259,7 @@ def _get_field(name, renderer):
     raise RuntimeError("Field not found")
 
 
-class DummyRenderer(object):
+class DummyRenderer:
     """A dummy renderer, borrowed from the deform tests."""
 
     def __init__(self, result=""):
@@ -271,7 +271,7 @@ class DummyRenderer(object):
         return self.result
 
 
-class DummyField(object):
+class DummyField:
     """A dummy field, borrowed from the deform tests."""
 
     default = None

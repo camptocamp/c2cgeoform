@@ -12,18 +12,18 @@ class AbstractViewsTests:
 
     def get(self, test_app, path="", locale="en", status=200, **kwargs):
         return test_app.get(
-            "{}{}".format(self._prefix, path),
-            headers={"Cookie": "_LOCALE_={}".format(locale)},
+            f"{self._prefix}{path}",
+            headers={"Cookie": f"_LOCALE_={locale}"},
             status=status,
             **kwargs,
         )
 
     def get_item(self, test_app, item_id, **kwargs):
-        return self.get(test_app, "/{}".format(item_id), **kwargs)
+        return self.get(test_app, f"/{item_id}", **kwargs)
 
     def check_left_menu(self, resp, title):
         link = resp.html.select_one(".navbar li.active a")
-        assert "http://localhost{}".format(self._prefix) == link.attrs["href"]
+        assert f"http://localhost{self._prefix}" == link.attrs["href"]
         assert title == link.getText()
 
     def check_grid_headers(self, resp, expected_col_headers, check_actions=True):
@@ -44,7 +44,7 @@ class AbstractViewsTests:
 
     def check_search(self, test_app, search="", offset=0, limit=10, sort="", order="", total=None, **kwargs):
         json = test_app.get(
-            "{}/grid.json".format(self._prefix),
+            f"{self._prefix}/grid.json",
             params=dict(offset=offset, limit=limit, search=search, sort=sort, order=order, **kwargs),
             status=200,
         ).json
@@ -55,8 +55,8 @@ class AbstractViewsTests:
     def check_checkboxes(self, form, name, expected):
         for i, exp in enumerate(expected):
             field = form.get(name, index=i)
-            checkbox = form.html.select_one("#{}".format(field.id))
-            label = form.html.select_one("label[for={}]".format(field.id))
+            checkbox = form.html.select_one(f"#{field.id}")
+            label = form.html.select_one(f"label[for={field.id}]")
             assert exp["label"] == list(label.stripped_strings)[0]
             assert exp["value"] == checkbox["value"]
             assert exp["checked"] == field.checked

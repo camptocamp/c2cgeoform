@@ -74,11 +74,11 @@ def translator(term):
 def init_deform(root_package):
     Form.set_zpt_renderer(default_search_paths, translator=translator)
 
-    node_modules_root = "{}:node_modules".format(root_package)
+    node_modules_root = f"{root_package}:node_modules"
 
     registry = widget.default_resource_registry
     registry.set_js_resources(
-        "typeahead", "0.10.5", "{}/typeahead.js/dist/typeahead.bundle.min.js".format(node_modules_root)
+        "typeahead", "0.10.5", f"{node_modules_root}/typeahead.js/dist/typeahead.bundle.min.js"
     )
     registry.set_css_resources("typeahead", "0.10.5", "c2cgeoform:static/js/typeaheadjs.css")
 

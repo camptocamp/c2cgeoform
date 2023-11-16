@@ -1,4 +1,3 @@
-# coding=utf-8
 import os
 import sys
 from datetime import date, timedelta
@@ -35,10 +34,10 @@ def main(argv=sys.argv):
 def init_db(connection, force=False):
     if force:
         if schema_exists(connection, schema):
-            connection.execute("DROP SCHEMA {} CASCADE;".format(schema))
+            connection.execute(f"DROP SCHEMA {schema} CASCADE;")
 
     if not schema_exists(connection, schema):
-        connection.execute('CREATE SCHEMA "{}";'.format(schema))
+        connection.execute(f'CREATE SCHEMA "{schema}";')
 
     Base.metadata.create_all(connection)
 
@@ -106,7 +105,7 @@ def _excavation(i, dbsession):
     contact.last_name = "Michalon"
 
     excavation = Excavation(
-        reference_number="ref{:04d}".format(i),
+        reference_number=f"ref{i:04d}",
         request_date=date.today() - timedelta(days=100 - i),
         description="Installation d'un réseau AEP",
         motif="Création d'un lotissement",

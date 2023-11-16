@@ -107,7 +107,7 @@ def manytomany_validator(node, cstruct):
         filters.append(and_(*[getattr(class_, key) == value for key, value in dict_.items()]))
     query = query.filter(or_(*filters))
     results = query.all()  # get all records in cache in one request
-    diff = set(tuple(dict_.values()) for dict_ in cstruct) - set([inspect(a).identity for a in results])
+    diff = {tuple(dict_.values()) for dict_ in cstruct} - {inspect(a).identity for a in results}
     if len(diff) > 0:
         raise colander.Invalid(
             "Values {} does not exist in table {}".format(

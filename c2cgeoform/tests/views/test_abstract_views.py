@@ -74,26 +74,26 @@ class TestAbstractViews(DatabaseTestCase):
         views = ConcreteViews(self.request)
         response = views.grid()
 
-        self.assertEquals(22, response["total"])
+        self.assertEqual(22, response["total"])
 
         rows = response["rows"]
-        self.assertEquals(5, len(rows))
+        self.assertEqual(5, len(rows))
         self.assertTrue("_id_" in rows[0])
-        self.assertEquals("Smith", rows[0]["name"])
-        self.assertEquals("person/1", rows[0]["actions"]["dblclick"])
+        self.assertEqual("Smith", rows[0]["name"])
+        self.assertEqual("person/1", rows[0]["actions"]["dblclick"])
         call_list = self.request.route_url.call_args_list
         idx = [call[1]["id"] for call in call_list]
         grouped_by_id = [len(list(cgen)) for dummy, cgen in groupby(idx)]
         grouped_by_count = [len(list(cgen)) for dummy, cgen in groupby(grouped_by_id)]
-        self.assertEquals(1, len(grouped_by_count))
-        self.assertEquals(5, grouped_by_count[0])
+        self.assertEqual(1, len(grouped_by_count))
+        self.assertEqual(5, grouped_by_count[0])
 
     def test_grid_without_parameters(self):
         self.request.route_url = Mock(return_value="person/1")
         self._add_test_persons()
         views = ConcreteViews(self.request)
         response = views.grid()
-        self.assertEquals(22, response["total"])
+        self.assertEqual(22, response["total"])
 
     def test_grid_with_nan(self):
         self.request.route_url = Mock(return_value="person/1")
@@ -102,7 +102,7 @@ class TestAbstractViews(DatabaseTestCase):
         self.request.params["limit"] = "NaN"
         views = ConcreteViews(self.request)
         response = views.grid()
-        self.assertEquals(22, response["total"])
+        self.assertEqual(22, response["total"])
 
     def test_new_get(self):
         self.request.matched_route = Mock(name="c2cgeoform_item")

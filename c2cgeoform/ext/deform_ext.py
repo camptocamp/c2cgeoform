@@ -116,7 +116,7 @@ class MapWidget(Widget):
         }
 
 
-class RelationSelectMixin(object):
+class RelationSelectMixin:
     """
     Mixin class to support relations for select fields.
     """

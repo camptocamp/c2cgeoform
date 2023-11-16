@@ -38,7 +38,7 @@ class Application:
         return tables
 
 
-class ApplicationRoutePredicate(object):
+class ApplicationRoutePredicate:
     """
     Internal route predicate which checks application segment match a
     registered application.
@@ -48,7 +48,7 @@ class ApplicationRoutePredicate(object):
         self._val = val
 
     def text(self):
-        return "c2cgeoform_application = %s" % (self._val,)
+        return f"c2cgeoform_application = {self._val}"
 
     phash = text
 
@@ -110,11 +110,11 @@ def register_routes(config, multi_application=True):
         register_route(config, "c2cgeoform_locale", "/locale")
 
     register_route(config, "c2cgeoform_index", base_route)
-    register_route(config, "c2cgeoform_grid", "{}/grid.json".format(base_route))
-    register_route(config, "c2cgeoform_map", "{}/map".format(base_route))
-    register_route(config, "c2cgeoform_geojson", "{}/geojson.json".format(base_route))
-    register_route(config, "c2cgeoform_item", "{}/{{id}}".format(base_route))
-    register_route(config, "c2cgeoform_item_duplicate", "{}/{{id}}/duplicate".format(base_route))
+    register_route(config, "c2cgeoform_grid", f"{base_route}/grid.json")
+    register_route(config, "c2cgeoform_map", f"{base_route}/map")
+    register_route(config, "c2cgeoform_geojson", f"{base_route}/geojson.json")
+    register_route(config, "c2cgeoform_item", f"{base_route}/{{id}}")
+    register_route(config, "c2cgeoform_item_duplicate", f"{base_route}/{{id}}/duplicate")
 
 
 def register_models(config, models, url_segment=None):

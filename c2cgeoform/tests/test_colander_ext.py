@@ -13,7 +13,7 @@ class TestGeometry(DatabaseTestCase):
 
         geom_schema = Geometry()
 
-        self.assertEquals(null, geom_schema.serialize({}, null))
+        self.assertEqual(null, geom_schema.serialize({}, null))
 
     def test_serialize_wkb(self):
         from c2cgeoform.ext.colander_ext import Geometry
@@ -23,7 +23,7 @@ class TestGeometry(DatabaseTestCase):
         from shapely.geometry.point import Point
 
         wkb = from_shape(Point(1.0, 2.0))
-        self.assertEquals(
+        self.assertEqual(
             {"type": "Point", "coordinates": [1.0, 2.0]}, json.loads(geom_schema.serialize({}, wkb))
         )
 
@@ -36,7 +36,7 @@ class TestGeometry(DatabaseTestCase):
 
         wkb = from_shape(Point(1.0, 2.0), 4326)
         geo_json = json.loads(geom_schema.serialize({}, wkb))
-        self.assertEquals("Point", geo_json["type"])
+        self.assertEqual("Point", geo_json["type"])
         self.assertAlmostEqual(111319.49079327231, geo_json["coordinates"][0])
         self.assertAlmostEqual(222684.20850554455, geo_json["coordinates"][1])
 
@@ -52,8 +52,8 @@ class TestGeometry(DatabaseTestCase):
 
         geom_schema = Geometry()
 
-        self.assertEquals(null, geom_schema.deserialize({}, null))
-        self.assertEquals(null, geom_schema.deserialize({}, ""))
+        self.assertEqual(null, geom_schema.deserialize({}, null))
+        self.assertEqual(null, geom_schema.deserialize({}, ""))
 
     def test_deserialize_valid_geojson(self):
         from c2cgeoform.ext.colander_ext import Geometry
@@ -65,7 +65,7 @@ class TestGeometry(DatabaseTestCase):
         expected_wkb = WKBElement(Point(1.0, 2.0).wkb)
 
         wkb = geom_schema.deserialize({}, '{"type": "Point", "coordinates": [1.0, 2.0]}')
-        self.assertEquals(expected_wkb.desc, wkb.desc)
+        self.assertEqual(expected_wkb.desc, wkb.desc)
 
     def test_deserialize_reproject(self):
         from c2cgeoform.ext.colander_ext import Geometry
@@ -75,7 +75,7 @@ class TestGeometry(DatabaseTestCase):
         wkb = geom_schema.deserialize(
             {}, '{"type": "Point", ' '"coordinates": [111319.49079327231, 222684.20850554455]}'
         )
-        self.assertEquals(4326, wkb.srid)
+        self.assertEqual(4326, wkb.srid)
 
         shape = to_shape(wkb)
         self.assertAlmostEqual(1.0, shape.x)
@@ -104,32 +104,32 @@ class TestBinaryData(DatabaseTestCase):
 
         binary = BinaryData()
         serialized = binary.serialize({}, b"a string of binary data")
-        self.assertNotEquals(null, serialized)
-        self.assertEquals(b"a string of binary data", serialized.getvalue())
+        self.assertNotEqual(null, serialized)
+        self.assertEqual(b"a string of binary data", serialized.getvalue())
 
     def test_serialize_null(self):
         from c2cgeoform.ext.colander_ext import BinaryData
 
         binary = BinaryData()
-        self.assertEquals(null, binary.serialize({}, null))
+        self.assertEqual(null, binary.serialize({}, null))
 
     def test_serialize_empty_string(self):
         from c2cgeoform.ext.colander_ext import BinaryData
 
         binary = BinaryData()
-        self.assertEquals(null, binary.serialize({}, ""))
+        self.assertEqual(null, binary.serialize({}, ""))
 
     def test_deserialize_null(self):
         from c2cgeoform.ext.colander_ext import BinaryData
 
         binary = BinaryData()
-        self.assertEquals(null, binary.deserialize({}, null))
+        self.assertEqual(null, binary.deserialize({}, null))
 
     def test_deserialize_empty_string(self):
         from c2cgeoform.ext.colander_ext import BinaryData
 
         binary = BinaryData()
-        self.assertEquals(null, binary.deserialize({}, ""))
+        self.assertEqual(null, binary.deserialize({}, ""))
 
     def test_deserialize_file(self):
         import os
@@ -143,6 +143,6 @@ class TestBinaryData(DatabaseTestCase):
 
         # test that the file can be read multiple times (simulates that
         # a file in the tmpstore is requested several times)
-        self.assertEquals(95, len(binary.deserialize({}, file_)))
-        self.assertEquals(95, len(binary.deserialize({}, file_)))
-        self.assertEquals(95, len(binary.deserialize({}, file_)))
+        self.assertEqual(95, len(binary.deserialize({}, file_)))
+        self.assertEqual(95, len(binary.deserialize({}, file_)))
+        self.assertEqual(95, len(binary.deserialize({}, file_)))
