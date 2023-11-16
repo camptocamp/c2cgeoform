@@ -1,6 +1,5 @@
-from pyramid.view import view_config
-
 from geoalchemy2.shape import to_shape
+from pyramid.view import view_config
 from shapely.geometry import mapping
 
 from ..models.c2cgeoform_demo import BusStop

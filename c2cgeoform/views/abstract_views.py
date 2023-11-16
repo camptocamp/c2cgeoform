@@ -1,17 +1,18 @@
 import logging
+
 from deform import Form, ValidationFailure  # , ZPTRendererFactory
 from deform.form import Button
 from geoalchemy2.elements import WKBElement
 from geoalchemy2.shape import to_shape
-from pyramid.httpexceptions import HTTPNotFound
-from pyramid.httpexceptions import HTTPFound
+from geojson import Feature, FeatureCollection
+from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from pyramid.response import Response
 from sqlalchemy import desc, or_, types
 from sqlalchemy.exc import DBAPIError
 from sqlalchemy.inspection import inspect
 from sqlalchemy.orm.properties import ColumnProperty, RelationshipProperty
 from translationstring import TranslationString
-from geojson import FeatureCollection, Feature
+
 from c2cgeoform import _, default_map_settings
 
 logger = logging.getLogger(__name__)

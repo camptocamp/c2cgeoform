@@ -1,5 +1,5 @@
-import os
 import configparser
+import os
 
 
 def apply_local_settings(settings):

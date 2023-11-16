@@ -1,8 +1,10 @@
 from functools import partial
+
 import colander
 from colanderalchemy import SQLAlchemySchemaNode
 from sqlalchemy import and_, or_
 from sqlalchemy.inspection import inspect
+
 from c2cgeoform import _
 
 

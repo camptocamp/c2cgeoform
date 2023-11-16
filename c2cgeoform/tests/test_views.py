@@ -1,8 +1,9 @@
-from pyramid.httpexceptions import HTTPNotFound, HTTPFound
 import re
 
-from c2cgeoform.tests import DatabaseTestCase
+from pyramid.httpexceptions import HTTPFound, HTTPNotFound
+
 from c2cgeoform.models import DBSession
+from c2cgeoform.tests import DatabaseTestCase
 
 
 class TestView(DatabaseTestCase):
@@ -61,8 +62,9 @@ class TestView(DatabaseTestCase):
         self.assertTrue('class="errorMsgLbl"' in form_html)
 
     def test_form_submit_successful(self):
-        from c2cgeoform.views import form, confirmation
         from models_test import Person
+
+        from c2cgeoform.views import confirmation, form
 
         request = self._get_request()
         request.matchdict["schema"] = "tests_persons"
@@ -137,9 +139,10 @@ class TestView(DatabaseTestCase):
         self.assertEquals(TestView.BASE_URL + "/form/" + person.hash, response.location)
 
     def test_form_submit_successful_without_confirmation(self):
-        from c2cgeoform.views import form, confirmation
-        from c2cgeoform.schema import register_schema
         from models_test import Person
+
+        from c2cgeoform.schema import register_schema
+        from c2cgeoform.views import confirmation, form
 
         register_schema("tests_persons_no_confirmation", Person, show_confirmation=False)
 
@@ -204,8 +207,9 @@ class TestView(DatabaseTestCase):
         self.assertEquals(TestView.BASE_URL + "_no_confirmation" + "/form/" + person.hash, response.location)
 
     def test_form_submit_confirmation_back(self):
-        from c2cgeoform.views import form
         from models_test import Person
+
+        from c2cgeoform.views import form
 
         request = self._get_request()
         request.matchdict["schema"] = "tests_persons"
@@ -240,8 +244,9 @@ class TestView(DatabaseTestCase):
         self.assertEquals(0, count)
 
     def test_form_submit_only_validate(self):
-        from c2cgeoform.views import form
         from models_test import Person
+
+        from c2cgeoform.views import form
 
         request = self._get_request()
         request.matchdict["schema"] = "tests_persons"
@@ -257,8 +262,9 @@ class TestView(DatabaseTestCase):
         self.assertEquals(0, count)
 
     def test_list(self):
-        from c2cgeoform.views import list
         from models_test import Person
+
+        from c2cgeoform.views import list
 
         DBSession.add(Person(name="Peter", first_name="Smith"))
         DBSession.add(Person(name="John", first_name="Wayne"))
@@ -369,8 +375,9 @@ class TestView(DatabaseTestCase):
         self.assertEquals(0, response["total"])
 
     def test_edit_show(self):
-        from c2cgeoform.views import edit
         from models_test import Person
+
+        from c2cgeoform.views import edit
 
         person = Person(name="Peter", first_name="Smith")
         DBSession.add(person)
@@ -392,8 +399,9 @@ class TestView(DatabaseTestCase):
         self.assertTrue('name="submit"' in form_html)
 
     def test_edit_submit_invalid(self):
-        from c2cgeoform.views import edit
         from models_test import Person
+
+        from c2cgeoform.views import edit
 
         person = Person(name="Peter", first_name="Smith")
         DBSession.add(person)
@@ -413,8 +421,9 @@ class TestView(DatabaseTestCase):
         self.assertTrue('class="errorMsgLbl"' in form_html)
 
     def test_edit_submit_successful(self):
-        from c2cgeoform.views import edit
         from models_test import Person, Phone, TagsForPerson
+
+        from c2cgeoform.views import edit
 
         person = Person(name="Peter", first_name="Smith")
         phone = Phone(number="123456789")
@@ -493,8 +502,9 @@ class TestView(DatabaseTestCase):
         self.assertTrue("Tag B" in form_html)
 
     def test_view_user(self):
-        from c2cgeoform.views import view_user
         from models_test import Person
+
+        from c2cgeoform.views import view_user
 
         person = Person(name="Peter", first_name="Smith", hash="123-456")
         DBSession.add(person)
@@ -522,8 +532,9 @@ class TestView(DatabaseTestCase):
         self.assertIsNone(response["form"])
 
     def test_view_admin(self):
-        from c2cgeoform.views import view_admin
         from models_test import Person
+
+        from c2cgeoform.views import view_admin
 
         person = Person(name="Peter", first_name="Smith")
         DBSession.add(person)

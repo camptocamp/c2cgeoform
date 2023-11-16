@@ -1,17 +1,16 @@
+from functools import partial
 from itertools import groupby
-from pyramid.httpexceptions import HTTPNotFound
-from pyramid.httpexceptions import HTTPFound
 from unittest import TestCase
 from unittest.mock import Mock
-from functools import partial
+
 from bs4 import BeautifulSoup
+from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 
 from c2cgeoform.models import DBSession
+from c2cgeoform.schema import GeoFormSchemaNode
 from c2cgeoform.tests import DatabaseTestCase
 from c2cgeoform.tests.models_test import Person, Tag
-from c2cgeoform.schema import GeoFormSchemaNode
 from c2cgeoform.views.abstract_views import AbstractViews, ListField
-
 
 _list_field = partial(ListField, Person)
 

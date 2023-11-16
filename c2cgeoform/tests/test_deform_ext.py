@@ -1,8 +1,9 @@
 from colander import null
 
-from c2cgeoform.tests import DatabaseTestCase
-from .models_test import EmploymentStatus, Person, Tag
 from c2cgeoform.models import DBSession
+from c2cgeoform.tests import DatabaseTestCase
+
+from .models_test import EmploymentStatus, Person, Tag
 
 
 class TestRelationSelectWidget(DatabaseTestCase):
@@ -246,8 +247,8 @@ def _convert_values(values_tuple):
 
 
 def _get_field(name, renderer):
-    from deform import Form
     from colanderalchemy import SQLAlchemySchemaNode
+    from deform import Form
 
     form = Form(SQLAlchemySchemaNode(Person), renderer=renderer)
 

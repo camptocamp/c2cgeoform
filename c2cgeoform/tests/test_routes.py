@@ -10,9 +10,9 @@ from pyramid.interfaces import IRoutesMapper
 from c2cgeoform.routes import (
     Application,
     ApplicationRoutePredicate,
+    get_application,
     register_models,
     register_routes,
-    get_application,
 )
 
 

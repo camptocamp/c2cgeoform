@@ -1,13 +1,9 @@
 from sqlalchemy import Column, Integer, LargeBinary, Text
-from .ext import colander_ext
-
 from sqlalchemy.ext.declarative import declarative_base
-
-from sqlalchemy.orm import (
-    scoped_session,
-    sessionmaker,
-)
+from sqlalchemy.orm import scoped_session, sessionmaker
 from zope.sqlalchemy import register
+
+from .ext import colander_ext
 
 DBSession = scoped_session(sessionmaker())
 register(DBSession)

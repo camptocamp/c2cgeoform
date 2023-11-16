@@ -1,20 +1,15 @@
-from pyramid.view import view_config
-from pyramid.view import view_defaults
 from functools import partial
 
+import colander
+from pyramid.view import view_config, view_defaults
 from sqlalchemy.orm import subqueryload
 
-import colander
-from c2cgeoform.schema import (
-    GeoFormSchemaNode,
-    GeoFormManyToManySchemaNode,
-    manytomany_validator,
-)
 from c2cgeoform.ext.deform_ext import RelationCheckBoxListWidget
-from c2cgeoform.views.abstract_views import AbstractViews, ListField, ItemAction, UserMessage
+from c2cgeoform.schema import GeoFormManyToManySchemaNode, GeoFormSchemaNode, manytomany_validator
+from c2cgeoform.views.abstract_views import AbstractViews, ItemAction, ListField, UserMessage
 
-from ..models.c2cgeoform_demo import Excavation, Situation
 from ..i18n import _
+from ..models.c2cgeoform_demo import Excavation, Situation
 
 _list_field = partial(ListField, Excavation)
 

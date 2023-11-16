@@ -1,11 +1,10 @@
-from sqlalchemy import Column, Integer, Text, Boolean, ForeignKey, Table
-from sqlalchemy.orm import relationship
-
 import colander
 import deform
+from sqlalchemy import Boolean, Column, ForeignKey, Integer, Table, Text
+from sqlalchemy.orm import relationship
 
-from c2cgeoform.models import Base
 from c2cgeoform.ext.deform_ext import RelationSelect2Widget
+from c2cgeoform.models import Base
 
 
 class EmploymentStatus(Base):

@@ -1,10 +1,9 @@
+from deform import Form, widget
 from pkg_resources import resource_filename
+from pyramid.config import Configurator
 from pyramid.i18n import get_localizer
 from pyramid.threadlocal import get_current_request
-from pyramid.config import Configurator
-from deform import Form, widget
 from translationstring import TranslationStringFactory
-
 
 _ = TranslationStringFactory("c2cgeoform")
 

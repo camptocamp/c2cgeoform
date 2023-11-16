@@ -1,14 +1,16 @@
-from translationstring import TranslationStringFactory, TranslationString
-from deform.widget import Widget, SelectWidget, Select2Widget, RadioChoiceWidget, CheckboxChoiceWidget
-from deform.compat import string_types
-from colander import Invalid, null
-from deform.widget import FileUploadWidget as DeformFileUploadWidget, MappingWidget
-from sqlalchemy import inspect
-import urllib
 import json
 import logging
 import os
-from io import BytesIO, BufferedRandom
+import urllib
+from io import BufferedRandom, BytesIO
+
+from colander import Invalid, null
+from deform.compat import string_types
+from deform.widget import CheckboxChoiceWidget
+from deform.widget import FileUploadWidget as DeformFileUploadWidget
+from deform.widget import MappingWidget, RadioChoiceWidget, Select2Widget, SelectWidget, Widget
+from sqlalchemy import inspect
+from translationstring import TranslationString, TranslationStringFactory
 
 from c2cgeoform import default_map_settings
 

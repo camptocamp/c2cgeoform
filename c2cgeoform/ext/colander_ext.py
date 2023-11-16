@@ -1,13 +1,13 @@
-from colander import null, Invalid, SchemaType
+import json
+import os
+from io import BytesIO
 
+import pyproj
+from colander import Invalid, SchemaType, null
 from geoalchemy2 import WKBElement
-from geoalchemy2.shape import to_shape, from_shape
+from geoalchemy2.shape import from_shape, to_shape
 from shapely.geometry import mapping, shape
 from shapely.ops import transform
-import pyproj
-import json
-from io import BytesIO
-import os
 
 
 class Geometry(SchemaType):

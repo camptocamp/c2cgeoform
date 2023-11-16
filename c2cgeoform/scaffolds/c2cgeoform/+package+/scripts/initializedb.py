@@ -1,25 +1,15 @@
 # coding=utf-8
 import os
 import sys
-import transaction
 from datetime import date, timedelta
 
-from pyramid.paster import (
-    get_appsettings,
-    setup_logging,
-)
-
+import transaction
+from pyramid.paster import get_appsettings, setup_logging
 from pyramid.scripts.common import parse_vars
 
-
+from ..models import get_engine, get_session_factory, get_tm_session
+from ..models.c2cgeoform_demo import Address, BusStop, ContactPerson, District, Excavation, Situation, schema
 from ..models.meta import Base
-from ..models import (
-    get_engine,
-    get_session_factory,
-    get_tm_session,
-)
-
-from ..models.c2cgeoform_demo import schema, Address, BusStop, District, Excavation, Situation, ContactPerson
 
 
 def usage(argv):
@@ -148,6 +138,7 @@ def _add_bus_stops(dbsession):
     Load test data from a GeoJSON file.
     """
     import json
+
     from shapely.geometry import shape
 
     file = open(os.path.join(os.path.dirname(__file__), "..", "data", "osm-lausanne-bus-stops.geojson"))

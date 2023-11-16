@@ -1,6 +1,6 @@
+from pyramid.httpexceptions import HTTPBadRequest
 from pyramid.view import view_config
 
-from pyramid.httpexceptions import HTTPBadRequest
 from ..models.c2cgeoform_demo import Address
 
 

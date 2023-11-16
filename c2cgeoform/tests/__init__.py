@@ -1,14 +1,15 @@
 import os
 import time
 import unittest
+
 from pyramid import testing
 from pyramid.paster import get_appsettings
 from sqlalchemy import engine_from_config, text
 from webob.multidict import MultiDict
 
-from c2cgeoform.models import DBSession, Base
-from c2cgeoform.settings import apply_local_settings
 from c2cgeoform import init_deform
+from c2cgeoform.models import Base, DBSession
+from c2cgeoform.settings import apply_local_settings
 
 
 def wait_for_db(engine):
@@ -38,7 +39,7 @@ class DatabaseTestCase(unittest.TestCase):
 
         wait_for_db(engine)
 
-        from .models_test import Person, EmploymentStatus, Tag  # noqa
+        from .models_test import EmploymentStatus, Person, Tag  # noqa
 
         Base.metadata.create_all(engine)
         self.cleanup()
@@ -71,7 +72,7 @@ class DatabaseTestCase(unittest.TestCase):
         testing.tearDown()
 
     def cleanup(self):
-        from .models_test import Person, EmploymentStatus, Phone, Tag
+        from .models_test import EmploymentStatus, Person, Phone, Tag
 
         DBSession.query(Tag).delete()
         DBSession.query(Phone).delete()

@@ -1,7 +1,8 @@
-from colander import null, Invalid
-from geoalchemy2 import WKBElement
-from geoalchemy2.shape import to_shape, from_shape
 import json
+
+from colander import Invalid, null
+from geoalchemy2 import WKBElement
+from geoalchemy2.shape import from_shape, to_shape
 
 from c2cgeoform.tests import DatabaseTestCase
 
@@ -132,6 +133,7 @@ class TestBinaryData(DatabaseTestCase):
 
     def test_deserialize_file(self):
         import os
+
         from c2cgeoform.ext.colander_ext import BinaryData
 
         dirpath = os.path.dirname(os.path.realpath(__file__))

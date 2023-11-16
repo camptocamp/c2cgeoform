@@ -1,11 +1,12 @@
 import unittest
-from sqlalchemy import Column, Integer, String
-
-import colander
-from c2cgeoform.schema import GeoFormSchemaNode
-from c2cgeoform.models import Base
 import unittest.mock as mock
 from unittest.mock import patch
+
+import colander
+from sqlalchemy import Column, Integer, String
+
+from c2cgeoform.models import Base
+from c2cgeoform.schema import GeoFormSchemaNode
 
 
 class FieldsCollection(Base):
