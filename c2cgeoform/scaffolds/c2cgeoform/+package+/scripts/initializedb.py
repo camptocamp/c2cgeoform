@@ -2,6 +2,7 @@ import os
 import sys
 from datetime import date, timedelta
 
+import sqlalchemy
 import sqlalchemy.orm
 import transaction
 from pyramid.paster import get_appsettings, setup_logging
@@ -35,10 +36,10 @@ def main(argv=sys.argv):
 def init_db(connection, force=False):
     if force:
         if schema_exists(connection, schema):
-            connection.execute(f"DROP SCHEMA {schema} CASCADE;")
+            connection.execute(sqlalchemy.text(f"DROP SCHEMA {schema} CASCADE;"))
 
     if not schema_exists(connection, schema):
-        connection.execute(f'CREATE SCHEMA "{schema}";')
+        connection.execute(sqlalchemy.text(f'CREATE SCHEMA "{schema}";'))
 
     Base.metadata.create_all(connection)
 
@@ -50,12 +51,14 @@ def init_db(connection, force=False):
 
 
 def schema_exists(connection, schema_name):
-    sql = """
+    sql = sqlalchemy.text(
+        """
 SELECT count(*) AS count
 FROM information_schema.schemata
 WHERE schema_name = '{}';
 """.format(
-        schema_name
+            schema_name
+        )
     )
     result = connection.execute(sql)
     row = result.first()

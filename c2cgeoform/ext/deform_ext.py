@@ -34,7 +34,7 @@ class MapWidget(Widget):  # type: ignore[misc]
     .. code-block:: python
 
         geom = Column(
-            geoalchemy2.Geometry('POLYGON', 4326, management=True), info={
+            geoalchemy2.Geometry('POLYGON', 4326), info={
                 'colanderalchemy': {
                     'typ': colander_ext.Geometry(
                         'POLYGON', srid=4326, map_srid=3857),

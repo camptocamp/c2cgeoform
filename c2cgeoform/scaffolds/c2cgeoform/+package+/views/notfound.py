@@ -1,6 +1,7 @@
 import pyramid.request
-from c2cgeofom import JSONDict
 from pyramid.view import notfound_view_config
+
+from c2cgeoform import JSONDict
 
 
 @notfound_view_config(renderer="../templates/404.jinja2")  # type: ignore[misc]

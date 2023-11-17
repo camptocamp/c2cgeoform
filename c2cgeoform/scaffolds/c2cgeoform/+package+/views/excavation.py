@@ -18,7 +18,7 @@ base_schema = GeoFormSchemaNode(Excavation)
 base_schema.add_before(
     "contact_persons",
     colander.SequenceSchema(
-        GeoFormManyToManySchemaNode(Situation),
+        GeoFormManyToManySchemaNode(Situation, None),
         name="situations",
         title="Situations",
         widget=RelationCheckBoxListWidget(Situation, "id", "name", order_by="name"),
@@ -54,7 +54,13 @@ class ExcavationViews(AbstractViews[T]):
     MSG_COL = {**AbstractViews.MSG_COL, "error": UserMessage(_("This is an error"), "alert-danger")}
 
     def _base_query(self):
-        return super()._base_query().distinct().outerjoin("situations").options(subqueryload("situations"))
+        return (
+            super()
+            ._base_query()
+            .distinct()
+            .outerjoin(Excavation.situations)
+            .options(subqueryload(Excavation.situations))
+        )
 
     @view_config(route_name="c2cgeoform_index", renderer="../templates/index.jinja2")
     def index(self):
