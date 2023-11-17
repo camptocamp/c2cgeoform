@@ -38,7 +38,7 @@ exclude = ["c2cgeoform/static/node_modules/**"]
 packages = [{ include = "c2cgeoform" }]
 
 [tool.poetry.plugins."paste.app_factory"]
-main = "c2cgeoform.server:main"
+main = "c2cgeoform:main"
 
 [tool.poetry.plugins."pyramid.scaffold"]
 c2cgeoform = "c2cgeoform.scaffolds:C2cgeoformTemplate"
