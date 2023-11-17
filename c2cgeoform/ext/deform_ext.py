@@ -73,7 +73,11 @@ class MapWidget(Widget):  # type: ignore[misc]
     map_options = default_map_settings
 
     def serialize(
-        self, field: deform.field.Field, cstruct: Union[str, colander.null], readonly: bool = False, **kw: Any
+        self,
+        field: deform.field.Field,
+        cstruct: Union[str, colander._null],
+        readonly: bool = False,
+        **kw: Any,
     ) -> str:
         if cstruct is colander.null:
             cstruct = ""
@@ -202,7 +206,7 @@ class RelationMultiSelectMixin(RelationSelectMixin):
         return result
 
     def serialize(
-        self, field: deform.field.Field, cstruct: Optional[Union[colander.null, str]], **kw: Any
+        self, field: deform.field.Field, cstruct: Optional[Union[colander._null, str]], **kw: Any
     ) -> list[str]:
         """
         Flatten a list of objects into a list of ids.
@@ -893,7 +897,7 @@ class RelationSearchWidget(Widget):  # type: ignore[misc]
 
         return field.renderer(template, **tmpl_values)  # type: ignore[no-any-return]
 
-    def deserialize(self, field: deform.field.Field, pstruct: str) -> Optional[Union[colander.null, str]]:
+    def deserialize(self, field: deform.field.Field, pstruct: str) -> Optional[Union[colander._null, str]]:
         if pstruct is colander.null:
             return colander.null
         elif not isinstance(pstruct, string_types):
@@ -952,7 +956,7 @@ class RecaptchaWidget(MappingWidget):  # type: ignore[misc]
         )
         return MappingWidget.serialize(self, field, cstruct, **kw)
 
-    def deserialize(self, field: deform.field.Field, pstruct: JSONDict) -> Union[str, colander.null]:
+    def deserialize(self, field: deform.field.Field, pstruct: JSONDict) -> Union[str, colander._null]:
         if pstruct is colander.null:
             return colander.null
 

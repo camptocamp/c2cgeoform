@@ -63,7 +63,9 @@ class Geometry(SchemaType):  # type: ignore[misc]
                 always_xy=True,
             ).transform
 
-    def serialize(self, node: Any, appstruct: Union[colander.null, WKBElement]) -> Union[colander.null, str]:
+    def serialize(
+        self, node: Any, appstruct: Union[colander._null, WKBElement]
+    ) -> Union[colander._null, str]:
         """
         In Colander speak: Converts a Python data structure (an appstruct) into
         a serialization (a cstruct).
@@ -80,7 +82,7 @@ class Geometry(SchemaType):  # type: ignore[misc]
             return json.dumps(mapping(geometry))
         raise Invalid(node, "Unexpected value: %r" % appstruct)
 
-    def deserialize(self, node: Any, cstruct: Union[colander.null, str]) -> Union[colander.null, str]:
+    def deserialize(self, node: Any, cstruct: Union[colander._null, str]) -> Union[colander._null, str]:
         """
         In Colander speak: Converts a serialized value (a cstruct) into a
         Python data structure (a appstruct).
@@ -94,7 +96,7 @@ class Geometry(SchemaType):  # type: ignore[misc]
             # GeoJSON, see https://github.com/Toblerity/Shapely/issues/115
             geometry = shape(json.loads(cstruct))
         except Exception as exception:
-            raise Invalid(node, f"Invalid geometry: {cstruct:r}") from exception
+            raise Invalid(node, f"Invalid geometry: {cstruct!r}") from exception
 
         if self.srid != self.map_srid:
             geometry = transform(self.project_map_to_db, geometry)
@@ -130,8 +132,8 @@ class BinaryData(SchemaType):  # type: ignore[misc]
     """
 
     def serialize(
-        self, node: colander.SchemaNode, appstruct: Union[colander.null, Buffer]
-    ) -> Union[colander.null, io.BytesIO]:
+        self, node: colander.SchemaNode, appstruct: Union[colander._null, Buffer]
+    ) -> Union[colander._null, io.BytesIO]:
         """
         In Colander speak: Converts a Python data structure (an appstruct) into
         a serialization (a cstruct).
@@ -143,8 +145,8 @@ class BinaryData(SchemaType):  # type: ignore[misc]
         return BytesIO(appstruct)
 
     def deserialize(
-        self, node: colander.SchemaNode, cstruct: Union[colander.null, str, io.IOBase]
-    ) -> Union[colander.null, bytes]:
+        self, node: colander.SchemaNode, cstruct: Union[colander._null, str, io.IOBase]
+    ) -> Union[colander._null, bytes]:
         """
         In Colander speak: Converts a serialized value (a cstruct) into a
         Python data structure (a appstruct).

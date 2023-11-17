@@ -8,15 +8,6 @@ L10N_SOURCE_FILES += c2cgeoform/__init__.py c2cgeoform/models.py c2cgeoform/view
 L10N_SOURCE_FILES += $(shell find c2cgeoform/templates/ -type f -name '*.pt')
 L10N_SOURCE_FILES += $(shell find c2cgeoform/templates/ -type f -name '*.jinja2')
 
-ifneq (,$(findstring CYGWIN, $(shell uname)))
-PYTHON3 =
-PIP_UPGRADE = python.exe -m pip install --upgrade pip==21.1 setuptools==56.0
-else
-PYTHON3 = -p python3
-PIP_UPGRADE = pip install --upgrade pip==21.1 setuptools==56.0
-endif
-
-
 .PHONY: all
 all: help
 
@@ -42,7 +33,7 @@ check: prospector check_c2cgeoform_demo
 
 .PHONY: poetry
 poetry:
-	poetry install --with=dev
+	poetry install --with=dev --extras=psycopg2-binary
 
 .PHONY: prospector
 prospector: poetry
@@ -64,9 +55,9 @@ check_c2cgeoform_demo: $(BUILD_DIR)/c2cgeoform_demo
 test: test_c2cgeoform test_c2cgeoform_demo
 
 .PHONY: test_c2cgeoform
-test_c2cgeoform: build .build/requirements-dev.timestamp
+test_c2cgeoform: build poetry
 	docker-compose up -d db
-	poetry run nosetests --ignore-files=test_views.py
+	poetry run pytest -vvv
 
 .PHONY: test_c2cgeoform_demo
 test_c2cgeoform_demo: $(BUILD_DIR)/c2cgeoform_demo

@@ -5,6 +5,7 @@ import geojson
 import pyramid.request
 import pyramid.response
 import sqlalchemy.orm.attributes
+import sqlalchemy.orm.properties
 import sqlalchemy.schema
 import sqlalchemy.sql.expression
 from deform import Form, ValidationFailure  # , ZPTRendererFactory
@@ -17,7 +18,8 @@ from pyramid.response import Response
 from sqlalchemy import desc, or_, types
 from sqlalchemy.exc import DBAPIError
 from sqlalchemy.inspection import inspect
-from sqlalchemy.orm.properties import ColumnProperty, RelationshipProperty
+from sqlalchemy.orm.properties import ColumnProperty
+from sqlalchemy.orm.relationships import RelationshipProperty
 from translationstring import TranslationString
 
 from c2cgeoform import JSON, JSONDict, JSONList, _, default_map_settings
@@ -43,14 +45,31 @@ try it again.
 
 def model_attr_info(
     attr: Optional[
-        Union[str, sqlalchemy.orm.RelationshipProperty[Any], sqlalchemy.sql.elements.NamedColumn[Any]]
+        Union[
+            str,
+            sqlalchemy.orm.attributes.InstrumentedAttribute[Any],
+            sqlalchemy.orm.relationships.Relationship[Any],
+            sqlalchemy.orm.relationships.RelationshipProperty[Any],
+            sqlalchemy.sql.schema.Column[Any],
+            sqlalchemy.sql.elements.NamedColumn[Any],
+        ]
     ],
     *keys: str,
     default: Any = None,
 ) -> Any:
     if attr is None:
         return default
-    assert isinstance(attr, sqlalchemy.schema.Column)
+
+    assert isinstance(
+        attr,
+        (
+            sqlalchemy.orm.attributes.InstrumentedAttribute,
+            sqlalchemy.orm.relationships.Relationship,
+            sqlalchemy.orm.relationships.RelationshipProperty,
+            sqlalchemy.sql.schema.Column,
+            sqlalchemy.sql.elements.NamedColumn,
+        ),
+    ), type(attr)
     value = attr.info
     for key in keys:
         if key not in value:
@@ -200,9 +219,13 @@ class UserMessage:
         return self._text
 
 
-class _Index(TypedDict, Generic[T]):
+# TODO for Python 3.11
+# class _Index(TypedDict, Generic[T]):
+#     grid_actions: list[ItemAction]
+#     list_fields: list[ListField[T]]
+class _Index(TypedDict):
     grid_actions: list[ItemAction]
-    list_fields: list[ListField[T]]
+    list_fields: list[ListField[Any]]
 
 
 class AbstractViews(Generic[T]):
@@ -224,7 +247,7 @@ class AbstractViews(Generic[T]):
         self._appstruct: Optional[str] = None
         self._obj: Optional[type[T]] = None
 
-    def index(self) -> _Index[T]:
+    def index(self) -> _Index:
         return {
             "grid_actions": self._grid_actions(),
             "list_fields": self._list_fields,
