@@ -35,7 +35,7 @@ help:
 	@echo
 
 .PHONY: build
-build: docker-build-db .build/requirements.timestamp compile-catalog c2cgeoform/static/dist/index.js
+build: docker-build-db poetry compile-catalog c2cgeoform/static/dist/index.js
 
 .PHONY: check
 check: prospector check_c2cgeoform_demo
@@ -78,7 +78,7 @@ $(BUILD_DIR)/c2cgeoform_demo: build c2cgeoform/scaffolds/c2cgeoform c2cgeoform_d
 	cp c2cgeoform_demo_dev.mk $(BUILD_DIR)/c2cgeoform_demo/dev.mk
 
 .PHONY: update-catalog
-update-catalog: .build/requirements.timestamp
+update-catalog: poetry
 	poetry run pot-create -c lingua.cfg --keyword _ -o c2cgeoform/locale/c2cgeoform.pot $(L10N_SOURCE_FILES)
 	make $(PO_FILES)
 
@@ -89,7 +89,7 @@ c2cgeoform/locale/%/LC_MESSAGES/c2cgeoform.po: c2cgeoform/locale/c2cgeoform.pot
 compile-catalog: $(MO_FILES)
 
 .PHONY: docs
-docs: .build/requirements.timestamp .build/requirements-dev.timestamp
+docs: poetry
 	make -C docs html
 
 %.mo: %.po
