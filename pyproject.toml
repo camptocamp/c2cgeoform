@@ -28,7 +28,13 @@ classifiers = [
 authors = ["Camptocamp <info@camptocamp.com>"]
 repository = "https://github.com/camptocamp/c2cgeoform"
 keywords = ["web", "wsgi", "bfg", "pylons", "pyramid"]
-include = ["c2cgeoform/py.typed"]
+include = [
+  "c2cgeoform/py.typed",
+  "c2cgeoform/scaffolds/c2cgeoform/**",
+  "c2cgeoform/templates/**",
+  "c2cgeoform/static/**"
+]
+exclude = ["c2cgeoform/static/node_modules/**"]
 
 [tool.poetry.plugins."paste.app_factory"]
 main = "c2cgeoform.server:main"
