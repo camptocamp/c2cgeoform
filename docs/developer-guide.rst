@@ -90,6 +90,13 @@ And there you go, you're ready to develop, make changes in c2cgeoform, run
 checks and tests in c2cgeoform. And finally see the results in c2cgeoform demo
 application.
 
+Build documentation
+~~~~~~~~~~~~~~~~~~~
+
+.. code-block:: shell
+
+   make docs
+
 Deploy the c2cgeoform_demo on demo server
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

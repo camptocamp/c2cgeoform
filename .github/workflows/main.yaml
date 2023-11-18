@@ -50,6 +50,9 @@ jobs:
       - name: Tests
         run: make test
 
+      - name: Documentation
+        run: make docs
+
       - name: Docker compose logs
         if: always()
         run: |
