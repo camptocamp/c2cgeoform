@@ -67,6 +67,7 @@ test_c2cgeoform_demo: $(BUILD_DIR)/c2cgeoform_demo
 $(BUILD_DIR)/c2cgeoform_demo: build c2cgeoform/scaffolds/c2cgeoform c2cgeoform_demo_dev.mk
 	poetry run pcreate -s c2cgeoform --overwrite $(BUILD_DIR)/c2cgeoform_demo > /dev/null
 	cp c2cgeoform_demo_dev.mk $(BUILD_DIR)/c2cgeoform_demo/dev.mk
+	sed -i s/localhost:5432/localhost:54321/g $(BUILD_DIR)/c2cgeoform_demo/development.ini
 
 .PHONY: update-catalog
 update-catalog: poetry
@@ -89,16 +90,20 @@ docs: poetry
 .PHONY: clean
 clean:
 	rm -f $(MO_FILES)
-	rm -rf docs/_build
+	rm -rf .build/node_modules.timestamp
 	rm -rf c2cgeoform/static/dist
+	rm -rf dist
+	rm -rf docs/_build
 
 .PHONY: cleanall
 cleanall: clean
-	rm -rf .build
+	poetry env remove --all
 	rm -rf c2cgeoform/static/node_modules
 
 .PHONY: initdb
 initdb: $(BUILD_DIR)/c2cgeoform_demo
+	docker-compose up -d db
+	sleep 1
 	make -C $(BUILD_DIR)/c2cgeoform_demo -f dev.mk initdb
 
 .PHONY: webpack-dev
@@ -107,6 +112,7 @@ webpack-dev:
 
 .PHONY: serve
 serve: build $(BUILD_DIR)/c2cgeoform_demo
+	docker-compose up -d db
 	make -C $(BUILD_DIR)/c2cgeoform_demo -f dev.mk serve
 
 .PHONY: modwsgi
