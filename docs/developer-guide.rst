@@ -48,7 +48,8 @@ Install or select Node.js 10
 
 .. code-block:: shell
 
-   nvm use 10
+   nvm install
+   nvm use
 
 Build runtime resources
 ~~~~~~~~~~~~~~~~~~~~~~~
