@@ -43,8 +43,8 @@ Install poetry
    sudo apt install pipx
    pipx install poetry
 
-Install or select Node.js 10
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Install or select appropriated Node.js version
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: shell
 
