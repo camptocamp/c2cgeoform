@@ -61,6 +61,8 @@
       matchPackagePatterns: [
         "^webpack$",
         "^html-webpack-plugin$",
+        "^mini-css-extract-plugin$",
+        "^node-sass$",
         "^webpack-.*",
         ".*-loader$",
       ],
