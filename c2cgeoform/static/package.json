@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "license": "MIT",
   "scripts": {
-    "start": "webpack -d -w",
-    "build": "webpack -p",
+    "start": "webpack --mode=development --watch",
+    "build": "webpack --mode=production",
     "test": "jest"
   },
   "private": true,
