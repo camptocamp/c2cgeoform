@@ -19,7 +19,7 @@ help:
 	@echo
 	@echo "- build                   Install c2cgeoform"
 	@echo "- initdb                  (Re-)initialize the database"
-	@echo "- check                   Check the code with flake8"
+	@echo "- check                   Check the code with prospector"
 	@echo "- test                    Run the unit tests"
 	@echo "- dist                    Build a source distribution"
 	@echo "- compile-catalog         Compile message catalog"
@@ -29,7 +29,7 @@ help:
 build: docker-build-db poetry compile-catalog c2cgeoform/static/dist/index.js
 
 .PHONY: check
-check: prospector check_c2cgeoform_demo
+check: prospector
 
 .PHONY: poetry
 poetry:
@@ -46,10 +46,6 @@ prospector: poetry
 
 c2cgeoform/static/dist/index.js: .build/node_modules.timestamp c2cgeoform/static/src/*
 	cd c2cgeoform/static/ && npm run build
-
-.PHONY: check_c2cgeoform_demo
-check_c2cgeoform_demo: $(BUILD_DIR)/c2cgeoform_demo
-	make -C $(BUILD_DIR)/c2cgeoform_demo check
 
 .PHONY: test
 test: test_c2cgeoform test_c2cgeoform_demo
