@@ -1,5 +1,6 @@
 {
   extends: [
+    "config:dependencyDashboard",
     "group:monorepos",
     "group:recommended",
     "replacements:all",
