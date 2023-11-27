@@ -4,7 +4,6 @@ Prerequisites
 The following system packages must be installed on your system:
 
 -  ``python3-dev``
--  ``python-virtualenv``
 -  ``libpq-dev`` (header files for PostgreSQL)
 -  ``gettext``
 

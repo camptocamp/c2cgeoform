@@ -1,0 +1,12 @@
+inherits:
+  - duplicated
+  - utils:base
+  - utils:no-design-checks
+
+ignore-paths:
+  - c2cgeoform/scaffolds/c2cgeoform/+package+
+  - c2cgeoform/scaffolds/c2cgeoform/+package+.wsgi
+
+bandit:
+  options:
+    config: .bandit.yaml

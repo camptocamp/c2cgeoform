@@ -17,7 +17,7 @@
   enctype="multipart/form-data"
   accept-charset="utf-8"
   i18n:domain="deform"
-  >
+>
 
   <div class="panel panel-default form-panel">
     <div class="panel-body">
@@ -34,7 +34,7 @@
           ${description}
         </p>
 
-        <tal metal:use-macro="load:${field.widget.fields_template}.pt"></tal>
+        <tal metal:use-macro="load:${field.widget.fields_template}.pt" />
 
       </fieldset>
 
@@ -42,7 +42,7 @@
 
     <div class="panel-footer clearfix" tal:condition="actions">
       <div class="pull-right" i18n:domain="c2cgeoform">
-        <tal metal:use-macro="load:_actions.pt"></tal>
+        <tal metal:use-macro="load:_actions.pt" />
       </div>
     </div>
   </div>

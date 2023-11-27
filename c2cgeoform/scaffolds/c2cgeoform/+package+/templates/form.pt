@@ -23,15 +23,35 @@
   enctype="multipart/form-data"
   accept-charset="utf-8"
   i18n:domain="deform"
-  >
+>
     <input type="hidden" name="_charset_" />
-    <input type="hidden" name="__formid__" value="${formid}"/>
-    <input type="hidden" name="__custom_data__" id="${formid}_custom_data" value="${custom_data}"/>
-    <input type="hidden" name="__only_validate__" id="${formid}_only_validate" value="1"/>
+    <input type="hidden" name="__formid__" value="${formid}" />
+    <input
+    type="hidden"
+    name="__custom_data__"
+    id="${formid}_custom_data"
+    value="${custom_data}"
+  />
+    <input
+    type="hidden"
+    name="__only_validate__"
+    id="${formid}_only_validate"
+    value="1"
+  />
 
-    <div id="${formid}_error" class="alert alert-danger" tal:condition="field.error">
-      <div class="error-msg-lbl" i18n:translate="">There was a problem with your submission</div>
-      <div class="error-msg-detail" i18n:translate="">Errors have been highlighted below</div>
+    <div
+    id="${formid}_error"
+    class="alert alert-danger"
+    tal:condition="field.error"
+  >
+      <div
+      class="error-msg-lbl"
+      i18n:translate=""
+    >There was a problem with your submission</div>
+      <div
+      class="error-msg-detail"
+      i18n:translate=""
+    >Errors have been highlighted below</div>
       <p class="error-msg">${field.errormsg}</p>
     </div>
 
@@ -43,66 +63,105 @@
 
     <h3 i18n:domain="pully" i18n:translate="">Basic</h3>
     <section>
-      <div tal:replace="structure field['id'].render_template(item_template)"/>
-      <div tal:replace="structure field['request_date'].render_template(item_template)"/>
-      <div tal:replace="structure field['description'].render_template(item_template)"/>
-      <div tal:replace="structure field['motif'].render_template(item_template)"/>
-      <div tal:replace="structure field['situations'].render_template(item_template)"/>
-      <div tal:replace="structure field['contact_persons'].render_template(item_template)"/>
+      <div tal:replace="structure field['id'].render_template(item_template)" />
+      <div
+        tal:replace="structure field['request_date'].render_template(item_template)"
+      />
+      <div
+        tal:replace="structure field['description'].render_template(item_template)"
+      />
+      <div
+        tal:replace="structure field['motif'].render_template(item_template)"
+      />
+      <div
+        tal:replace="structure field['situations'].render_template(item_template)"
+      />
+      <div
+        tal:replace="structure field['contact_persons'].render_template(item_template)"
+      />
     </section>
 
     <h3 i18n:domain="pully" i18n:translate="">Location</h3>
     <section>
-      <div tal:replace="structure field['location_district_id'].render_template(item_template)"/>
-      <div tal:replace="structure field['location_street'].render_template(item_template)"/>
+      <div
+        tal:replace="structure field['location_district_id'].render_template(item_template)"
+      />
+      <div
+        tal:replace="structure field['location_street'].render_template(item_template)"
+      />
       <div class="row">
         <div class="col-xs-2">
-          <div tal:replace="structure field['location_postal_code'].render_template(item_template)"/>
+          <div
+            tal:replace="structure field['location_postal_code'].render_template(item_template)"
+          />
         </div>
         <div class="col-xs-5">
-          <div tal:replace="structure field['location_town'].render_template(item_template)"/>
+          <div
+            tal:replace="structure field['location_town'].render_template(item_template)"
+          />
         </div>
       </div>
-      <div tal:replace="structure field['address_id'].render_template(item_template)"/>
-      <div tal:replace="structure field['location_position'].render_template(item_template)"/>
+      <div
+        tal:replace="structure field['address_id'].render_template(item_template)"
+      />
+      <div
+        tal:replace="structure field['location_position'].render_template(item_template)"
+      />
     </section>
 
     <h3 i18n:domain="pully" i18n:translate="">Person in Charge for the Work</h3>
     <section>
       <div class="row">
         <div class="col-xs-2">
-          <div tal:replace="structure field['responsible_title'].render_template(item_template)"/>
+          <div
+            tal:replace="structure field['responsible_title'].render_template(item_template)"
+          />
         </div>
         <div class="col-xs-4">
-          <div tal:replace="structure field['responsible_name'].render_template(item_template)"/>
+          <div
+            tal:replace="structure field['responsible_name'].render_template(item_template)"
+          />
         </div>
         <div class="col-xs-4">
-          <div tal:replace="structure field['responsible_first_name'].render_template(item_template)"/>
+          <div
+            tal:replace="structure field['responsible_first_name'].render_template(item_template)"
+          />
         </div>
       </div>
-      <div tal:replace="structure field['responsible_company'].render_template(item_template)"/>
-      <div tal:replace="structure field['responsible_mobile'].render_template(item_template)"/>
-      <div tal:replace="structure field['responsible_mail'].render_template(item_template)"/>
+      <div
+        tal:replace="structure field['responsible_company'].render_template(item_template)"
+      />
+      <div
+        tal:replace="structure field['responsible_mobile'].render_template(item_template)"
+      />
+      <div
+        tal:replace="structure field['responsible_mail'].render_template(item_template)"
+      />
     </section>
 
     <h3 i18n:domain="pully" i18n:translate="">Footprint</h3>
     <section>
-      <div tal:replace="structure field['work_footprint'].render_template(item_template)"/>
-      <div tal:replace="structure field['photos'].render_template(item_template)"/>
+      <div
+        tal:replace="structure field['work_footprint'].render_template(item_template)"
+      />
+      <div
+        tal:replace="structure field['photos'].render_template(item_template)"
+      />
     </section>
     </div>
 
     <div class="form-group" tal:condition="False">
       <tal:loop tal:repeat="button buttons">
         <button
-              tal:define="btn_disposition repeat.button.start and 'btn-primary' or 'btn-default';
+        tal:define="btn_disposition repeat.button.start and 'btn-primary' or 'btn-default';
               btn_icon button.icon|None"
-              tal:attributes="disabled button.disabled if button.disabled else None"
-              id="${formid+button.name}"
-              name="${button.name}"
-              type="${button.type}"
-              class="btn ${btn_disposition} ${button.css_class}"
-              value="${button.value}">
+        tal:attributes="disabled button.disabled if button.disabled else None"
+        id="${formid+button.name}"
+        name="${button.name}"
+        type="${button.type}"
+        class="btn ${btn_disposition} ${button.css_class}"
+        value="${button.value}"
+      >
           <i tal:condition="btn_icon" class="${btn_icon}"> </i>
           ${button.title}
         </button>

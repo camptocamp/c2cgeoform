@@ -1,4 +1,6 @@
-<div tal:define="item_template item_template|field.widget.readonly_item_template if readonly else field.widget.item_template;"
-     tal:repeat="child field.children"
-     tal:replace="structure child.render_template(item_template)" >
+<div
+  tal:define="item_template item_template|field.widget.readonly_item_template if readonly else field.widget.item_template;"
+  tal:repeat="child field.children"
+  tal:replace="structure child.render_template(item_template)"
+>
 </div>

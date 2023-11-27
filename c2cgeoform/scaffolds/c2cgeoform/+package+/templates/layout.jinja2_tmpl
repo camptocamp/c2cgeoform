@@ -16,7 +16,7 @@
     <link href="\{\{request.static_url('{{package}}:node_modules/jquery-steps/demo/css/jquery.steps.css')\}\}" rel="stylesheet">
     <link href="\{\{request.static_url('c2cgeoform:static/theme.css')\}\}" rel="stylesheet">
 
-    <!-- Deform dependecies CSS -->
+    <!-- Deform dependencies CSS -->
     {% if deform_dependencies %}
     <link rel="stylesheet" href="\{\{request.static_url('deform:static/css/form.css')\}\}" type="text/css" />
     {% for css in deform_dependencies['css'] %}

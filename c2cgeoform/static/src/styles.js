@@ -25,7 +25,7 @@ export const defaultStyle = new Style({
 
 export function getStyleFunction(options) {
   const cache = {}
-  return feature => {
+  return (feature) => {
     if (feature.getGeometry().getType() != 'Point') {
       return defaultStyle
     }

@@ -252,7 +252,7 @@ class Excavation(Base):
     # to show a map for a geometry column, the column has to be defined as
     # follows.
     location_position = Column(
-        geoalchemy2.Geometry('POINT', 4326, management=False), info={
+        geoalchemy2.Geometry('POINT', 4326), info={
             'colanderalchemy': {
                 'title': _('Position'),
                 'typ':
@@ -304,7 +304,7 @@ class Excavation(Base):
 
     # Work footprint
     work_footprint = Column(
-        geoalchemy2.Geometry('MULTIPOLYGON', 4326, management=False),
+        geoalchemy2.Geometry('MULTIPOLYGON', 4326),
         info={
             'colanderalchemy': {
                 'title': _('Footprint for the Work'),
@@ -364,7 +364,7 @@ class BusStop(Base):
 
     id = Column(BigInteger, primary_key=True)
     name = Column(Text)
-    geom = Column(geoalchemy2.Geometry('POINT', 4326, management=False))
+    geom = Column(geoalchemy2.Geometry('POINT', 4326))
 
 
 class Comment(Base):

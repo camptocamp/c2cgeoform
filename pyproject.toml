@@ -1,0 +1,107 @@
+[tool.black]
+line-length = 110
+target-version = ["py39"]
+
+[tool.isort]
+profile = "black"
+line_length = 110
+
+[tool.mypy]
+python_version = 3.9
+warn_redundant_casts = true
+warn_unused_ignores = true
+ignore_missing_imports = true
+strict = true
+
+[tool.poetry]
+name = "c2cgeoform"
+version = "0.0.0"
+description = "c2cgeoform"
+readme = "README.md"
+classifiers = [
+  "Programming Language :: Python",
+  "Framework :: Pyramid",
+  "Topic :: Internet :: WWW/HTTP",
+  "Topic :: Internet :: WWW/HTTP :: WSGI :: Application",
+  "Typing :: Typed",
+]
+authors = ["Camptocamp <info@camptocamp.com>"]
+repository = "https://github.com/camptocamp/c2cgeoform"
+keywords = ["web", "wsgi", "bfg", "pylons", "pyramid"]
+include = [
+  "c2cgeoform/py.typed",
+  "c2cgeoform/scaffolds/c2cgeoform/**",
+  "c2cgeoform/templates/**",
+  "c2cgeoform/static/**"
+]
+exclude = ["c2cgeoform/static/node_modules/**"]
+packages = [{ include = "c2cgeoform" }]
+
+[tool.poetry.plugins."paste.app_factory"]
+main = "c2cgeoform:main"
+
+[tool.poetry.plugins."pyramid.scaffold"]
+c2cgeoform = "c2cgeoform.scaffolds:C2cgeoformTemplate"
+
+[tool.poetry.dependencies]
+python = ">=3.9,<3.11"
+babel = "2.13.1"
+colanderalchemy = "0.3.3"
+deform = "2.0.4"
+geoalchemy2 = "0.14.2"
+geojson = "3.1.0"
+lingua = "2.4"
+psycopg2 = { version = "2.8.6", optional = true }
+psycopg2-binary = { version = "2.8.6", optional = true }
+pyramid = "1.10"
+pyramid-beaker = "0.8"
+pyramid-chameleon = "0.3"
+pyramid-jinja2 = "2.10"
+pyproj = "3.6.1"
+shapely = "2.0.2"
+sqlalchemy = "2.0.23"
+zope-sqlalchemy = "3.1"
+requests = "2.31.0"
+
+[tool.poetry.group.dev.dependencies]
+prospector = { version = "1.10.3", extras = [
+  "with-bandit",
+  "with-mypy",
+  "with-pyroma"
+] }
+prospector-profile-duplicated = "0.3.0"
+prospector-profile-utils = "1.3.0"
+webtest = "3.0.0"
+sphinx = "7.2.6"
+sphinx-rtd-theme = "1.3.0"
+types-requests = "2.31.0.10"
+pytest = "7.4.3"
+
+[tool.poetry.extras]
+psycopg2 = ["psycopg2"]
+psycopg2-binary = ["psycopg2-binary"]
+
+[build-system]
+requires = [
+  "poetry-core>=1.0.0",
+  "poetry-dynamic-versioning",
+  "poetry-plugin-tweak-dependencies-version"
+]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry-dynamic-versioning]
+enable = true
+vcs = "git"
+pattern = "^(?P<base>\\d+(\\.\\d+)*)"
+format-jinja = """
+{%- if env.get("VERSION_TYPE") == "version_branch" -%}
+{{serialize_pep440(bump_version(base, 1 if env.get("IS_MASTER") == "TRUE" else 2), dev=distance)}}
+{%- elif distance == 0 -%}
+{{serialize_pep440(base)}}
+{%- else -%}
+{{serialize_pep440(bump_version(base), dev=distance)}}
+{%- endif -%}
+"""
+
+[tool.poetry-plugin-tweak-dependencies-version]
+default = "present"

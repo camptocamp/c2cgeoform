@@ -1,39 +1,21 @@
-# coding=utf-8
 import os
 import sys
-import transaction
 from datetime import date, timedelta
 
-from pyramid.paster import (
-    get_appsettings,
-    setup_logging,
-    )
-
+import sqlalchemy
+import sqlalchemy.orm
+import transaction
+from pyramid.paster import get_appsettings, setup_logging
 from pyramid.scripts.common import parse_vars
 
-
+from ..models import get_engine, get_session_factory, get_tm_session
+from ..models.c2cgeoform_demo import Address, BusStop, ContactPerson, District, Excavation, Situation, schema
 from ..models.meta import Base
-from ..models import (
-    get_engine,
-    get_session_factory,
-    get_tm_session,
-    )
-
-from ..models.c2cgeoform_demo import (
-    schema,
-    Address,
-    BusStop,
-    District,
-    Excavation,
-    Situation,
-    ContactPerson
-    )
 
 
 def usage(argv):
     cmd = os.path.basename(argv[0])
-    print('usage: %s <config_uri> [var=value]\n'
-          '(example: "%s development.ini")' % (cmd, cmd))
+    print("usage: %s <config_uri> [var=value]\n" '(example: "%s development.ini")' % (cmd, cmd))
     sys.exit(1)
 
 
@@ -48,16 +30,16 @@ def main(argv=sys.argv):
     engine = get_engine(settings)
 
     with engine.begin() as connection:
-        init_db(connection, force='--force' in options)
+        init_db(connection, force="--force" in options)
 
 
 def init_db(connection, force=False):
     if force:
         if schema_exists(connection, schema):
-            connection.execute("DROP SCHEMA {} CASCADE;".format(schema))
+            connection.execute(sqlalchemy.text(f"DROP SCHEMA {schema} CASCADE;"))
 
     if not schema_exists(connection, schema):
-        connection.execute("CREATE SCHEMA \"{}\";".format(schema))
+        connection.execute(sqlalchemy.text(f'CREATE SCHEMA "{schema}";'))
 
     Base.metadata.create_all(connection)
 
@@ -69,11 +51,15 @@ def init_db(connection, force=False):
 
 
 def schema_exists(connection, schema_name):
-    sql = '''
+    sql = sqlalchemy.text(
+        """
 SELECT count(*) AS count
 FROM information_schema.schemata
 WHERE schema_name = '{}';
-'''.format(schema_name)
+""".format(
+            schema_name
+        )
+    )
     result = connection.execute(sql)
     row = result.first()
     return row[0] == 1
@@ -93,8 +79,7 @@ def setup_test_data(dbsession):
         dbsession.add(Situation(id=0, name="Road", name_fr="Route"))
         dbsession.add(Situation(id=1, name="Sidewalk", name_fr="Trottoir"))
         dbsession.add(Situation(id=2, name="Berm", name_fr="Berme"))
-        dbsession.add(Situation(
-            id=3, name="Vegetated berm", name_fr=u"Berme végétalisée"))
+        dbsession.add(Situation(id=3, name="Vegetated berm", name_fr="Berme végétalisée"))
         dbsession.add(Situation(id=4, name="Green zone", name_fr="Zone verte"))
         dbsession.add(Situation(id=5, name="Cobblestone", name_fr="Pavés"))
 
@@ -120,11 +105,11 @@ def _excavation(i, dbsession):
     addresses = dbsession.query(Address).all()
 
     contact = ContactPerson()
-    contact.first_name = 'Leonard'
-    contact.last_name = 'Michalon'
+    contact.first_name = "Leonard"
+    contact.last_name = "Michalon"
 
     excavation = Excavation(
-        reference_number='ref{:04d}'.format(i),
+        reference_number=f"ref{i:04d}",
         request_date=date.today() - timedelta(days=100 - i),
         description="Installation d'un réseau AEP",
         motif="Création d'un lotissement",
@@ -151,30 +136,24 @@ def _excavation(i, dbsession):
     return excavation
 
 
-def _add_bus_stops(dbsession):
+def _add_bus_stops(dbsession: sqlalchemy.orm.Session) -> None:
     """
     Load test data from a GeoJSON file.
     """
     import json
+
     from shapely.geometry import shape
 
-    file = open(os.path.join(os.path.dirname(__file__),
-                             '..',
-                             'data',
-                             'osm-lausanne-bus-stops.geojson'))
+    file = open(os.path.join(os.path.dirname(__file__), "..", "data", "osm-lausanne-bus-stops.geojson"))
     geojson = json.load(file)
     file.close()
 
     bus_stops = []
-    for feature in geojson['features']:
-        id = feature['id'].replace('node/', '')
-        geometry = shape(feature['geometry'])
-        name = feature['properties']['name'] \
-            if 'name' in feature['properties'] else ''
-        bus_stop = BusStop(
-            id=int(float(id)),
-            geom='SRID=4326;' + geometry.wkt,
-            name=name)
+    for feature in geojson["features"]:
+        id = feature["id"].replace("node/", "")
+        geometry = shape(feature["geometry"])
+        name = feature["properties"]["name"] if "name" in feature["properties"] else ""
+        bus_stop = BusStop(id=int(float(id)), geom="SRID=4326;" + geometry.wkt, name=name)
         bus_stops.append(bus_stop)
 
     dbsession.add_all(bus_stops)

@@ -27,25 +27,39 @@ Clone the project
    git clone git@github.com:camptocamp/c2cgeoform.git
    cd c2cgeoform
 
-Run the checks
+Install the pre-commit hooks
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. code-block:: shell
+
+   pip install --user pre-commit
+   pre-commit install --allow-missing-config
+
+Install poetry
 ~~~~~~~~~~~~~~
 
 .. code-block:: shell
 
-   make check
+   sudo apt install pipx
+   pipx install poetry
 
-Run the tests
-~~~~~~~~~~~~~
-
-Create the tests database:
+Install or select appropriated Node.js version
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: shell
 
-   sudo -u postgres psql -c "CREATE USER \"www-data\" WITH PASSWORD 'www-data';"
+   nvm install
+   nvm use
 
-   export DATABASE=c2cgeoform_demo_tests
-   sudo -u postgres psql -d postgres -c "CREATE DATABASE $DATABASE OWNER \"www-data\";"
-   sudo -u postgres psql -d $DATABASE -c "CREATE EXTENSION postgis;"
+Build runtime resources
+~~~~~~~~~~~~~~~~~~~~~~~
+
+.. code-block:: shell
+
+   make build
+
+Run the tests
+~~~~~~~~~~~~~
 
 Run the framework and demo tests:
 
@@ -62,9 +76,6 @@ You need to create a PostGIS database. For example:
 
 .. code-block:: shell
 
-   export DATABASE=c2cgeoform_demo
-   sudo -u postgres psql -d postgres -c "CREATE DATABASE $DATABASE OWNER \"www-data\";"
-   sudo -u postgres psql -d $DATABASE -c "CREATE EXTENSION postgis;"
    make initdb
 
 Run the development server:
@@ -79,6 +90,13 @@ http://localhost:6543/
 And there you go, you're ready to develop, make changes in c2cgeoform, run
 checks and tests in c2cgeoform. And finally see the results in c2cgeoform demo
 application.
+
+Build documentation
+~~~~~~~~~~~~~~~~~~~
+
+.. code-block:: shell
+
+   make docs
 
 Deploy the c2cgeoform_demo on demo server
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -1,27 +1,38 @@
-<div tal:define="name name|field.name;
+<div
+  tal:define="name name|field.name;
                  css_class css_class|field.widget.css_class;
                  style style|field.widget.style;
                  oid oid|field.oid;
                  inline getattr(field.widget, 'inline', False)"
-     tal:omit-tag="not inline">
+  tal:omit-tag="not inline"
+>
   ${field.start_sequence()}
-  <div tal:repeat="choice values | field.widget.values"
-       tal:omit-tag="inline"
-       class="checkbox">
-    <label for="${oid}-${repeat.choice.index}"
-           tal:define="(value, title) choice"
-           tal:attributes="class inline and 'checkbox-inline'">
-      <input tal:attributes="checked value in cstruct;
+  <div
+    tal:repeat="choice values | field.widget.values"
+    tal:omit-tag="inline"
+    class="checkbox"
+  >
+    <label
+      for="${oid}-${repeat.choice.index}"
+      tal:define="(value, title) choice"
+      tal:attributes="class inline and 'checkbox-inline'"
+    >
+      <input
+        tal:attributes="checked value in cstruct;
                              class css_class;
                              style style"
-             type="checkbox"
-             name="${name}"
-             value="${value}"
-             id="${oid}-${repeat.choice.index}"/>
+        type="checkbox"
+        name="${name}"
+        value="${value}"
+        id="${oid}-${repeat.choice.index}"
+      />
       ${title}
-      <a class="" tal:condition="hasattr(field.widget, 'edit_url')"
-         href="${ field.widget.edit_url(field.schema.bindings['request'], value) }">
-         <span class="glyphicon glyphicon-pencil"></span>
+      <a
+        class=""
+        tal:condition="hasattr(field.widget, 'edit_url')"
+        href="${ field.widget.edit_url(field.schema.bindings['request'], value) }"
+      >
+         <span class="glyphicon glyphicon-pencil" />
       </a>
     </label>
   </div>
