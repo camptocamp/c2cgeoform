@@ -58,7 +58,12 @@
     },
     /** Group the Webpack dependencies */
     {
-      matchPackagePatterns: ["^webpack$", "^webpack-.*", ".*-loader$"],
+      matchPackagePatterns: [
+        "^webpack$",
+        "^html-webpack-plugin$",
+        "^webpack-.*",
+        ".*-loader$",
+      ],
       matchUpdateTypes: ["major"],
       groupName: "webpack",
       automerge: true,
