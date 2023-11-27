@@ -28,6 +28,6 @@
     "ol": "6.1.1",
     "proj4": "2.5.0",
     "sass-loader": "10.4.1",
-    "style-loader": "0.23.1"
+    "style-loader": "3.3.3"
   }
 }
