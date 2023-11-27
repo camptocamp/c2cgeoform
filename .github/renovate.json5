@@ -56,5 +56,12 @@
       matchDatasources: ["github-actions", "pre-commit"],
       automerge: true,
     },
+    /** Group the Webpack dependencies */
+    {
+      matchPackageNames: ["webpack", "webpack-.*", ".*-loader"],
+      matchUpdateTypes: ["major"],
+      groupName: "webpack",
+      automerge: true,
+    },
   ],
 }
