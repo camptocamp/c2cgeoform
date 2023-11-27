@@ -1,7 +1,7 @@
 #
 # This file defines the requirements.txt for development.
 #
-flake8==2.2.2
+flake8==6.1.0
 pep8-naming==0.2.2
 pytest==7.4.3
 WebTest==3.0.0
