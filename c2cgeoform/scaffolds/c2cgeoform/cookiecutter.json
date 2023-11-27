@@ -1,0 +1,6 @@
+{
+  "project": "test_project",
+  "package": "test_project",
+  "package_logger": "test_project",
+  "pyramid_docs_branch": "master"
+}
