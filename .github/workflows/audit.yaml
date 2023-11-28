@@ -29,7 +29,8 @@ jobs:
           ci-gpg-private-key: ${{secrets.CI_GPG_PRIVATE_KEY}}
           github-gopass-ci-token: ${{secrets.GOPASS_CI_GITHUB_TOKEN}}
 
-      - run: python3 -m pip install --pre c2cciutils[audit]
+      - run: python3 -m venv ~/.venv
+      - run: ~/.venv/bin/pip install --pre c2cciutils[audit]
 
       - name: Check .tool-versions file existence
         id: tool-versions
@@ -49,5 +50,6 @@ jobs:
         if: failure()
         env:
           DEBUG: "*snyk*"
+
       - name: Update dpkg packages versions
         run: c2cciutils-docker-versions-update --branch=${{ matrix.branch }}
