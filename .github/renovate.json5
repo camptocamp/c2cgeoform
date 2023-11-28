@@ -19,12 +19,14 @@
     schedule: "after 5pm on the first day of the month",
   },
   regexManagers: [
+    /** Do updates on pre-commit additional dependencies */
     {
       fileMatch: ["^\\.pre\\-commit\\-config\\.yaml$"],
       matchStrings: [
         " +- '?(?<depName>[^' @=]+)(@|==)(?<currentValue>[^' @=]+)'? # (?<datasource>.+)",
       ],
     },
+    /** Do update on the schema present in the ci/config.yaml */
     {
       fileMatch: ["^ci/config\\.yaml$"],
       matchStrings: [
@@ -34,24 +36,29 @@
     },
   ],
   packageRules: [
+    /** Support the 4 parts of shellcheck-py version with a v prefix */
     {
       matchPackageNames: ["shellcheck-py/shellcheck-py"],
       versioning: "regex:^v(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)\\.(?<build>\\d+)$",
     },
+    /** Auto merge the dev dependency update */
     {
       matchDepTypes: ["devDependencies"],
       automerge: true,
     },
+    /** Group and auto merge the patch updates */
     {
       matchUpdateTypes: ["patch"],
       groupName: "all patch versions",
       automerge: true,
     },
+    /** Group and auto merge the minor updates */
     {
       matchUpdateTypes: ["minor"],
       groupName: "all minor versions",
       automerge: true,
     },
+    /** Auto merge the GitHub action and pre-commit updates */
     {
       matchDatasources: ["github-actions", "pre-commit"],
       automerge: true,
@@ -74,6 +81,29 @@
       matchPackagePatterns: ["^bootstrap$"],
       matchUpdateTypes: ["major"],
       enabled: false,
+    },
+    /** Accept only the patch on stabilization branches */
+    {
+      matchBaseBranches: ["/^[0-9]+\\.[0-9]+$/"],
+      matchUpdateTypes: [
+        "major",
+        "minor",
+        "pin",
+        "digest",
+        "lockFileMaintenance",
+        "rollback",
+        "bump",
+      ],
+      enabled: false,
+    },
+    /** Group Poetry packages */
+    {
+      matchPackageNames: ["poetry", "pip"],
+      matchPackagePrefixes: ["poetry-"],
+      groupName: "Poetry",
+      automerge: true,
+      separateMajorMinor: false,
+      separateMinorPatch: false,
     },
   ],
 }
