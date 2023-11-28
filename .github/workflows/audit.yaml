@@ -45,11 +45,17 @@ jobs:
 
       - name: Snyk audit
         run: ~/.venv/bin/c2cciutils-audit --branch=${{ matrix.branch }}
-      - name: Snyk audit
+        env:
+          GITHUB_TOKEN: ${{ secrets.GOPASS_CI_GITHUB_TOKEN }}
+      - name: Debug Snyk audit
         run: ~/.venv/bin/c2cciutils-audit --branch=${{ matrix.branch }} || true
         if: failure()
         env:
           DEBUG: "*snyk*"
 
+          GITHUB_TOKEN: ${{ secrets.GOPASS_CI_GITHUB_TOKEN }}
       - name: Update dpkg packages versions
-        run: c2cciutils-docker-versions-update --branch=${{ matrix.branch }}
+        run: ~/.venv/bin/c2cciutils-docker-versions-update --branch=${{ matrix.branch }}
+        if: steps.dpkg-versions.outputs.files_exists == 'true'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GOPASS_CI_GITHUB_TOKEN }}
