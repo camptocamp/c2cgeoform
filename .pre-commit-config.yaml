@@ -14,7 +14,19 @@ repos:
       - id: detect-private-key
       - id: check-merge-conflict
       - id: check-ast
+        exclude: |-
+          (?x)^(
+            c2cgeoform/scaffolds/c2cgeoform/{{cookiecutter.project}}/{{cookiecutter.package}}/models/c2cgeoform_demo\.py
+            |c2cgeoform/scaffolds/c2cgeoform/{{cookiecutter.project}}/acceptance_tests/excavation_test\.py
+            |c2cgeoform/scaffolds/c2cgeoform/{{cookiecutter.project}}/acceptance_tests/conftest\.py
+          )$
       - id: debug-statements
+        exclude: |-
+          (?x)^(
+            c2cgeoform/scaffolds/c2cgeoform/{{cookiecutter.project}}/{{cookiecutter.package}}/models/c2cgeoform_demo\.py
+            |c2cgeoform/scaffolds/c2cgeoform/{{cookiecutter.project}}/acceptance_tests/excavation_test\.py
+            |c2cgeoform/scaffolds/c2cgeoform/{{cookiecutter.project}}/acceptance_tests/conftest\.py
+          )$
       - id: check-toml
       - id: check-yaml
       - id: check-json
@@ -31,7 +43,7 @@ repos:
       - id: codespell
         exclude: |-
           (?x)^(
-            c2cgeoform/scaffolds/c2cgeoform/\+package\+/data/osm-lausanne-bus-stops\.geojson
+            c2cgeoform/scaffolds/c2cgeoform/{{cookiecutter.project}}/{{cookiecutter.package}}/data/osm-lausanne-bus-stops\.geojson
             |.*\.po(_tmpl)?
             |poetry\.lock
             |c2cgeoform/static/package-lock\.json
@@ -83,6 +95,12 @@ repos:
     rev: 23.11.0
     hooks:
       - id: black
+        exclude: |-
+          (?x)^(
+            c2cgeoform/scaffolds/c2cgeoform/{{cookiecutter.project}}/{{cookiecutter.package}}/models/c2cgeoform_demo\.py
+            |c2cgeoform/scaffolds/c2cgeoform/{{cookiecutter.project}}/acceptance_tests/excavation_test\.py
+            |c2cgeoform/scaffolds/c2cgeoform/{{cookiecutter.project}}/acceptance_tests/conftest\.py
+          )$
   - repo: https://github.com/sbrunner/jsonschema-validator
     rev: 0.1.0
     hooks:

@@ -61,9 +61,11 @@ test_c2cgeoform_demo: $(BUILD_DIR)/c2cgeoform_demo
 	make -C $(BUILD_DIR)/c2cgeoform_demo -f ./dev.mk test
 
 $(BUILD_DIR)/c2cgeoform_demo: build c2cgeoform/scaffolds/c2cgeoform c2cgeoform_demo_dev.mk
-	poetry run pcreate -s c2cgeoform --overwrite $(BUILD_DIR)/c2cgeoform_demo > /dev/null
-	cp c2cgeoform_demo_dev.mk $(BUILD_DIR)/c2cgeoform_demo/dev.mk
-	sed -i s/localhost:5432/localhost:54321/g $(BUILD_DIR)/c2cgeoform_demo/development.ini
+	rm -rf $@
+	poetry run cookiecutter --no-input --output-dir=$(dir $@) c2cgeoform/scaffolds/c2cgeoform/ \
+		project=c2cgeoform_demo package=c2cgeoform_demo \
+		package_logger=c2cgeoform_demo pyramid_docs_branch=master
+	cp c2cgeoform_demo_dev.mk $@/dev.mk
 
 .PHONY: update-catalog
 update-catalog: poetry
