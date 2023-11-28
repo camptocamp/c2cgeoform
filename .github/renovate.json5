@@ -69,5 +69,11 @@
       matchUpdateTypes: ["major"],
       groupName: "webpack",
     },
+    /** Don't upgrade Bootstrap major versions */
+    {
+      matchPackagePatterns: ["^bootstrap$"],
+      matchUpdateTypes: ["major"],
+      enabled: false,
+    },
   ],
 }
