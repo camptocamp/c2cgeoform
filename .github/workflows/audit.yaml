@@ -19,6 +19,8 @@ jobs:
     steps:
       # Remove Python packages with wrong version
       - run: sudo apt-get remove python3-debian python3-distro-info
+      - name: Install packages
+        run: sudo apt-get install --yes gettext libgeos-dev
       - uses: actions/checkout@v4
         with:
           ref: ${{ matrix.branch }}
