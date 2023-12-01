@@ -326,13 +326,13 @@ testing = ["babel", "coverage (>=5.0)", "pytest", "pytest-cov"]
 
 [[package]]
 name = "colanderalchemy"
-version = "0.3.3"
+version = "0.3.4"
 description = "Autogenerate Colander schemas based on SQLAlchemy models."
 optional = false
 python-versions = "*"
 files = [
-    {file = "ColanderAlchemy-0.3.3-py2.py3-none-any.whl", hash = "sha256:367cd10e54a616222b919e89ad5d01d88f7cb53ea9667cc7cddaa02eb7b67937"},
-    {file = "ColanderAlchemy-0.3.3.tar.gz", hash = "sha256:dcda9d35ddeb6d4e3f61a5ba3c9fddbb80e1f8155818990300bebada45b48c87"},
+    {file = "ColanderAlchemy-0.3.4-py2.py3-none-any.whl", hash = "sha256:abebdbe091d1ff8b30a6ab2a8dc744ba73fddd5f5fb0e60a67038c2165add456"},
+    {file = "ColanderAlchemy-0.3.4.tar.gz", hash = "sha256:740d435e6a97c483e3ce0196a36e02e35be99b0174e09554dd7c6a019963dc00"},
 ]
 
 [package.dependencies]
@@ -373,12 +373,13 @@ rich = "*"
 
 [[package]]
 name = "deform"
-version = "2.0.4"
+version = "2.0.15"
 description = "Form library with advanced features like nested forms"
 optional = false
 python-versions = "*"
 files = [
-    {file = "deform-2.0.4.tar.gz", hash = "sha256:a9527ce0c55a3c744844b378ba0fd0eab964043ffae0a046e747923c61f50436"},
+    {file = "deform-2.0.15-py3-none-any.whl", hash = "sha256:2320de140a0003e53138cea394f0196bcc72cf18607a6a6a1bcef7c38b39ff35"},
+    {file = "deform-2.0.15.tar.gz", hash = "sha256:1e912937650c1dbb830079dd9c039950762a230223a567740fbf1b23f1090367"},
 ]
 
 [package.dependencies]
@@ -390,9 +391,11 @@ translationstring = ">=1.0"
 "zope.deprecation" = "*"
 
 [package.extras]
-docs = ["Sphinx (>=1.3.4)", "pylons-sphinx-themes", "pylons_sphinx_latesturl", "repoze.sphinx.autointerface"]
-functional = ["lingua", "pygments", "pyramid", "selenium (<3)", "waitress"]
-testing = ["beautifulsoup4", "coverage", "flaky", "nose"]
+dev = ["Sphinx (>=1.7.4)", "beautifulsoup4", "black", "check-manifest", "coverage", "flake8", "flake8-bugbear", "flake8-builtins", "flaky", "isort", "lingua", "pygments", "pylons-sphinx-latesturl", "pylons-sphinx-themes", "pyramid", "pytest", "pytest-cov", "readme-renderer", "repoze.sphinx.autointerface", "selenium (>=4.0a)", "waitress"]
+docs = ["Sphinx (>=1.7.4)", "pylons-sphinx-latesturl", "pylons-sphinx-themes", "repoze.sphinx.autointerface"]
+functional = ["lingua", "pygments", "selenium (>=4.0a)", "waitress"]
+lint = ["black", "check-manifest", "flake8", "flake8-bugbear", "flake8-builtins", "isort", "readme-renderer"]
+testing = ["beautifulsoup4", "coverage", "flaky", "pyramid", "pytest", "pytest-cov"]
 
 [[package]]
 name = "dill"
@@ -2549,4 +2552,4 @@ psycopg2-binary = ["psycopg2-binary"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.9,<3.11"
-content-hash = "972477b95cad90c8cff8e2dab7efec400783182291c50a18191969b921d2d25e"
+content-hash = "7b60e08b77d1b564f893f5940b4a61ed90b26a7571214ef9ad3c505cf2ac79f7"
