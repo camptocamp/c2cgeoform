@@ -54,8 +54,8 @@ deform = "2.0.15"
 geoalchemy2 = "0.14.2"
 geojson = "3.1.0"
 lingua = "4.15.0"
-psycopg2 = { version = "2.8.6", optional = true }
-psycopg2-binary = { version = "2.8.6", optional = true }
+psycopg2 = { version = "2.9.9", optional = true }
+psycopg2-binary = { version = "2.9.9", optional = true }
 pyramid = "2.0.2"
 pyramid-beaker = "0.8"
 pyramid-chameleon = "0.3"
@@ -72,8 +72,8 @@ prospector = { version = "1.10.3", extras = [
   "with-mypy",
   "with-pyroma"
 ] }
-prospector-profile-duplicated = "0.3.0"
-prospector-profile-utils = "1.3.0"
+prospector-profile-duplicated = "0.4.0"
+prospector-profile-utils = "1.5.0"
 webtest = "3.0.0"
 sphinx = "7.2.6"
 sphinx-rtd-theme = "2.0.0"
