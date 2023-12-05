@@ -1,7 +1,7 @@
 ---
 # The project Docker compose file for development.
 
-version: "2.3"
+version: '2.3'
 
 services:
   db:
@@ -12,4 +12,4 @@ services:
       - POSTGRES_PASSWORD=www-data
       - POSTGRES_DB=c2cgeoform_demo_tests
     ports:
-      - "54321:5432"
+      - '54321:5432'

@@ -2,7 +2,7 @@ name: Audit
 
 on:
   schedule:
-    - cron: "30 2 * * *"
+    - cron: '30 2 * * *'
 
 jobs:
   audit:
@@ -14,8 +14,8 @@ jobs:
       fail-fast: false
       matrix:
         branch:
-          - "2.0"
-          - "2.1"
+          - '2.0'
+          - '2.1'
     steps:
       # Remove Python packages with wrong version
       - run: sudo apt-get remove python3-debian python3-distro-info
@@ -53,7 +53,7 @@ jobs:
         run: ~/.venv/bin/c2cciutils-audit --branch=${{ matrix.branch }} || true
         if: failure()
         env:
-          DEBUG: "*snyk*"
+          DEBUG: '*snyk*'
 
           GITHUB_TOKEN: ${{ secrets.GOPASS_CI_GITHUB_TOKEN }}
       - name: Update dpkg packages versions

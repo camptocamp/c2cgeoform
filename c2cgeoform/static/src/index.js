@@ -23,9 +23,7 @@ export function initMap(target, options) {
   vectorLayer.setStyle(getStyleFunction({ context }))
 
   let map = new Map({
-    layers: options.baseLayers
-      .map((def) => createLayer(def))
-      .concat([vectorLayer]),
+    layers: options.baseLayers.map((def) => createLayer(def)).concat([vectorLayer]),
     target,
     view: new View(options.view || {}),
     controls: controlDefaults({

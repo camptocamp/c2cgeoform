@@ -17,14 +17,9 @@ export function addInteractions(options) {
   const draw = addDrawInteraction(interactionOptions)
   const modify = addModifyInteraction(interactionOptions)
   modify.setActive(false)
-  options.source.on('change', () =>
-    store(options.source.getFeatures()[0]?.getGeometry())
-  )
+  options.source.on('change', () => store(options.source.getFeatures()[0]?.getGeometry()))
   // Mobile drawing
-  const condition =
-    options.mobile !== null
-      ? options.mobile
-      : window.matchMedia('(max-width: 767px)').matches
+  const condition = options.mobile !== null ? options.mobile : window.matchMedia('(max-width: 767px)').matches
   if (condition && interactionOptions.type === 'Point') {
     let map = options.map
     draw.setActive(false)

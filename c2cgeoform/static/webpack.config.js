@@ -4,10 +4,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 module.exports = {
   mode: 'development',
   entry: {
-    index: [
-      '@babel/polyfill/noConflict',
-      path.resolve(__dirname, 'src', 'index.js'),
-    ],
+    index: ['@babel/polyfill/noConflict', path.resolve(__dirname, 'src', 'index.js')],
     styles: path.resolve(__dirname, 'src', 'main.scss'),
   },
   output: {

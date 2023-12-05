@@ -18,11 +18,7 @@ export function addControls(options) {
   const { target, type, interactions, source } = options
   const { draw, modify } = interactions
   const container = document.createElement('div')
-  container.classList.add(
-    'ol-control',
-    'ol-unselectable',
-    'c2cgeoform-controls'
-  )
+  container.classList.add('ol-control', 'ol-unselectable', 'c2cgeoform-controls')
 
   if (type !== 'Point') {
     createButton(container, {
@@ -59,10 +55,7 @@ export function addGeolocation(map, options) {
         (position) => {
           const { latitude, longitude } = position.coords
           map.getView().animate({
-            center: fromLonLat(
-              [longitude, latitude],
-              map.getView().getProjection()
-            ),
+            center: fromLonLat([longitude, latitude], map.getView().getProjection()),
             duration: 1500,
             zoom: 18,
           })
