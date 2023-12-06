@@ -14,7 +14,6 @@ jobs:
       fail-fast: false
       matrix:
         branch:
-          - '2.0'
           - '2.1'
     steps:
       # Remove Python packages with wrong version
