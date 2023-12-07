@@ -15,6 +15,8 @@ jobs:
       matrix:
         branch:
           - '2.1'
+          - '2.2'
+
     steps:
       # Remove Python packages with wrong version
       - run: sudo apt-get remove python3-debian python3-distro-info
