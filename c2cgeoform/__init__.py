@@ -1,4 +1,4 @@
-from typing import Any, Union
+from typing import Any, Tuple, Union
 
 import pyramid.config
 from deform import Form, widget
@@ -16,7 +16,7 @@ JSONList = list[JSON]
 
 
 """ Default search paths for the form templates. """
-default_search_paths = (
+default_search_paths: Tuple[str, ...] = (
     resource_filename("c2cgeoform", "templates/widgets"),
     resource_filename("deform", "templates"),
 )
