@@ -24,7 +24,13 @@ def deferred_dbsession(node: Any, kwargs: dict[str, Any]) -> sqlalchemy.orm.Sess
     return cast(sqlalchemy.orm.Session, kwargs.get("dbsession"))
 
 
-def unique_validator(mapper: type[Any], column: str, id_column: str, node: str, value: Any) -> None:
+def unique_validator(
+    mapper: type[Any],
+    column: sqlalchemy.orm.attributes.InstrumentedAttribute[Any],
+    id_column: sqlalchemy.orm.attributes.InstrumentedAttribute[Any],
+    node: str,
+    value: Any,
+) -> None:
     dbsession: sqlalchemy.orm.Session = node.bindings["dbsession"]  # type: ignore[attr-defined]
     _id = node.bindings["request"].matchdict["id"]  # type: ignore[attr-defined]
     _id = _id if _id != "new" else None
@@ -58,7 +64,11 @@ class GeoFormSchemaNode(SQLAlchemySchemaNode):  # type: ignore[misc] # pylint: d
         self.request = deferred_request
         self.dbsession = deferred_dbsession
 
-    def add_unique_validator(self, column: sqlalchemy.sql.elements.NamedColumn[Any], column_id: str) -> None:
+    def add_unique_validator(
+        self,
+        column: sqlalchemy.orm.attributes.InstrumentedAttribute[Any],
+        column_id: sqlalchemy.orm.attributes.InstrumentedAttribute[Any],
+    ) -> None:
         """
         Adds an unique validator on this schema instance.
 

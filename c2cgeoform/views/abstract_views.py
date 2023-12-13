@@ -1,5 +1,5 @@
 import logging
-from typing import Any, Callable, Generic, Optional, TypedDict, TypeVar, Union, cast
+from typing import Any, Callable, Dict, Generic, Optional, TypedDict, TypeVar, Union, cast
 
 import geojson
 import pyramid.request
@@ -229,9 +229,11 @@ class _Index(TypedDict):
 
 
 class AbstractViews(Generic[T]):
-    _model = None  # sqlalchemy model
+    _model: Optional[type[T]] = None  # sqlalchemy model
     _list_fields: list[ListField[T]] = []  # Fields in list
-    _list_ordered_fields: list[sqlalchemy.schema.Column[Any]] = []  # Fields in list used for default orderby
+    _list_ordered_fields: list[
+        Union[sqlalchemy.sql.elements.ColumnClause[Any], sqlalchemy.sql.elements.ColumnElement[Any]]
+    ] = []  # Fields in list used for default orderby
     _id_field: Optional[str] = None  # Primary key
     _geometry_field: Optional[str] = None  # Geometry field
     _base_schema: Optional[type[T]] = None  # base colander schema
@@ -244,8 +246,8 @@ class AbstractViews(Generic[T]):
     def __init__(self, request: pyramid.request.Request) -> None:
         self._request = request
         self._schema: Optional[str] = None
-        self._appstruct: Optional[str] = None
-        self._obj: Optional[type[T]] = None
+        self._appstruct: Optional[Dict[str, Any]] = None
+        self._obj: Optional[T] = None
 
     def index(self) -> _Index:
         return {
@@ -571,7 +573,7 @@ class AbstractViews(Generic[T]):
                 self._request.route_url(
                     "c2cgeoform_item",
                     action="edit",
-                    id=self._obj.__getattribute__(self._id_field),  # type: ignore[call-arg,arg-type] # pylint: disable=unnecessary-dunder-call
+                    id=self._obj.__getattribute__(self._id_field),  # type: ignore[arg-type] # pylint: disable=unnecessary-dunder-call
                     _query=[("msg_col", "submit_ok")],
                 )
             )
