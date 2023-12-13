@@ -65,6 +65,7 @@ $(BUILD_DIR)/c2cgeoform_demo: build c2cgeoform/scaffolds/c2cgeoform c2cgeoform_d
 	poetry run cookiecutter --no-input --output-dir=$(dir $@) c2cgeoform/scaffolds/c2cgeoform/ \
 		project=c2cgeoform_demo package=c2cgeoform_demo \
 		package_logger=c2cgeoform_demo pyramid_docs_branch=master
+	sed -i 's#@localhost:5432/c2cgeoform_demo#@localhost:54321/c2cgeoform_demo_tests#g' $@/development.ini
 	cp c2cgeoform_demo_dev.mk $@/dev.mk
 
 .PHONY: update-catalog
