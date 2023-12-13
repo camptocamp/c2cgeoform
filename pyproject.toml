@@ -35,7 +35,8 @@ include = [
   "c2cgeoform/py.typed",
   "c2cgeoform/scaffolds/c2cgeoform/**",
   "c2cgeoform/templates/**",
-  "c2cgeoform/static/**"
+  "c2cgeoform/static/**",
+  "c2cgeoform/static/dist/*",
 ]
 exclude = ["c2cgeoform/static/node_modules/**"]
 packages = [{ include = "c2cgeoform" }]
