@@ -50,7 +50,7 @@ jobs:
           python3 -m pip install --user --upgrade pip
           python3 -m pip install --user --requirement=ci/requirements.txt
 
-      - run: pip install cryptography==3.4.8
+      - run: pip install cryptography==3.4.8 pyOpenSSL==20.0.1
       - name: Publish
         run: c2cciutils-publish
         if: env.HAS_SECRETS == 'HAS_SECRETS'
