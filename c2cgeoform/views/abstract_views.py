@@ -13,8 +13,7 @@ from deform.form import Button
 from geoalchemy2.elements import WKBElement
 from geoalchemy2.shape import to_shape
 from geojson import Feature, FeatureCollection
-from pyramid.httpexceptions import HTTPFound, HTTPNotFound
-from pyramid.response import Response
+from pyramid.httpexceptions import HTTPFound, HTTPInternalServerError, HTTPNotFound
 from sqlalchemy import desc, or_, types
 from sqlalchemy.exc import DBAPIError
 from sqlalchemy.inspection import inspect
@@ -220,12 +219,17 @@ class UserMessage:
 
 
 # TODO for Python 3.11
-# class _Index(TypedDict, Generic[T]):
+# class Index(TypedDict, Generic[T]):
 #     grid_actions: list[ItemAction]
 #     list_fields: list[ListField[T]]
-class _Index(TypedDict):
+class Index(TypedDict):
     grid_actions: list[ItemAction]
     list_fields: list[ListField[Any]]
+
+
+class Grid(TypedDict):
+    rows: JSONList
+    total: int
 
 
 class AbstractViews(Generic[T]):
@@ -249,13 +253,13 @@ class AbstractViews(Generic[T]):
         self._appstruct: Optional[Dict[str, Any]] = None
         self._obj: Optional[T] = None
 
-    def index(self) -> _Index:
+    def index(self) -> Index:
         return {
             "grid_actions": self._grid_actions(),
             "list_fields": self._list_fields,
         }
 
-    def grid(self) -> pyramid.response.Response:
+    def grid(self) -> Grid:
         """
         API method which serves the JSON data for the Bootgrid table in the admin view.
         """
@@ -274,7 +278,7 @@ class AbstractViews(Generic[T]):
             return {"rows": self._grid_rows(query, offset, limit), "total": query.count()}
         except DBAPIError as exception:
             _LOGGER.error(str(exception), exc_info=True)
-            return Response(_DB_ERR_MSG, content_type="text/plain", status=500)
+            raise HTTPInternalServerError(_DB_ERR_MSG) from exception
 
     def map(self, map_settings: Optional[JSONDict] = None) -> JSONDict:
         map_settings = map_settings or {}
@@ -558,7 +562,7 @@ class AbstractViews(Generic[T]):
         src = self._get_object()
         return self.copy(src)
 
-    def save(self) -> Union[JSONDict, pyramid.response.Response]:
+    def save(self) -> JSONDict:
         obj = self._get_object()
         try:
             form = self._form()
@@ -569,7 +573,7 @@ class AbstractViews(Generic[T]):
                 obj = form.schema.objectify(self._appstruct, obj)
             self._obj = self._request.dbsession.merge(obj)
             self._request.dbsession.flush()
-            return HTTPFound(
+            raise HTTPFound(
                 self._request.route_url(
                     "c2cgeoform_item",
                     action="edit",
@@ -583,7 +587,7 @@ class AbstractViews(Generic[T]):
             return {
                 "title": form.title,
                 "form": exception,
-                "form_render_args": tuple(),
+                "form_render_args": [],
                 "form_render_kwargs": kwargs,
                 "deform_dependencies": form.get_widget_resources(),
             }
