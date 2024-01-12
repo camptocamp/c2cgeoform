@@ -461,7 +461,7 @@ class AbstractViews(Generic[T]):
             0,
             ItemAction(
                 name="edit",
-                label=_("ObjectResponse"),
+                label=_("Edit"),
                 icon="glyphicon glyphicon-pencil",
                 url=self._request.route_url("c2cgeoform_item", id=getattr(item, self._id_field)),
             ),
@@ -494,7 +494,7 @@ class AbstractViews(Generic[T]):
             actions.append(
                 ItemAction(
                     name="delete",
-                    label=_("DeleteResponse"),
+                    label=_("Delete"),
                     icon="glyphicon glyphicon-remove",
                     url=self._request.route_url("c2cgeoform_item", id=getattr(item, self._id_field)),
                     method="DELETE",
