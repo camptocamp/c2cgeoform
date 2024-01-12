@@ -3,7 +3,6 @@ from itertools import groupby
 from unittest import TestCase
 from unittest.mock import Mock
 
-import pytest
 from bs4 import BeautifulSoup
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 
@@ -144,8 +143,9 @@ class TestAbstractViews(DatabaseTestCase):
         self.request.POST["age"] = "37"
 
         views = ConcreteViews(self.request)
-        with pytest.raises(HTTPFound):
-            views.save()
+        response = views.save()
+
+        self.assertIsInstance(response, HTTPFound)
 
         class Matcher:
             def __eq__(self, other):
