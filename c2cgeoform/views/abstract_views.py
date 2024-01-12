@@ -77,7 +77,7 @@ def model_attr_info(
     return value
 
 
-T = TypeVar("T")
+T = TypeVar("T", bound=type)
 
 
 def _getattr(
@@ -219,17 +219,42 @@ class UserMessage:
 
 
 # TODO for Python 3.11
-# class Index(TypedDict, Generic[T]):
+# class IndexResponse(TypedDict, Generic[T]):
 #     grid_actions: list[ItemAction]
 #     list_fields: list[ListField[T]]
-class Index(TypedDict):
+class IndexResponse(TypedDict):
     grid_actions: list[ItemAction]
     list_fields: list[ListField[Any]]
 
 
-class Grid(TypedDict):
+class GridResponse(TypedDict):
     rows: JSONList
     total: int
+
+
+class MapResponse(TypedDict):
+    map_options: Dict[str, Any]
+
+
+class DeformDependencies:
+    css: Dict[str, str]
+    js: Dict[str, str]
+
+
+class ObjectResponse(TypedDict):
+    title: str
+    form: Form
+    form_render_args: Union[tuple[Any], list[Any]]
+    form_render_kwargs: dict[str, Any]
+    deform_dependencies: DeformDependencies
+
+
+SaveResponse = Union[HTTPFound, ObjectResponse]
+
+
+class DeleteResponse(TypedDict):
+    success: bool
+    redirect: str
 
 
 class AbstractViews(Generic[T]):
@@ -253,13 +278,13 @@ class AbstractViews(Generic[T]):
         self._appstruct: Optional[Dict[str, Any]] = None
         self._obj: Optional[T] = None
 
-    def index(self) -> Index:
+    def index(self) -> IndexResponse:
         return {
             "grid_actions": self._grid_actions(),
             "list_fields": self._list_fields,
         }
 
-    def grid(self) -> Grid:
+    def grid(self) -> GridResponse:
         """
         API method which serves the JSON data for the Bootgrid table in the admin view.
         """
@@ -280,7 +305,7 @@ class AbstractViews(Generic[T]):
             _LOGGER.error(str(exception), exc_info=True)
             raise HTTPInternalServerError(_DB_ERR_MSG) from exception
 
-    def map(self, map_settings: Optional[JSONDict] = None) -> JSONDict:
+    def map(self, map_settings: Optional[JSONDict] = None) -> MapResponse:
         map_settings = map_settings or {}
         map_options = {
             **default_map_settings,
@@ -404,11 +429,11 @@ class AbstractViews(Generic[T]):
 
         if self._is_new():
             assert self._model is not None
-            return self._model()  # pylint: disable=not-callable
-        pk = self._request.matchdict.get("id")  # what does pk mean? # pylint: disable=invalid-name
+            return cast(T, self._model())  # type: ignore[call-overload] # pylint: disable=not-callable
+        primary_key = self._request.matchdict.get("id")
         obj = (
             self._request.dbsession.query(self._model)
-            .filter(getattr(self._model, self._id_field) == pk)
+            .filter(getattr(self._model, self._id_field) == primary_key)
             .one_or_none()
         )
         if obj is None:
@@ -436,7 +461,7 @@ class AbstractViews(Generic[T]):
             0,
             ItemAction(
                 name="edit",
-                label=_("Edit"),
+                label=_("ObjectResponse"),
                 icon="glyphicon glyphicon-pencil",
                 url=self._request.route_url("c2cgeoform_item", id=getattr(item, self._id_field)),
             ),
@@ -451,7 +476,9 @@ class AbstractViews(Generic[T]):
 
         actions = []
 
-        if inspect(item).persistent and self._model_config().get("duplicate", False):  # type: ignore[union-attr]
+        inspected_item: Any = inspect(item)
+        assert isinstance(inspected_item, sqlalchemy.orm.InstanceState)
+        if inspected_item.persistent and self._model_config().get("duplicate", False):
             actions.append(
                 ItemAction(
                     name="duplicate",
@@ -463,11 +490,11 @@ class AbstractViews(Generic[T]):
                 )
             )
 
-        if inspect(item).persistent and not readonly:  # type: ignore[union-attr]
+        if inspected_item.persistent and not readonly:
             actions.append(
                 ItemAction(
                     name="delete",
-                    label=_("Delete"),
+                    label=_("DeleteResponse"),
                     icon="glyphicon glyphicon-remove",
                     url=self._request.route_url("c2cgeoform_item", id=getattr(item, self._id_field)),
                     method="DELETE",
@@ -477,7 +504,7 @@ class AbstractViews(Generic[T]):
 
         return actions
 
-    def edit(self, schema: Optional[type[T]] = None, readonly: bool = False) -> dict[str, Any]:
+    def edit(self, schema: Optional[type[T]] = None, readonly: bool = False) -> ObjectResponse:
         obj = self._get_object()
         form = self._form(schema=schema, readonly=readonly)
         self._populate_widgets(form.schema)
@@ -505,7 +532,7 @@ class AbstractViews(Generic[T]):
         }
 
     def copy_members_if_duplicates(self, source: T, excludes: Optional[list[str]] = None) -> T:
-        dest = source.__class__()
+        dest = cast(T, source.__class__())  # type: ignore[call-overload]
         insp = inspect(source.__class__)
 
         for prop in insp.attrs:  # type: ignore[union-attr]
@@ -531,7 +558,7 @@ class AbstractViews(Generic[T]):
                     setattr(dest, prop.key, duplicate)
         return dest
 
-    def copy(self, src: T, excludes: Optional[list[str]] = None) -> dict[str, Any]:
+    def copy(self, src: T, excludes: Optional[list[str]] = None) -> ObjectResponse:
         # excludes only apply at first level
         form = self._form(action=self._request.route_url("c2cgeoform_item", id="new"))
         with self._request.dbsession.no_autoflush:
@@ -558,11 +585,11 @@ class AbstractViews(Generic[T]):
             "deform_dependencies": form.get_widget_resources(),
         }
 
-    def duplicate(self) -> JSONDict:
+    def duplicate(self) -> ObjectResponse:
         src = self._get_object()
         return self.copy(src)
 
-    def save(self) -> JSONDict:
+    def save(self) -> SaveResponse:
         obj = self._get_object()
         try:
             form = self._form()
@@ -573,7 +600,7 @@ class AbstractViews(Generic[T]):
                 obj = form.schema.objectify(self._appstruct, obj)
             self._obj = self._request.dbsession.merge(obj)
             self._request.dbsession.flush()
-            raise HTTPFound(
+            return HTTPFound(
                 self._request.route_url(
                     "c2cgeoform_item",
                     action="edit",
@@ -592,7 +619,7 @@ class AbstractViews(Generic[T]):
                 "deform_dependencies": form.get_widget_resources(),
             }
 
-    def delete(self) -> JSONDict:
+    def delete(self) -> DeleteResponse:
         obj = self._get_object()
         self._request.dbsession.delete(obj)
         self._request.dbsession.flush()
