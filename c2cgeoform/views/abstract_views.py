@@ -1,9 +1,10 @@
 import logging
-from typing import Any, Callable, Dict, Generic, Optional, TypedDict, TypeVar, Union, cast
+from typing import Any, Callable, Dict, Generic, Optional, Tuple, TypedDict, TypeVar, Union, cast
 
 import geojson
 import pyramid.request
 import pyramid.response
+import sqlalchemy.engine.row
 import sqlalchemy.orm.attributes
 import sqlalchemy.orm.properties
 import sqlalchemy.schema
@@ -337,7 +338,9 @@ class AbstractViews(Generic[T]):
         )
 
         features: list[geojson.Feature] = []
-        for entity, geometry in query:
+        for entities in query:
+            entity = entities[0]
+            geometry = entities[-1]
             features.append(
                 Feature(
                     id=getattr(entity, self._id_field),
@@ -391,7 +394,15 @@ class AbstractViews(Generic[T]):
             query = query.limit(limit).offset(offset)
         rows: JSONList = []
 
-        for entity in query:
+        for entities in query:
+            # For some reason like:
+            # https://docs.sqlalchemy.org/en/14/changelog/migration_20.html#using-distinct-with-additional-columns-but-only-select-the-entity
+            # we are required to add a second field to the query, in this case we should get only the first one
+            entity: T = (
+                cast(sqlalchemy.engine.row.Row[Tuple[T, Any]], entities)[0]
+                if isinstance(entities, sqlalchemy.engine.row.Row)
+                else entities
+            )
             row = cast(
                 JSONDict,
                 {
