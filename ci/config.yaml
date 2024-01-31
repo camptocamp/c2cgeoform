@@ -8,3 +8,4 @@ publish:
       - version_tag
 checks:
   required_workflows: false
+  codespell: false
