@@ -358,13 +358,13 @@ files = [
 
 [[package]]
 name = "cookiecutter"
-version = "2.5.0"
+version = "2.6.0"
 description = "A command-line utility that creates projects from project templates, e.g. creating a Python package project from a Python package project template."
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "cookiecutter-2.5.0-py3-none-any.whl", hash = "sha256:8aa2f12ed11bc05628651e9dc4353a10571dd9908aaaaeec959a2b9ea465a5d2"},
-    {file = "cookiecutter-2.5.0.tar.gz", hash = "sha256:e61e9034748e3f41b8bd2c11f00d030784b48711c4d5c42363c50989a65331ec"},
+    {file = "cookiecutter-2.6.0-py3-none-any.whl", hash = "sha256:a54a8e37995e4ed963b3e82831072d1ad4b005af736bb17b99c2cbd9d41b6e2d"},
+    {file = "cookiecutter-2.6.0.tar.gz", hash = "sha256:db21f8169ea4f4fdc2408d48ca44859349de2647fbe494a9d6c3edfc0542c21c"},
 ]
 
 [package.dependencies]
@@ -1202,13 +1202,13 @@ files = [
 
 [[package]]
 name = "prospector-profile-utils"
-version = "1.6.0"
+version = "1.7.2"
 description = "Some utility Prospector profiles."
 optional = false
 python-versions = "*"
 files = [
-    {file = "prospector_profile_utils-1.6.0-py2.py3-none-any.whl", hash = "sha256:9d3e8b6d63652e94d63d4973964515c91261c1ecddcf442bbd55ae2363500374"},
-    {file = "prospector_profile_utils-1.6.0.tar.gz", hash = "sha256:0cd97c313c145a3bd18c1cb7ea640b3d6de521ed512156fedd8ff1f0f3c34510"},
+    {file = "prospector_profile_utils-1.7.2-py2.py3-none-any.whl", hash = "sha256:b22f391258c8baff67a56c93fccabd0a62a637572330ca6b520586065cd7912d"},
+    {file = "prospector_profile_utils-1.7.2.tar.gz", hash = "sha256:200f955d4c506e1ed2b111d986062ef54c01879889809b505aaebdb17dfe3622"},
 ]
 
 [[package]]
@@ -2586,4 +2586,4 @@ psycopg2-binary = ["psycopg2-binary"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.9,<3.11"
-content-hash = "397f7099ac260196c4e6ea3c58b4e31a559c78229b8e8fbf62990d77b9f738a8"
+content-hash = "138b79e108d55bd074e6b25e02294603893668c0940a185c023ee20884b54ad7"
