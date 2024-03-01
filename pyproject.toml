@@ -74,13 +74,13 @@ prospector = { version = "1.10.3", extras = [
   "with-pyroma"
 ] }
 prospector-profile-duplicated = "0.5.1"
-prospector-profile-utils = "1.6.0"
+prospector-profile-utils = "1.7.2"
 webtest = "3.0.0"
 sphinx = "7.2.6"
 sphinx-rtd-theme = "2.0.0"
 types-requests = "2.31.0.20240218"
 pytest = "8.0.2"
-cookiecutter = "2.5.0"
+cookiecutter = "2.6.0"
 
 [tool.poetry.extras]
 psycopg2 = ["psycopg2"]
