@@ -73,7 +73,7 @@ prospector = { version = "1.10.3", extras = [
   "with-mypy",
   "with-pyroma"
 ] }
-prospector-profile-duplicated = "0.5.1"
+prospector-profile-duplicated = "1.1.0"
 prospector-profile-utils = "1.7.2"
 webtest = "3.0.0"
 sphinx = "7.2.6"
