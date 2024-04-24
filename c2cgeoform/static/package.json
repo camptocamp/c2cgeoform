@@ -22,7 +22,7 @@
     "whatwg-fetch": "3.6.20"
   },
   "devDependencies": {
-    "css-loader": "6.10.0",
+    "css-loader": "6.11.0",
     "mini-css-extract-plugin": "2.8.1",
     "node-sass": "9.0.0",
     "ol": "9.1.0",
