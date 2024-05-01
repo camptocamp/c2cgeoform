@@ -1,5 +1,5 @@
 #
 # This file defines the requirements.txt for development.
 #
-pytest==8.1.2
+pytest==8.2.0
 WebTest==3.0.0

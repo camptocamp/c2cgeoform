@@ -52,13 +52,13 @@ python = ">=3.9,<3.11"
 babel = "2.14.0"
 colanderalchemy = "0.3.4"
 deform = "2.0.15"
-geoalchemy2 = "0.14.7"
+geoalchemy2 = "0.15.0"
 geojson = "3.1.0"
 lingua = "4.15.0"
 psycopg2 = { version = "2.9.9", optional = true }
 psycopg2-binary = { version = "2.9.9", optional = true }
 pyramid = "2.0.2"
-pyramid-beaker = "0.8"
+pyramid-beaker = "0.9"
 pyramid-chameleon = "0.3"
 pyramid-jinja2 = "2.10.1"
 pyproj = "3.6.1"
@@ -73,13 +73,13 @@ prospector = { version = "1.10.3", extras = [
   "with-mypy",
   "with-pyroma"
 ] }
-prospector-profile-duplicated = "1.2.0"
+prospector-profile-duplicated = "1.5.0"
 prospector-profile-utils = "1.7.2"
 webtest = "3.0.0"
-sphinx = "7.2.6"
+sphinx = "7.3.7"
 sphinx-rtd-theme = "2.0.0"
 types-requests = "2.31.0.20240406"
-pytest = "8.1.2"
+pytest = "8.2.0"
 cookiecutter = "2.6.0"
 
 [tool.poetry.extras]
