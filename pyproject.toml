@@ -49,7 +49,7 @@ c2cgeoform = "c2cgeoform.scaffolds:C2cgeoformTemplate"
 
 [tool.poetry.dependencies]
 python = ">=3.9,<3.11"
-babel = "2.14.0"
+babel = "2.15.0"
 colanderalchemy = "0.3.4"
 deform = "2.0.15"
 geoalchemy2 = "0.15.0"
@@ -65,7 +65,7 @@ pyproj = "3.6.1"
 shapely = "2.0.4"
 sqlalchemy = "2.0.29"
 zope-sqlalchemy = "3.1"
-requests = "2.31.0"
+requests = "2.32.3"
 
 [tool.poetry.group.dev.dependencies]
 prospector = { version = "1.10.3", extras = [
@@ -78,7 +78,7 @@ prospector-profile-utils = "1.7.2"
 webtest = "3.0.0"
 sphinx = "7.3.7"
 sphinx-rtd-theme = "2.0.0"
-types-requests = "2.31.0.20240406"
+types-requests = "2.32.0.20240523"
 pytest = "8.2.0"
 cookiecutter = "2.6.0"
 
