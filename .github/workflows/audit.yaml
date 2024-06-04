@@ -16,6 +16,7 @@ jobs:
         branch:
           - '2.1'
           - '2.2'
+          - '2.3'
 
     steps:
       # Remove Python packages with wrong version
