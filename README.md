@@ -36,3 +36,18 @@ This section provides links to various parts of the documentation.
 c2cgeoform makes use of the icons by [GLYPHICONS](http://glyphicons.com).
 Make sure to comply with the [usage terms](http://glyphicons.com/license/) when
 utilizing c2cgeoform.
+
+## Publish
+
+Update version in `setup.py`
+
+```bash
+make compile-catalog
+git add setup.py
+git commit -m "Create new release <version>"
+git tag <version>
+git push
+git push origin <version>
+python3 -m build
+twine upload dist/*
+```
