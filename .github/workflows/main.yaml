@@ -31,9 +31,15 @@ jobs:
       - run: pre-commit run --all-files
         env:
           SKIP: poetry-lock
-      - run: git diff && false
+      - run: git diff --exit-code --patch > /tmp/pre-commit.patch || true
         if: failure()
 
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Apply pre-commit fix.patch
+          path: /tmp/pre-commit.patch
+          retention-days: 1
+        if: failure()
       - name: Environment information
         run: c2cciutils-env
 
@@ -54,11 +60,10 @@ jobs:
         run: make docs
 
       - name: Docker compose logs
-        if: always()
         run: |
           c2cciutils-docker-logs
           docker-compose down -v --remove-orphans
-
+        if: always()
       - uses: camptocamp/initialise-gopass-summon-action@v2
         with:
           ci-gpg-private-key: ${{secrets.CI_GPG_PRIVATE_KEY}}
@@ -66,6 +71,14 @@ jobs:
           patterns: pypi
         if: env.HAS_SECRETS == 'HAS_SECRETS'
 
+      - run: git diff --exit-code --patch > /tmp/dpkg-versions.patch || true
+        if: failure()
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Update dpkg versions list.patch
+          path: /tmp/dpkg-versions.patch
+          retention-days: 1
+        if: failure()
       - name: Publish
         run: c2cciutils-publish
         if: env.HAS_SECRETS == 'HAS_SECRETS'
