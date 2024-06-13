@@ -117,7 +117,7 @@ def main(global_config, **settings):
     """ This function returns a Pyramid WSGI application.
 
     This a is test application for the model and templates defined in
-    c2cgeoform/pully.
+    c2cgeoform.
     """
     apply_local_settings(settings)
     engine = engine_from_config(settings, 'sqlalchemy.')
@@ -126,41 +126,6 @@ def main(global_config, **settings):
     config.include('pyramid_mako')
     config.include(includeme)
 
-    config.add_translation_dirs('pully/locale')
-
-    from .schema import register_schema
-    from pully import model
-    register_schema(
-        'fouille',
-        model.ExcavationPermission,
-        templates_user=resource_filename('c2cgeoform', 'pully/templates'),
-        excludes_user=['reference_number', 'validated'],
-        overrides_user={
-            # override the title for a field in the user form
-            'request_date': {'title': 'Date'},
-            # do not show the 'verified' field of ContactPerson for the user
-            'contact_persons': {'excludes': ['verified']}
-        },
-        show_captcha=True,
-        recaptcha_public_key=settings.get('recaptcha_public_key'),
-        recaptcha_private_key=settings.get('recaptcha_private_key'))
-    model.setup_test_data(settings)
-    register_schema(
-        'comment', model.Comment, show_confirmation=False, show_captcha=True,
-        recaptcha_public_key=settings.get('recaptcha_public_key'),
-        recaptcha_private_key=settings.get('recaptcha_private_key'))
-
-    config.add_route('bus_stops', '/bus_stops')
-    config.add_view('c2cgeoform.pully.views.bus_stops.bus_stops',
-                    route_name='bus_stops', renderer='json',
-                    request_method='GET')
-
-    config.add_route('addresses', '/addresses')
-    config.add_view('c2cgeoform.pully.views.addresses.addresses',
-                    route_name='addresses', renderer='json',
-                    request_method='GET')
-
-    config.scan('c2cgeoform.pully')
     config.add_c2cgeoform_views()
 
     return config.make_wsgi_app()

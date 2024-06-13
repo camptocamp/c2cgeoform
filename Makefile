@@ -1,5 +1,4 @@
 C2CGEOFORM_MO_FILES = $(addprefix c2cgeoform/locale/, fr/LC_MESSAGES/c2cgeoform.mo de/LC_MESSAGES/c2cgeoform.mo)
-PULLY_MO_FILES = $(addprefix c2cgeoform/pully/locale/, fr/LC_MESSAGES/pully.mo)
 
 
 .PHONY: all
@@ -23,7 +22,7 @@ help:
 
 .PHONY: install
 install: pip-install compile-catalog
-	
+
 .PHONY: pip-install
 pip-install: .build/venv
 	.build/venv/bin/pip install -r requirements.txt
@@ -51,7 +50,7 @@ test:
 	.build/venv/bin/python setup.py test
 
 .PHONY: compile-catalog
-compile-catalog: $(C2CGEOFORM_MO_FILES) $(PULLY_MO_FILES)
+compile-catalog: $(C2CGEOFORM_MO_FILES)
 
 .PHONY: dist
 dist: .build/venv compile-catalog
@@ -80,7 +79,6 @@ clean:
 	rm -f .build/venv/c2cgeoform.wsgi
 	rm -f .build/apache.conf
 	rm -f $(C2CGEOFORM_MO_FILES)
-	rm -f $(PULLY_MO_FILES)
 
 .PHONY: cleanall
 cleanall:
