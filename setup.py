@@ -30,7 +30,7 @@ requires = [
     'pyramid_beaker']
 
 setup(name='c2cgeoform',
-      version='1.1.2',
+      version='1.1.3',
       description='c2cgeoform',
       long_description=README + '\n\n' + CHANGES,
       classifiers=[
