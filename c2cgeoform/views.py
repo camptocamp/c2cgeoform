@@ -10,7 +10,7 @@ from colander import SchemaNode, Mapping
 from translationstring import TranslationStringFactory
 import uuid
 
-from .models import DBSession
+import .models as models
 from .schema import forms
 from .ext.deform_ext import RecaptchaWidget
 
@@ -171,7 +171,7 @@ def _store_in_db(geo_form_schema, obj_dict, request):
     obj = geo_form_schema.schema_user.objectify(obj_dict)
     hash = str(uuid.uuid4())
     setattr(obj, geo_form_schema.hash_column_name, hash)
-    DBSession.add(obj)
+    models.DBSession.add(obj)
 
     url = request.route_url(
         'view_user',
@@ -193,7 +193,7 @@ def _get_form(geo_form_schema, template, request, with_captcha=False):
         schema, buttons=(submit_button,),
         renderer=renderer, action=form_action)
     _set_form_widget(form, geo_form_schema.schema_user, template)
-    _populate_widgets(form.schema, DBSession, request)
+    _populate_widgets(form.schema, models.DBSession, request)
 
     return form
 
@@ -225,12 +225,12 @@ def view_user(request):
     renderer = _get_renderer(geo_form_schema.templates_user)
     form = Form(geo_form_schema.schema_user, renderer=renderer)
     _set_form_widget(form, geo_form_schema.schema_user, 'form_view_user')
-    _populate_widgets(form.schema, DBSession, request)
+    _populate_widgets(form.schema, models.DBSession, request)
 
     hash_field = getattr(
         geo_form_schema.model, geo_form_schema.hash_column_name)
     try:
-        obj = DBSession \
+        obj = models.DBSession \
             .query(geo_form_schema.model) \
             .filter(hash_field == hash) \
             .one()
@@ -247,7 +247,7 @@ def view_user(request):
 
 def list(request):
     geo_form_schema = _get_schema(request)
-    entities = DBSession.query(geo_form_schema.model).all()
+    entities = models.DBSession.query(geo_form_schema.model).all()
     return {'entities': entities, 'schema': geo_form_schema}
 
 
@@ -285,7 +285,7 @@ def _get_sort_param(params):
 
 
 def _get_query(geo_form_schema, sort, search_phrase):
-    query = DBSession.query(geo_form_schema.model)
+    query = models.DBSession.query(geo_form_schema.model)
 
     # order by
     if sort is not None and hasattr(geo_form_schema.model, sort[0]):
@@ -350,7 +350,7 @@ def edit(request):
     renderer = _get_renderer(geo_form_schema.templates_admin)
     form = Form(
         geo_form_schema.schema_admin, buttons=('submit',), renderer=renderer)
-    _populate_widgets(form.schema, DBSession, request)
+    _populate_widgets(form.schema, models.DBSession, request)
 
     if 'submit' in request.POST:
         form_data = request.POST.items()
@@ -361,8 +361,8 @@ def edit(request):
             rendered = e.render()
         else:
             obj = geo_form_schema.schema_admin.objectify(obj_dict)
-            obj = DBSession.merge(obj)
-            DBSession.flush()
+            obj = models.DBSession.merge(obj)
+            models.DBSession.flush()
 
             # FIXME create a fresh form, otherwise the IDs of objects in
             # relationships will not be rendered
@@ -375,7 +375,7 @@ def edit(request):
                                    request=request)
     else:
         id = request.matchdict['id']
-        obj = DBSession.query(geo_form_schema.model).get(id)
+        obj = models.DBSession.query(geo_form_schema.model).get(id)
         rendered = form.render(geo_form_schema.schema_admin.dictify(obj),
                                request=request)
 
@@ -391,7 +391,7 @@ def view_admin(request):
     renderer = _get_renderer(geo_form_schema.templates_admin)
     form = Form(geo_form_schema.schema_admin, buttons=('submit',),
                 renderer=renderer)
-    obj = DBSession.query(geo_form_schema.model).get(id_)
+    obj = models.DBSession.query(geo_form_schema.model).get(id_)
     rendered = form.render(geo_form_schema.schema_admin.dictify(obj),
                            readonly=True, request=request)
     return {

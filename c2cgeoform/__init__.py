@@ -5,7 +5,7 @@ from pyramid.i18n import get_localizer
 from pyramid.threadlocal import get_current_request
 from pyramid.events import BeforeRender, NewRequest
 
-from .models import DBSession
+from .models as models
 from .settings import apply_local_settings
 from .subscribers import add_renderer_globals, add_localizer
 
@@ -121,7 +121,7 @@ def main(global_config, **settings):
     """
     apply_local_settings(settings)
     engine = engine_from_config(settings, 'sqlalchemy.')
-    DBSession.configure(bind=engine)
+    models.DBSession.configure(bind=engine)
     config = Configurator(settings=settings)
     config.include('pyramid_mako')
     config.include(includeme)
