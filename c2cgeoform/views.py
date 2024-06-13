@@ -10,7 +10,7 @@ from colander import SchemaNode, Mapping
 from translationstring import TranslationStringFactory
 import uuid
 
-import .models as models
+from . import models
 from .schema import forms
 from .ext.deform_ext import RecaptchaWidget
 

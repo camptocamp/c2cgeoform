@@ -5,7 +5,7 @@ from pyramid.i18n import get_localizer
 from pyramid.threadlocal import get_current_request
 from pyramid.events import BeforeRender, NewRequest
 
-from .models as models
+from . import models
 from .settings import apply_local_settings
 from .subscribers import add_renderer_globals, add_localizer
 
