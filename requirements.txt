@@ -17,3 +17,4 @@ lingua>=2.4
 babel
 webhelpers
 pyramid_beaker
+setuptools>=65.5.1 # not directly required, pinned by Snyk to avoid a vulnerability
