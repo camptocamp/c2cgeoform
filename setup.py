@@ -8,26 +8,8 @@ with open(os.path.join(here, 'README.md')) as f:
 with open(os.path.join(here, 'CHANGES.txt')) as f:
     CHANGES = f.read()
 
-requires = [
-    'pyramid',
-    'pyramid_chameleon',
-    'pyramid_debugtoolbar',
-    'pyramid_tm',
-    'SQLAlchemy',
-    'transaction',
-    'zope.sqlalchemy',
-    'waitress',
-    'colander',
-    'ColanderAlchemy>=0.3.2',
-    'deform',
-    'psycopg2-binary',
-    'geoalchemy2',
-    'shapely',
-    'pyproj',
-    'lingua>=2.4',
-    'babel',
-    'webhelpers',
-    'pyramid_beaker']
+with open(os.path.join(here, 'requirements.txt')) as f:
+    requires = f.read().splitlines()
 
 setup(name='c2cgeoform',
       version='1.1.4',
