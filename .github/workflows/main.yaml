@@ -62,7 +62,7 @@ jobs:
       - name: Docker compose logs
         run: |
           c2cciutils-docker-logs
-          docker-compose down -v --remove-orphans
+          docker compose down -v --remove-orphans
         if: always()
       - uses: camptocamp/initialise-gopass-summon-action@v2
         with:
