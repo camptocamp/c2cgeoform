@@ -101,7 +101,7 @@ dist: .build/venv.timestamp compile-catalog
 	touch $@
 
 .build/requirements-dev.timestamp: .build/venv.timestamp requirements-dev.txt
-	$(VENV_BIN)/pip install -r requirements-dev.txt > /dev/null 2>&1
+	$(VENV_BIN)/pip install -r requirements-dev.txt
 	touch $@
 
 .build/{{package}}.wsgi: {{package}}.wsgi
