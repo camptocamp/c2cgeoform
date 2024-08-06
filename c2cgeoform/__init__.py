@@ -2,7 +2,7 @@ from typing import Any, Tuple, Union
 
 import pyramid.config
 from deform import Form, widget
-from pkg_resources import resource_filename  # type: ignore[import-untyped]
+from pkg_resources import resource_filename
 from pyramid.config import Configurator
 from pyramid.i18n import get_localizer
 from pyramid.threadlocal import get_current_request
