@@ -64,12 +64,12 @@ test: test_c2cgeoform test_c2cgeoform_demo
 
 .PHONY: test_c2cgeoform
 test_c2cgeoform: build .build/requirements-dev.timestamp
-	docker-compose up -d db
+	docker compose up -d db
 	$(VENV_BIN)/nosetests --ignore-files=test_views.py
 
 .PHONY: test_c2cgeoform_demo
 test_c2cgeoform_demo: $(BUILD_DIR)/c2cgeoform_demo
-	docker-compose up -d db
+	docker compose up -d db
 	make -C $(BUILD_DIR)/c2cgeoform_demo -f ./dev.mk test
 
 $(BUILD_DIR)/c2cgeoform_demo: build c2cgeoform/scaffolds/c2cgeoform c2cgeoform_demo_dev.mk
