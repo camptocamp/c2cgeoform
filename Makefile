@@ -52,12 +52,12 @@ test: test_c2cgeoform test_c2cgeoform_demo
 
 .PHONY: test_c2cgeoform
 test_c2cgeoform: build poetry
-	docker-compose up -d db
+	docker compose up -d db
 	poetry run pytest -vvv
 
 .PHONY: test_c2cgeoform_demo
 test_c2cgeoform_demo: $(BUILD_DIR)/c2cgeoform_demo
-	docker-compose up -d db
+	docker compose up -d db
 	make -C $(BUILD_DIR)/c2cgeoform_demo -f ./dev.mk test
 
 $(BUILD_DIR)/c2cgeoform_demo: build c2cgeoform/scaffolds/c2cgeoform c2cgeoform_demo_dev.mk
@@ -101,7 +101,7 @@ cleanall: clean
 
 .PHONY: initdb
 initdb: $(BUILD_DIR)/c2cgeoform_demo
-	docker-compose up -d db
+	docker compose up -d db
 	sleep 1
 	make -C $(BUILD_DIR)/c2cgeoform_demo -f dev.mk initdb
 
@@ -111,7 +111,7 @@ webpack-dev:
 
 .PHONY: serve
 serve: build $(BUILD_DIR)/c2cgeoform_demo
-	docker-compose up -d db
+	docker compose up -d db
 	make -C $(BUILD_DIR)/c2cgeoform_demo -f dev.mk serve
 
 .PHONY: modwsgi
