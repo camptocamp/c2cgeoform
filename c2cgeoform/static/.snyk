@@ -1,0 +1,10 @@
+# Snyk (https://snyk.io) policy file, patches or ignores known vulnerabilities.
+version: v1.25.0
+# ignores vulnerabilities until expiry date; change duration by modifying expiry date
+ignore:
+  SNYK-JS-PATHTOREGEXP-7925106:
+    - '*':
+        # c2cgeoform/static/package-lock.json > c2cgeoform@0.1.0 > webpack-dev-server@5.0.4 > express@4.21.0 > path-to-regexp@0.1.10
+        reason: Used only on build time
+        created: 2024-09-17T13:03:04.395Z
+patch: {}
