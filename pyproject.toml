@@ -48,7 +48,7 @@ main = "c2cgeoform:main"
 c2cgeoform = "c2cgeoform.scaffolds:C2cgeoformTemplate"
 
 [tool.poetry.dependencies]
-python = ">=3.9,<3.13"
+python = ">=3.10,<3.13"
 babel = "2.16.0"
 colanderalchemy = "0.3.4"
 deform = "2.0.15"
