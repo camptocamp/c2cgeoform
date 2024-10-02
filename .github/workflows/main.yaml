@@ -18,10 +18,15 @@ jobs:
       - name: Install packages
         run: sudo apt-get install --yes gettext libgeos-dev
 
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
       - name: Install c2cciutils
-        run: |
-          echo "${HOME}/.local/bin" >> ${GITHUB_PATH}
-          python3 -m pip install --requirement=ci/requirements.txt
+        run: python3 -m pip install --requirement=ci/requirements.txt
+      - name: Print the environment
+        run: c2cciutils-env
+        env:
+          GITHUB_EVENT: ${{ toJson(github) }}
 
       - uses: actions/cache@v4
         with:
