@@ -36,15 +36,12 @@ jobs:
       - run: pre-commit run --all-files
       - run: git diff --exit-code --patch > /tmp/pre-commit.patch || true
         if: failure()
-
       - uses: actions/upload-artifact@v4
         with:
           name: Apply pre-commit fix.patch
           path: /tmp/pre-commit.patch
           retention-days: 1
         if: failure()
-      - name: Environment information
-        run: c2cciutils-env
 
       - uses: actions/setup-node@v4
         with:
