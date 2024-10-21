@@ -77,7 +77,9 @@ def pregenerator(
     segments as defaults for generating urls.
     """
     if "application" not in kwargs:
-        kwargs["application"] = request.matchdict.get("application", "default")
+        kwargs["application"] = (
+            "default" if request.matchdict is None else request.matchdict.get("application", "default")
+        )
     if "table" not in kwargs:
         kwargs["table"] = request.matchdict.get("table", None)
     return elements, kwargs
