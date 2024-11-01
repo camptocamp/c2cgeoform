@@ -55,22 +55,22 @@ deform = "2.0.15"
 geoalchemy2 = "0.14.7"
 geojson = "3.1.0"
 lingua = "4.15.0"
-psycopg2 = { version = "2.9.9", optional = true }
-psycopg2-binary = { version = "2.9.9", optional = true }
+psycopg2 = { version = "2.9.10", optional = true }
+psycopg2-binary = { version = "2.9.10", optional = true }
 pyramid = "2.0.2"
 pyramid-beaker = "0.8"
 pyramid-chameleon = "0.3"
 pyramid-jinja2 = "2.10.1"
 pyproj = "3.6.1"
 shapely = "2.0.6"
-sqlalchemy = "2.0.35"
+sqlalchemy = "2.0.36"
 zope-sqlalchemy = "3.1"
 requests = "2.32.3"
 jinja2 = "3.1.4"
 idna = "3.7"
 urllib3 = "2.2.3"
 certifi = "2024.7.4"
-webob = "1.8.8"
+webob = "1.8.9"
 
 [tool.poetry.group.dev.dependencies]
 prospector = { version = "1.10.3", extras = [
