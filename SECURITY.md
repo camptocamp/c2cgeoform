@@ -10,3 +10,4 @@
 | 2.1     | 27/06/2027      |
 | 2.2     | Best effort     |
 | 2.3     | Best effort     |
+| 2.4     | Best effort     |
