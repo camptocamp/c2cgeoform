@@ -8,6 +8,7 @@ import sqlalchemy.engine.row
 import sqlalchemy.orm.attributes
 import sqlalchemy.orm.properties
 import sqlalchemy.schema
+import sqlalchemy.sql.elements
 import sqlalchemy.sql.expression
 from deform import Form, ValidationFailure  # , ZPTRendererFactory
 from deform.form import Button
@@ -99,8 +100,8 @@ class ListField(Generic[T]):
         key: Optional[str] = None,
         label: Optional[str] = None,
         renderer: Optional[Callable[[T], JSONDict]] = None,
-        sort_column: Optional[sqlalchemy.sql.expression.ColumnElement[Any]] = None,
-        filter_column: Optional[sqlalchemy.schema.Column[Any]] = None,
+        sort_column: Optional[sqlalchemy.sql.elements.ColumnElement[Any]] = None,
+        filter_column: Optional[sqlalchemy.sql.elements.ColumnElement[Any]] = None,
         visible: bool = True,
     ):
         self._attr = _getattr(model, attr)
