@@ -100,8 +100,18 @@ class ListField(Generic[T]):
         key: Optional[str] = None,
         label: Optional[str] = None,
         renderer: Optional[Callable[[T], JSON]] = None,
-        sort_column: Optional[sqlalchemy.sql.elements.ColumnElement[Any]] = None,
-        filter_column: Optional[sqlalchemy.sql.elements.ColumnElement[Any]] = None,
+        sort_column: Optional[
+            Union[
+                sqlalchemy.sql.elements.ColumnElement[Any],
+                sqlalchemy.orm.attributes.InstrumentedAttribute[Any],
+            ]
+        ] = None,
+        filter_column: Optional[
+            Union[
+                sqlalchemy.sql.elements.ColumnElement[Any],
+                sqlalchemy.orm.attributes.InstrumentedAttribute[Any],
+            ]
+        ] = None,
         visible: bool = True,
     ):
         self._attr = _getattr(model, attr)
@@ -140,7 +150,12 @@ class ListField(Generic[T]):
     def filtrable(self) -> bool:
         return self._filter_column is not None and isinstance(self._filter_column.type, types.String)
 
-    def sort_column(self) -> sqlalchemy.sql.expression.ColumnElement[Any]:
+    def sort_column(
+        self,
+    ) -> Union[
+        sqlalchemy.sql.expression.ColumnElement[Any],
+        sqlalchemy.orm.attributes.InstrumentedAttribute[Any],
+    ]:
         assert self._sort_column is not None
         return self._sort_column
 
