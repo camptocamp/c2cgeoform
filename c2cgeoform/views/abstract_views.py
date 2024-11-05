@@ -99,7 +99,7 @@ class ListField(Generic[T]):
         attr: Optional[str] = None,
         key: Optional[str] = None,
         label: Optional[str] = None,
-        renderer: Optional[Callable[[T], JSONDict]] = None,
+        renderer: Optional[Callable[[T], JSON]] = None,
         sort_column: Optional[sqlalchemy.sql.elements.ColumnElement[Any]] = None,
         filter_column: Optional[sqlalchemy.sql.elements.ColumnElement[Any]] = None,
         visible: bool = True,
