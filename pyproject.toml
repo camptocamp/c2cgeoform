@@ -75,11 +75,11 @@ prospector = { version = "1.12.1", extras = [
 ] }
 prospector-profile-duplicated = "1.6.0"
 prospector-profile-utils = "1.9.1"
-webtest = "3.0.1"
+webtest = "3.0.2"
 sphinx = "7.4.7"
-sphinx-rtd-theme = "3.0.1"
+sphinx-rtd-theme = "3.0.2"
 types-requests = "2.32.0.20241016"
-pytest = "8.3.3"
+pytest = "8.3.4"
 cookiecutter = "2.6.0"
 
 [tool.poetry.extras]
