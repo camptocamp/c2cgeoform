@@ -2,11 +2,10 @@ from typing import Any, Union
 
 import pyramid.request
 import pyramid.response
-import sqlalchemy.orm
 from pyramid.httpexceptions import HTTPFound
 from pyramid.view import view_config
 
-from c2cgeoform import JSONDict, JSONList
+from c2cgeoform import JSONDict
 
 
 @view_config(route_name="c2cgeoform_locale", renderer="json")  # type: ignore[misc]
@@ -71,5 +70,6 @@ class TableViewPredicate:
 
 
 def includeme(config: pyramid.config.Configurator) -> None:
+    """Include the views module."""
     config.add_view_predicate("application", ApplicationViewPredicate)
     config.add_view_predicate("table", TableViewPredicate)

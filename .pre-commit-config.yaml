@@ -30,6 +30,8 @@ repos:
     rev: 0.5.0
     hooks:
       - id: copyright
+      - id: workflows-require-timeout
+      - id: poetry-lock
   - repo: https://github.com/codespell-project/codespell
     rev: v2.2.6
     hooks:
@@ -70,30 +72,29 @@ repos:
     rev: v0.1.7
     hooks:
       - id: ripsecrets
-  - repo: https://github.com/asottile/pyupgrade
-    rev: v3.3.1
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.8.1
     hooks:
-      - id: pyupgrade
+      - id: ruff-format
         args:
-          - --py38-plus
-  - repo: https://github.com/PyCQA/autoflake
-    rev: v2.1.1
-    hooks:
-      - id: autoflake
-  - repo: https://github.com/PyCQA/isort
-    rev: 5.12.0
-    hooks:
-      - id: isort
-  - repo: https://github.com/psf/black
-    rev: 23.11.0
-    hooks:
-      - id: black
+          - --line-length=110
         exclude: |-
           (?x)^(
-            c2cgeoform/scaffolds/c2cgeoform/{{cookiecutter.project}}/{{cookiecutter.package}}/models/c2cgeoform_demo\.py
-            |c2cgeoform/scaffolds/c2cgeoform/{{cookiecutter.project}}/acceptance_tests/excavation_test\.py
-            |c2cgeoform/scaffolds/c2cgeoform/{{cookiecutter.project}}/acceptance_tests/conftest\.py
+            c2cgeoform/scaffolds/c2cgeoform/{{cookiecutter.project}}/acceptance_tests/.*
+            |c2cgeoform/scaffolds/c2cgeoform/{{cookiecutter.project}}/{{cookiecutter.package}}/models/c2cgeoform_demo\.py
           )$
+  - repo: https://github.com/PyCQA/prospector
+    rev: v1.13.3
+    hooks:
+      - id: prospector
+        args:
+          - --tool=ruff
+          - --die-on-tool-error
+          - --output-format=pylint
+        additional_dependencies:
+          - prospector-profile-duplicated==1.8.0 # pypi
+          - prospector-profile-utils==1.13.0 # pypi
+          - ruff==0.8.1 # pypi
   - repo: https://github.com/sbrunner/jsonschema-validator
     rev: 0.1.0
     hooks:

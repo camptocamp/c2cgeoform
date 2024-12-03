@@ -56,9 +56,7 @@ def schema_exists(connection, schema_name):
 SELECT count(*) AS count
 FROM information_schema.schemata
 WHERE schema_name = '{}';
-""".format(
-            schema_name
-        )
+""".format(schema_name)
     )
     result = connection.execute(sql)
     row = result.first()

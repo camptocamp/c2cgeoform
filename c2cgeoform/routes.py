@@ -47,8 +47,9 @@ class Application:
 
 class ApplicationRoutePredicate:
     """
-    Internal route predicate which checks application segment match a
-    registered application.
+    Checks application segment match a registered application.
+
+    Internal route predicate.
     """
 
     def __init__(self, val: Any, config: pyramid.config.Configurator):
@@ -73,8 +74,9 @@ def pregenerator(
     request: pyramid.request.Request, elements: list[str], kwargs: dict[str, Any]
 ) -> tuple[list[str], dict[str, Any]]:
     """
-    Route pregenerator that set the current matched route application and table
-    segments as defaults for generating urls.
+    Set the current matched route application and table segments as defaults for generating urls.
+
+    Route pregenerator.
     """
     if "application" not in kwargs:
         kwargs["application"] = (
@@ -92,6 +94,8 @@ def add_c2cgeoform_application(
     models: list[tuple[str, type[Any]]],
     url_segment: Optional[str] = None,
 ) -> None:
+    """Add a c2cgeoform application."""
+
     def register_application() -> None:
         config.registry["c2cgeoform_applications"].append(Application(name, models, url_segment=url_segment))
 
@@ -99,10 +103,12 @@ def add_c2cgeoform_application(
 
 
 def get_application(request: pyramid.request.Request) -> Optional[Application]:
+    """Get the current application."""
     return getattr(request, "_c2cgeoform_application", None)
 
 
 def includeme(config: pyramid.config.Configurator) -> None:
+    """Include the routes module."""
     config.registry.setdefault("c2cgeoform_applications", [])
     config.add_directive("add_c2cgeoform_application", add_c2cgeoform_application)
     config.add_route_predicate("c2cgeoform_application", ApplicationRoutePredicate)
@@ -110,6 +116,7 @@ def includeme(config: pyramid.config.Configurator) -> None:
 
 
 def register_route(config: pyramid.config.Configurator, route: str, pattern: str) -> None:
+    """Register a c2cgeoform route."""
     config.add_route(
         route,
         pattern,
@@ -119,6 +126,7 @@ def register_route(config: pyramid.config.Configurator, route: str, pattern: str
 
 
 def register_routes(config: pyramid.config.Configurator, multi_application: bool = True) -> None:
+    """Register the c2cgeoform routes."""
     if multi_application:
         base_route = "/{application}/{table}"
         register_route(config, "c2cgeoform_locale", "/{application}/locale")
@@ -137,9 +145,7 @@ def register_routes(config: pyramid.config.Configurator, multi_application: bool
 def register_models(
     config: pyramid.config.Configurator, models: type[Any], url_segment: Optional[str] = None
 ) -> None:
-    """
-    Deprecated, use config.add_c2cgeoform_application instead.
-    """
+    """Deprecated, use config.add_c2cgeoform_application instead."""  # noqa: D401
     warnings.warn(
         'The "register_models" method is deprecated. Use "config.add_c2cgeoform_application" instead.',
         DeprecationWarning,

@@ -1,5 +1,14 @@
 import logging
-from typing import Any, Callable, Dict, Generic, Optional, Tuple, TypedDict, TypeVar, Union, cast
+from typing import (
+    Any,
+    Callable,
+    Generic,
+    Optional,
+    TypedDict,
+    TypeVar,
+    Union,
+    cast,
+)
 
 import geojson
 import pyramid.request
@@ -58,6 +67,7 @@ def model_attr_info(
     *keys: str,
     default: Any = None,
 ) -> Any:
+    """Get the value of a key in the info of a model attribute."""
     if attr is None:
         return default
 
@@ -235,13 +245,9 @@ class UserMessage:
         return self._text
 
 
-# TODO for Python 3.11
-# class IndexResponse(TypedDict, Generic[T]):
-#     grid_actions: list[ItemAction]
-#     list_fields: list[ListField[T]]
-class IndexResponse(TypedDict):
+class IndexResponse(TypedDict, Generic[T]):
     grid_actions: list[ItemAction]
-    list_fields: list[ListField[Any]]
+    list_fields: list[ListField[T]]
 
 
 class GridResponse(TypedDict):
@@ -250,12 +256,12 @@ class GridResponse(TypedDict):
 
 
 class MapResponse(TypedDict):
-    map_options: Dict[str, Any]
+    map_options: dict[str, Any]
 
 
 class DeformDependencies:
-    css: Dict[str, str]
-    js: Dict[str, str]
+    css: dict[str, str]
+    js: dict[str, str]
 
 
 class ObjectResponse(TypedDict):
@@ -292,7 +298,7 @@ class AbstractViews(Generic[T]):
     def __init__(self, request: pyramid.request.Request) -> None:
         self._request = request
         self._schema: Optional[str] = None
-        self._appstruct: Optional[Dict[str, Any]] = None
+        self._appstruct: Optional[dict[str, Any]] = None
         self._obj: Optional[T] = None
 
     def index(self) -> IndexResponse:
@@ -303,6 +309,8 @@ class AbstractViews(Generic[T]):
 
     def grid(self) -> GridResponse:
         """
+        Get the data for the grid view.
+
         API method which serves the JSON data for the Bootgrid table in the admin view.
         """
         try:
@@ -415,7 +423,7 @@ class AbstractViews(Generic[T]):
             # https://docs.sqlalchemy.org/en/14/changelog/migration_20.html#using-distinct-with-additional-columns-but-only-select-the-entity
             # we are required to add a second field to the query, in this case we should get only the first one
             entity: T = (
-                cast(sqlalchemy.engine.row.Row[Tuple[T, Any]], entities)[0]
+                cast(sqlalchemy.engine.row.Row[tuple[T, Any]], entities)[0]
                 if isinstance(entities, sqlalchemy.engine.row.Row)
                 else entities
             )
@@ -441,7 +449,6 @@ class AbstractViews(Generic[T]):
 
     def _populate_widgets(self, node: Any) -> None:
         """Populate ``deform_ext.RelationSelectMixin`` widgets."""
-
         if hasattr(node.widget, "populate"):
             node.widget.populate(self._request.dbsession, self._request)
 
@@ -569,20 +576,19 @@ class AbstractViews(Generic[T]):
                 to_exclude = excludes and prop.columns[0].key in excludes
                 if not is_primary_key and to_duplicate and not to_exclude:
                     setattr(dest, prop.key, getattr(source, prop.key))
-            if isinstance(prop, RelationshipProperty):
-                if model_attr_info(prop, "c2cgeoform", "duplicate", default=True):
-                    if prop.cascade.delete:
-                        if not prop.uselist:
-                            duplicate: Union[T, list[T]] = self.copy_members_if_duplicates(
-                                getattr(source, prop.key)
-                            )
-                        else:
-                            duplicate = [
-                                self.copy_members_if_duplicates(m) for m in getattr(source, prop.key)
-                            ]
+            if isinstance(prop, RelationshipProperty) and model_attr_info(
+                prop, "c2cgeoform", "duplicate", default=True
+            ):
+                if prop.cascade.delete:
+                    if not prop.uselist:
+                        duplicate: Union[T, list[T]] = self.copy_members_if_duplicates(
+                            getattr(source, prop.key)
+                        )
                     else:
-                        duplicate = getattr(source, prop.key)
-                    setattr(dest, prop.key, duplicate)
+                        duplicate = [self.copy_members_if_duplicates(m) for m in getattr(source, prop.key)]
+                else:
+                    duplicate = getattr(source, prop.key)
+                setattr(dest, prop.key, duplicate)
         return dest
 
     def copy(self, src: T, excludes: Optional[list[str]] = None) -> ObjectResponse:
