@@ -8,9 +8,7 @@ from c2cgeoform import JSONDict, JSONList
 
 
 class AbstractViewsTests:
-    """
-    Base class for views testing
-    """
+    """Base class for views testing."""
 
     _prefix = None  # url prefix (index view url). Example : /users
 
@@ -45,10 +43,10 @@ class AbstractViewsTests:
         )
         if check_actions:
             actions = resp.html.select_one('th[data-field="actions"]')
-            assert "false" == actions.attrs["data-sortable"]
+            assert actions.attrs["data-sortable"] == "false"
 
     def check_new_button(self, resp: pyramid.response.Response) -> None:
-        assert 1 == len(list(filter(lambda x: str(x.contents) == "['New']", resp.html.findAll("a"))))
+        assert len(list(filter(lambda x: str(x.contents) == "['New']", resp.html.findAll("a")))) == 1
 
     def check_search(
         self,
@@ -105,7 +103,7 @@ class AbstractViewsTests:
                 if exp.get("readonly", False):
                     item = mapping_item.select_one(".item-{}".format(exp["name"]))
                     assert input_tag is None
-                    assert exp["value"] or "" == item.select("p").stripped_strings[0]
+                    assert exp["value"] or item.select("p").stripped_strings[0] == ""
                 elif input_tag.name == "select":
                     value = exp["value"]
                     assert isinstance(value, list)
@@ -115,7 +113,7 @@ class AbstractViewsTests:
                 else:
                     assert (exp["value"] or "") == input_tag.attrs.get("value", "")
             if exp.get("hidden", False):
-                assert "hidden" == input_tag["type"]
+                assert input_tag["type"] == "hidden"
             if "label" in exp:
                 label_tag = mapping_item.select_one('label[for="{}"]'.format(input_tag["id"]))
                 assert exp["label"] == label_tag.getText().strip()
@@ -131,11 +129,11 @@ class AbstractViewsTests:
 
     def _check_submission_problem(self, resp: pyramid.response.Response, expected_msg: str) -> None:
         assert (
-            "There was a problem with your submission"
-            == resp.html.select_one('div[class="error-msg-lbl"]').text
+            resp.html.select_one('div[class="error-msg-lbl"]').text
+            == "There was a problem with your submission"
         )
         assert (
-            "Errors have been highlighted below" == resp.html.select_one('div[class="error-msg-detail"]').text
+            resp.html.select_one('div[class="error-msg-detail"]').text == "Errors have been highlighted below"
         )
         assert (
             expected_msg

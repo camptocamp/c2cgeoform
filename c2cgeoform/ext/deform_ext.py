@@ -12,9 +12,15 @@ import requests
 import sqlalchemy.orm
 from colander import Invalid
 from deform.compat import string_types
-from deform.widget import CheckboxChoiceWidget
+from deform.widget import (
+    CheckboxChoiceWidget,
+    MappingWidget,
+    RadioChoiceWidget,
+    Select2Widget,
+    SelectWidget,
+    Widget,
+)
 from deform.widget import FileUploadWidget as DeformFileUploadWidget
-from deform.widget import MappingWidget, RadioChoiceWidget, Select2Widget, SelectWidget, Widget
 from sqlalchemy import inspect
 from translationstring import TranslationString, TranslationStringFactory
 
@@ -26,6 +32,8 @@ log = logging.getLogger(__name__)
 
 class MapWidget(Widget):  # type: ignore[misc]
     """
+    Map Deform widget.
+
     A Deform widget that fits with GeoAlchemy 2 geometry columns and shows
     an OpenLayers map which allows to draw and modify geometries.
 
@@ -129,9 +137,7 @@ class MapWidget(Widget):  # type: ignore[misc]
 
 
 class RelationSelectMixin:
-    """
-    Mixin class to support relations for select fields.
-    """
+    """Mixin class to support relations for select fields."""
 
     def __init__(
         self,
@@ -171,9 +177,7 @@ class RelationSelectMixin:
 
 
 class RelationMultiSelectMixin(RelationSelectMixin):
-    """
-    Mixin class to support n:m relations for multi select fields.
-    """
+    """Mixin class to support n:m relations for multi select fields."""
 
     def deserialize(self, field: deform.field.Field, pstruct: str) -> list[JSONDict]:
         """
@@ -208,9 +212,7 @@ class RelationMultiSelectMixin(RelationSelectMixin):
     def serialize(
         self, field: deform.field.Field, cstruct: Optional[Union[colander._null, str]], **kw: Any
     ) -> list[str]:
-        """
-        Flatten a list of objects into a list of ids.
-        """
+        """Flatten a list of objects into a list of ids."""
         del kw  # unused
 
         mapped_id_field = self._get_mapped_id_field(field)
@@ -223,6 +225,8 @@ class RelationMultiSelectMixin(RelationSelectMixin):
 
     def _get_mapped_id_field(self, field: deform.field.Field) -> Optional[deform.field.Field]:
         """
+        Get the foreign key field of the mapped table B in the relation table A_B.
+
         For the given relation field in table A, find the foreign key field
         for table B in the relation table A_B.
         """
@@ -236,6 +240,8 @@ class RelationMultiSelectMixin(RelationSelectMixin):
 
 class RelationSelectWidget(SelectWidget, RelationMultiSelectMixin):  # type: ignore[misc]
     """
+    Relation select Deform widget.
+
     Extension of the widget ````deform.widget.SelectWidget`` which loads the
     values from the database using a SQLAlchemy model.
 
@@ -343,6 +349,8 @@ class RelationSelectWidget(SelectWidget, RelationMultiSelectMixin):  # type: ign
 
 class RelationSelect2Widget(Select2Widget, RelationMultiSelectMixin):  # type: ignore[misc]
     """
+    Relation select Deform widget.
+
     Extension of the widget ````deform.widget.Select2Widget`` which loads the
     values from the database using a SQLAlchemy model.
 
@@ -450,6 +458,8 @@ class RelationSelect2Widget(Select2Widget, RelationMultiSelectMixin):  # type: i
 
 class RelationCheckBoxListWidget(CheckboxChoiceWidget, RelationMultiSelectMixin):  # type: ignore[misc]
     """
+    Relation checkbox list Deform widget.
+
     Extension of the widget ````deform.widget.CheckboxChoiceWidget`` which
     loads the values from the database using a SQLAlchemy model.
 
@@ -527,6 +537,8 @@ class RelationCheckBoxListWidget(CheckboxChoiceWidget, RelationMultiSelectMixin)
 
 class RelationRadioChoiceWidget(RadioChoiceWidget, RelationSelectMixin):  # type: ignore[misc]
     """
+    Relation radio choice Deform widget.
+
     Extension of the widget ````deform.widget.RadioChoiceWidget`` which loads
     the values from the database using a SQLAlchemy model.
 
@@ -624,7 +636,10 @@ class FileUploadTempStore:
 
 
 class FileUploadWidget(DeformFileUploadWidget):  # type: ignore[misc]
-    """Extension of ``deform.widget.FileUploadWidget`` to be used in a model
+    """
+    File upload Deform widget.
+
+    Extension of ``deform.widget.FileUploadWidget`` to be used in a model
     class that extends the ``models.FileData`` mixin class.
 
     Note that, contrary to ``deform.widget.FileUploadWidget``, this extension
@@ -704,6 +719,8 @@ class FileUploadWidget(DeformFileUploadWidget):  # type: ignore[misc]
 
 class RelationSelectMapWidget(Widget):  # type: ignore[misc]
     """
+    Relation select map Deform widget.
+
     A Deform widget to select an item on a map. From the idea, this widget
     is similar to the ``RelationSelectWidget``, but instead of a select-box
     a map is shown.
@@ -787,6 +804,8 @@ class RelationSelectMapWidget(Widget):  # type: ignore[misc]
 
 class RelationSearchWidget(Widget):  # type: ignore[misc]
     """
+    Relation search Deform widget.
+
     A Deform widget to select an item via a search field. This widget is
     similar to the ``RelationSelectWidget``, but instead of a select-box
     a Twitter Typeahead search field is shown.
@@ -879,7 +898,7 @@ class RelationSearchWidget(Widget):  # type: ignore[misc]
         }
         kw["options"] = json.dumps(options)
 
-        bloodhound_options = {"limit": kw.pop("limit", self.limit), "remote": "%s?term=%%QUERY" % self.url}
+        bloodhound_options = {"limit": kw.pop("limit", self.limit), "remote": f"{self.url}?term=%QUERY"}
         kw["bloodhound_options"] = json.dumps(bloodhound_options)
 
         typeahead_options = {"minLength": kw.pop("min_length", self.min_length)}
@@ -987,7 +1006,7 @@ class RecaptchaWidget(MappingWidget):  # type: ignore[misc]
             raise Invalid(field.schema, _("Connection problem"), pstruct)
 
         error_msg = _("Verification has failed")
-        if not resp.status_code == 200:
+        if resp.status_code != 200:
             log.error("reCaptcha validation error: %s", resp.status_code)
             raise Invalid(field.schema, error_msg, pstruct)
 

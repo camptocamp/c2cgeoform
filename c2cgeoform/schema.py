@@ -14,12 +14,14 @@ from c2cgeoform import JSONDict, _
 
 @colander.deferred  # type: ignore[misc]
 def deferred_request(node: Any, kwargs: dict[str, Any]) -> pyramid.request.Request:
+    """Deferred function to get the request from the bindings."""
     del node  # unused
     return kwargs.get("request")
 
 
 @colander.deferred  # type: ignore[misc]
 def deferred_dbsession(node: Any, kwargs: dict[str, Any]) -> sqlalchemy.orm.Session:
+    """Deferred function to get the dbsession from the bindings."""
     del node  # unused
     return cast(sqlalchemy.orm.Session, kwargs.get("dbsession"))
 
@@ -31,6 +33,7 @@ def unique_validator(
     node: str,
     value: Any,
 ) -> None:
+    """Validate that the value is unique in the column."""
     dbsession: sqlalchemy.orm.Session = node.bindings["dbsession"]  # type: ignore[attr-defined]
     _id = node.bindings["request"].matchdict["id"]  # type: ignore[attr-defined]
     _id = _id if _id != "new" else None
@@ -40,6 +43,8 @@ def unique_validator(
 
 class GeoFormSchemaNode(SQLAlchemySchemaNode):  # type: ignore[misc] # pylint: disable=abstract-method
     """
+    Node of a schema that is bound to a SQLAlchemy model.
+
     An SQLAlchemySchemaNode with deferred request and dbsession properties.
     This will allow defining schemas that requires the request and dbsession at
     module-scope.
@@ -70,7 +75,7 @@ class GeoFormSchemaNode(SQLAlchemySchemaNode):  # type: ignore[misc] # pylint: d
         column_id: sqlalchemy.orm.attributes.InstrumentedAttribute[Any],
     ) -> None:
         """
-        Adds an unique validator on this schema instance.
+        Add an unique validator on this schema instance.
 
         column
             SQLAlchemy ColumnProperty that should be unique.
@@ -99,10 +104,7 @@ class GeoFormManyToManySchemaNode(GeoFormSchemaNode):  # pylint: disable=abstrac
         super().__init__(class_, includes, *args, **kw)
 
     def objectify(self, dict_: JSONDict, context: Any = None) -> Any:
-        """
-        Method override that returns the existing ORM class instance instead of
-        creating a new one.
-        """
+        """Get the existing ORM class instance instead of creating a new one."""
         dbsession = self.bindings["dbsession"]
         class_ = self.inspector.class_
         return dbsession.query(class_).get(dict_.values())
@@ -110,7 +112,7 @@ class GeoFormManyToManySchemaNode(GeoFormSchemaNode):  # pylint: disable=abstrac
 
 def manytomany_validator(node: type[Any], cstruct: list[JSONDict]) -> None:
     """
-    Validator function that checks if ``cstruct`` values exist in the related table.
+    Validate, checks if ``cstruct`` values exist in the related table.
 
     Note that entities are retrieved using only one query and placed in
     SQLAlchemy identity map before looping on ``cstruct``.

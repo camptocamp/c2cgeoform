@@ -15,7 +15,8 @@ from typing_extensions import Buffer
 
 
 class Geometry(SchemaType):  # type: ignore[misc]
-    """A Colander type meant to be used with GeoAlchemy 2 geometry columns.
+    """
+    A Colander type meant to be used with GeoAlchemy 2 geometry columns.
 
     Example usage
 
@@ -67,11 +68,12 @@ class Geometry(SchemaType):  # type: ignore[misc]
         self, node: Any, appstruct: Union[colander._null, WKBElement]
     ) -> Union[colander._null, str]:
         """
+        Serialize a `WKBElement` into a GeoJSON string.
+
         In Colander speak: Converts a Python data structure (an appstruct) into
         a serialization (a cstruct).
         Or: Converts a `WKBElement` into a GeoJSON string.
         """
-
         if appstruct is colander.null:
             return colander.null
         if isinstance(appstruct, WKBElement):
@@ -80,19 +82,20 @@ class Geometry(SchemaType):  # type: ignore[misc]
                 geometry = transform(self.project_db_to_map, geometry)
 
             return json.dumps(mapping(geometry))
-        raise Invalid(node, "Unexpected value: %r" % appstruct)
+        raise Invalid(node, f"Unexpected value: {appstruct!r}")
 
     def deserialize(self, node: Any, cstruct: Union[colander._null, str]) -> Union[colander._null, str]:
         """
+        Deserialize a GeoJSON string into a `WKBElement`.
+
         In Colander speak: Converts a serialized value (a cstruct) into a
         Python data structure (a appstruct).
         Or: Converts a GeoJSON string into a `WKBElement`.
         """
-
         if cstruct is colander.null or cstruct == "":
             return colander.null
         try:
-            # TODO Shapely does not support loading GeometryCollections from
+            # TODO Shapely does not support loading GeometryCollections from # pylint: disable=fixme
             # GeoJSON, see https://github.com/Toblerity/Shapely/issues/115
             geometry = shape(json.loads(cstruct))
         except Exception as exception:
@@ -105,7 +108,8 @@ class Geometry(SchemaType):  # type: ignore[misc]
 
 
 class BinaryData(SchemaType):  # type: ignore[misc]
-    """A Colander type meant to be used with ``LargeBinary`` columns.
+    """
+    A Colander type meant to be used with ``LargeBinary`` columns.
 
     Example usage
 
@@ -135,6 +139,8 @@ class BinaryData(SchemaType):  # type: ignore[misc]
         self, node: colander.SchemaNode, appstruct: Union[colander._null, Buffer]
     ) -> Union[colander._null, io.BytesIO]:
         """
+        Serialize a file stream to plain binary.
+
         In Colander speak: Converts a Python data structure (an appstruct) into
         a serialization (a cstruct).
         """
@@ -148,6 +154,8 @@ class BinaryData(SchemaType):  # type: ignore[misc]
         self, node: colander.SchemaNode, cstruct: Union[colander._null, str, io.IOBase]
     ) -> Union[colander._null, bytes]:
         """
+        Serialize a file stream to plain binary.
+
         In Colander speak: Converts a serialized value (a cstruct) into a
         Python data structure (a appstruct).
         Or: Converts a Python file stream to plain binary data.

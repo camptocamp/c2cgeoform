@@ -1,4 +1,4 @@
-from typing import Any, Tuple, Union
+from typing import Any, Union
 
 import pyramid.config
 from deform import Form, widget
@@ -16,7 +16,7 @@ JSONList = list[JSON]
 
 
 """ Default search paths for the form templates. """
-default_search_paths: Tuple[str, ...] = (
+default_search_paths: tuple[str, ...] = (
     resource_filename("c2cgeoform", "templates/widgets"),
     resource_filename("deform", "templates"),
 )
@@ -42,6 +42,8 @@ default_map_settings = {
 
 def main(global_config: Any, **settings: Any) -> Any:
     """
+    Create a Pyramid WSGI application.
+
     This function returns a Pyramid WSGI application.
     In our case, this is only used for tests.
     """
@@ -53,6 +55,8 @@ def main(global_config: Any, **settings: Any) -> Any:
 
 def includeme(config: pyramid.config.Configurator) -> None:
     """
+    Include the c2cgeoform package.
+
     Function called when "c2cgeoform" is included in a project (with
     ``config.include('c2cgeoform')``).
 
@@ -72,6 +76,7 @@ def includeme(config: pyramid.config.Configurator) -> None:
 
 
 def translator(term: str) -> str:
+    """Translate a term using the current request's locale."""
     request = get_current_request()
     if request is None:
         return term
@@ -79,6 +84,7 @@ def translator(term: str) -> str:
 
 
 def init_deform(root_package: str) -> None:
+    """Initialize the deform library."""
     Form.set_zpt_renderer(default_search_paths, translator=translator)
 
     node_modules_root = f"{root_package}:node_modules"
