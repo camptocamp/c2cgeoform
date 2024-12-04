@@ -70,7 +70,7 @@
         '^webpack$',
         '^html-webpack-plugin$',
         '^mini-css-extract-plugin$',
-        '^node-sass$',
+        '^sass$',
         '^webpack-.*',
         '.*-loader$',
       ],
