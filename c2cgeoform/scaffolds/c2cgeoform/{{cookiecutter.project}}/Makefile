@@ -13,11 +13,9 @@ L10N_SOURCE_FILES += $(shell find {{cookiecutter.package}}/templates/ -type f -n
 ifneq (,$(findstring CYGWIN, $(shell uname)))
 PYTHON3 =
 VENV_BIN = .build/venv/Scripts
-PIP_UPGRADE = python.exe -m pip install --upgrade pip==21.1 setuptools==56.0
 else
 PYTHON3 = -p python3
 VENV_BIN = .build/venv/bin
-PIP_UPGRADE = pip install --upgrade pip==21.1 setuptools==56.0
 endif
 
 .PHONY: help
@@ -84,8 +82,6 @@ dist: .build/venv.timestamp compile-catalog
 .build/venv.timestamp:
 	# Create a Python virtual environment.
 	python3 -m venv .build/venv
-	# Upgrade packaging tools.
-	$(VENV_BIN)/$(PIP_UPGRADE)
 	touch $@
 
 .build/requirements.timestamp: .build/venv.timestamp requirements.txt

@@ -718,6 +718,17 @@ MarkupSafe = ">=2.0"
 i18n = ["Babel (>=2.7)"]
 
 [[package]]
+name = "legacy-cgi"
+version = "2.6.1"
+description = "Fork of the standard library cgi and cgitb modules, being deprecated in PEP-594"
+optional = false
+python-versions = "<4.0,>=3.10"
+files = [
+    {file = "legacy_cgi-2.6.1-py3-none-any.whl", hash = "sha256:8eacc1522d9f76451337a4b5a0abf494158d39250754b0d1bc19a14c6512af9b"},
+    {file = "legacy_cgi-2.6.1.tar.gz", hash = "sha256:f2ada99c747c3d72a473a6aaff6259a61f226b06fe9f3106e495ab83fd8f7a42"},
+]
+
+[[package]]
 name = "lingua"
 version = "4.15.0"
 description = "Translation toolset"
@@ -2358,6 +2369,9 @@ files = [
     {file = "webob-1.8.9.tar.gz", hash = "sha256:ad6078e2edb6766d1334ec3dee072ac6a7f95b1e32ce10def8ff7f0f02d56589"},
 ]
 
+[package.dependencies]
+legacy-cgi = {version = ">=2.6", markers = "python_version >= \"3.13\""}
+
 [package.extras]
 docs = ["Sphinx (>=1.7.5)", "pylons-sphinx-themes"]
 testing = ["coverage", "pytest (>=3.1.0)", "pytest-cov", "pytest-xdist"]
@@ -2481,5 +2495,5 @@ psycopg2-binary = ["psycopg2-binary"]
 
 [metadata]
 lock-version = "2.0"
-python-versions = ">=3.11,<3.13"
-content-hash = "46a4fbd165838b16d1334711c6268311e6647d18c6724a17fa82dbc126ea4a9b"
+python-versions = ">=3.11,<3.14"
+content-hash = "dc5456ff795fd0047562e6fe7c68ee8a6f67f6336f85ce23ccf26ef9c2a313db"
