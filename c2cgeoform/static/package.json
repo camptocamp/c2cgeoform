@@ -27,7 +27,7 @@
     "node-sass": "9.0.0",
     "ol": "10.1.0",
     "proj4": "2.12.1",
-    "sass-loader": "16.0.3",
+    "sass-loader": "16.0.4",
     "style-loader": "4.0.0"
   }
 }
