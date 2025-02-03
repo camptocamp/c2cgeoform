@@ -37,12 +37,12 @@ c2cgeoform = "c2cgeoform.scaffolds:C2cgeoformTemplate"
 
 [tool.poetry.dependencies]
 python = ">=3.11,<3.14"
-babel = "2.16.0"
+babel = "2.17.0"
 
 colanderalchemy = "0.3.4"
 deform = "2.0.15"
-geoalchemy2 = "0.16.0"
-geojson = "3.1.0"
+geoalchemy2 = "0.17.0"
+geojson = "3.2.0"
 lingua = "4.15.0"
 psycopg2 = { version = "2.9.10", optional = true }
 psycopg2-binary = { version = "2.9.10", optional = true }
@@ -57,13 +57,13 @@ zope-sqlalchemy = "3.1"
 requests = "2.32.3"
 
 [tool.poetry.group.dev.dependencies]
-prospector = { version = "1.13.3", extras = [
+prospector = { version = "1.14.1", extras = [
   "with-bandit",
   "with-mypy",
   "with-pyroma", "with_ruff"
 ] }
-prospector-profile-duplicated = "1.8.0"
-prospector-profile-utils = "1.13.0"
+prospector-profile-duplicated = "1.10.4"
+prospector-profile-utils = "1.17.0"
 webtest = "3.0.2"
 sphinx = "8.1.3"
 sphinx-rtd-theme = "3.0.2"
