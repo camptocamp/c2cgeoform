@@ -27,11 +27,13 @@ repos:
       - id: trailing-whitespace
       - id: mixed-line-ending
   - repo: https://github.com/sbrunner/hooks
-    rev: 0.5.0
+    rev: 1.2.1
     hooks:
       - id: copyright
       - id: workflows-require-timeout
-      - id: poetry-lock
+      - id: poetry2-lock
+        additional_dependencies:
+          - poetry==2.0.1 # pypi
   - repo: https://github.com/codespell-project/codespell
     rev: v2.2.6
     hooks:
