@@ -887,7 +887,7 @@ class RelationSearchWidget(Widget):  # type: ignore[misc]
             label = ""
         else:
             assert self.session is not None
-            obj = self.session.query(self.model).get(cstruct)
+            obj = self.session.query(self.model).get(cstruct)  # pylint: disable=no-member
             label = getattr(obj, kw.get("label_field", self.label_field))
 
         kw["label"] = label
