@@ -2,4 +2,4 @@
 # This file defines the requirements.txt for development.
 #
 pytest==8.3.4
-WebTest==3.0.2
+WebTest==3.0.4
