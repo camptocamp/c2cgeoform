@@ -1,0 +1,586 @@
+{
+  ".class": "MypyFile",
+  "_fullname": "c2cgeoform",
+  "future_import_flags": [],
+  "is_partial_stub_package": false,
+  "is_stub": false,
+  "names": {
+    ".class": "SymbolTable",
+    "Any": {
+      ".class": "SymbolTableNode",
+      "cross_ref": "typing.Any",
+      "kind": "Gdef",
+      "module_hidden": true,
+      "module_public": false
+    },
+    "Configurator": {
+      ".class": "SymbolTableNode",
+      "kind": "Gdef",
+      "module_hidden": true,
+      "module_public": false,
+      "node": {
+        ".class": "Var",
+        "flags": ["is_suppressed_import", "is_ready", "is_inferred"],
+        "fullname": "c2cgeoform.Configurator",
+        "name": "Configurator",
+        "type": {
+          ".class": "AnyType",
+          "missing_import_name": "c2cgeoform.Configurator",
+          "source_any": null,
+          "type_of_any": 3
+        }
+      }
+    },
+    "Form": {
+      ".class": "SymbolTableNode",
+      "kind": "Gdef",
+      "module_hidden": true,
+      "module_public": false,
+      "node": {
+        ".class": "Var",
+        "flags": ["is_suppressed_import", "is_ready", "is_inferred"],
+        "fullname": "c2cgeoform.Form",
+        "name": "Form",
+        "type": {
+          ".class": "AnyType",
+          "missing_import_name": "c2cgeoform.Form",
+          "source_any": null,
+          "type_of_any": 3
+        }
+      }
+    },
+    "JSON": {
+      ".class": "SymbolTableNode",
+      "kind": "Gdef",
+      "node": {
+        ".class": "TypeAlias",
+        "alias_tvars": [],
+        "column": 0,
+        "fullname": "c2cgeoform.JSON",
+        "line": 13,
+        "no_args": false,
+        "normalized": false,
+        "python_3_12_type_alias": false,
+        "target": {
+          ".class": "UnionType",
+          "items": [
+            "builtins.int",
+            "builtins.float",
+            "builtins.str",
+            "builtins.bool",
+            { ".class": "NoneType" },
+            {
+              ".class": "TypeAliasType",
+              "args": [],
+              "type_ref": "c2cgeoform.JSONDict"
+            },
+            {
+              ".class": "TypeAliasType",
+              "args": [],
+              "type_ref": "c2cgeoform.JSONList"
+            }
+          ],
+          "uses_pep604_syntax": false
+        }
+      }
+    },
+    "JSONDict": {
+      ".class": "SymbolTableNode",
+      "kind": "Gdef",
+      "node": {
+        ".class": "TypeAlias",
+        "alias_tvars": [],
+        "column": 0,
+        "fullname": "c2cgeoform.JSONDict",
+        "line": 14,
+        "no_args": false,
+        "normalized": false,
+        "python_3_12_type_alias": false,
+        "target": {
+          ".class": "Instance",
+          "args": [
+            "builtins.str",
+            {
+              ".class": "TypeAliasType",
+              "args": [],
+              "type_ref": "c2cgeoform.JSON"
+            }
+          ],
+          "extra_attrs": null,
+          "type_ref": "builtins.dict"
+        }
+      }
+    },
+    "JSONList": {
+      ".class": "SymbolTableNode",
+      "kind": "Gdef",
+      "node": {
+        ".class": "TypeAlias",
+        "alias_tvars": [],
+        "column": 0,
+        "fullname": "c2cgeoform.JSONList",
+        "line": 15,
+        "no_args": false,
+        "normalized": false,
+        "python_3_12_type_alias": false,
+        "target": {
+          ".class": "Instance",
+          "args": [
+            {
+              ".class": "TypeAliasType",
+              "args": [],
+              "type_ref": "c2cgeoform.JSON"
+            }
+          ],
+          "extra_attrs": null,
+          "type_ref": "builtins.list"
+        }
+      }
+    },
+    "TranslationStringFactory": {
+      ".class": "SymbolTableNode",
+      "kind": "Gdef",
+      "module_hidden": true,
+      "module_public": false,
+      "node": {
+        ".class": "Var",
+        "flags": ["is_suppressed_import", "is_ready", "is_inferred"],
+        "fullname": "c2cgeoform.TranslationStringFactory",
+        "name": "TranslationStringFactory",
+        "type": {
+          ".class": "AnyType",
+          "missing_import_name": "c2cgeoform.TranslationStringFactory",
+          "source_any": null,
+          "type_of_any": 3
+        }
+      }
+    },
+    "Tuple": {
+      ".class": "SymbolTableNode",
+      "cross_ref": "typing.Tuple",
+      "kind": "Gdef",
+      "module_hidden": true,
+      "module_public": false
+    },
+    "Union": {
+      ".class": "SymbolTableNode",
+      "cross_ref": "typing.Union",
+      "kind": "Gdef",
+      "module_hidden": true,
+      "module_public": false
+    },
+    "_": {
+      ".class": "SymbolTableNode",
+      "kind": "Gdef",
+      "node": {
+        ".class": "Var",
+        "flags": ["is_inferred", "has_explicit_value"],
+        "fullname": "c2cgeoform._",
+        "name": "_",
+        "type": {
+          ".class": "AnyType",
+          "missing_import_name": "c2cgeoform.TranslationStringFactory",
+          "source_any": {
+            ".class": "AnyType",
+            "missing_import_name": "c2cgeoform.TranslationStringFactory",
+            "source_any": null,
+            "type_of_any": 3
+          },
+          "type_of_any": 7
+        }
+      }
+    },
+    "__annotations__": {
+      ".class": "SymbolTableNode",
+      "kind": "Gdef",
+      "node": {
+        ".class": "Var",
+        "flags": ["is_ready"],
+        "fullname": "c2cgeoform.__annotations__",
+        "name": "__annotations__",
+        "type": {
+          ".class": "Instance",
+          "args": [
+            "builtins.str",
+            {
+              ".class": "AnyType",
+              "missing_import_name": null,
+              "source_any": null,
+              "type_of_any": 6
+            }
+          ],
+          "extra_attrs": null,
+          "type_ref": "builtins.dict"
+        }
+      }
+    },
+    "__doc__": {
+      ".class": "SymbolTableNode",
+      "kind": "Gdef",
+      "node": {
+        ".class": "Var",
+        "flags": ["is_ready"],
+        "fullname": "c2cgeoform.__doc__",
+        "name": "__doc__",
+        "type": "builtins.str"
+      }
+    },
+    "__file__": {
+      ".class": "SymbolTableNode",
+      "kind": "Gdef",
+      "node": {
+        ".class": "Var",
+        "flags": ["is_ready"],
+        "fullname": "c2cgeoform.__file__",
+        "name": "__file__",
+        "type": "builtins.str"
+      }
+    },
+    "__name__": {
+      ".class": "SymbolTableNode",
+      "kind": "Gdef",
+      "node": {
+        ".class": "Var",
+        "flags": ["is_ready"],
+        "fullname": "c2cgeoform.__name__",
+        "name": "__name__",
+        "type": "builtins.str"
+      }
+    },
+    "__package__": {
+      ".class": "SymbolTableNode",
+      "kind": "Gdef",
+      "node": {
+        ".class": "Var",
+        "flags": ["is_ready"],
+        "fullname": "c2cgeoform.__package__",
+        "name": "__package__",
+        "type": "builtins.str"
+      }
+    },
+    "__path__": {
+      ".class": "SymbolTableNode",
+      "kind": "Gdef",
+      "node": {
+        ".class": "Var",
+        "flags": ["is_ready"],
+        "fullname": "c2cgeoform.__path__",
+        "name": "__path__",
+        "type": {
+          ".class": "Instance",
+          "args": ["builtins.str"],
+          "extra_attrs": null,
+          "type_ref": "builtins.list"
+        }
+      }
+    },
+    "__spec__": {
+      ".class": "SymbolTableNode",
+      "kind": "Gdef",
+      "node": {
+        ".class": "Var",
+        "flags": ["is_ready"],
+        "fullname": "c2cgeoform.__spec__",
+        "name": "__spec__",
+        "type": "_frozen_importlib.ModuleSpec"
+      }
+    },
+    "default_map_settings": {
+      ".class": "SymbolTableNode",
+      "kind": "Gdef",
+      "node": {
+        ".class": "Var",
+        "flags": ["is_inferred", "has_explicit_value"],
+        "fullname": "c2cgeoform.default_map_settings",
+        "name": "default_map_settings",
+        "type": {
+          ".class": "Instance",
+          "args": [
+            "builtins.str",
+            {
+              ".class": "AnyType",
+              "missing_import_name": "c2cgeoform.TranslationStringFactory",
+              "source_any": {
+                ".class": "AnyType",
+                "missing_import_name": "c2cgeoform.TranslationStringFactory",
+                "source_any": null,
+                "type_of_any": 3
+              },
+              "type_of_any": 7
+            }
+          ],
+          "extra_attrs": null,
+          "type_ref": "builtins.dict"
+        }
+      }
+    },
+    "default_search_paths": {
+      ".class": "SymbolTableNode",
+      "kind": "Gdef",
+      "node": {
+        ".class": "Var",
+        "flags": ["is_ready", "has_explicit_value"],
+        "fullname": "c2cgeoform.default_search_paths",
+        "name": "default_search_paths",
+        "type": {
+          ".class": "Instance",
+          "args": ["builtins.str"],
+          "extra_attrs": null,
+          "type_ref": "builtins.tuple"
+        }
+      }
+    },
+    "get_current_request": {
+      ".class": "SymbolTableNode",
+      "kind": "Gdef",
+      "module_hidden": true,
+      "module_public": false,
+      "node": {
+        ".class": "Var",
+        "flags": ["is_suppressed_import", "is_ready", "is_inferred"],
+        "fullname": "c2cgeoform.get_current_request",
+        "name": "get_current_request",
+        "type": {
+          ".class": "AnyType",
+          "missing_import_name": "c2cgeoform.get_current_request",
+          "source_any": null,
+          "type_of_any": 3
+        }
+      }
+    },
+    "get_localizer": {
+      ".class": "SymbolTableNode",
+      "kind": "Gdef",
+      "module_hidden": true,
+      "module_public": false,
+      "node": {
+        ".class": "Var",
+        "flags": ["is_suppressed_import", "is_ready", "is_inferred"],
+        "fullname": "c2cgeoform.get_localizer",
+        "name": "get_localizer",
+        "type": {
+          ".class": "AnyType",
+          "missing_import_name": "c2cgeoform.get_localizer",
+          "source_any": null,
+          "type_of_any": 3
+        }
+      }
+    },
+    "includeme": {
+      ".class": "SymbolTableNode",
+      "kind": "Gdef",
+      "node": {
+        ".class": "FuncDef",
+        "abstract_status": 0,
+        "arg_kinds": [0],
+        "arg_names": ["config"],
+        "dataclass_transform_spec": null,
+        "deprecated": null,
+        "flags": [],
+        "fullname": "c2cgeoform.includeme",
+        "name": "includeme",
+        "type": {
+          ".class": "CallableType",
+          "arg_kinds": [0],
+          "arg_names": ["config"],
+          "arg_types": [
+            {
+              ".class": "AnyType",
+              "missing_import_name": "c2cgeoform.pyramid",
+              "source_any": null,
+              "type_of_any": 3
+            }
+          ],
+          "bound_args": [],
+          "def_extras": { "first_arg": null },
+          "fallback": "builtins.function",
+          "from_concatenate": false,
+          "implicit": false,
+          "imprecise_arg_kinds": false,
+          "is_ellipsis_args": false,
+          "name": "includeme",
+          "ret_type": { ".class": "NoneType" },
+          "type_guard": null,
+          "type_is": null,
+          "unpack_kwargs": false,
+          "variables": []
+        }
+      }
+    },
+    "init_deform": {
+      ".class": "SymbolTableNode",
+      "kind": "Gdef",
+      "node": {
+        ".class": "FuncDef",
+        "abstract_status": 0,
+        "arg_kinds": [0],
+        "arg_names": ["root_package"],
+        "dataclass_transform_spec": null,
+        "deprecated": null,
+        "flags": [],
+        "fullname": "c2cgeoform.init_deform",
+        "name": "init_deform",
+        "type": {
+          ".class": "CallableType",
+          "arg_kinds": [0],
+          "arg_names": ["root_package"],
+          "arg_types": ["builtins.str"],
+          "bound_args": [],
+          "def_extras": { "first_arg": null },
+          "fallback": "builtins.function",
+          "from_concatenate": false,
+          "implicit": false,
+          "imprecise_arg_kinds": false,
+          "is_ellipsis_args": false,
+          "name": "init_deform",
+          "ret_type": { ".class": "NoneType" },
+          "type_guard": null,
+          "type_is": null,
+          "unpack_kwargs": false,
+          "variables": []
+        }
+      }
+    },
+    "main": {
+      ".class": "SymbolTableNode",
+      "kind": "Gdef",
+      "node": {
+        ".class": "FuncDef",
+        "abstract_status": 0,
+        "arg_kinds": [0, 4],
+        "arg_names": ["global_config", "settings"],
+        "dataclass_transform_spec": null,
+        "deprecated": null,
+        "flags": [],
+        "fullname": "c2cgeoform.main",
+        "name": "main",
+        "type": {
+          ".class": "CallableType",
+          "arg_kinds": [0, 4],
+          "arg_names": ["global_config", "settings"],
+          "arg_types": [
+            {
+              ".class": "AnyType",
+              "missing_import_name": null,
+              "source_any": null,
+              "type_of_any": 2
+            },
+            {
+              ".class": "AnyType",
+              "missing_import_name": null,
+              "source_any": null,
+              "type_of_any": 2
+            }
+          ],
+          "bound_args": [],
+          "def_extras": { "first_arg": null },
+          "fallback": "builtins.function",
+          "from_concatenate": false,
+          "implicit": false,
+          "imprecise_arg_kinds": false,
+          "is_ellipsis_args": false,
+          "name": "main",
+          "ret_type": {
+            ".class": "AnyType",
+            "missing_import_name": null,
+            "source_any": null,
+            "type_of_any": 2
+          },
+          "type_guard": null,
+          "type_is": null,
+          "unpack_kwargs": false,
+          "variables": []
+        }
+      }
+    },
+    "pyramid": {
+      ".class": "SymbolTableNode",
+      "kind": "Gdef",
+      "module_hidden": true,
+      "module_public": false,
+      "node": {
+        ".class": "Var",
+        "flags": ["is_suppressed_import", "is_ready", "is_inferred"],
+        "fullname": "c2cgeoform.pyramid",
+        "name": "pyramid",
+        "type": {
+          ".class": "AnyType",
+          "missing_import_name": "c2cgeoform.pyramid",
+          "source_any": null,
+          "type_of_any": 3
+        }
+      }
+    },
+    "resource_filename": {
+      ".class": "SymbolTableNode",
+      "kind": "Gdef",
+      "module_hidden": true,
+      "module_public": false,
+      "node": {
+        ".class": "Var",
+        "flags": ["is_suppressed_import", "is_ready", "is_inferred"],
+        "fullname": "c2cgeoform.resource_filename",
+        "name": "resource_filename",
+        "type": {
+          ".class": "AnyType",
+          "missing_import_name": "c2cgeoform.resource_filename",
+          "source_any": null,
+          "type_of_any": 3
+        }
+      }
+    },
+    "translator": {
+      ".class": "SymbolTableNode",
+      "kind": "Gdef",
+      "node": {
+        ".class": "FuncDef",
+        "abstract_status": 0,
+        "arg_kinds": [0],
+        "arg_names": ["term"],
+        "dataclass_transform_spec": null,
+        "deprecated": null,
+        "flags": [],
+        "fullname": "c2cgeoform.translator",
+        "name": "translator",
+        "type": {
+          ".class": "CallableType",
+          "arg_kinds": [0],
+          "arg_names": ["term"],
+          "arg_types": ["builtins.str"],
+          "bound_args": [],
+          "def_extras": { "first_arg": null },
+          "fallback": "builtins.function",
+          "from_concatenate": false,
+          "implicit": false,
+          "imprecise_arg_kinds": false,
+          "is_ellipsis_args": false,
+          "name": "translator",
+          "ret_type": "builtins.str",
+          "type_guard": null,
+          "type_is": null,
+          "unpack_kwargs": false,
+          "variables": []
+        }
+      }
+    },
+    "widget": {
+      ".class": "SymbolTableNode",
+      "kind": "Gdef",
+      "module_hidden": true,
+      "module_public": false,
+      "node": {
+        ".class": "Var",
+        "flags": ["is_suppressed_import", "is_ready", "is_inferred"],
+        "fullname": "c2cgeoform.widget",
+        "name": "widget",
+        "type": {
+          ".class": "AnyType",
+          "missing_import_name": "c2cgeoform.widget",
+          "source_any": null,
+          "type_of_any": 3
+        }
+      }
+    }
+  },
+  "path": "/home/sbrunner/workspace/c2cgeoform/c2cgeoform/__init__.py"
+}
