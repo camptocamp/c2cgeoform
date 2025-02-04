@@ -8,7 +8,8 @@
 
 *.egg-info
 
-.build/
-build/
-dist/
-docs/_build
+/.build/
+/build/
+/dist/
+/docs/_build
+/.mypy_cache/
