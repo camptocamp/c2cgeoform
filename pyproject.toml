@@ -1,8 +1,12 @@
+[tool.ruff]
+target-version = "py311"
+line-length = 110
+
+[tool.ruff.lint.pydocstyle]
+convention = "numpy"
+
 [tool.pytest.ini_options]
 testpaths = ["c2cgeoform/tests"]
-
-[tool.ruff]
-target-version = "py39"
 
 [tool.poetry]
 name = "c2cgeoform"
@@ -10,11 +14,15 @@ version = "0.0.0"
 description = "c2cgeoform"
 readme = "README.md"
 classifiers = [
-  "Programming Language :: Python",
-  "Framework :: Pyramid",
-  "Topic :: Internet :: WWW/HTTP",
-  "Topic :: Internet :: WWW/HTTP :: WSGI :: Application",
-  "Typing :: Typed",
+    'Framework :: Pyramid',
+    'Programming Language :: Python',
+    'Programming Language :: Python :: 3',
+    'Programming Language :: Python :: 3.11',
+    'Programming Language :: Python :: 3.12',
+    'Programming Language :: Python :: 3.13',
+    'Topic :: Internet :: WWW/HTTP',
+    'Topic :: Internet :: WWW/HTTP :: WSGI :: Application',
+    'Typing :: Typed',
 ]
 authors = ["Camptocamp <info@camptocamp.com>"]
 repository = "https://github.com/camptocamp/c2cgeoform"
@@ -60,7 +68,7 @@ requests = "2.32.3"
 prospector = { version = "1.14.1", extras = [
   "with-bandit",
   "with-mypy",
-  "with-pyroma", "with_ruff"
+  "with-pyroma", "with_ruff", "with_pyroma"
 ] }
 prospector-profile-duplicated = "1.10.4"
 prospector-profile-utils = "1.17.0"
@@ -75,21 +83,15 @@ cookiecutter = "2.6.0"
 psycopg2 = ["psycopg2"]
 psycopg2-binary = ["psycopg2-binary"]
 
-[build-system]
-requires = [
-  "poetry-core>=1.0.0",
-  "poetry-dynamic-versioning",
-  "poetry-plugin-tweak-dependencies-version"
-]
-build-backend = "poetry.core.masonry.api"
-
 [tool.poetry-dynamic-versioning]
 enable = true
 vcs = "git"
 pattern = "^(?P<base>\\d+(\\.\\d+)*)"
 format-jinja = """
-{%- if env.get("VERSION_TYPE") == "version_branch" -%}
-{{serialize_pep440(bump_version(base, 1 if env.get("IS_MASTER") == "TRUE" else 2), dev=distance)}}
+{%- if env.get("VERSION_TYPE") == "default_branch" -%}
+{{serialize_pep440(bump_version(base, 1), dev=distance)}}
+{%- elif env.get("VERSION_TYPE") == "stabilization_branch" -%}
+{{serialize_pep440(bump_version(base, 2), dev=distance)}}
 {%- elif distance == 0 -%}
 {{serialize_pep440(base)}}
 {%- else -%}
@@ -99,3 +101,11 @@ format-jinja = """
 
 [tool.poetry-plugin-tweak-dependencies-version]
 default = "present"
+
+[build-system]
+requires = [
+  "poetry-core>=1.0.0",
+  "poetry-dynamic-versioning",
+  "poetry-plugin-tweak-dependencies-version"
+]
+build-backend = "poetry.core.masonry.api"
