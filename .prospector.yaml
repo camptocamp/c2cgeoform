@@ -3,17 +3,19 @@ inherits:
   - utils:base
   - utils:no-design-checks
   - utils:c2cwsgiutils
-  - utils:unsafe
+  - utils:fix
 
 ignore-paths:
   - c2cgeoform/scaffolds/c2cgeoform/
+
+mypy:
+  options:
+    python-version: '3.11'
 
 ruff:
   disable:
     - D101 # Missing docstring in public class
     - D102 # Missing docstring in public method
     - D107 # Missing docstring in `__init__`
-
-mypy:
   options:
-    python_version: '3.11'
+    target-version: py311

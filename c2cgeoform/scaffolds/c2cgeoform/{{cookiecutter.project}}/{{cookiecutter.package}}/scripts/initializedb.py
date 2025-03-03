@@ -52,11 +52,11 @@ def init_db(connection, force=False):
 
 def schema_exists(connection, schema_name):
     sql = sqlalchemy.text(
-        """
+        f"""
 SELECT count(*) AS count
 FROM information_schema.schemata
-WHERE schema_name = '{}';
-""".format(schema_name)
+WHERE schema_name = '{schema_name}';
+"""
     )
     result = connection.execute(sql)
     row = result.first()
