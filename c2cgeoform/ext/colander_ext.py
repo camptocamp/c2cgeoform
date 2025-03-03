@@ -64,9 +64,7 @@ class Geometry(SchemaType):  # type: ignore[misc]
                 always_xy=True,
             ).transform
 
-    def serialize(
-        self, node: Any, appstruct: colander._null | WKBElement
-    ) -> colander._null | str:
+    def serialize(self, node: Any, appstruct: colander._null | WKBElement) -> colander._null | str:
         """
         Serialize a `WKBElement` into a GeoJSON string.
 

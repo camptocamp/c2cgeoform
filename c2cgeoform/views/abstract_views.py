@@ -53,7 +53,13 @@ try it again.
 
 
 def model_attr_info(
-    attr: str | sqlalchemy.orm.attributes.InstrumentedAttribute[Any] | sqlalchemy.orm.relationships.Relationship[Any] | sqlalchemy.orm.relationships.RelationshipProperty[Any] | sqlalchemy.sql.schema.Column[Any] | sqlalchemy.sql.elements.NamedColumn[Any] | None,
+    attr: str
+    | sqlalchemy.orm.attributes.InstrumentedAttribute[Any]
+    | sqlalchemy.orm.relationships.Relationship[Any]
+    | sqlalchemy.orm.relationships.RelationshipProperty[Any]
+    | sqlalchemy.sql.schema.Column[Any]
+    | sqlalchemy.sql.elements.NamedColumn[Any]
+    | None,
     *keys: str,
     default: Any = None,
 ) -> Any:
@@ -100,8 +106,12 @@ class ListField(Generic[T]):
         key: str | None = None,
         label: str | None = None,
         renderer: Callable[[T], JSON] | None = None,
-        sort_column: sqlalchemy.sql.elements.ColumnElement[Any] | sqlalchemy.orm.attributes.InstrumentedAttribute[Any] | None = None,
-        filter_column: sqlalchemy.sql.elements.ColumnElement[Any] | sqlalchemy.orm.attributes.InstrumentedAttribute[Any] | None = None,
+        sort_column: sqlalchemy.sql.elements.ColumnElement[Any]
+        | sqlalchemy.orm.attributes.InstrumentedAttribute[Any]
+        | None = None,
+        filter_column: sqlalchemy.sql.elements.ColumnElement[Any]
+        | sqlalchemy.orm.attributes.InstrumentedAttribute[Any]
+        | None = None,
         visible: bool = True,
     ):
         self._attr = _getattr(model, attr)
@@ -558,9 +568,7 @@ class AbstractViews(Generic[T]):
             ):
                 if prop.cascade.delete:
                     if not prop.uselist:
-                        duplicate: T | list[T] = self.copy_members_if_duplicates(
-                            getattr(source, prop.key)
-                        )
+                        duplicate: T | list[T] = self.copy_members_if_duplicates(getattr(source, prop.key))
                     else:
                         duplicate = [self.copy_members_if_duplicates(m) for m in getattr(source, prop.key)]
                 else:
