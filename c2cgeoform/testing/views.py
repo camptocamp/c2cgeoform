@@ -93,7 +93,7 @@ class AbstractViewsTests:
     def _check_sequence(self, sequence: Any, expected: Any) -> None:
         seq_items = sequence.select(".deform-seq-item")
         assert len(expected) == len(seq_items)
-        for seq_item, exp in zip(seq_items, expected):
+        for seq_item, exp in zip(seq_items, expected, strict=False):
             self._check_mapping(seq_item, exp)
 
     def _check_mapping(self, mapping_item: Any, expected: list[JSONDict]) -> None:
@@ -119,7 +119,7 @@ class AbstractViewsTests:
                 assert exp["label"] == label_tag.getText().strip()
 
     def _check_select(self, select: Any, expected: list[JSONDict]) -> None:
-        for exp, option in zip(expected, select.find_all("option")):
+        for exp, option in zip(expected, select.find_all("option"), strict=False):
             if "text" in exp:
                 assert exp["text"] == option.text
             if "value" in exp:

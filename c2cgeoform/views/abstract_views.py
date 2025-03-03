@@ -1,9 +1,8 @@
 import logging
+from collections.abc import Callable
 from typing import (
     Any,
-    Callable,
     Generic,
-    Optional,
     TypedDict,
     TypeVar,
     Union,
@@ -54,16 +53,7 @@ try it again.
 
 
 def model_attr_info(
-    attr: Optional[
-        Union[
-            str,
-            sqlalchemy.orm.attributes.InstrumentedAttribute[Any],
-            sqlalchemy.orm.relationships.Relationship[Any],
-            sqlalchemy.orm.relationships.RelationshipProperty[Any],
-            sqlalchemy.sql.schema.Column[Any],
-            sqlalchemy.sql.elements.NamedColumn[Any],
-        ]
-    ],
+    attr: str | sqlalchemy.orm.attributes.InstrumentedAttribute[Any] | sqlalchemy.orm.relationships.Relationship[Any] | sqlalchemy.orm.relationships.RelationshipProperty[Any] | sqlalchemy.sql.schema.Column[Any] | sqlalchemy.sql.elements.NamedColumn[Any] | None,
     *keys: str,
     default: Any = None,
 ) -> Any:
@@ -93,7 +83,7 @@ T = TypeVar("T", bound=type)
 
 
 def _getattr(
-    model: Optional[type[T]], attr: Optional[Union[sqlalchemy.schema.Column[Any], str]]
+    model: type[T] | None, attr: sqlalchemy.schema.Column[Any] | str | None
 ) -> sqlalchemy.schema.Column[Any]:
     if model is None:
         assert isinstance(attr, sqlalchemy.schema.Column)
@@ -105,23 +95,13 @@ def _getattr(
 class ListField(Generic[T]):
     def __init__(
         self,
-        model: Optional[type[T]] = None,
-        attr: Optional[str] = None,
-        key: Optional[str] = None,
-        label: Optional[str] = None,
-        renderer: Optional[Callable[[T], JSON]] = None,
-        sort_column: Optional[
-            Union[
-                sqlalchemy.sql.elements.ColumnElement[Any],
-                sqlalchemy.orm.attributes.InstrumentedAttribute[Any],
-            ]
-        ] = None,
-        filter_column: Optional[
-            Union[
-                sqlalchemy.sql.elements.ColumnElement[Any],
-                sqlalchemy.orm.attributes.InstrumentedAttribute[Any],
-            ]
-        ] = None,
+        model: type[T] | None = None,
+        attr: str | None = None,
+        key: str | None = None,
+        label: str | None = None,
+        renderer: Callable[[T], JSON] | None = None,
+        sort_column: sqlalchemy.sql.elements.ColumnElement[Any] | sqlalchemy.orm.attributes.InstrumentedAttribute[Any] | None = None,
+        filter_column: sqlalchemy.sql.elements.ColumnElement[Any] | sqlalchemy.orm.attributes.InstrumentedAttribute[Any] | None = None,
         visible: bool = True,
     ):
         self._attr = _getattr(model, attr)
@@ -145,7 +125,7 @@ class ListField(Generic[T]):
             return "Geometry"
         return str(value)
 
-    def id(self) -> Optional[str]:  # pylint: disable=invalid-name
+    def id(self) -> str | None:  # pylint: disable=invalid-name
         return self._key
 
     def label(self) -> str:
@@ -162,10 +142,7 @@ class ListField(Generic[T]):
 
     def sort_column(
         self,
-    ) -> Union[
-        sqlalchemy.sql.expression.ColumnElement[Any],
-        sqlalchemy.orm.attributes.InstrumentedAttribute[Any],
-    ]:
+    ) -> sqlalchemy.sql.expression.ColumnElement[Any] | sqlalchemy.orm.attributes.InstrumentedAttribute[Any]:
         assert self._sort_column is not None
         return self._sort_column
 
@@ -182,10 +159,10 @@ class ItemAction:
         self,
         name: str,
         url: str,
-        method: Union[bool, str] = False,
-        label: Optional[str] = None,
+        method: bool | str = False,
+        label: str | None = None,
         css_class: str = "",
-        icon: Optional[str] = None,
+        icon: str | None = None,
         confirmation: str = "",
     ) -> None:
         self._name = name
@@ -202,7 +179,7 @@ class ItemAction:
     def url(self) -> str:
         return self._url
 
-    def method(self) -> Union[bool, str]:
+    def method(self) -> bool | str:
         return self._method
 
     def label(self) -> str:
@@ -211,7 +188,7 @@ class ItemAction:
     def css_class(self) -> str:
         return self._css_class
 
-    def icon(self) -> Optional[str]:
+    def icon(self) -> str | None:
         return self._icon
 
     def confirmation(self) -> str:
@@ -267,7 +244,7 @@ class DeformDependencies:
 class ObjectResponse(TypedDict):
     title: str
     form: Form
-    form_render_args: Union[tuple[Any], list[Any]]
+    form_render_args: tuple[Any] | list[Any]
     form_render_kwargs: dict[str, Any]
     deform_dependencies: DeformDependencies
 
@@ -281,14 +258,14 @@ class DeleteResponse(TypedDict):
 
 
 class AbstractViews(Generic[T]):
-    _model: Optional[type[T]] = None  # sqlalchemy model
+    _model: type[T] | None = None  # sqlalchemy model
     _list_fields: list[ListField[T]] = []  # Fields in list
     _list_ordered_fields: list[
-        Union[sqlalchemy.sql.elements.ColumnClause[Any], sqlalchemy.sql.elements.ColumnElement[Any]]
+        sqlalchemy.sql.elements.ColumnClause[Any] | sqlalchemy.sql.elements.ColumnElement[Any]
     ] = []  # Fields in list used for default orderby
-    _id_field: Optional[str] = None  # Primary key
-    _geometry_field: Optional[str] = None  # Geometry field
-    _base_schema: Optional[type[T]] = None  # base colander schema
+    _id_field: str | None = None  # Primary key
+    _geometry_field: str | None = None  # Geometry field
+    _base_schema: type[T] | None = None  # base colander schema
 
     MSG_COL = {
         "submit_ok": UserMessage(_("Your submission has been taken into account."), "alert-success"),
@@ -297,9 +274,9 @@ class AbstractViews(Generic[T]):
 
     def __init__(self, request: pyramid.request.Request) -> None:
         self._request = request
-        self._schema: Optional[str] = None
-        self._appstruct: Optional[dict[str, Any]] = None
-        self._obj: Optional[T] = None
+        self._schema: str | None = None
+        self._appstruct: dict[str, Any] | None = None
+        self._obj: T | None = None
 
     def index(self) -> IndexResponse:
         return {
@@ -330,7 +307,7 @@ class AbstractViews(Generic[T]):
             _LOGGER.error(str(exception), exc_info=True)
             raise HTTPInternalServerError(_DB_ERR_MSG) from exception
 
-    def map(self, map_settings: Optional[JSONDict] = None) -> MapResponse:
+    def map(self, map_settings: JSONDict | None = None) -> MapResponse:
         map_settings = map_settings or {}
         map_options = {
             **default_map_settings,
@@ -438,7 +415,7 @@ class AbstractViews(Generic[T]):
             rows.append(row)
         return rows
 
-    def _form(self, schema: Optional[type[T]] = None, **kwargs: Any) -> Form:
+    def _form(self, schema: type[T] | None = None, **kwargs: Any) -> Form:
         schema = schema or self._base_schema
         assert schema is not None
         self._schema = schema.bind(request=self._request, dbsession=self._request.dbsession)  # type: ignore[attr-defined]
@@ -538,7 +515,7 @@ class AbstractViews(Generic[T]):
 
         return actions
 
-    def edit(self, schema: Optional[type[T]] = None, readonly: bool = False) -> ObjectResponse:
+    def edit(self, schema: type[T] | None = None, readonly: bool = False) -> ObjectResponse:
         obj = self._get_object()
         form = self._form(schema=schema, readonly=readonly)
         self._populate_widgets(form.schema)
@@ -565,7 +542,7 @@ class AbstractViews(Generic[T]):
             "deform_dependencies": form.get_widget_resources(),
         }
 
-    def copy_members_if_duplicates(self, source: T, excludes: Optional[list[str]] = None) -> T:
+    def copy_members_if_duplicates(self, source: T, excludes: list[str] | None = None) -> T:
         dest = cast(T, source.__class__())  # type: ignore[call-overload]
         insp = inspect(source.__class__)
 
@@ -581,7 +558,7 @@ class AbstractViews(Generic[T]):
             ):
                 if prop.cascade.delete:
                     if not prop.uselist:
-                        duplicate: Union[T, list[T]] = self.copy_members_if_duplicates(
+                        duplicate: T | list[T] = self.copy_members_if_duplicates(
                             getattr(source, prop.key)
                         )
                     else:
@@ -591,7 +568,7 @@ class AbstractViews(Generic[T]):
                 setattr(dest, prop.key, duplicate)
         return dest
 
-    def copy(self, src: T, excludes: Optional[list[str]] = None) -> ObjectResponse:
+    def copy(self, src: T, excludes: list[str] | None = None) -> ObjectResponse:
         # excludes only apply at first level
         form = self._form(action=self._request.route_url("c2cgeoform_item", id="new"))
         with self._request.dbsession.no_autoflush:

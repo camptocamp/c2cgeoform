@@ -1,5 +1,5 @@
 from functools import partial
-from typing import Any, Optional, cast
+from typing import Any, cast
 
 import colander
 import pyramid.request
@@ -99,7 +99,7 @@ class GeoFormManyToManySchemaNode(GeoFormSchemaNode):  # pylint: disable=abstrac
         Default to primary key name(s) only.
     """
 
-    def __init__(self, class_: type[Any], includes: Optional[list[str]], *args: Any, **kw: Any) -> None:
+    def __init__(self, class_: type[Any], includes: list[str] | None, *args: Any, **kw: Any) -> None:
         includes = [pk.name for pk in inspect(class_).primary_key]
         super().__init__(class_, includes, *args, **kw)
 

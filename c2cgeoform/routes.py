@@ -1,5 +1,5 @@
 import warnings
-from typing import Any, Optional
+from typing import Any
 
 import pyramid.config
 import pyramid.request
@@ -20,7 +20,7 @@ class Application:
     """
 
     def __init__(
-        self, name: str, models: list[tuple[str, type[Any]]], url_segment: Optional[str] = None
+        self, name: str, models: list[tuple[str, type[Any]]], url_segment: str | None = None
     ) -> None:
         self._name = name
         self._models = models
@@ -92,7 +92,7 @@ def add_c2cgeoform_application(
     config: pyramid.config.Configurator,
     name: str,
     models: list[tuple[str, type[Any]]],
-    url_segment: Optional[str] = None,
+    url_segment: str | None = None,
 ) -> None:
     """Add a c2cgeoform application."""
 
@@ -102,7 +102,7 @@ def add_c2cgeoform_application(
     config.action(("c2cgeoform_application", name), register_application)
 
 
-def get_application(request: pyramid.request.Request) -> Optional[Application]:
+def get_application(request: pyramid.request.Request) -> Application | None:
     """Get the current application."""
     return getattr(request, "_c2cgeoform_application", None)
 
@@ -143,7 +143,7 @@ def register_routes(config: pyramid.config.Configurator, multi_application: bool
 
 
 def register_models(
-    config: pyramid.config.Configurator, models: type[Any], url_segment: Optional[str] = None
+    config: pyramid.config.Configurator, models: type[Any], url_segment: str | None = None
 ) -> None:
     """Deprecated, use config.add_c2cgeoform_application instead."""  # noqa: D401
     warnings.warn(
