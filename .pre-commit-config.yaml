@@ -33,7 +33,7 @@ repos:
       - id: workflows-require-timeout
       - id: poetry2-lock
         additional_dependencies:
-          - poetry==2.0.1 # pypi
+          - poetry==2.1.1 # pypi
   - repo: https://github.com/codespell-project/codespell
     rev: v2.2.6
     hooks:
@@ -50,8 +50,8 @@ repos:
     hooks:
       - id: prettier
         additional_dependencies:
-          - prettier@3.4.2 # npm
-          - prettier-plugin-sh@0.14.0 # npm
+          - prettier@3.5.3 # npm
+          - prettier-plugin-sh@0.15.0 # npm
           - prettier-plugin-toml@2.0.2 # npm
           - '@prettier/plugin-xml@0.12.0' # npm
   - repo: https://github.com/shellcheck-py/shellcheck-py
@@ -95,7 +95,7 @@ repos:
           - --output-format=pylint
         additional_dependencies:
           - prospector-profile-duplicated==1.10.4 # pypi
-          - prospector-profile-utils==1.17.0 # pypi
+          - prospector-profile-utils==1.21.9 # pypi
           - ruff==0.9.9 # pypi
   - repo: https://github.com/sbrunner/jsonschema-validator
     rev: 0.1.0
