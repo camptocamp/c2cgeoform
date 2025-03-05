@@ -8,6 +8,6 @@ from ..models.c2cgeoform_demo import Address
 def addresses(request):
     if "term" not in request.params:
         return HTTPBadRequest()
-    term = "%%%s%%" % request.params["term"]
+    term = "%{}%".format(request.params["term"])
     query = request.dbsession.query(Address).filter(Address.label.ilike(term))
     return [{"id": addr.id, "label": addr.label} for addr in query]

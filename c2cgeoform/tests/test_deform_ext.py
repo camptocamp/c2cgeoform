@@ -1,3 +1,4 @@
+import pytest
 from colander import null
 
 from c2cgeoform.models import DBSession
@@ -16,11 +17,11 @@ class TestRelationSelectWidget(DatabaseTestCase):
         field = DummyField(None, renderer=renderer)
         widget.populate(DBSession, None)
         widget.serialize(field, null)
-        self.assertEqual(renderer.kw["values"], _convert_values(widget.values))
+        assert renderer.kw["values"] == _convert_values(widget.values)
 
         first_value = renderer.kw["values"][0]
-        self.assertEqual("0", first_value[0])
-        self.assertEqual("Worker", first_value[1])
+        assert "0" == first_value[0]
+        assert "Worker" == first_value[1]
 
     def test_serialize_default_value(self):
         from c2cgeoform.ext.deform_ext import RelationSelectWidget
@@ -31,17 +32,17 @@ class TestRelationSelectWidget(DatabaseTestCase):
         field = DummyField(None, renderer=renderer)
         widget.populate(DBSession, None)
         widget.serialize(field, null)
-        self.assertEqual(renderer.kw["values"], _convert_values(widget.values))
+        assert renderer.kw["values"] == _convert_values(widget.values)
 
         # first the default value
         first_value = renderer.kw["values"][0]
-        self.assertEqual("", first_value[0])
-        self.assertEqual("- Select -", first_value[1])
+        assert "" == first_value[0]
+        assert "- Select -" == first_value[1]
 
         # then the values loaded from the db
         snd_value = renderer.kw["values"][1]
-        self.assertEqual("0", snd_value[0])
-        self.assertEqual("Worker", snd_value[1])
+        assert "0" == snd_value[0]
+        assert "Worker" == snd_value[1]
 
     def test_serialize_order_by(self):
         from c2cgeoform.ext.deform_ext import RelationSelectWidget
@@ -52,11 +53,11 @@ class TestRelationSelectWidget(DatabaseTestCase):
         field = DummyField(None, renderer=renderer)
         widget.populate(DBSession, None)
         widget.serialize(field, null)
-        self.assertEqual(renderer.kw["values"], _convert_values(widget.values))
+        assert renderer.kw["values"] == _convert_values(widget.values)
 
         first_value = renderer.kw["values"][0]
-        self.assertEqual("3", first_value[0])
-        self.assertEqual("Director", first_value[1])
+        assert "3" == first_value[0]
+        assert "Director" == first_value[1]
 
 
 class TestRelationSelect2Widget(DatabaseTestCase):
@@ -69,17 +70,17 @@ class TestRelationSelect2Widget(DatabaseTestCase):
         field = DummyField(None, renderer=renderer)
         widget.populate(DBSession, None)
         widget.serialize(field, null)
-        self.assertEqual(renderer.kw["values"], _convert_values(widget.values))
+        assert renderer.kw["values"] == _convert_values(widget.values)
 
         # first the default value
         first_value = renderer.kw["values"][0]
-        self.assertEqual("", first_value[0])
-        self.assertEqual("- Select -", first_value[1])
+        assert "" == first_value[0]
+        assert "- Select -" == first_value[1]
 
         # then the values loaded from the db
         snd_value = renderer.kw["values"][1]
-        self.assertEqual("0", snd_value[0])
-        self.assertEqual("Worker", snd_value[1])
+        assert "0" == snd_value[0]
+        assert "Worker" == snd_value[1]
 
 
 class TestRelationRadioChoiceWidget(DatabaseTestCase):
@@ -92,12 +93,12 @@ class TestRelationRadioChoiceWidget(DatabaseTestCase):
         field = DummyField(None, renderer=renderer)
         widget.populate(DBSession, None)
         widget.serialize(field, null)
-        self.assertEqual(renderer.kw["values"], _convert_values(widget.values))
+        assert renderer.kw["values"] == _convert_values(widget.values)
 
         # first the default value
         first_value = renderer.kw["values"][0]
-        self.assertEqual("0", first_value[0])
-        self.assertEqual("Worker", first_value[1])
+        assert "0" == first_value[0]
+        assert "Worker" == first_value[1]
 
 
 class TestRelationCheckBoxListWidget(DatabaseTestCase):
@@ -110,12 +111,12 @@ class TestRelationCheckBoxListWidget(DatabaseTestCase):
         field = _get_field("tags", renderer)
         widget.populate(DBSession, None)
         widget.serialize(field, null)
-        self.assertEqual(renderer.kw["values"], _convert_values(widget.values))
-        self.assertEqual(renderer.kw["cstruct"], [])
+        assert renderer.kw["values"] == _convert_values(widget.values)
+        assert renderer.kw["cstruct"] == []
 
         first_value = renderer.kw["values"][0]
-        self.assertEqual("0", first_value[0])
-        self.assertEqual("Tag A", first_value[1])
+        assert "0" == first_value[0]
+        assert "Tag A" == first_value[1]
 
     def test_serialize(self):
         from c2cgeoform.ext.deform_ext import RelationCheckBoxListWidget
@@ -128,12 +129,12 @@ class TestRelationCheckBoxListWidget(DatabaseTestCase):
         objs = [{"id": "0"}, {"id": "2"}]
 
         widget.serialize(field, objs)
-        self.assertEqual(renderer.kw["values"], _convert_values(widget.values))
-        self.assertEqual(renderer.kw["cstruct"], ["0", "2"])
+        assert renderer.kw["values"] == _convert_values(widget.values)
+        assert renderer.kw["cstruct"] == ["0", "2"]
 
         first_value = renderer.kw["values"][0]
-        self.assertEqual("0", first_value[0])
-        self.assertEqual("Tag A", first_value[1])
+        assert "0" == first_value[0]
+        assert "Tag A" == first_value[1]
 
     def test_serialize_wrong_mapping(self):
         from c2cgeoform.ext.deform_ext import RelationCheckBoxListWidget
@@ -145,7 +146,7 @@ class TestRelationCheckBoxListWidget(DatabaseTestCase):
         widget.populate(DBSession, None)
         objs = [{"bad_column": "101"}, {"bad_column": "102"}]
 
-        with self.assertRaises(KeyError):
+        with pytest.raises(KeyError):
             widget.serialize(field, objs)
 
     def test_deserialize_empty(self):
@@ -157,7 +158,7 @@ class TestRelationCheckBoxListWidget(DatabaseTestCase):
         field = _get_field("tags", renderer)
         widget.populate(DBSession, None)
         result = widget.deserialize(field, null)
-        self.assertEqual(result, [])
+        assert result == []
 
     def test_deserialize(self):
         from c2cgeoform.ext.deform_ext import RelationCheckBoxListWidget
@@ -168,7 +169,7 @@ class TestRelationCheckBoxListWidget(DatabaseTestCase):
         field = _get_field("tags", renderer)
         widget.populate(DBSession, None)
         result = widget.deserialize(field, ["1", "2"])
-        self.assertEqual(result, [{"id": "1"}, {"id": "2"}])
+        assert result == [{"id": "1"}, {"id": "2"}]
 
 
 class TestRelationMultiSelect2Widget(DatabaseTestCase):
@@ -181,12 +182,12 @@ class TestRelationMultiSelect2Widget(DatabaseTestCase):
         field = _get_field("tags", renderer)
         widget.populate(DBSession, None)
         widget.serialize(field, null)
-        self.assertEqual(renderer.kw["values"], _convert_values(widget.values))
-        self.assertEqual(renderer.kw["cstruct"], [])
+        assert renderer.kw["values"] == _convert_values(widget.values)
+        assert renderer.kw["cstruct"] == []
 
         first_value = renderer.kw["values"][0]
-        self.assertEqual("0", first_value[0])
-        self.assertEqual("Tag A", first_value[1])
+        assert "0" == first_value[0]
+        assert "Tag A" == first_value[1]
 
     def test_serialize(self):
         from c2cgeoform.ext.deform_ext import RelationSelect2Widget
@@ -199,12 +200,12 @@ class TestRelationMultiSelect2Widget(DatabaseTestCase):
         objs = [{"id": "0"}, {"id": "2"}]
 
         widget.serialize(field, objs)
-        self.assertEqual(renderer.kw["values"], _convert_values(widget.values))
-        self.assertEqual(renderer.kw["cstruct"], ["0", "2"])
+        assert renderer.kw["values"] == _convert_values(widget.values)
+        assert renderer.kw["cstruct"] == ["0", "2"]
 
         first_value = renderer.kw["values"][0]
-        self.assertEqual("0", first_value[0])
-        self.assertEqual("Tag A", first_value[1])
+        assert "0" == first_value[0]
+        assert "Tag A" == first_value[1]
 
     def test_serialize_wrong_mapping(self):
         from c2cgeoform.ext.deform_ext import RelationSelect2Widget
@@ -216,7 +217,7 @@ class TestRelationMultiSelect2Widget(DatabaseTestCase):
         widget.populate(DBSession, None)
         objs = [{"bad_column": "101"}, {"bad_column": "102"}]
 
-        with self.assertRaises(KeyError):
+        with pytest.raises(KeyError):
             widget.serialize(field, objs)
 
     def test_deserialize_empty(self):
@@ -228,7 +229,7 @@ class TestRelationMultiSelect2Widget(DatabaseTestCase):
         field = _get_field("tags", renderer)
         widget.populate(DBSession, None)
         result = widget.deserialize(field, null)
-        self.assertEqual(result, [])
+        assert result == []
 
     def test_deserialize(self):
         from c2cgeoform.ext.deform_ext import RelationSelect2Widget
@@ -239,7 +240,7 @@ class TestRelationMultiSelect2Widget(DatabaseTestCase):
         field = _get_field("tags", renderer)
         widget.populate(DBSession, None)
         result = widget.deserialize(field, ["1", "2"])
-        self.assertEqual(result, [{"id": "1"}, {"id": "2"}])
+        assert result == [{"id": "1"}, {"id": "2"}]
 
 
 def _convert_values(values_tuple):
@@ -262,7 +263,7 @@ def _get_field(name, renderer):
 class DummyRenderer:
     """A dummy renderer, borrowed from the deform tests."""
 
-    def __init__(self, result=""):
+    def __init__(self, result="") -> None:
         self.result = result
 
     def __call__(self, template, **kw):
@@ -285,7 +286,7 @@ class DummyField:
     required = True
     cstruct = null
 
-    def __init__(self, schema=None, renderer=None, translations=None):
+    def __init__(self, schema=None, renderer=None, translations=None) -> None:
         self.schema = schema
         self.renderer = renderer
         self.translations = translations

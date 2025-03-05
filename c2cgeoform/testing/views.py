@@ -29,13 +29,16 @@ class AbstractViewsTests:
         assert title == link.getText()
 
     def check_grid_headers(
-        self, resp: pyramid.response.Response, expected_col_headers: JSONList, check_actions: bool = True
+        self,
+        resp: pyramid.response.Response,
+        expected_col_headers: JSONList,
+        check_actions: bool = True,
     ) -> None:
         pretty_printer = pprint.PrettyPrinter(indent=4)
         effective_cols = [
             (th.attrs["data-field"], th.getText(), th.attrs["data-sortable"]) for th in resp.html.select("th")
         ]
-        expected_col_headers = [[x[0], x[1], len(x) == 3 and x[2] or "true"] for x in expected_col_headers]  # type: ignore[arg-type,index]
+        expected_col_headers = [[x[0], x[1], (len(x) == 3 and x[2]) or "true"] for x in expected_col_headers]  # type: ignore[arg-type,index]
         assert expected_col_headers == effective_cols, str.format(  # type: ignore[comparison-overlap]
             "\n\n{}\n\n differs from \n\n{}",
             pretty_printer.pformat(expected_col_headers),
@@ -80,7 +83,7 @@ class AbstractViewsTests:
             field = form.get(name, index=i)
             checkbox = form.html.select_one(f"#{field.id}")
             label = form.html.select_one(f"label[for={field.id}]")
-            assert exp["label"] == list(label.stripped_strings)[0]
+            assert exp["label"] == next(iter(label.stripped_strings))
             assert exp["value"] == checkbox["value"]
             assert exp["checked"] == field.checked
 

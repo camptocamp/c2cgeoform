@@ -1,4 +1,4 @@
-from typing import Any, Union
+from typing import Any
 
 import pyramid.request
 import pyramid.response
@@ -31,7 +31,7 @@ class ApplicationViewPredicate:
         class AdminViews():
     """
 
-    def __init__(self, application: str, config: Any):
+    def __init__(self, application: str, config: Any) -> None:
         del config
         self._application = application
 
@@ -56,7 +56,7 @@ class TableViewPredicate:
         class AdminUserViews():
     """
 
-    def __init__(self, table: str, config: Any):
+    def __init__(self, table: str, config: Any) -> None:
         del config
         self._table = table
 

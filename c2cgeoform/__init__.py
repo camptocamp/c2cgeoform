@@ -91,7 +91,9 @@ def init_deform(root_package: str) -> None:
 
     registry = widget.default_resource_registry
     registry.set_js_resources(
-        "typeahead", "0.10.5", f"{node_modules_root}/typeahead.js/dist/typeahead.bundle.min.js"
+        "typeahead",
+        "0.10.5",
+        f"{node_modules_root}/typeahead.js/dist/typeahead.bundle.min.js",
     )
     registry.set_css_resources("typeahead", "0.10.5", "c2cgeoform:static/js/typeaheadjs.css")
 

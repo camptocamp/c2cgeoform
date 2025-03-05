@@ -22,18 +22,18 @@ class TestDirectives(TestCase):
         config = Configurator()
         config.include("c2cgeoform.routes")
         config.add_c2cgeoform_application("app", models=[])
-        self.assertEqual(0, len(config.registry["c2cgeoform_applications"]))
+        assert 0 == len(config.registry["c2cgeoform_applications"])
         config.commit()
         registered_applications = config.registry["c2cgeoform_applications"]
-        self.assertEqual(1, len(registered_applications))
-        self.assertEqual("app", registered_applications[0].name())
+        assert 1 == len(registered_applications)
+        assert "app" == registered_applications[0].name()
 
     def test_add_c2cgeoform_application_conflict(self):
         config = Configurator()
         config.include("c2cgeoform.routes")
         config.add_c2cgeoform_application("app", models=[])
         config.add_c2cgeoform_application("app", models=[])
-        with self.assertRaises(ConfigurationConflictError):
+        with pytest.raises(ConfigurationConflictError):
             config.commit()
 
 
@@ -49,7 +49,7 @@ class TestApplicationRoutePredicate(TestCase):
             pred = ApplicationRoutePredicate(config, "anything")
             context = {"match": {"application": "not_registered_application"}}
             request = testing.DummyRequest()
-            self.assertFalse(pred(context, request))
+            assert not pred(context, request)
 
     def test_match(self):
         with testing.testConfig() as config:
@@ -57,12 +57,12 @@ class TestApplicationRoutePredicate(TestCase):
             pred = ApplicationRoutePredicate(config, "anything")
             context = {"match": {"application": "app"}}
             request = testing.DummyRequest()
-            self.assertTrue(pred(context, request))
+            assert pred(context, request)
 
             # We should have matched application in request.application
             application = get_application(request)
-            self.assertTrue(isinstance(application, Application))
-            self.assertEqual("app", application.name())
+            assert isinstance(application, Application)
+            assert "app" == application.name()
 
     def test_url_segment_not_match(self):
         with testing.testConfig() as config:
@@ -70,7 +70,7 @@ class TestApplicationRoutePredicate(TestCase):
             pred = ApplicationRoutePredicate(config, "anything")
             context = {"match": {"application": "app"}}
             request = testing.DummyRequest()
-            self.assertFalse(pred(context, request))
+            assert not pred(context, request)
 
     def test_url_segment_match(self):
         with testing.testConfig() as config:
@@ -78,12 +78,12 @@ class TestApplicationRoutePredicate(TestCase):
             pred = ApplicationRoutePredicate(config, "anything")
             context = {"match": {"application": "some_segment_url"}}
             request = testing.DummyRequest()
-            self.assertTrue(pred(context, request))
+            assert pred(context, request)
 
             # We should have matched application in request.c2cgeoform_application
             application = get_application(request)
-            self.assertTrue(isinstance(application, Application))
-            self.assertEqual("app", application.name())
+            assert isinstance(application, Application)
+            assert "app" == application.name()
 
 
 class TestPregenerator(TestCase):
@@ -94,7 +94,7 @@ class TestPregenerator(TestCase):
             config.commit()
             request = testing.DummyRequest()
             request.matchdict = {"application": "app", "table": "table"}
-            self.assertEqual("http://example.com/app/table", request.route_url("c2cgeoform_index"))
+            assert "http://example.com/app/table" == request.route_url("c2cgeoform_index")
 
 
 class TestSingleApp(TestCase):
@@ -113,12 +113,12 @@ class TestSingleApp(TestCase):
             routes_mapper = config.registry.queryUtility(IRoutesMapper)
             info = routes_mapper(request)
             match, route = info["match"], info["route"]
-            self.assertEqual("c2cgeoform_index", route.name)
-            self.assertEqual("mytable", match["table"])
+            assert "c2cgeoform_index" == route.name
+            assert "mytable" == match["table"]
 
             # We should have the single application in request.c2cgeoform_application
             application = get_application(request)
-            self.assertTrue(isinstance(application, Application))
-            self.assertEqual("mytable", application.tables()[0]["key"])
+            assert isinstance(application, Application)
+            assert "mytable" == application.tables()[0]["key"]
 
-            self.assertEqual("http://example.com/table", request.route_url("c2cgeoform_index", table="table"))
+            assert "http://example.com/table" == request.route_url("c2cgeoform_index", table="table")

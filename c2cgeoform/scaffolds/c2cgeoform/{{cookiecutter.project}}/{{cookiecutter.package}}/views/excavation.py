@@ -71,13 +71,14 @@ class ExcavationViews(AbstractViews[T]):
         return super().grid()
 
     def _grid_actions(self):
-        return super()._grid_actions() + [
+        return [
+            *super()._grid_actions(),
             ItemAction(
                 name="action_map",
                 label=_("Map"),
                 css_class="btn btn-primary btn-map",
                 url=self._request.route_url("c2cgeoform_map"),
-            )
+            ),
         ]
 
     def _item_actions(self, item, readonly=False):

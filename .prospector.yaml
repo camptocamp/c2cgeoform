@@ -17,5 +17,7 @@ ruff:
     - D101 # Missing docstring in public class
     - D102 # Missing docstring in public method
     - D107 # Missing docstring in `__init__`
+    - ARG002 # Unused method argument
+    - ARG005 # Unused lambda argument
   options:
     target-version: py311

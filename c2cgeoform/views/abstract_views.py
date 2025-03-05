@@ -2,6 +2,7 @@ import logging
 from collections.abc import Callable
 from typing import (
     Any,
+    ClassVar,
     Generic,
     TypedDict,
     TypeVar,
@@ -69,13 +70,11 @@ def model_attr_info(
 
     assert isinstance(
         attr,
-        (
-            sqlalchemy.orm.attributes.InstrumentedAttribute,
-            sqlalchemy.orm.relationships.Relationship,
-            sqlalchemy.orm.relationships.RelationshipProperty,
-            sqlalchemy.sql.schema.Column,
-            sqlalchemy.sql.elements.NamedColumn,
-        ),
+        sqlalchemy.orm.attributes.InstrumentedAttribute
+        | sqlalchemy.orm.relationships.Relationship
+        | sqlalchemy.orm.relationships.RelationshipProperty
+        | sqlalchemy.sql.schema.Column
+        | sqlalchemy.sql.elements.NamedColumn,
     ), type(attr)
     value = attr.info
     for key in keys:
@@ -89,7 +88,8 @@ T = TypeVar("T", bound=type)
 
 
 def _getattr(
-    model: type[T] | None, attr: sqlalchemy.schema.Column[Any] | str | None
+    model: type[T] | None,
+    attr: sqlalchemy.schema.Column[Any] | str | None,
 ) -> sqlalchemy.schema.Column[Any]:
     if model is None:
         assert isinstance(attr, sqlalchemy.schema.Column)
@@ -113,7 +113,7 @@ class ListField(Generic[T]):
         | sqlalchemy.orm.attributes.InstrumentedAttribute[Any]
         | None = None,
         visible: bool = True,
-    ):
+    ) -> None:
         self._attr = _getattr(model, attr)
         self._key = key or self._attr.key
         self._label = label or model_attr_info(self._attr, "colanderalchemy", "title") or self._key
@@ -259,7 +259,7 @@ class ObjectResponse(TypedDict):
     deform_dependencies: DeformDependencies
 
 
-SaveResponse = Union[HTTPFound, ObjectResponse]
+SaveResponse = Union[HTTPFound, ObjectResponse]  # noqa: UP007
 
 
 class DeleteResponse(TypedDict):
@@ -268,16 +268,15 @@ class DeleteResponse(TypedDict):
 
 
 class AbstractViews(Generic[T]):
-    _model: type[T] | None = None  # sqlalchemy model
-    _list_fields: list[ListField[T]] = []  # Fields in list
-    _list_ordered_fields: list[
-        sqlalchemy.sql.elements.ColumnClause[Any] | sqlalchemy.sql.elements.ColumnElement[Any]
+    _model: ClassVar[type[T] | None] = None  # type: ignore[misc] # sqlalchemy model
+    _list_fields: ClassVar[list[ListField[T]]] = []  # type: ignore[misc] # Fields in list
+    _list_ordered_fields: ClassVar[
+        list[sqlalchemy.sql.elements.ColumnClause[Any] | sqlalchemy.sql.elements.ColumnElement[Any]]
     ] = []  # Fields in list used for default orderby
     _id_field: str | None = None  # Primary key
     _geometry_field: str | None = None  # Geometry field
     _base_schema: type[T] | None = None  # base colander schema
-
-    MSG_COL = {
+    MSG_COL: ClassVar[dict[str, UserMessage]] = {
         "submit_ok": UserMessage(_("Your submission has been taken into account."), "alert-success"),
         "copy_ok": UserMessage(_("Please check that the copy fits before submitting."), "alert-info"),
     }
@@ -288,7 +287,7 @@ class AbstractViews(Generic[T]):
         self._appstruct: dict[str, Any] | None = None
         self._obj: T | None = None
 
-    def index(self) -> IndexResponse:
+    def index(self) -> IndexResponse[T]:
         return {
             "grid_actions": self._grid_actions(),
             "list_fields": self._list_fields,
@@ -314,28 +313,26 @@ class AbstractViews(Generic[T]):
 
             return {"rows": self._grid_rows(query, offset, limit), "total": query.count()}
         except DBAPIError as exception:
-            _LOGGER.error(str(exception), exc_info=True)
+            _LOGGER.exception("DBAPIError")
             raise HTTPInternalServerError(_DB_ERR_MSG) from exception
 
     def map(self, map_settings: JSONDict | None = None) -> MapResponse:
         map_settings = map_settings or {}
         map_options = {
             **default_map_settings,
-            **{
-                "url": self._request.route_url(
-                    "c2cgeoform_geojson",
-                    _query={
-                        "srid": map_settings.get("srid", default_map_settings["srid"]),
-                    },
-                ),
-            },
+            "url": self._request.route_url(
+                "c2cgeoform_geojson",
+                _query={
+                    "srid": map_settings.get("srid", default_map_settings["srid"]),
+                },
+            ),
             **map_settings,
         }
         return {
             "map_options": {
                 key: (self._request.translate(value) if isinstance(value, TranslationString) else value)
                 for key, value in map_options.items()
-            }
+            },
         }
 
     def geojson(self) -> geojson.FeatureCollection:
@@ -345,7 +342,7 @@ class AbstractViews(Generic[T]):
         srid = int(self._request.params.get("srid", 3857))
 
         query = self._base_query().add_column(
-            getattr(self._model, self._geometry_field).ST_Transform(srid).label("_geometry")
+            getattr(self._model, self._geometry_field).ST_Transform(srid).label("_geometry"),
         )
 
         features: list[geojson.Feature] = []
@@ -357,7 +354,7 @@ class AbstractViews(Generic[T]):
                     id=getattr(entity, self._id_field),
                     geometry=to_shape(geometry) if geometry is not None else None,
                     properties={f.id(): f.value(entity) for f in self._list_fields},
-                )
+                ),
             )
         return FeatureCollection(features)
 
@@ -365,16 +362,17 @@ class AbstractViews(Generic[T]):
         return cast(sqlalchemy.orm.query.Query[T], self._request.dbsession.query(self._model))
 
     def _filter_query(
-        self, query: sqlalchemy.orm.query.Query[T], search_phrase: str
+        self,
+        query: sqlalchemy.orm.query.Query[T],
+        search_phrase: str,
     ) -> sqlalchemy.orm.query.Query[T]:
         if search_phrase != "":
             search_expr = "%" + "%".join(search_phrase.split()) + "%"
 
             # create `ilike` filters for every list text field
-            filters = []
-            for field in self._list_fields:
-                if field.filtrable():
-                    filters.append(field.filter_expression(search_expr))
+            filters = [
+                field.filter_expression(search_expr) for field in self._list_fields if field.filtrable()
+            ]
 
             # then join the filters into one `or` condition
             if len(filters) > 0:
@@ -383,7 +381,10 @@ class AbstractViews(Generic[T]):
         return query
 
     def _sort_query(
-        self, query: sqlalchemy.orm.query.Query[T], sort: str, order: str
+        self,
+        query: sqlalchemy.orm.query.Query[T],
+        sort: str,
+        order: str,
     ) -> sqlalchemy.orm.query.Query[T]:
         for field in self._list_fields:
             if field.id() == sort:
@@ -418,7 +419,7 @@ class AbstractViews(Generic[T]):
                 JSONDict,
                 {
                     f.id(): f.value(entity)
-                    for f in (self._list_fields + [ListField(self._model, self._id_field, key="_id_")])
+                    for f in ([*self._list_fields, ListField(self._model, self._id_field, key="_id_")])
                 },
             )
             row["actions"] = self._grid_item_actions(entity)
@@ -430,9 +431,7 @@ class AbstractViews(Generic[T]):
         assert schema is not None
         self._schema = schema.bind(request=self._request, dbsession=self._request.dbsession)  # type: ignore[attr-defined]
 
-        form = Form(self._schema, buttons=[Button(name="formsubmit", title=_("Submit"))], **kwargs)
-
-        return form
+        return Form(self._schema, buttons=[Button(name="formsubmit", title=_("Submit"))], **kwargs)
 
     def _populate_widgets(self, node: Any) -> None:
         """Populate ``deform_ext.RelationSelectMixin`` widgets."""
@@ -458,7 +457,7 @@ class AbstractViews(Generic[T]):
             .one_or_none()
         )
         if obj is None:
-            raise HTTPNotFound()
+            raise HTTPNotFound
         return cast(T, obj)
 
     def _model_config(self) -> JSONDict:
@@ -471,7 +470,7 @@ class AbstractViews(Generic[T]):
                 label=_("New"),
                 css_class="btn btn-primary btn-new",
                 url=self._request.route_url("c2cgeoform_item", id="new"),
-            )
+            ),
         ]
 
     def _grid_item_actions(self, item: T) -> JSONDict:
@@ -506,9 +505,10 @@ class AbstractViews(Generic[T]):
                     label=_("Duplicate"),
                     icon="glyphicon glyphicon-duplicate",
                     url=self._request.route_url(
-                        "c2cgeoform_item_duplicate", id=getattr(item, self._id_field)
+                        "c2cgeoform_item_duplicate",
+                        id=getattr(item, self._id_field),
                     ),
-                )
+                ),
             )
 
         if inspected_item.persistent and not readonly:
@@ -520,7 +520,7 @@ class AbstractViews(Generic[T]):
                     url=self._request.route_url("c2cgeoform_item", id=getattr(item, self._id_field)),
                     method="DELETE",
                     confirmation=_("Are your sure you want to delete this record ?"),
-                )
+                ),
             )
 
         return actions
@@ -564,7 +564,10 @@ class AbstractViews(Generic[T]):
                 if not is_primary_key and to_duplicate and not to_exclude:
                     setattr(dest, prop.key, getattr(source, prop.key))
             if isinstance(prop, RelationshipProperty) and model_attr_info(
-                prop, "c2cgeoform", "duplicate", default=True
+                prop,
+                "c2cgeoform",
+                "duplicate",
+                default=True,
             ):
                 if prop.cascade.delete:
                     if not prop.uselist:
@@ -624,7 +627,7 @@ class AbstractViews(Generic[T]):
                     action="edit",
                     id=self._obj.__getattribute__(self._id_field),  # type: ignore[arg-type] # pylint: disable=unnecessary-dunder-call
                     _query=[("msg_col", "submit_ok")],
-                )
+                ),
             )
         except ValidationFailure as exception:
             self._populate_widgets(form.schema)
