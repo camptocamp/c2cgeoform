@@ -1,5 +1,5 @@
 import warnings
-from typing import Any, Optional
+from typing import Any
 
 import pyramid.config
 import pyramid.request
@@ -20,7 +20,10 @@ class Application:
     """
 
     def __init__(
-        self, name: str, models: list[tuple[str, type[Any]]], url_segment: Optional[str] = None
+        self,
+        name: str,
+        models: list[tuple[str, type[Any]]],
+        url_segment: str | None = None,
     ) -> None:
         self._name = name
         self._models = models
@@ -52,7 +55,7 @@ class ApplicationRoutePredicate:
     Internal route predicate.
     """
 
-    def __init__(self, val: Any, config: pyramid.config.Configurator):
+    def __init__(self, val: Any, config: pyramid.config.Configurator) -> None:
         del config  # unused
         self._val = val
 
@@ -65,13 +68,15 @@ class ApplicationRoutePredicate:
         app_segment = context["match"].get("application", "default")
         for application in request.registry["c2cgeoform_applications"]:
             if application.url_segment() == app_segment:
-                request._c2cgeoform_application = application
+                request._c2cgeoform_application = application  # noqa: SLF001
                 return True
         return False
 
 
 def pregenerator(
-    request: pyramid.request.Request, elements: list[str], kwargs: dict[str, Any]
+    request: pyramid.request.Request,
+    elements: list[str],
+    kwargs: dict[str, Any],
 ) -> tuple[list[str], dict[str, Any]]:
     """
     Set the current matched route application and table segments as defaults for generating urls.
@@ -92,7 +97,7 @@ def add_c2cgeoform_application(
     config: pyramid.config.Configurator,
     name: str,
     models: list[tuple[str, type[Any]]],
-    url_segment: Optional[str] = None,
+    url_segment: str | None = None,
 ) -> None:
     """Add a c2cgeoform application."""
 
@@ -102,7 +107,7 @@ def add_c2cgeoform_application(
     config.action(("c2cgeoform_application", name), register_application)
 
 
-def get_application(request: pyramid.request.Request) -> Optional[Application]:
+def get_application(request: pyramid.request.Request) -> Application | None:
     """Get the current application."""
     return getattr(request, "_c2cgeoform_application", None)
 
@@ -143,7 +148,9 @@ def register_routes(config: pyramid.config.Configurator, multi_application: bool
 
 
 def register_models(
-    config: pyramid.config.Configurator, models: type[Any], url_segment: Optional[str] = None
+    config: pyramid.config.Configurator,
+    models: type[Any],
+    url_segment: str | None = None,
 ) -> None:
     """Deprecated, use config.add_c2cgeoform_application instead."""  # noqa: D401
     warnings.warn(
@@ -152,4 +159,4 @@ def register_models(
         stacklevel=3,
     )
     config.add_c2cgeoform_application("default", models, url_segment=url_segment)
-    register_routes(config, False)
+    register_routes(config, multi_application=False)

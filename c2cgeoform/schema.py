@@ -1,5 +1,5 @@
 from functools import partial
-from typing import Any, Optional, cast
+from typing import Any, cast
 
 import colander
 import pyramid.request
@@ -99,12 +99,13 @@ class GeoFormManyToManySchemaNode(GeoFormSchemaNode):  # pylint: disable=abstrac
         Default to primary key name(s) only.
     """
 
-    def __init__(self, class_: type[Any], includes: Optional[list[str]], *args: Any, **kw: Any) -> None:
+    def __init__(self, class_: type[Any], includes: list[str] | None, *args: Any, **kw: Any) -> None:
         includes = [pk.name for pk in inspect(class_).primary_key]
         super().__init__(class_, includes, *args, **kw)
 
     def objectify(self, dict_: JSONDict, context: Any = None) -> Any:
         """Get the existing ORM class instance instead of creating a new one."""
+        del context  # Unused
         dbsession = self.bindings["dbsession"]
         class_ = self.inspector.class_
         return dbsession.query(class_).get(dict_.values())
@@ -120,15 +121,15 @@ def manytomany_validator(node: type[Any], cstruct: list[JSONDict]) -> None:
     dbsession = node.bindings["dbsession"]
     class_ = node.children[0].inspector.class_
     query = dbsession.query(class_)
-    filters = []
-    for dict_ in cstruct:
-        filters.append(and_(*[getattr(class_, key) == value for key, value in dict_.items()]))
+    filters = [and_(*[getattr(class_, key) == value for key, value in dict_.items()]) for dict_ in cstruct]
     query = query.filter(or_(*filters))
     results = query.all()  # get all records in cache in one request
     diff = {tuple(dict_.values()) for dict_ in cstruct} - {inspect(a).identity for a in results}
     if len(diff) > 0:
+        msg = "Values {} does not exist in table {}".format(
+            ", ".join(str(identity) for identity in diff),
+            class_.__tablename__,
+        )
         raise colander.Invalid(
-            "Values {} does not exist in table {}".format(
-                ", ".join(str(identity) for identity in diff), class_.__tablename__
-            )
+            msg,
         )

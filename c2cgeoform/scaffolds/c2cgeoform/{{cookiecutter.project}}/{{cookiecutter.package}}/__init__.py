@@ -6,7 +6,8 @@ from c2cgeoform.settings import apply_local_settings
 
 search_paths = (
     resource_filename("{{cookiecutter.package}}", "templates/widgets"),
-) + c2cgeoform.default_search_paths
+    *c2cgeoform.default_search_paths,
+)
 c2cgeoform.default_search_paths = search_paths
 
 

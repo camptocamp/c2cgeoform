@@ -1,8 +1,9 @@
 import json
 import logging
 import os
+from collections.abc import Callable
 from io import BufferedRandom, BytesIO
-from typing import Any, Callable, Optional, Union
+from typing import Any
 
 import colander
 import deform.field
@@ -76,14 +77,14 @@ class MapWidget(Widget):  # type: ignore[misc]
     the template file `map.pt` can to be overwritten in application project.
     """
 
-    requirements: tuple[tuple[str, Optional[str]], ...] = tuple()
+    requirements: tuple[tuple[str, str | None], ...] = ()
 
     map_options = default_map_settings
 
     def serialize(
         self,
         field: deform.field.Field,
-        cstruct: Union[str, colander._null],
+        cstruct: str | colander._null,
         readonly: bool = False,
         **kw: Any,
     ) -> str:
@@ -104,6 +105,7 @@ class MapWidget(Widget):  # type: ignore[misc]
         return field.renderer("map", **values)  # type: ignore[no-any-return]
 
     def deserialize(self, field: deform.field.Field, pstruct: str) -> str:
+        del field  # Unused
         return pstruct
 
     def _get_controls_definition(self, field: deform.field.Field, readonly: bool) -> JSONDict:
@@ -124,7 +126,7 @@ class MapWidget(Widget):  # type: ignore[misc]
             point = False
             line = False
 
-        if "MULTI" in geometry_type or geometry_type == "GEOMETRY" or geometry_type == "GEOMETRYCOLLECTION":
+        if "MULTI" in geometry_type or geometry_type in ("GEOMETRY", "GEOMETRYCOLLECTION"):
             is_multi_geometry = True
 
         return {
@@ -144,8 +146,8 @@ class RelationSelectMixin:
         model: type[Any],
         id_field: str,
         label_field: str,
-        default_value: Optional[str] = None,
-        order_by: Optional[str] = None,
+        default_value: str | None = None,
+        order_by: str | None = None,
     ) -> None:
         self.model = model
         self.id_field = id_field
@@ -157,12 +159,9 @@ class RelationSelectMixin:
         del request  # unused
         self.values = self._get_select_values(session)
 
-    def _get_select_values(self, session: sqlalchemy.orm.Session) -> tuple[Union[str, tuple[str, str]], ...]:
+    def _get_select_values(self, session: sqlalchemy.orm.Session) -> tuple[str | tuple[str, str], ...]:
         model = inspect(self.model)
-        if self.order_by is not None:
-            order_by = getattr(model.columns, self.order_by)
-        else:
-            order_by = None
+        order_by = getattr(model.columns, self.order_by) if self.order_by is not None else None
 
         entities = session.query(model).order_by(order_by)
 
@@ -172,8 +171,7 @@ class RelationSelectMixin:
 
         if self.default_value is None:
             return values
-        else:
-            return (self.default_value,) + values
+        return (self.default_value, *values)
 
 
 class RelationMultiSelectMixin(RelationSelectMixin):
@@ -210,7 +208,10 @@ class RelationMultiSelectMixin(RelationSelectMixin):
         return result
 
     def serialize(
-        self, field: deform.field.Field, cstruct: Optional[Union[colander._null, str]], **kw: Any
+        self,
+        field: deform.field.Field,
+        cstruct: colander._null | str | None,
+        **kw: Any,
     ) -> list[str]:
         """Flatten a list of objects into a list of ids."""
         del kw  # unused
@@ -223,7 +224,7 @@ class RelationMultiSelectMixin(RelationSelectMixin):
         assert mapped_id_field is not None
         return [obj[mapped_id_field.name] for obj in cstruct]
 
-    def _get_mapped_id_field(self, field: deform.field.Field) -> Optional[deform.field.Field]:
+    def _get_mapped_id_field(self, field: deform.field.Field) -> deform.field.Field | None:
         """
         Get the foreign key field of the mapped table B in the relation table A_B.
 
@@ -328,7 +329,7 @@ class RelationSelectWidget(SelectWidget, RelationMultiSelectMixin):  # type: ign
         id_field: str = "id",
         label_field: str = "label",
         default_value: Any = None,
-        order_by: Optional[str] = None,
+        order_by: str | None = None,
         **kw: Any,
     ) -> None:
         RelationMultiSelectMixin.__init__(self, model, id_field, label_field, default_value, order_by)
@@ -337,8 +338,7 @@ class RelationSelectWidget(SelectWidget, RelationMultiSelectMixin):  # type: ign
     def deserialize(self, field: deform.field.Field, pstruct: str) -> list[JSONDict]:
         if self.multiple:
             return RelationMultiSelectMixin.deserialize(self, field, pstruct)
-        else:
-            return SelectWidget.deserialize(self, field, pstruct)  # type: ignore[no-any-return]
+        return SelectWidget.deserialize(self, field, pstruct)  # type: ignore[no-any-return]
 
     def serialize(self, field: deform.field.Field, cstruct: Any, **kw: Any) -> list[str]:
         cstruct_internal = (
@@ -437,7 +437,7 @@ class RelationSelect2Widget(Select2Widget, RelationMultiSelectMixin):  # type: i
         id_field: str = "id",
         label_field: str = "label",
         default_value: Any = None,
-        order_by: Optional[str] = None,
+        order_by: str | None = None,
         **kw: Any,
     ) -> None:
         RelationMultiSelectMixin.__init__(self, model, id_field, label_field, default_value, order_by)
@@ -446,8 +446,7 @@ class RelationSelect2Widget(Select2Widget, RelationMultiSelectMixin):  # type: i
     def deserialize(self, field: deform.field.Field, pstruct: str) -> list[JSONDict]:
         if self.multiple:
             return RelationMultiSelectMixin.deserialize(self, field, pstruct)
-        else:
-            return Select2Widget.deserialize(self, field, pstruct)  # type: ignore[no-any-return]
+        return Select2Widget.deserialize(self, field, pstruct)  # type: ignore[no-any-return]
 
     def serialize(self, field: deform.field.Field, cstruct: Any, **kw: Any) -> list[str]:
         cstruct_internal = (
@@ -521,7 +520,7 @@ class RelationCheckBoxListWidget(CheckboxChoiceWidget, RelationMultiSelectMixin)
         model: type[Any],
         id_field: str = "id",
         label_field: str = "label",
-        order_by: Optional[str] = None,
+        order_by: str | None = None,
         **kw: Any,
     ) -> None:
         RelationMultiSelectMixin.__init__(self, model, id_field, label_field, None, order_by)
@@ -589,7 +588,7 @@ class RelationRadioChoiceWidget(RadioChoiceWidget, RelationSelectMixin):  # type
         model: type[Any],
         id_field: str = "id",
         label_field: str = "label",
-        order_by: Optional[str] = None,
+        order_by: str | None = None,
         **kw: Any,
     ) -> None:
         RelationSelectMixin.__init__(self, model, id_field, label_field, None, order_by)
@@ -617,7 +616,7 @@ class FileUploadTempStore:
     def serialize(self, data: str) -> str:
         if isinstance(data, dict):
             return {k: self.serialize(v) for k, v in data.items()}
-        if isinstance(data, (BufferedRandom, BytesIO)):
+        if isinstance(data, BufferedRandom | BytesIO):
             value = data.read()
             # set the file position back to 0, so that the file can be read again
             data.seek(0, os.SEEK_SET)
@@ -685,10 +684,13 @@ class FileUploadWidget(DeformFileUploadWidget):  # type: ignore[misc]
     """
 
     id_field = "id"
-    request: Optional[pyramid.request.Request] = None
+    request: pyramid.request.Request | None = None
+    tmpstore: FileUploadTempStore | None = None
 
     def __init__(
-        self, get_url: Optional[Callable[[pyramid.request.Request, JSON], str]] = None, **kw: Any
+        self,
+        get_url: Callable[[pyramid.request.Request, JSON], str] | None = None,
+        **kw: Any,
     ) -> None:
         DeformFileUploadWidget.__init__(self, None, **kw)
         self.get_url = get_url
@@ -772,7 +774,7 @@ class RelationSelectMapWidget(Widget):  # type: ignore[misc]
 
     def __init__(
         self,
-        url: Union[str, Callable[[pyramid.request.Request], str]],
+        url: str | Callable[[pyramid.request.Request], str],
         label_field: str = "label",
         **kw: Any,
     ) -> None:
@@ -794,11 +796,12 @@ class RelationSelectMapWidget(Widget):  # type: ignore[misc]
         # make `_` available in template for i18n messages
         values["_"] = TranslationStringFactory("c2cgeoform")
         values["widget_config"] = json.dumps(
-            {"labelField": self.label_field, "url": self.url, "readonly": readonly}
+            {"labelField": self.label_field, "url": self.url, "readonly": readonly},
         )
         return field.renderer("map_select", **values)  # type: ignore[no-any-return]
 
     def deserialize(self, field: deform.field.Field, pstruct: str) -> str:
+        del field  # Unused
         return pstruct
 
 
@@ -870,11 +873,11 @@ class RelationSearchWidget(Widget):  # type: ignore[misc]
     template = "search"
     requirements = (("typeahead", "0.10.5"),)
 
-    def __init__(self, url: Union[str, Callable[[pyramid.request.Request], str]], **kw: Any) -> None:
+    def __init__(self, url: str | Callable[[pyramid.request.Request], str], **kw: Any) -> None:
         Widget.__init__(self, **kw)
         self.get_url: Callable[[pyramid.request.Request], str] = url if callable(url) else lambda request: url
         self.url = None
-        self.session: Optional[sqlalchemy.orm.Session] = None
+        self.session: sqlalchemy.orm.Session | None = None
 
     def populate(self, session: sqlalchemy.orm.Session, request: pyramid.request.Request) -> None:
         if self.url is None:
@@ -916,10 +919,10 @@ class RelationSearchWidget(Widget):  # type: ignore[misc]
 
         return field.renderer(template, **tmpl_values)  # type: ignore[no-any-return]
 
-    def deserialize(self, field: deform.field.Field, pstruct: str) -> Optional[Union[colander._null, str]]:
+    def deserialize(self, field: deform.field.Field, pstruct: str) -> colander._null | str | None:
         if pstruct is colander.null:
             return colander.null
-        elif not isinstance(pstruct, string_types):
+        if not isinstance(pstruct, string_types):
             raise Invalid(field.schema, "Pstruct is not a string")
         if self.strip:
             pstruct = pstruct.strip()
@@ -959,7 +962,7 @@ class RecaptchaWidget(MappingWidget):  # type: ignore[misc]
     template = "recaptcha"
     readonly_template = "recaptcha"
     url = "https://www.google.com/recaptcha/api/siteverify"
-    request: Optional[pyramid.request.Request] = None
+    request: pyramid.request.Request | None = None
 
     def populate(self, session: sqlalchemy.orm.Session, request: pyramid.request.Request) -> None:
         del session  # unused
@@ -971,11 +974,11 @@ class RecaptchaWidget(MappingWidget):  # type: ignore[misc]
             {
                 "public_key": self.public_key,  # pylint: disable=no-member
                 "locale_name": self.request.locale_name,
-            }
+            },
         )
         return MappingWidget.serialize(self, field, cstruct, **kw)
 
-    def deserialize(self, field: deform.field.Field, pstruct: JSONDict) -> Union[str, colander._null]:
+    def deserialize(self, field: deform.field.Field, pstruct: JSONDict) -> str | colander._null:
         if pstruct is colander.null:
             return colander.null
 

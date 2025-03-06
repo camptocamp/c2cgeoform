@@ -2,7 +2,7 @@ import io
 import json
 import os
 from io import BytesIO
-from typing import Any, Union
+from typing import Any
 
 import colander
 import pyproj
@@ -64,9 +64,7 @@ class Geometry(SchemaType):  # type: ignore[misc]
                 always_xy=True,
             ).transform
 
-    def serialize(
-        self, node: Any, appstruct: Union[colander._null, WKBElement]
-    ) -> Union[colander._null, str]:
+    def serialize(self, node: Any, appstruct: colander._null | WKBElement) -> colander._null | str:
         """
         Serialize a `WKBElement` into a GeoJSON string.
 
@@ -84,7 +82,7 @@ class Geometry(SchemaType):  # type: ignore[misc]
             return json.dumps(mapping(geometry))
         raise Invalid(node, f"Unexpected value: {appstruct!r}")
 
-    def deserialize(self, node: Any, cstruct: Union[colander._null, str]) -> Union[colander._null, str]:
+    def deserialize(self, node: Any, cstruct: colander._null | str) -> colander._null | str:
         """
         Deserialize a GeoJSON string into a `WKBElement`.
 
@@ -95,8 +93,8 @@ class Geometry(SchemaType):  # type: ignore[misc]
         if cstruct is colander.null or cstruct == "":
             return colander.null
         try:
-            # TODO Shapely does not support loading GeometryCollections from # pylint: disable=fixme
-            # GeoJSON, see https://github.com/Toblerity/Shapely/issues/115
+            # TODO: see https://github.com/Toblerity/Shapely/issues/115  # pylint: disable=fixme
+            # Shapely does not support loading GeometryCollections from GeoJSON,
             geometry = shape(json.loads(cstruct))
         except Exception as exception:
             raise Invalid(node, f"Invalid geometry: {cstruct!r}") from exception
@@ -136,8 +134,10 @@ class BinaryData(SchemaType):  # type: ignore[misc]
     """
 
     def serialize(
-        self, node: colander.SchemaNode, appstruct: Union[colander._null, Buffer]
-    ) -> Union[colander._null, io.BytesIO]:
+        self,
+        node: colander.SchemaNode,
+        appstruct: colander._null | Buffer,
+    ) -> colander._null | io.BytesIO:
         """
         Serialize a file stream to plain binary.
 
@@ -151,8 +151,10 @@ class BinaryData(SchemaType):  # type: ignore[misc]
         return BytesIO(appstruct)
 
     def deserialize(
-        self, node: colander.SchemaNode, cstruct: Union[colander._null, str, io.IOBase]
-    ) -> Union[colander._null, bytes]:
+        self,
+        node: colander.SchemaNode,
+        cstruct: colander._null | str | io.IOBase,
+    ) -> colander._null | bytes:
         """
         Serialize a file stream to plain binary.
 
