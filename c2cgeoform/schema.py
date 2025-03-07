@@ -125,11 +125,9 @@ def manytomany_validator(node: type[Any], cstruct: list[JSONDict]) -> None:
     query = query.filter(or_(*filters))
     results = query.all()  # get all records in cache in one request
     diff = {tuple(dict_.values()) for dict_ in cstruct} - {inspect(a).identity for a in results}
+    joined_diff = ", ".join(str(identity) for identity in diff)
     if len(diff) > 0:
-        msg = "Values {} does not exist in table {}".format(
-            ", ".join(str(identity) for identity in diff),
-            class_.__tablename__,
-        )
+        msg = f"Values {joined_diff} does not exist in table {class_.__tablename__}"
         raise colander.Invalid(
             msg,
         )

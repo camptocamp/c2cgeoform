@@ -65,13 +65,13 @@ zope-sqlalchemy = "3.1"
 requests = "2.32.3"
 
 [tool.poetry.group.dev.dependencies]
-prospector = { version = "1.14.1", extras = [
+prospector = { version = "1.15.3", extras = [
   "with-bandit",
   "with-mypy",
   "with-pyroma", "with_ruff", "with_pyroma"
 ] }
-prospector-profile-duplicated = "1.10.4"
-prospector-profile-utils = "1.17.0"
+prospector-profile-duplicated = "1.10.5"
+prospector-profile-utils = "1.22.3"
 webtest = "3.0.4"
 sphinx = "8.1.3"
 sphinx-rtd-theme = "3.0.2"

@@ -101,10 +101,10 @@ class AbstractViewsTests:
 
     def _check_mapping(self, mapping_item: Any, expected: list[JSONDict]) -> None:
         for exp in expected:
-            input_tag = mapping_item.select_one('[name="{}"]'.format(exp["name"]))
+            input_tag = mapping_item.select_one(f'[name="{exp["name"]}"]')
             if "value" in exp:
                 if exp.get("readonly", False):
-                    item = mapping_item.select_one(".item-{}".format(exp["name"]))
+                    item = mapping_item.select_one(f'.item-{exp["name"]}')
                     assert input_tag is None
                     assert exp["value"] or item.select("p").stripped_strings[0] == ""
                 elif input_tag.name == "select":
@@ -118,7 +118,7 @@ class AbstractViewsTests:
             if exp.get("hidden", False):
                 assert input_tag["type"] == "hidden"
             if "label" in exp:
-                label_tag = mapping_item.select_one('label[for="{}"]'.format(input_tag["id"]))
+                label_tag = mapping_item.select_one(f'label[for="{input_tag["id"]}"]')
                 assert exp["label"] == label_tag.getText().strip()
 
     def _check_select(self, select: Any, expected: list[JSONDict]) -> None:
