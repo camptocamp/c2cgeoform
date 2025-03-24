@@ -23,7 +23,7 @@ def deferred_request(node: Any, kwargs: dict[str, Any]) -> pyramid.request.Reque
 def deferred_dbsession(node: Any, kwargs: dict[str, Any]) -> sqlalchemy.orm.Session:
     """Deferred function to get the dbsession from the bindings."""
     del node  # unused
-    return cast(sqlalchemy.orm.Session, kwargs.get("dbsession"))
+    return cast("sqlalchemy.orm.Session", kwargs.get("dbsession"))
 
 
 def unique_validator(

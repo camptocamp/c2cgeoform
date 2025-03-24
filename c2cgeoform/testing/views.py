@@ -110,7 +110,7 @@ class AbstractViewsTests:
                 elif input_tag.name == "select":
                     value = exp["value"]
                     assert isinstance(value, list)
-                    self._check_select(input_tag, cast(list[JSONDict], value))
+                    self._check_select(input_tag, cast("list[JSONDict]", value))
                 elif input_tag.name == "textarea":
                     assert (exp["value"] or "") == (input_tag.string or "")
                 else:
