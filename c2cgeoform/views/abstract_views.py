@@ -95,7 +95,7 @@ def _getattr(
         assert isinstance(attr, sqlalchemy.schema.Column)
         return attr
     assert isinstance(attr, str)
-    return cast(sqlalchemy.schema.Column[Any], getattr(model, attr))
+    return cast("sqlalchemy.schema.Column[Any]", getattr(model, attr))
 
 
 class ListField(Generic[T]):
@@ -359,7 +359,7 @@ class AbstractViews(Generic[T]):
         return FeatureCollection(features)
 
     def _base_query(self) -> sqlalchemy.orm.query.Query[T]:
-        return cast(sqlalchemy.orm.query.Query[T], self._request.dbsession.query(self._model))
+        return cast("sqlalchemy.orm.query.Query[T]", self._request.dbsession.query(self._model))
 
     def _filter_query(
         self,
@@ -411,12 +411,12 @@ class AbstractViews(Generic[T]):
             # https://docs.sqlalchemy.org/en/14/changelog/migration_20.html#using-distinct-with-additional-columns-but-only-select-the-entity
             # we are required to add a second field to the query, in this case we should get only the first one
             entity: T = (
-                cast(sqlalchemy.engine.row.Row[tuple[T, Any]], entities)[0]
+                cast("sqlalchemy.engine.row.Row[tuple[T, Any]]", entities)[0]
                 if isinstance(entities, sqlalchemy.engine.row.Row)
                 else entities
             )
             row = cast(
-                JSONDict,
+                "JSONDict",
                 {
                     f.id(): f.value(entity)
                     for f in ([*self._list_fields, ListField(self._model, self._id_field, key="_id_")])
@@ -449,7 +449,7 @@ class AbstractViews(Generic[T]):
 
         if self._is_new():
             assert self._model is not None
-            return cast(T, self._model())  # type: ignore[call-overload] # pylint: disable=not-callable
+            return cast("T", self._model())  # type: ignore[call-overload] # pylint: disable=not-callable
         primary_key = self._request.matchdict.get("id")
         obj = (
             self._request.dbsession.query(self._model)
@@ -458,7 +458,7 @@ class AbstractViews(Generic[T]):
         )
         if obj is None:
             raise HTTPNotFound
-        return cast(T, obj)
+        return cast("T", obj)
 
     def _model_config(self) -> JSONDict:
         return getattr(inspect(self._model).class_, "__c2cgeoform_config__", {})  # type: ignore[union-attr]
@@ -553,7 +553,7 @@ class AbstractViews(Generic[T]):
         }
 
     def copy_members_if_duplicates(self, source: T, excludes: list[str] | None = None) -> T:
-        dest = cast(T, source.__class__())  # type: ignore[call-overload]
+        dest = cast("T", source.__class__())  # type: ignore[call-overload]
         insp = inspect(source.__class__)
 
         for prop in insp.attrs:  # type: ignore[union-attr]
