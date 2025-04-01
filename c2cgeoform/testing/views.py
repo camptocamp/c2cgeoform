@@ -104,7 +104,7 @@ class AbstractViewsTests:
             input_tag = mapping_item.select_one(f'[name="{exp["name"]}"]')
             if "value" in exp:
                 if exp.get("readonly", False):
-                    item = mapping_item.select_one(f'.item-{exp["name"]}')
+                    item = mapping_item.select_one(f".item-{exp['name']}")
                     assert input_tag is None
                     assert exp["value"] or item.select("p").stripped_strings[0] == ""
                 elif input_tag.name == "select":
