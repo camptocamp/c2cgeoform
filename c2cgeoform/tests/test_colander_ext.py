@@ -73,7 +73,7 @@ class TestGeometry(DatabaseTestCase):
         geom_schema = Geometry(srid=4326, map_srid=3857)
 
         wkb = geom_schema.deserialize(
-            {}, '{"type": "Point", ' '"coordinates": [111319.49079327231, 222684.20850554455]}'
+            {}, '{"type": "Point", "coordinates": [111319.49079327231, 222684.20850554455]}'
         )
         assert 4326 == wkb.srid
 
