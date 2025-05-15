@@ -13,7 +13,7 @@
     'github>camptocamp/gs-renovate-config-preset:json-schema.json5#1.1.0',
     'github>camptocamp/gs-renovate-config-preset:shellcheck.json5#1.1.0',
   ],
-  baseBranches: ['2.1', '2.2', '2.3', '2.4', 'master'],
+  baseBranches: ['2.1', '2.4', 'master'],
   packageRules: [
     /** Group the Webpack dependencies */
     {
