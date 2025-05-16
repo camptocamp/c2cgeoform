@@ -13,16 +13,10 @@
     'github>camptocamp/gs-renovate-config-preset:json-schema.json5#1.1.1',
     'github>camptocamp/gs-renovate-config-preset:shellcheck.json5#1.1.1',
   ],
-  baseBranches: [
-    '2.1',
-    '2.4',
-    'master',
-  ],
+  baseBranches: ['2.1', '2.4', 'master'],
   packageRules: [
     {
-      matchUpdateTypes: [
-        'major',
-      ],
+      matchUpdateTypes: ['major'],
       groupName: 'webpack',
       matchPackageNames: [
         '/^webpack$/',
@@ -34,42 +28,22 @@
       ],
     },
     {
-      matchUpdateTypes: [
-        'major',
-      ],
+      matchUpdateTypes: ['major'],
       enabled: false,
-      matchPackageNames: [
-        '/^bootstrap$/',
-      ],
+      matchPackageNames: ['/^bootstrap$/'],
     },
     {
-      matchBaseBranches: [
-        '/^[0-9]+\\.[0-9]+$/',
-      ],
-      matchUpdateTypes: [
-        'major',
-        'minor',
-        'pin',
-        'digest',
-        'lockFileMaintenance',
-        'rollback',
-        'bump',
-      ],
+      matchBaseBranches: ['/^[0-9]+\\.[0-9]+$/'],
+      matchUpdateTypes: ['major', 'minor', 'pin', 'digest', 'lockFileMaintenance', 'rollback', 'bump'],
       enabled: false,
     },
     {
-      matchFileNames: [
-        'pyproject.toml',
-      ],
+      matchFileNames: ['pyproject.toml'],
       enabled: false,
-      matchDepNames: [
-        'python',
-      ],
+      matchDepNames: ['python'],
     },
     {
-      matchBaseBranches: [
-        '/^[0-9]+\\.[0-9]+$/',
-      ],
+      matchBaseBranches: ['/^[0-9]+\\.[0-9]+$/'],
       minimumReleaseAge: '7 days',
     },
   ],
