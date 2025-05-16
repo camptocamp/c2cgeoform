@@ -17,22 +17,22 @@
   packageRules: [
     /** Group the Webpack dependencies */
     {
-      matchPackagePatterns: [
-        '^webpack$',
-        '^html-webpack-plugin$',
-        '^mini-css-extract-plugin$',
-        '^sass$',
-        '^webpack-.*',
-        '.*-loader$',
-      ],
       matchUpdateTypes: ['major'],
       groupName: 'webpack',
+      matchPackageNames: [
+        '/^webpack$/',
+        '/^html-webpack-plugin$/',
+        '/^mini-css-extract-plugin$/',
+        '/^sass$/',
+        '/^webpack-.*/',
+        '/.*-loader$/',
+      ],
     },
     /** Don't upgrade Bootstrap major versions */
     {
-      matchPackagePatterns: ['^bootstrap$'],
       matchUpdateTypes: ['major'],
       enabled: false,
+      matchPackageNames: ['/^bootstrap$/'],
     },
     /** Accept only the patch on stabilization branches */
     {
