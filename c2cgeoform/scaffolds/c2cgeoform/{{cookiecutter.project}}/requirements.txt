@@ -7,4 +7,4 @@ pyramid_tm
 transaction
 zope.sqlalchemy
 waitress
-setuptools==76.1.0
+setuptools==78.1.1
