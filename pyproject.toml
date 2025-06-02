@@ -104,10 +104,15 @@ include = [
   "c2cgeoform/static/dist/*",
 ]
 requires-python = ">=3.11"
+dependencies = ["babel", "colanderalchemy", "deform", "geoalchemy2", "geojson", "lingua", "pyramid", "pyramid-beaker", "pyramid-chameleon", "pyramid-jinja2", "pyproj", "shapely", "sqlalchemy", "zope-sqlalchemy", "requests"]
 
 [project.urls]
 repository = "https://github.com/camptocamp/c2cgeoform"
 "Bug Tracker" = "https://github.com/camptocamp/c2cgeoform/issues"
+
+[project.optional-dependencies]
+psycopg2 = ["psycopg2"]
+psycopg2-binary = ["psycopg2-binary"]
 
 [build-system]
 requires = [
