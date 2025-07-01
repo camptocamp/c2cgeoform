@@ -11,3 +11,4 @@
 | 2.2     | Unsupported     |
 | 2.3     | Unsupported     |
 | 2.4     | 30/04/2029      |
+| 2.5     | To be defined   |
