@@ -1525,6 +1525,11 @@ files = [
     {file = "pylint-flask-0.6.tar.gz", hash = "sha256:f4d97de2216bf7bfce07c9c08b166e978fe9f2725de2a50a9845a97de7e31517"},
 ]
 
+[package.dependencies]
+astroid = ">=1.0"
+pylint = ">=1.0"
+pylint-plugin-utils = ">=0.2.1"
+
 [[package]]
 name = "pylint-plugin-utils"
 version = "0.7"
@@ -2522,14 +2527,14 @@ testing = ["coverage", "pytest (>=3.1.0)", "pytest-cov", "pytest-xdist"]
 
 [[package]]
 name = "webtest"
-version = "3.0.4"
+version = "3.0.6"
 description = "Helper to test WSGI applications"
 optional = false
 python-versions = ">=3.9"
 groups = ["dev"]
 files = [
-    {file = "WebTest-3.0.4-py3-none-any.whl", hash = "sha256:5b3d8c69ac9057f17750ed5b45320a411423c2b4196bec6450961be98b03d8c1"},
-    {file = "webtest-3.0.4.tar.gz", hash = "sha256:94778d19a37e5abd7388dad4d93874410ecced53a1739a8e5ff2dbcba1cfc0c4"},
+    {file = "webtest-3.0.6-py3-none-any.whl", hash = "sha256:0c4a5a3dcf745a78c7905b803d6a520a2cf241c1f00ccdf4351f52916d555543"},
+    {file = "webtest-3.0.6.tar.gz", hash = "sha256:4256fd5242448f56c575bcb9afe275e305a6f0723c4b01438dbdd4dd5344944b"},
 ]
 
 [package.dependencies]
@@ -2742,4 +2747,4 @@ psycopg2-binary = ["psycopg2-binary"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.9,<3.13"
-content-hash = "79c201016cfc5944d3076392b1e8d7e0b85b23d722b5a857f42e9f0d0bce58bc"
+content-hash = "d0ea8d93d194f663400c339f0cd7669d14b64a151e103c62c4b66b5cd8b7ba16"
