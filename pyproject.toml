@@ -46,7 +46,7 @@ prospector = { version = "1.17.2", extras = [
   "with-pyroma", "with_ruff", "with_pyroma"
 ] }
 prospector-profile-duplicated = "1.10.5"
-prospector-profile-utils = "1.23.0"
+prospector-profile-utils = "1.25.0"
 webtest = "3.0.6"
 sphinx = "8.2.3"
 sphinx-rtd-theme = "3.0.2"
