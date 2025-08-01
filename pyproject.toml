@@ -24,7 +24,7 @@ babel = "2.17.0"
 
 colanderalchemy = "0.3.4"
 deform = "2.0.15"
-geoalchemy2 = "0.17.1"
+geoalchemy2 = "0.18.0"
 geojson = "3.2.0"
 lingua = "4.15.0"
 psycopg2 = { version = "2.9.10", optional = true }
@@ -35,7 +35,7 @@ pyramid-chameleon = "0.3"
 pyramid-jinja2 = "2.10.1"
 pyproj = "3.7.1"
 shapely = "2.1.1"
-sqlalchemy = "2.0.41"
+sqlalchemy = "2.0.42"
 zope-sqlalchemy = "3.1"
 requests = "2.32.4"
 
