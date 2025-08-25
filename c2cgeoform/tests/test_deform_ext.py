@@ -20,8 +20,8 @@ class TestRelationSelectWidget(DatabaseTestCase):
         assert renderer.kw["values"] == _convert_values(widget.values)
 
         first_value = renderer.kw["values"][0]
-        assert "0" == first_value[0]
-        assert "Worker" == first_value[1]
+        assert first_value[0] == "0"
+        assert first_value[1] == "Worker"
 
     def test_serialize_default_value(self):
         from c2cgeoform.ext.deform_ext import RelationSelectWidget
@@ -36,13 +36,13 @@ class TestRelationSelectWidget(DatabaseTestCase):
 
         # first the default value
         first_value = renderer.kw["values"][0]
-        assert "" == first_value[0]
-        assert "- Select -" == first_value[1]
+        assert first_value[0] == ""
+        assert first_value[1] == "- Select -"
 
         # then the values loaded from the db
         snd_value = renderer.kw["values"][1]
-        assert "0" == snd_value[0]
-        assert "Worker" == snd_value[1]
+        assert snd_value[0] == "0"
+        assert snd_value[1] == "Worker"
 
     def test_serialize_order_by(self):
         from c2cgeoform.ext.deform_ext import RelationSelectWidget
@@ -56,8 +56,8 @@ class TestRelationSelectWidget(DatabaseTestCase):
         assert renderer.kw["values"] == _convert_values(widget.values)
 
         first_value = renderer.kw["values"][0]
-        assert "3" == first_value[0]
-        assert "Director" == first_value[1]
+        assert first_value[0] == "3"
+        assert first_value[1] == "Director"
 
 
 class TestRelationSelect2Widget(DatabaseTestCase):
@@ -74,13 +74,13 @@ class TestRelationSelect2Widget(DatabaseTestCase):
 
         # first the default value
         first_value = renderer.kw["values"][0]
-        assert "" == first_value[0]
-        assert "- Select -" == first_value[1]
+        assert first_value[0] == ""
+        assert first_value[1] == "- Select -"
 
         # then the values loaded from the db
         snd_value = renderer.kw["values"][1]
-        assert "0" == snd_value[0]
-        assert "Worker" == snd_value[1]
+        assert snd_value[0] == "0"
+        assert snd_value[1] == "Worker"
 
 
 class TestRelationRadioChoiceWidget(DatabaseTestCase):
@@ -97,8 +97,8 @@ class TestRelationRadioChoiceWidget(DatabaseTestCase):
 
         # first the default value
         first_value = renderer.kw["values"][0]
-        assert "0" == first_value[0]
-        assert "Worker" == first_value[1]
+        assert first_value[0] == "0"
+        assert first_value[1] == "Worker"
 
 
 class TestRelationCheckBoxListWidget(DatabaseTestCase):
@@ -115,8 +115,8 @@ class TestRelationCheckBoxListWidget(DatabaseTestCase):
         assert renderer.kw["cstruct"] == []
 
         first_value = renderer.kw["values"][0]
-        assert "0" == first_value[0]
-        assert "Tag A" == first_value[1]
+        assert first_value[0] == "0"
+        assert first_value[1] == "Tag A"
 
     def test_serialize(self):
         from c2cgeoform.ext.deform_ext import RelationCheckBoxListWidget
@@ -133,8 +133,8 @@ class TestRelationCheckBoxListWidget(DatabaseTestCase):
         assert renderer.kw["cstruct"] == ["0", "2"]
 
         first_value = renderer.kw["values"][0]
-        assert "0" == first_value[0]
-        assert "Tag A" == first_value[1]
+        assert first_value[0] == "0"
+        assert first_value[1] == "Tag A"
 
     def test_serialize_wrong_mapping(self):
         from c2cgeoform.ext.deform_ext import RelationCheckBoxListWidget
@@ -186,8 +186,8 @@ class TestRelationMultiSelect2Widget(DatabaseTestCase):
         assert renderer.kw["cstruct"] == []
 
         first_value = renderer.kw["values"][0]
-        assert "0" == first_value[0]
-        assert "Tag A" == first_value[1]
+        assert first_value[0] == "0"
+        assert first_value[1] == "Tag A"
 
     def test_serialize(self):
         from c2cgeoform.ext.deform_ext import RelationSelect2Widget
@@ -204,8 +204,8 @@ class TestRelationMultiSelect2Widget(DatabaseTestCase):
         assert renderer.kw["cstruct"] == ["0", "2"]
 
         first_value = renderer.kw["values"][0]
-        assert "0" == first_value[0]
-        assert "Tag A" == first_value[1]
+        assert first_value[0] == "0"
+        assert first_value[1] == "Tag A"
 
     def test_serialize_wrong_mapping(self):
         from c2cgeoform.ext.deform_ext import RelationSelect2Widget

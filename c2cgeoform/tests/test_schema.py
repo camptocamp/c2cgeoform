@@ -1,5 +1,5 @@
 import unittest
-import unittest.mock as mock
+from unittest import mock
 from unittest.mock import patch
 
 import colander
@@ -34,7 +34,7 @@ class TestUniqueValidator(unittest.TestCase):
         schema_node["text"].validator = side_effect
         with pytest.raises(colander.Invalid) as excinfo:
             schema_node.deserialize({"text": "foo"})
-        assert "test ERROR !" == excinfo.value.children[0].msg
+        assert excinfo.value.children[0].msg == "test ERROR !"
 
     @patch("c2cgeoform.schema.unique_validator")
     def test_adding_validator_does_not_overrides_sqlalchemy_ones(self, unique_validator_mock):
@@ -44,7 +44,7 @@ class TestUniqueValidator(unittest.TestCase):
             schema_node.deserialize({"text": "more than five char"})
         assert "Longer than maximum length" in excinfo.value.children[0].msg[0]
         unique_validator_mock.assert_has_calls(
-            [mock.call(mock.ANY, mock.ANY, mock.ANY, mock.ANY, "more than five char")]
+            [mock.call(mock.ANY, mock.ANY, mock.ANY, mock.ANY, "more than five char")],
         )
 
     @patch("c2cgeoform.schema.unique_validator")
@@ -58,5 +58,5 @@ class TestUniqueValidator(unittest.TestCase):
         schema_node.add_unique_validator(FieldsCollection.text, FieldsCollection.id)
         with pytest.raises(colander.Invalid) as excinfo:
             schema_node.deserialize({"text": "foo"})
-        assert "test ERROR !" == excinfo.value.children[0].msg[0]
+        assert excinfo.value.children[0].msg[0] == "test ERROR !"
         unique_validator_mock.assert_has_calls([mock.call(mock.ANY, mock.ANY, mock.ANY, mock.ANY, "foo")])
