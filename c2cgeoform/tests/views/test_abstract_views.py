@@ -134,7 +134,9 @@ class TestAbstractViews(DatabaseTestCase):
         self.request.matched_route = Mock(name="person_action")
         self.request.route_url = Mock(return_value="person/new/save")
         self.request.dbsession.merge = Mock(
-            return_value=Person(name="...", first_name="..."), age="...", id=7869,
+            return_value=Person(name="...", first_name="..."),
+            age="...",
+            id=7869,
         )
         self.request.dbsession.flush = Mock()
 
