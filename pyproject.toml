@@ -9,8 +9,8 @@ convention = "numpy"
 testpaths = ["c2cgeoform/tests"]
 
 [tool.poetry]
-version = "0.0.0"
 exclude = ["c2cgeoform/static/node_modules/**"]
+version = "0.0.0"
 
 [tool.poetry.plugins."paste.app_factory"]
 main = "c2cgeoform:main"
