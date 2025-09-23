@@ -24,7 +24,7 @@ export function initMap(target, options) {
 
   let map = new Map({
     layers: options.baseLayers
-      .map(def => createLayer(def))
+      .map((def) => createLayer(def))
       .concat([vectorLayer]),
     target,
     view: new View(options.view || {}),
@@ -38,9 +38,9 @@ export function initMap(target, options) {
 
   if (options.url)
     fetch(options.url)
-      .then(resp => resp.json())
-      .then(json => format.readFeatures(json))
-      .then(features => {
+      .then((resp) => resp.json())
+      .then((json) => format.readFeatures(json))
+      .then((features) => {
         source.addFeatures(features)
         if (options.fitSource) {
           map.getView().fit(source.getExtent(), {
@@ -53,10 +53,12 @@ export function initMap(target, options) {
       })
 
   // Change feature style on Hover
-  map.on('pointermove', e => {
+  map.on('pointermove', (e) => {
     if (e.dragging) return
     let feature
-    map.forEachFeatureAtPixel(e.pixel, f => (feature = f), { hitTolerance: 3 })
+    map.forEachFeatureAtPixel(e.pixel, (f) => (feature = f), {
+      hitTolerance: 3,
+    })
     map.getTargetElement().classList.toggle('hovering', !!feature)
     context.feature = feature
     vectorLayer.changed()
@@ -77,7 +79,7 @@ export function initMapWidget(oid, options) {
   const source = new VectorSource()
   const layer = createVectorLayer(source)
   const map = new Map({
-    layers: options.baseLayers.map(def => createLayer(def)).concat([layer]),
+    layers: options.baseLayers.map((def) => createLayer(def)).concat([layer]),
     target,
     view: new View(options.view || {}),
     interactions: defaults({ onFocusOnly: options.onFocusOnly }),

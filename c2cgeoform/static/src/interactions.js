@@ -10,7 +10,7 @@ const format = new GeoJSON()
 
 export function addInteractions(options) {
   const { input, multi, ...interactionOptions } = options
-  const store = geometry => {
+  const store = (geometry) => {
     input.value = geometry ? getGeometryJSON(geometry, multi) : ''
     input.dispatchEvent(new Event('input', { bubbles: true }))
   }
@@ -41,7 +41,7 @@ export function addDrawInteraction(options) {
   const draw = new Draw({ type })
   map.addInteraction(draw)
   draw.on('drawstart', () => source.clear())
-  draw.on('drawend', e => source.addFeature(e.feature))
+  draw.on('drawend', (e) => source.addFeature(e.feature))
   return draw
 }
 
@@ -59,7 +59,7 @@ function getGeometryJSON(geometry, multi) {
     Polygon: MultiPolygon,
   }
   if (multi && geometry.getType() in classes) {
-    geometry = new classes[(geometry.getType())]([geometry.getCoordinates()])
+    geometry = new classes[geometry.getType()]([geometry.getCoordinates()])
   }
   return format.writeGeometry(geometry)
 }

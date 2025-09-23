@@ -1,11 +1,9 @@
 ---
-
 # The project Docker compose file for development.
 
-version: '2.3'
+version: "2.3"
 
 services:
-
   db:
     image: camptocamp/c2cgeoform-db:latest
     restart: unless-stopped
