@@ -1,7 +1,6 @@
 ## Using custom templates
 
-To customize applications built with `c2cgeoform`, the [Chameleon](
-https://chameleon.readthedocs.org/en/latest/) templates can be overwritten.
+To customize applications built with `c2cgeoform`, the [Chameleon](https://chameleon.readthedocs.org/en/latest/) templates can be overwritten.
 `c2cgeoform` distinguishes between two types of templates: **site** templates
 and Deform **form** templates. Site templates are used by the views and
 provide the site structure. Form templates are templates for the Deform
@@ -9,8 +8,7 @@ form and field widgets.
 
 ### Overwriting site templates
 
-The default `c2cgeoform` templates are located in [templates/sites](
-../c2cgeoform/templates/sites). To use custom templates, the templates
+The default `c2cgeoform` templates are located in [templates/sites](../c2cgeoform/templates/sites). To use custom templates, the templates
 asset has to be overwritten, for example like this:
 
     config.override_asset(
@@ -37,8 +35,8 @@ customize the forms in these different views, `c2cgeoform` uses separate form
 templates for each view. The mapping between view and form template is as
 follows:
 
-* View `form`: `[templates_user/]form.pt`
-* View `confirmation`: `[templates_user/]readonly/form_confirmation.pt`
-* View `view_user`: `[templates_user/]readonly/form_view_user.pt`
-* View `edit` (admin): `[templates_admin/]form.pt`
-* View `view_admin` (admin): `[templates_admin/]readonly/form.pt`
+- View `form`: `[templates_user/]form.pt`
+- View `confirmation`: `[templates_user/]readonly/form_confirmation.pt`
+- View `view_user`: `[templates_user/]readonly/form_view_user.pt`
+- View `edit` (admin): `[templates_admin/]form.pt`
+- View `view_admin` (admin): `[templates_admin/]readonly/form.pt`
