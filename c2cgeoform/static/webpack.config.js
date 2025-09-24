@@ -15,9 +15,7 @@ module.exports = {
     libraryTarget: 'var',
     library: 'c2cgeoform',
   },
-  plugins: [
-    new MiniCssExtractPlugin(),
-  ],
+  plugins: [new MiniCssExtractPlugin()],
   devtool: 'source-map',
   module: {
     rules: [
