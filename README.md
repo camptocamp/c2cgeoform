@@ -1,10 +1,10 @@
 # c2cgeoform
 
 `c2cgeoform` is a framework easing the creation of web pages with forms. Users
-of `c2cgeoform` declaratively create *models*, from which the framework
+of `c2cgeoform` declaratively create _models_, from which the framework
 can create forms, views, lists, …
 
-`c2cgeoform` supports various data types, including *geometry* types (points,
+`c2cgeoform` supports various data types, including _geometry_ types (points,
 lines, polygons). For geometry types `c2geoform` generates maps with editing
 tools to create, modify or delete geometries.
 
@@ -25,10 +25,10 @@ submissions](http://mapfish-geoportal.demo-camptocamp.com/c2cgeoform/wsgi/fouill
 
 This section provides links to various parts of the documentation.
 
-* [Create a c2cgeoform project](docs/create-project.md)
-* [Defining the model for a form](docs/model.md)
-* [Using custom templates](docs/templates.md)
-* [Guide for c2cgeoform developers](docs/developer-guide.md)
+- [Create a c2cgeoform project](docs/create-project.md)
+- [Defining the model for a form](docs/model.md)
+- [Using custom templates](docs/templates.md)
+- [Guide for c2cgeoform developers](docs/developer-guide.md)
 
 ## Copyright
 

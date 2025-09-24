@@ -36,27 +36,24 @@ class Comment(Base):
         }})
 ```
 
-This SQLAlchemy model is enriched with properties for [ColanderAlchemy](
-http://colanderalchemy.readthedocs.org/en/latest/), for example to set a title
+This SQLAlchemy model is enriched with properties for [ColanderAlchemy](http://colanderalchemy.readthedocs.org/en/latest/), for example to set a title
 for a field, to use a specific Deform [widget](http://deform2demo.repoze.org/)
 or to use a Colander [validator](http://colander.readthedocs.org/en/latest/api.html#validators).
 
 In general, every SQLAlchemy model can be used as schema for a form. The only
 requirements are:
 
-* The model class must contain exactly one primary key column. Tables with
-composite primary keys are not supported.
-* The table must have a `hash` column, in which a generated identifier will be
-inserted for new form entries. This allows to reference a form submission
-without exposing the database id. By default the hash column is assumed to be
-named `hash`. But a different name can be provided using the property
-`hash_column_name` when registering the schema.
+- The model class must contain exactly one primary key column. Tables with
+  composite primary keys are not supported.
+- The table must have a `hash` column, in which a generated identifier will be
+  inserted for new form entries. This allows to reference a form submission
+  without exposing the database id. By default the hash column is assumed to be
+  named `hash`. But a different name can be provided using the property
+  `hash_column_name` when registering the schema.
 
 A more complex example for a model can be found [here](../c2cgeoform/pully/model.py).
 For more information on how to define the model, please refer to the documentation
-of [SQLAlchemy](http://www.sqlalchemy.org/), [ColanderAlchemy](
-http://colanderalchemy.readthedocs.org/en/latest/), [Colander](
-http://colander.readthedocs.org/en/latest/) and [Deform](http://deform.readthedocs.org/en/latest/).
+of [SQLAlchemy](http://www.sqlalchemy.org/), [ColanderAlchemy](http://colanderalchemy.readthedocs.org/en/latest/), [Colander](http://colander.readthedocs.org/en/latest/) and [Deform](http://deform.readthedocs.org/en/latest/).
 
 ## The map widget
 

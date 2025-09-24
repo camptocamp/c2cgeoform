@@ -3,7 +3,7 @@ body {
   font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-weight: 300;
   color: #ffffff;
-  background: #E8C6BA;
+  background: #e8c6ba;
 }
 h1,
 h2,
@@ -150,7 +150,8 @@ p {
     margin-top: 20px;
   }
 }
-.panel-body label, .form-group label {
+.panel-body label,
+.form-group label {
   color: black;
 }
 
@@ -165,7 +166,8 @@ p {
   color: #42325b;
 }
 
-.deformFileupload span, .deformFileupload input[type=file] {
+.deformFileupload span,
+.deformFileupload input[type="file"] {
   color: #000000;
 }
 

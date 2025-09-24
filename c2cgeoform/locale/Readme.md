@@ -10,7 +10,7 @@ Update catalog files:
     msgmerge --update fr/LC_MESSAGES/c2cgeoform.po c2cgeoform.pot
     msgmerge --update de/LC_MESSAGES/c2cgeoform.po c2cgeoform.pot
 
-Compile translations to *.mo files:
+Compile translations to \*.mo files:
 
     make compile-catalog
 
