@@ -8,9 +8,9 @@ project.
 
 The following system packages must be installed on your system:
 
-* `python-virtualenv`
-* `libpq-dev` (header files for PostgreSQL)
-* `gettext`
+- `python-virtualenv`
+- `libpq-dev` (header files for PostgreSQL)
+- `gettext`
 
 ### Create a Pyramid project
 
@@ -77,7 +77,7 @@ cd MyProject
 
 ### Create model
 
-As a `c2cgeoform` application developer your main task is to define a *model*.
+As a `c2cgeoform` application developer your main task is to define a _model_.
 See the "Defining a model for a form page" [page](model.md) to know how to do
 this.
 
@@ -127,8 +127,8 @@ cp ../venv/src/c2cgeoform/c2cgeoform/pully/data/*.geojson myproject/data/
 
 ### Create form template
 
-As a `c2cgeoform` application developer you also need to define a *form
-template*. But here again we're going to use the demo form template that
+As a `c2cgeoform` application developer you also need to define a _form
+template_. But here again we're going to use the demo form template that
 is included in the `c2cgeoform` package.
 
 Copy the `c2cgeform` demo form template into the project:
