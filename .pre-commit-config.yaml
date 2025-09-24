@@ -1,3 +1,12 @@
+exclude: |
+  (?x)^(
+    c2cgeoform/static/deform_map/.*
+    |c2cgeoform/static/js/bootstrap/.*
+    |c2cgeoform/static/js/jquery\..*
+    |c2cgeoform/static/js/ol.*
+    |c2cgeoform/static/js/typeahead.*
+  )$
+
 repos:
   - repo: https://github.com/pre-commit/mirrors-prettier
     rev: v2.7.1
