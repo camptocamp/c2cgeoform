@@ -13,12 +13,12 @@ jobs:
     timeout-minutes: 60
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Install packages
         run: sudo apt-get install --yes gettext libgeos-dev
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: '3.13'
       - name: Install c2cciutils
@@ -43,7 +43,7 @@ jobs:
           retention-days: 1
         if: failure()
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
           node-version-file: .nvmrc
 
