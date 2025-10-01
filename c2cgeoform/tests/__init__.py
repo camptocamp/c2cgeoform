@@ -1,6 +1,6 @@
-import os
 import time
 import unittest
+from pathlib import Path
 
 from pyramid import testing
 from pyramid.paster import get_appsettings
@@ -19,27 +19,28 @@ def wait_for_db(engine):
         try:
             with engine.connect() as connection:
                 connection.execute(text("SELECT 1;"))
-            return
         except Exception as e:
             print(str(e))
             print("Waiting for the DataBase server to be reachable")
             time.sleep(sleep_time)
             sleep_time *= 2
+        else:
+            return
     exit(1)  # noqa
 
 
 class DatabaseTestCase(unittest.TestCase):
     def setUp(self):  # noqa
-        curdir = os.path.dirname(os.path.abspath(__file__))
-        configfile = os.path.realpath(os.path.join(curdir, "../../tests.ini"))
-        settings = get_appsettings(configfile)
+        curdir = Path(__file__).resolve().parent
+        configfile = (curdir / "../../tests.ini").resolve()
+        settings = get_appsettings(str(configfile))
         apply_local_settings(settings)
         engine = engine_from_config(settings, "sqlalchemy.")
         DBSession.configure(bind=engine)
 
         wait_for_db(engine)
 
-        from .models_test import EmploymentStatus, Person, Tag  # noqa
+        from .models_test import EmploymentStatus, Person, Tag  # noqa: F401
 
         Base.metadata.create_all(engine)
         self.cleanup()

@@ -24,7 +24,7 @@ class TestGeometry(DatabaseTestCase):
         from shapely.geometry.point import Point
 
         wkb = from_shape(Point(1.0, 2.0))
-        assert {"type": "Point", "coordinates": [1.0, 2.0]} == json.loads(geom_schema.serialize({}, wkb))
+        assert json.loads(geom_schema.serialize({}, wkb)) == {"type": "Point", "coordinates": [1.0, 2.0]}
 
     def test_serialize_reproject(self):
         from c2cgeoform.ext.colander_ext import Geometry
@@ -35,7 +35,7 @@ class TestGeometry(DatabaseTestCase):
 
         wkb = from_shape(Point(1.0, 2.0), 4326)
         geo_json = json.loads(geom_schema.serialize({}, wkb))
-        assert "Point" == geo_json["type"]
+        assert geo_json["type"] == "Point"
         assert round(geo_json["coordinates"][0], 7) == round(111319.49079327231, 7)
         assert round(geo_json["coordinates"][1], 7) == round(222684.20850554455, 7)
 
@@ -73,9 +73,10 @@ class TestGeometry(DatabaseTestCase):
         geom_schema = Geometry(srid=4326, map_srid=3857)
 
         wkb = geom_schema.deserialize(
-            {}, '{"type": "Point", "coordinates": [111319.49079327231, 222684.20850554455]}'
+            {},
+            '{"type": "Point", "coordinates": [111319.49079327231, 222684.20850554455]}',
         )
-        assert 4326 == wkb.srid
+        assert wkb.srid == 4326
 
         shape = to_shape(wkb)
         assert round(shape.x, 7) == round(1.0, 7)
@@ -105,7 +106,7 @@ class TestBinaryData(DatabaseTestCase):
         binary = BinaryData()
         serialized = binary.serialize({}, b"a string of binary data")
         assert null != serialized
-        assert b"a string of binary data" == serialized.getvalue()
+        assert serialized.getvalue() == b"a string of binary data"
 
     def test_serialize_null(self):
         from c2cgeoform.ext.colander_ext import BinaryData
@@ -132,17 +133,18 @@ class TestBinaryData(DatabaseTestCase):
         assert null == binary.deserialize({}, "")
 
     def test_deserialize_file(self):
-        import os
+        from pathlib import Path
 
         from c2cgeoform.ext.colander_ext import BinaryData
 
-        dirpath = os.path.dirname(os.path.realpath(__file__))
-        file_ = open(os.path.join(dirpath, "data", "1x1.png"), "br")
+        dirpath = Path(__file__).resolve().parent
+        file_path = dirpath / "data" / "1x1.png"
         binary = BinaryData()
-        assert isinstance(binary.deserialize({}, file_), bytes)
+        with file_path.open("br") as file_:
+            assert isinstance(binary.deserialize({}, file_), bytes)
 
-        # test that the file can be read multiple times (simulates that
-        # a file in the tmpstore is requested several times)
-        assert 95 == len(binary.deserialize({}, file_))
-        assert 95 == len(binary.deserialize({}, file_))
-        assert 95 == len(binary.deserialize({}, file_))
+            # test that the file can be read multiple times (simulates that
+            # a file in the tmpstore is requested several times)
+            assert len(binary.deserialize({}, file_)) == 95
+            assert len(binary.deserialize({}, file_)) == 95
+            assert len(binary.deserialize({}, file_)) == 95

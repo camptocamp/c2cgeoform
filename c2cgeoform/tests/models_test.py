@@ -76,7 +76,7 @@ class Person(Base):
                 "validator": colander.Range(
                     18,
                 ),
-            }
+            },
         },
     )
     phones = relationship(
@@ -85,7 +85,7 @@ class Person(Base):
         info={
             "colanderalchemy": {
                 "title": "Phone numbers",
-            }
+            },
         },
     )
     tags = relationship(
@@ -97,7 +97,7 @@ class Person(Base):
                 "title": "Tags",
                 "widget": RelationSelect2Widget(Tag, "id", "name", order_by="name", multiple=True),
                 "includes": ["id"],
-            }
+            },
         },
     )
 
