@@ -22,7 +22,7 @@ def get_rendered_form(response):
 
 class TestListField(TestCase):
     def test_title_default_to_attr_key(self):
-        assert "id" == ListField(Tag, "id").label()
+        assert ListField(Tag, "id").label() == "id"
 
 
 class ConcreteViews(AbstractViews):
@@ -75,26 +75,26 @@ class TestAbstractViews(DatabaseTestCase):
         views = ConcreteViews(self.request)
         response = views.grid()
 
-        assert 22 == response["total"]
+        assert response["total"] == 22
 
         rows = response["rows"]
-        assert 5 == len(rows)
+        assert len(rows) == 5
         assert "_id_" in rows[0]
-        assert "Smith" == rows[0]["name"]
-        assert "person/1" == rows[0]["actions"]["dblclick"]
+        assert rows[0]["name"] == "Smith"
+        assert rows[0]["actions"]["dblclick"] == "person/1"
         call_list = self.request.route_url.call_args_list
         idx = [call[1]["id"] for call in call_list]
         grouped_by_id = [len(list(cgen)) for dummy, cgen in groupby(idx)]
         grouped_by_count = [len(list(cgen)) for dummy, cgen in groupby(grouped_by_id)]
-        assert 1 == len(grouped_by_count)
-        assert 5 == grouped_by_count[0]
+        assert len(grouped_by_count) == 1
+        assert grouped_by_count[0] == 5
 
     def test_grid_without_parameters(self):
         self.request.route_url = Mock(return_value="person/1")
         self._add_test_persons()
         views = ConcreteViews(self.request)
         response = views.grid()
-        assert 22 == response["total"]
+        assert response["total"] == 22
 
     def test_grid_with_nan(self):
         self.request.route_url = Mock(return_value="person/1")
@@ -103,7 +103,7 @@ class TestAbstractViews(DatabaseTestCase):
         self.request.params["limit"] = "NaN"
         views = ConcreteViews(self.request)
         response = views.grid()
-        assert 22 == response["total"]
+        assert response["total"] == 22
 
     def test_new_get(self):
         self.request.matched_route = Mock(name="c2cgeoform_item")
@@ -134,7 +134,9 @@ class TestAbstractViews(DatabaseTestCase):
         self.request.matched_route = Mock(name="person_action")
         self.request.route_url = Mock(return_value="person/new/save")
         self.request.dbsession.merge = Mock(
-            return_value=Person(name="...", first_name="..."), age="...", id=7869
+            return_value=Person(name="...", first_name="..."),
+            age="...",
+            id=7869,
         )
         self.request.dbsession.flush = Mock()
 
@@ -200,10 +202,10 @@ class TestAbstractViews(DatabaseTestCase):
         assert "deform_dependencies" in response
         form = BeautifulSoup(get_rendered_form(response), "html.parser")
         # self.assertEqual('', form.select_one('form').attrs['action'])
-        assert "" == form.select_one("input[name=id]").attrs["value"]
+        assert form.select_one("input[name=id]").attrs["value"] == ""
         assert self.person1.name == form.select_one("input[name=name]").attrs["value"]
         assert self.person1.first_name == form.select_one("input[name=first_name]").attrs["value"]
-        assert "" == form.select_one("input[name=age]").attrs["value"]
+        assert form.select_one("input[name=age]").attrs["value"] == ""
 
     def test_copy_and_discard_excluded(self):
         self._add_test_persons()
@@ -219,14 +221,14 @@ class TestAbstractViews(DatabaseTestCase):
 
         assert person2.name == form.select_one("input[name=name]").attrs["value"]
         assert person2.first_name == form.select_one("input[name=first_name]").attrs["value"]
-        assert "" == form.select_one("input[name=age]").attrs["value"]
+        assert form.select_one("input[name=age]").attrs["value"] == ""
 
         response = views.copy(person2, ["first_name"])
         form = BeautifulSoup(get_rendered_form(response), "html.parser")
 
         assert person2.name == form.select_one("input[name=name]").attrs["value"]
-        assert "" == form.select_one("input[name=first_name]").attrs["value"]
-        assert "" == form.select_one("input[name=age]").attrs["value"]
+        assert form.select_one("input[name=first_name]").attrs["value"] == ""
+        assert form.select_one("input[name=age]").attrs["value"] == ""
 
     def test_delete(self):
         dbsession = self.request.dbsession
@@ -251,7 +253,7 @@ class TestAbstractViews(DatabaseTestCase):
                     return other.id == self.id
 
             assert True is response["success"]
-            assert "person" == response["redirect"]
+            assert response["redirect"] == "person"
             dbsession.delete.assert_called_once_with(Matcher(self.person1))
             dbsession.flush.assert_called_once_with()
         finally:
