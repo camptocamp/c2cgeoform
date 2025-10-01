@@ -33,11 +33,11 @@ pyramid = "2.0.2"
 pyramid-beaker = "0.9"
 pyramid-chameleon = "0.3"
 pyramid-jinja2 = "2.10.1"
-pyproj = "3.7.1"
-shapely = "2.1.1"
-sqlalchemy = "2.0.42"
+pyproj = "3.7.2"
+shapely = "2.1.2"
+sqlalchemy = "2.0.43"
 zope-sqlalchemy = "3.1"
-requests = "2.32.4"
+requests = "2.32.5"
 
 [tool.poetry.group.dev.dependencies]
 prospector = { version = "1.17.3", extras = [
@@ -50,8 +50,8 @@ prospector-profile-utils = "1.26.5"
 webtest = "3.0.6"
 sphinx = "8.2.3"
 sphinx-rtd-theme = "3.0.2"
-types-requests = "2.32.4.20250611"
-pytest = "8.4.1"
+types-requests = "2.32.4.20250913"
+pytest = "8.4.2"
 cookiecutter = "2.6.0"
 
 [tool.poetry.extras]
