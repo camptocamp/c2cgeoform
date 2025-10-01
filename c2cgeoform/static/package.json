@@ -23,8 +23,8 @@
   },
   "devDependencies": {
     "css-loader": "7.1.2",
-    "mini-css-extract-plugin": "2.9.2",
-    "sass": "1.89.2",
+    "mini-css-extract-plugin": "2.9.4",
+    "sass": "1.93.2",
     "ol": "10.6.1",
     "proj4": "2.19.10",
     "sass-loader": "16.0.5",
