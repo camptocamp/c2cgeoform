@@ -268,8 +268,8 @@ class DeleteResponse(TypedDict):
 
 
 class AbstractViews(Generic[T]):
-    _model: ClassVar[type[T] | None] = None  # type: ignore[misc] # sqlalchemy model
-    _list_fields: ClassVar[list[ListField[T]]] = []  # type: ignore[misc] # Fields in list
+    _model: ClassVar[type[T] | None] = None  # SQLAlchemy model
+    _list_fields: ClassVar[list[ListField[T]]] = []
     _list_ordered_fields: ClassVar[
         list[sqlalchemy.sql.elements.ColumnClause[Any] | sqlalchemy.sql.elements.ColumnElement[Any]]
     ] = []  # Fields in list used for default orderby
