@@ -27,15 +27,15 @@ deform = "2.0.15"
 geoalchemy2 = "0.17.1"
 geojson = "3.2.0"
 lingua = "4.15.0"
-psycopg2 = { version = "2.9.10", optional = true }
-psycopg2-binary = { version = "2.9.10", optional = true }
+psycopg2 = { version = "2.9.11", optional = true }
+psycopg2-binary = { version = "2.9.11", optional = true }
 pyramid = "2.0.2"
 pyramid-beaker = "0.9"
 pyramid-chameleon = "0.3"
 pyramid-jinja2 = "2.10.1"
 pyproj = "3.7.2"
 shapely = "2.1.2"
-sqlalchemy = "2.0.43"
+sqlalchemy = "2.0.44"
 zope-sqlalchemy = "3.1"
 requests = "2.32.5"
 
@@ -47,7 +47,7 @@ prospector = { version = "1.17.3", extras = [
 ] }
 prospector-profile-duplicated = "1.10.5"
 prospector-profile-utils = "1.23.0"
-webtest = "3.0.6"
+webtest = "3.0.7"
 sphinx = "8.2.3"
 sphinx-rtd-theme = "3.0.2"
 types-requests = "2.32.4.20250611"
