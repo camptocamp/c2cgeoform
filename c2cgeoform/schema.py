@@ -12,14 +12,14 @@ from sqlalchemy.inspection import inspect
 from c2cgeoform import JSONDict, _
 
 
-@colander.deferred  # type: ignore[misc]
+@colander.deferred  # type: ignore[untyped-decorator]
 def deferred_request(node: Any, kwargs: dict[str, Any]) -> pyramid.request.Request:
     """Deferred function to get the request from the bindings."""
     del node  # unused
     return kwargs.get("request")
 
 
-@colander.deferred  # type: ignore[misc]
+@colander.deferred  # type: ignore[untyped-decorator]
 def deferred_dbsession(node: Any, kwargs: dict[str, Any]) -> sqlalchemy.orm.Session:
     """Deferred function to get the dbsession from the bindings."""
     del node  # unused

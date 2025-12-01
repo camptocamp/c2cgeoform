@@ -8,7 +8,7 @@ from pyramid.view import view_config
 from c2cgeoform import JSONDict
 
 
-@view_config(route_name="c2cgeoform_locale", renderer="json")  # type: ignore[misc]
+@view_config(route_name="c2cgeoform_locale", renderer="json")  # type: ignore[untyped-decorator]
 def set_locale_cookie(request: pyramid.request.Request) -> JSONDict | pyramid.response.Response:
     """View to change the preferred language."""
     if request.GET["language"]:

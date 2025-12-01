@@ -92,7 +92,7 @@ def pregenerator(
     return elements, kwargs
 
 
-@action_method  # type: ignore[misc]
+@action_method  # type: ignore[untyped-decorator]
 def add_c2cgeoform_application(
     config: pyramid.config.Configurator,
     name: str,
