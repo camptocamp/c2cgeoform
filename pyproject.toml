@@ -35,7 +35,7 @@ babel = "2.17.0"
 
 colanderalchemy = "0.3.4"
 deform = "2.0.15"
-geoalchemy2 = "0.18.0"
+geoalchemy2 = "0.18.1"
 geojson = "3.2.0"
 lingua = "4.15.0"
 psycopg2 = { version = "2.9.11", optional = true }
@@ -47,7 +47,7 @@ pyramid-jinja2 = "2.10.1"
 pyproj = "3.7.2"
 shapely = "2.1.2"
 sqlalchemy = "2.0.44"
-zope-sqlalchemy = "4.0"
+zope-sqlalchemy = "4.1"
 requests = "2.32.5"
 
 [tool.poetry.group.dev.dependencies]
