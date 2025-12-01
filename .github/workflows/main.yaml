@@ -13,7 +13,7 @@ jobs:
     timeout-minutes: 60
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       - name: Install packages
         run: sudo apt-get install --yes gettext libgeos-dev
