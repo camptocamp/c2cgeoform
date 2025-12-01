@@ -18,7 +18,6 @@ def app_env():
         yield env
 
 @pytest.fixture(scope='session')
-@pytest.mark.usefixtures("settings")
 def dbsession(settings):
     engine = get_engine(settings)
     with engine.begin() as connection:
@@ -29,13 +28,11 @@ def dbsession(settings):
 
 
 @pytest.fixture(scope="session")
-@pytest.mark.usefixtures("app_env")
 def settings(app_env):
     yield app_env.get('registry').settings
 
 
 @pytest.fixture()  # noqa: F811
-@pytest.mark.usefixtures("dbsession", "app_env")
 def test_app(request, dbsession, settings, app_env):
     config = testing.setUp(registry=app_env['registry'])
     config.add_request_method(lambda request: dbsession, 'dbsession', reify=True)
@@ -50,7 +47,6 @@ def test_app(request, dbsession, settings, app_env):
 
 
 @pytest.fixture(scope='session')  # noqa: F811
-@pytest.mark.usefixtures("dbsession", "app_env")
 def selenium_app(request, dbsession, settings, app_env):
     app = app_env.get('app')
     srv = make_server('', 6543, app)
@@ -60,7 +56,6 @@ def selenium_app(request, dbsession, settings, app_env):
 
 
 @pytest.fixture(scope='function')
-@pytest.mark.usefixtures("dbsession")
 def transact(dbsession):
     t = dbsession.begin_nested()
     yield
@@ -72,7 +67,6 @@ def raise_db_error(Table):
 
 
 @pytest.fixture(scope='function')
-@pytest.mark.usefixtures("dbsession")
 def raise_db_error_on_query(dbsession):
     query = dbsession.query
     dbsession.query = raise_db_error

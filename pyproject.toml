@@ -62,7 +62,7 @@ webtest = "3.0.7"
 sphinx = "8.2.3"
 sphinx-rtd-theme = "3.0.2"
 types-requests = "2.32.4.20250913"
-pytest = "8.4.2"
+pytest = "9.0.1"
 cookiecutter = "2.6.0"
 
 [tool.poetry.extras]
