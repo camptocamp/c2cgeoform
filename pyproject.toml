@@ -67,7 +67,7 @@ sqlalchemy = "2.0.44"
 zope-sqlalchemy = "3.1"
 requests = "2.32.5"
 jinja2 = "3.1.6"
-urllib3 = "2.5.0"
+urllib3 = "2.6.0"
 
 [tool.poetry.group.dev.dependencies]
 prospector = { version = "1.10.3", extras = [
