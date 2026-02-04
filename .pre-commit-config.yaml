@@ -93,7 +93,7 @@ repos:
             |c2cgeoform/scaffolds/c2cgeoform/{{cookiecutter.project}}/{{cookiecutter.package}}/models/c2cgeoform_demo\.py
           )$
   - repo: https://github.com/PyCQA/prospector
-    rev: v1.18.0
+    rev: v1.17.3
     hooks:
       - id: prospector
         args:
