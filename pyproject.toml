@@ -51,7 +51,7 @@ zope-sqlalchemy = "4.1"
 requests = "2.32.5"
 
 [tool.poetry.group.dev.dependencies]
-prospector = { version = "1.17.3", extras = [
+prospector = { version = "1.18.0", extras = [
   "with-bandit",
   "with-mypy",
   "with-pyroma", "with_ruff", "with_pyroma"
