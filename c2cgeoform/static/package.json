@@ -27,7 +27,7 @@
     "sass": "1.97.3",
     "ol": "10.7.0",
     "proj4": "2.20.2",
-    "sass-loader": "16.0.6",
+    "sass-loader": "16.0.7",
     "style-loader": "4.0.0"
   }
 }
