@@ -59,7 +59,7 @@ prospector = { version = "1.18.0", extras = [
 prospector-profile-duplicated = "1.12.0"
 prospector-profile-utils = "1.26.5"
 webtest = "3.0.7"
-sphinx = "8.2.3"
+sphinx = "9.1.0"
 sphinx-rtd-theme = "3.1.0"
 types-requests = "2.32.4.20260107"
 pytest = "9.0.2"
