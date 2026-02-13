@@ -106,7 +106,7 @@ include = [
   "c2cgeoform/static/dist/*",
 ]
 requires-python = ">=3.11"
-dependencies = ["babel", "colanderalchemy", "deform", "geoalchemy2", "geojson", "lingua", "pyramid", "pyramid-beaker", "pyramid-chameleon", "pyramid-jinja2", "pyproj", "shapely", "sqlalchemy", "zope-sqlalchemy", "requests", "setuptools<81.0.0"]
+dependencies = ["babel", "colanderalchemy", "deform", "geoalchemy2", "geojson", "lingua", "pyramid", "pyramid-beaker", "pyramid-chameleon", "pyramid-jinja2", "pyproj", "shapely", "sqlalchemy", "zope-sqlalchemy", "requests", "setuptools<81.0.0", "urllib3==2.6.3"]
 
 [project.urls]
 repository = "https://github.com/camptocamp/c2cgeoform"
