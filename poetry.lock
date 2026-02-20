@@ -1345,18 +1345,18 @@ prospector = "*"
 
 [[package]]
 name = "prospector-profile-utils"
-version = "1.26.5"
+version = "1.27.0"
 description = "Some utility Prospector profiles."
 optional = false
 python-versions = "*"
 groups = ["dev"]
 files = [
-    {file = "prospector_profile_utils-1.26.5-py2.py3-none-any.whl", hash = "sha256:370637f4a1ec9bc48c02a2cf7d66aec29dc47690f7936f66f6571333af56c0ba"},
-    {file = "prospector_profile_utils-1.26.5.tar.gz", hash = "sha256:393614037822c26eb3ec25ba2e281de1edc07e36e0c6ea716a7b94c2a047308d"},
+    {file = "prospector_profile_utils-1.27.0-py2.py3-none-any.whl", hash = "sha256:15902c24d5005c895d79b232678c878b1d2bdaaedfec7d29774d2b3ba5e0d4d7"},
+    {file = "prospector_profile_utils-1.27.0.tar.gz", hash = "sha256:1f74b5c07b895ce280e5988a3b82f475424b59efc70914881fcddd0cdec7a716"},
 ]
 
 [package.dependencies]
-prospector = {version = ">=1.14.0", extras = ["with-mypy", "with-ruff"]}
+prospector = {version = ">=1.13.0", extras = ["with-mypy", "with-ruff"]}
 
 [[package]]
 name = "psycopg2"
@@ -2775,4 +2775,4 @@ psycopg2-binary = ["psycopg2-binary"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.11,<3.14"
-content-hash = "0530095a3ba5554507311c4fc482977d0211c8a7650b4bd604ba8529a09a0535"
+content-hash = "b889640dd586610730974fafd5bd0a9dcada5dbe5bacd76acb0e853d155cda78"
