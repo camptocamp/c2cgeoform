@@ -34,7 +34,7 @@ python = ">=3.11,<3.14"
 babel = "2.18.0"
 
 colanderalchemy = "0.3.4"
-deform = "2.0.15"
+deform = "3.0.1"
 geoalchemy2 = "0.18.1"
 geojson = "3.2.0"
 lingua = "4.15.0"
