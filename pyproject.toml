@@ -35,9 +35,9 @@ babel = "2.18.0"
 
 colanderalchemy = "0.3.4"
 deform = "2.0.15"
-geoalchemy2 = "0.18.1"
+geoalchemy2 = "0.18.4"
 geojson = "3.2.0"
-lingua = "4.15.0"
+lingua = "4.16.2"
 psycopg2 = { version = "2.9.11", optional = true }
 psycopg2-binary = { version = "2.9.11", optional = true }
 pyramid = "2.0.2"
@@ -46,7 +46,7 @@ pyramid-chameleon = "0.3"
 pyramid-jinja2 = "2.10.1"
 pyproj = "3.7.2"
 shapely = "2.1.2"
-sqlalchemy = "2.0.46"
+sqlalchemy = "2.0.48"
 zope-sqlalchemy = "4.1"
 requests = "2.32.5"
 setuptools = "80.10.2"
@@ -64,7 +64,7 @@ sphinx = "8.2.3"
 sphinx-rtd-theme = "3.1.0"
 types-requests = "2.32.4.20260107"
 pytest = "9.0.2"
-cookiecutter = "2.6.0"
+cookiecutter = "2.7.0"
 
 [tool.poetry.extras]
 psycopg2 = ["psycopg2"]
