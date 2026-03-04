@@ -2607,4 +2607,4 @@ psycopg2-binary = ["psycopg2-binary"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.11,<3.14"
-content-hash = "423f780feb0ab8e45929587b68d3ae02985f7ba6083eff9d09ded426677728b2"
+content-hash = "be3d9beff93f4048b1e640a25795dfd0bce6b1e9448e98c61a093b7c7f54ea7f"

@@ -54,6 +54,7 @@ sphinx-rtd-theme = "3.0.2"
 types-requests = "2.32.4.20250611"
 pytest = "8.4.2"
 cookiecutter = "2.6.0"
+urllib3 = "2.6.3"
 
 [tool.poetry.extras]
 psycopg2 = ["psycopg2"]
@@ -107,7 +108,7 @@ include = [
   "c2cgeoform/static/dist/*",
 ]
 requires-python = ">=3.11"
-dependencies = ["babel", "colanderalchemy", "deform<3.0.0", "geoalchemy2", "geojson", "lingua", "pyramid", "pyramid-beaker", "pyramid-chameleon", "pyramid-jinja2", "pyproj", "shapely", "sqlalchemy", "zope-sqlalchemy", "requests", "setuptools<81.0.0", "urllib3==2.6.3"]
+dependencies = ["babel", "colanderalchemy", "deform<3.0.0", "geoalchemy2", "geojson", "lingua", "pyramid", "pyramid-beaker", "pyramid-chameleon", "pyramid-jinja2", "pyproj", "shapely", "sqlalchemy", "zope-sqlalchemy", "requests", "setuptools<81.0.0"]
 
 [project.urls]
 repository = "https://github.com/camptocamp/c2cgeoform"
