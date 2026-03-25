@@ -37,7 +37,7 @@ pyproj = "3.7.2"
 shapely = "2.1.2"
 sqlalchemy = "2.0.46"
 zope-sqlalchemy = "3.1"
-requests = "2.32.5"
+requests = "2.33.0"
 setuptools = "80.10.2"
 
 [tool.poetry.group.dev.dependencies]
