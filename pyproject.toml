@@ -40,7 +40,7 @@ geojson = "3.2.0"
 lingua = "4.16.2"
 psycopg2 = { version = "2.9.11", optional = true }
 psycopg2-binary = { version = "2.9.11", optional = true }
-pyramid = "2.0.2"
+pyramid = "2.1"
 pyramid-beaker = "0.9"
 pyramid-chameleon = "0.3"
 pyramid-jinja2 = "2.10.1"
@@ -62,9 +62,9 @@ prospector-profile-utils = "1.27.0"
 webtest = "3.0.7"
 sphinx = "8.2.3"
 sphinx-rtd-theme = "3.1.0"
-types-requests = "2.32.4.20260107"
+types-requests = "2.32.4.20260324"
 pytest = "9.0.2"
-cookiecutter = "2.7.0"
+cookiecutter = "2.7.1"
 
 [tool.poetry.extras]
 psycopg2 = ["psycopg2"]

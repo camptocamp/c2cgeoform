@@ -389,14 +389,14 @@ markers = {main = "platform_system == \"Windows\"", dev = "platform_system == \"
 
 [[package]]
 name = "cookiecutter"
-version = "2.7.0"
+version = "2.7.1"
 description = "A command-line utility that creates projects from project templates, e.g. creating a Python package project from a Python package project template."
 optional = false
 python-versions = ">=3.10"
 groups = ["dev"]
 files = [
-    {file = "cookiecutter-2.7.0-py3-none-any.whl", hash = "sha256:08dc4398e2d8a57771c20703fa10f8d03952e870eddd46bbb832161dc784fa3d"},
-    {file = "cookiecutter-2.7.0.tar.gz", hash = "sha256:b0bf50141201ebf022c95e3fa02a760b64e600b3675d6dabf97563425a62a707"},
+    {file = "cookiecutter-2.7.1-py3-none-any.whl", hash = "sha256:cee50defc1eaa7ad0071ee9b9893b746c1b3201b66bf4d3686d0f127c8ed6cf9"},
+    {file = "cookiecutter-2.7.1.tar.gz", hash = "sha256:ca7bb7bc8c6ff441fbf53921b5537668000e38d56e28d763a1b73975c66c6138"},
 ]
 
 [package.dependencies]
@@ -1677,30 +1677,26 @@ files = [
 
 [[package]]
 name = "pyramid"
-version = "2.0.2"
+version = "2.1"
 description = "The Pyramid Web Framework, a Pylons project"
 optional = false
-python-versions = ">=3.6"
+python-versions = ">=3.10"
 groups = ["main"]
 files = [
-    {file = "pyramid-2.0.2-py3-none-any.whl", hash = "sha256:2e6585ac55c147f0a51bc00dadf72075b3bdd9a871b332ff9e5e04117ccd76fa"},
-    {file = "pyramid-2.0.2.tar.gz", hash = "sha256:372138a738e4216535cc76dcce6eddd5a1aaca95130f2354fb834264c06f18de"},
+    {file = "pyramid-2.1-py3-none-any.whl", hash = "sha256:0aa62604221f6a8ac6e77a0faa02a5b7a294d6675f15581d8d416dffe2ac98e7"},
+    {file = "pyramid-2.1.tar.gz", hash = "sha256:5a24bc1b5f9e0f0d1c0b6ddd1111e84c15dac44a07e3c1d24e74dd9bb4fc22eb"},
 ]
 
 [package.dependencies]
 hupper = ">=1.5"
 plaster = "*"
-plaster-pastedeploy = "*"
-setuptools = "*"
+plaster_pastedeploy = "*"
+setuptools = "<82"
 translationstring = ">=0.4"
 venusian = ">=1.0"
 webob = ">=1.8.3"
 "zope.deprecation" = ">=3.5.0"
 "zope.interface" = ">=3.8.0"
-
-[package.extras]
-docs = ["Sphinx (>=3.0.0)", "docutils", "pylons-sphinx-latesturl", "pylons-sphinx-themes (>=1.0.8)", "repoze.sphinx.autointerface", "sphinx-copybutton", "sphinxcontrib-autoprogram"]
-testing = ["coverage", "pytest (>=5.4.2)", "pytest-cov", "webtest (>=1.3.1)", "zope.component (>=4.0)"]
 
 [[package]]
 name = "pyramid-beaker"
@@ -2566,14 +2562,14 @@ files = [
 
 [[package]]
 name = "types-requests"
-version = "2.32.4.20260107"
+version = "2.32.4.20260324"
 description = "Typing stubs for requests"
 optional = false
-python-versions = ">=3.9"
+python-versions = ">=3.10"
 groups = ["dev"]
 files = [
-    {file = "types_requests-2.32.4.20260107-py3-none-any.whl", hash = "sha256:b703fe72f8ce5b31ef031264fe9395cac8f46a04661a79f7ed31a80fb308730d"},
-    {file = "types_requests-2.32.4.20260107.tar.gz", hash = "sha256:018a11ac158f801bfa84857ddec1650750e393df8a004a8a9ae2a9bec6fcb24f"},
+    {file = "types_requests-2.32.4.20260324-py3-none-any.whl", hash = "sha256:f83ef2deb284fe99a249b8b0b0a3e4b9809e01ff456063c4df0aac7670c07ab9"},
+    {file = "types_requests-2.32.4.20260324.tar.gz", hash = "sha256:33a2a9ccb1de7d4e4da36e347622c35418f6761269014cc32857acabd5df739e"},
 ]
 
 [package.dependencies]
@@ -2786,4 +2782,4 @@ psycopg2-binary = ["psycopg2-binary"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.11,<3.14"
-content-hash = "5ff815799e16e6eaec150b6648f95d54bb6d1876937840954c783442144179e9"
+content-hash = "6d8576aec8d736db9894b7f05bc3dd5553d50b81ae0b3a2c5e7a10879329af1b"
