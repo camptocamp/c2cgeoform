@@ -1,5 +1,5 @@
 [tool.ruff]
-target-version = "py311"
+target-version = "py312"
 line-length = 110
 
 [tool.ruff.lint]
@@ -30,7 +30,7 @@ main = "c2cgeoform:main"
 c2cgeoform = "c2cgeoform.scaffolds:C2cgeoformTemplate"
 
 [tool.poetry.dependencies]
-python = ">=3.11,<3.14"
+python = ">=3.12,<4"
 babel = "2.18.0"
 
 colanderalchemy = "0.3.4"
@@ -96,7 +96,6 @@ classifiers = [
     'Framework :: Pyramid',
     'Programming Language :: Python',
     'Programming Language :: Python :: 3',
-    'Programming Language :: Python :: 3.11',
     'Programming Language :: Python :: 3.12',
     'Programming Language :: Python :: 3.13',
     'Topic :: Internet :: WWW/HTTP',
@@ -117,7 +116,7 @@ include = [
   "c2cgeoform/static/**",
   "c2cgeoform/static/dist/*",
 ]
-requires-python = ">=3.11"
+requires-python = ">=3.12"
 dependencies = ["babel", "colanderalchemy", "deform<3.0.0", "geoalchemy2", "geojson", "lingua", "pyramid", "pyramid-beaker", "pyramid-chameleon", "pyramid-jinja2", "pyproj", "shapely", "sqlalchemy", "zope-sqlalchemy", "requests", "setuptools<81.0.0"]
 
 [project.urls]

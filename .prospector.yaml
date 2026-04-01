@@ -10,7 +10,7 @@ ignore-paths:
 
 mypy:
   options:
-    python-version: '3.11'
+    python-version: '3.12'
 
 ruff:
   disable:
@@ -20,4 +20,4 @@ ruff:
     - ARG002 # Unused method argument
     - ARG005 # Unused lambda argument
   options:
-    target-version: py311
+    target-version: py312
