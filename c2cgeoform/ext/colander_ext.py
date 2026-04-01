@@ -1,6 +1,7 @@
 import io
 import json
 import os
+from collections.abc import Buffer
 from io import BytesIO
 from typing import Any
 
@@ -11,7 +12,6 @@ from geoalchemy2 import WKBElement
 from geoalchemy2.shape import from_shape, to_shape
 from shapely.geometry import mapping, shape
 from shapely.ops import transform
-from typing_extensions import Buffer
 
 
 class Geometry(SchemaType):  # type: ignore[misc]

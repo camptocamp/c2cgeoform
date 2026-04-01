@@ -3,7 +3,6 @@ from collections.abc import Callable
 from typing import (
     Any,
     ClassVar,
-    Generic,
     TypedDict,
     TypeVar,
     Union,
@@ -87,7 +86,7 @@ def model_attr_info(
 T = TypeVar("T", bound=type)
 
 
-def _getattr(
+def _getattr[T: type](
     model: type[T] | None,
     attr: sqlalchemy.schema.Column[Any] | str | None,
 ) -> sqlalchemy.schema.Column[Any]:
@@ -98,7 +97,7 @@ def _getattr(
     return cast("sqlalchemy.schema.Column[Any]", getattr(model, attr))
 
 
-class ListField(Generic[T]):
+class ListField[T: type]:
     def __init__(
         self,
         model: type[T] | None = None,
@@ -232,7 +231,7 @@ class UserMessage:
         return self._text
 
 
-class IndexResponse(TypedDict, Generic[T]):
+class IndexResponse[T: type](TypedDict):
     grid_actions: list[ItemAction]
     list_fields: list[ListField[T]]
 
@@ -267,7 +266,7 @@ class DeleteResponse(TypedDict):
     redirect: str
 
 
-class AbstractViews(Generic[T]):
+class AbstractViews[T: type]:
     _model: ClassVar[type[T] | None] = None  # SQLAlchemy model
     _list_fields: ClassVar[list[ListField[T]]] = []
     _list_ordered_fields: ClassVar[

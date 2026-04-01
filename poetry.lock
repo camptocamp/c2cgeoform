@@ -641,14 +641,14 @@ all = ["flake8 (>=7.1.1)", "mypy (>=1.11.2)", "pytest (>=8.3.2)", "ruff (>=0.6.2
 
 [[package]]
 name = "imagesize"
-version = "2.0.0"
-description = "Get image size from headers (BMP/PNG/JPEG/JPEG2000/GIF/TIFF/SVG/Netpbm/WebP/AVIF/HEIC/HEIF)"
+version = "1.5.0"
+description = "Getting image size from png/jpeg/jpeg2000/gif file"
 optional = false
-python-versions = "<3.15,>=3.10"
+python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,>=2.7"
 groups = ["dev"]
 files = [
-    {file = "imagesize-2.0.0-py2.py3-none-any.whl", hash = "sha256:5667c5bbb57ab3f1fa4bc366f4fbc971db3d5ed011fd2715fd8001f782718d96"},
-    {file = "imagesize-2.0.0.tar.gz", hash = "sha256:8e8358c4a05c304f1fccf7ff96f036e7243a189e9e42e90851993c558cfe9ee3"},
+    {file = "imagesize-1.5.0-py2.py3-none-any.whl", hash = "sha256:32677681b3f434c2cb496f00e89c5a291247b35b1f527589909e008057da5899"},
+    {file = "imagesize-1.5.0.tar.gz", hash = "sha256:8bfc5363a7f2133a89f0098451e0bcb1cd71aba4dc02bbcecb39d99d40e1b94f"},
 ]
 
 [[package]]
@@ -715,7 +715,7 @@ description = "Fork of the standard library cgi and cgitb modules removed in Pyt
 optional = false
 python-versions = ">=3.8"
 groups = ["main", "dev"]
-markers = "python_version == \"3.13\""
+markers = "python_version >= \"3.13\""
 files = [
     {file = "legacy_cgi-2.6.4-py3-none-any.whl", hash = "sha256:7e235ce58bf1e25d1fc9b2d299015e4e2cd37305eccafec1e6bac3fc04b878cd"},
     {file = "legacy_cgi-2.6.4.tar.gz", hash = "sha256:abb9dfc7835772f7c9317977c63253fd22a7484b5c9bbcdca60a29dcce97c577"},
@@ -1541,10 +1541,7 @@ files = [
 [package.dependencies]
 astroid = ">=4.0.2,<=4.1.dev0"
 colorama = {version = ">=0.4.5", markers = "sys_platform == \"win32\""}
-dill = [
-    {version = ">=0.3.7", markers = "python_version >= \"3.12\""},
-    {version = ">=0.3.6", markers = "python_version == \"3.11\""},
-]
+dill = {version = ">=0.3.7", markers = "python_version >= \"3.12\""}
 isort = ">=5,<5.13 || >5.13,<9"
 mccabe = ">=0.6,<0.8"
 platformdirs = ">=2.2"
@@ -2001,21 +1998,6 @@ files = [
 ]
 
 [[package]]
-name = "roman-numerals-py"
-version = "4.1.0"
-description = "This package is deprecated, switch to roman-numerals."
-optional = false
-python-versions = ">=3.10"
-groups = ["dev"]
-files = [
-    {file = "roman_numerals_py-4.1.0-py3-none-any.whl", hash = "sha256:553114c1167141c1283a51743759723ecd05604a1b6b507225e91dc1a6df0780"},
-    {file = "roman_numerals_py-4.1.0.tar.gz", hash = "sha256:f5d7b2b4ca52dd855ef7ab8eb3590f428c0b1ea480736ce32b01fef2a5f8daf9"},
-]
-
-[package.dependencies]
-roman-numerals = "4.1.0"
-
-[[package]]
 name = "ruff"
 version = "0.15.8"
 description = "An extremely fast Python linter and code formatter, written in Rust."
@@ -2203,27 +2185,27 @@ files = [
 
 [[package]]
 name = "sphinx"
-version = "8.2.3"
+version = "9.1.0"
 description = "Python documentation generator"
 optional = false
-python-versions = ">=3.11"
+python-versions = ">=3.12"
 groups = ["dev"]
 files = [
-    {file = "sphinx-8.2.3-py3-none-any.whl", hash = "sha256:4405915165f13521d875a8c29c8970800a0141c14cc5416a38feca4ea5d9b9c3"},
-    {file = "sphinx-8.2.3.tar.gz", hash = "sha256:398ad29dee7f63a75888314e9424d40f52ce5a6a87ae88e7071e80af296ec348"},
+    {file = "sphinx-9.1.0-py3-none-any.whl", hash = "sha256:c84fdd4e782504495fe4f2c0b3413d6c2bf388589bb352d439b2a3bb99991978"},
+    {file = "sphinx-9.1.0.tar.gz", hash = "sha256:7741722357dd75f8190766926071fed3bdc211c74dd2d7d4df5404da95930ddb"},
 ]
 
 [package.dependencies]
 alabaster = ">=0.7.14"
 babel = ">=2.13"
 colorama = {version = ">=0.4.6", markers = "sys_platform == \"win32\""}
-docutils = ">=0.20,<0.22"
+docutils = ">=0.21,<0.23"
 imagesize = ">=1.3"
 Jinja2 = ">=3.1"
 packaging = ">=23.0"
 Pygments = ">=2.17"
 requests = ">=2.30.0"
-roman-numerals-py = ">=1.0.0"
+roman-numerals = ">=1.0.0"
 snowballstemmer = ">=2.2"
 sphinxcontrib-applehelp = ">=1.0.7"
 sphinxcontrib-devhelp = ">=1.0.6"
@@ -2231,11 +2213,6 @@ sphinxcontrib-htmlhelp = ">=2.0.6"
 sphinxcontrib-jsmath = ">=1.0.1"
 sphinxcontrib-qthelp = ">=1.0.6"
 sphinxcontrib-serializinghtml = ">=1.1.9"
-
-[package.extras]
-docs = ["sphinxcontrib-websupport"]
-lint = ["betterproto (==2.0.0b6)", "mypy (==1.15.0)", "pypi-attestations (==0.0.21)", "pyright (==1.1.395)", "pytest (>=8.0)", "ruff (==0.9.9)", "sphinx-lint (>=0.9)", "types-Pillow (==10.2.0.20240822)", "types-Pygments (==2.19.0.20250219)", "types-colorama (==0.4.15.20240311)", "types-defusedxml (==0.7.0.20240218)", "types-docutils (==0.21.0.20241128)", "types-requests (==2.32.0.20241016)", "types-urllib3 (==1.26.25.14)"]
-test = ["cython (>=3.0)", "defusedxml (>=0.7.1)", "pytest (>=8.0)", "pytest-xdist[psutil] (>=3.4)", "setuptools (>=70.0)", "typing_extensions (>=4.9)"]
 
 [[package]]
 name = "sphinx-rtd-theme"
@@ -2789,5 +2766,5 @@ psycopg2-binary = ["psycopg2-binary"]
 
 [metadata]
 lock-version = "2.1"
-python-versions = ">=3.11,<3.14"
-content-hash = "6d8576aec8d736db9894b7f05bc3dd5553d50b81ae0b3a2c5e7a10879329af1b"
+python-versions = ">=3.12,<4"
+content-hash = "dd586f3eb284920a50141e179599ff5adb68e059fbc490c7b21f6d7a5ae2be7f"
