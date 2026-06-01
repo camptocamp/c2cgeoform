@@ -12,11 +12,11 @@
     "@babel/core": "7.29.0",
     "@babel/plugin-proposal-optional-chaining": "7.21.0",
     "@babel/polyfill": "7.12.1",
-    "@babel/preset-env": "7.29.2",
+    "@babel/preset-env": "7.29.5",
     "babel-loader": "10.1.1",
     "clean-webpack-plugin": "4.0.0",
     "html-webpack-plugin": "5.6.7",
-    "webpack": "5.106.2",
+    "webpack": "5.107.1",
     "webpack-cli": "7.0.2",
     "webpack-dev-server": "5.2.4",
     "whatwg-fetch": "3.6.20"
@@ -24,10 +24,10 @@
   "devDependencies": {
     "css-loader": "7.1.4",
     "mini-css-extract-plugin": "2.10.2",
-    "sass": "1.99.0",
+    "sass": "1.100.0",
     "ol": "10.9.0",
     "proj4": "2.20.8",
-    "sass-loader": "16.0.7",
+    "sass-loader": "16.0.8",
     "style-loader": "4.0.0"
   }
 }
