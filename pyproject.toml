@@ -1,47 +1,3 @@
-
-[build-system]
-requires = [
-  "poetry-core>=1.0.0",
-  "poetry-dynamic-versioning",
-]
-build-backend = "poetry.core.masonry.api"
-
-[project]
-classifiers = [
-    'Framework :: Pyramid',
-    'Programming Language :: Python',
-    'Programming Language :: Python :: 3',
-    'Programming Language :: Python :: 3.12',
-    'Programming Language :: Python :: 3.13',
-    'Topic :: Internet :: WWW/HTTP',
-    'Topic :: Internet :: WWW/HTTP :: WSGI :: Application',
-    'Typing :: Typed',
-]
-dynamic = ["dependencies", "version"]
-name = "c2cgeoform"
-description = "c2cgeoform"
-readme = "README.md"
-keywords = ["web", "wsgi", "bfg", "pylons", "pyramid"]
-authors = [{name = "Camptocamp",email = "info@camptocamp.com"}]
-packages = [{ include = "c2cgeoform" }]
-include = [
-  "c2cgeoform/py.typed",
-  "c2cgeoform/scaffolds/c2cgeoform/**",
-  "c2cgeoform/templates/**",
-  "c2cgeoform/static/**",
-  "c2cgeoform/static/dist/*",
-]
-requires-python = ">=3.12"
-dependencies = ["babel", "colanderalchemy", "deform<3.0.0", "geoalchemy2", "geojson", "lingua", "pyramid", "pyramid-beaker", "pyramid-chameleon", "pyramid-jinja2", "pyproj", "shapely", "sqlalchemy", "zope-sqlalchemy", "requests", "setuptools<81.0.0"]
-
-[project.urls]
-repository = "https://github.com/camptocamp/c2cgeoform"
-"Bug Tracker" = "https://github.com/camptocamp/c2cgeoform/issues"
-
-[project.optional-dependencies]
-psycopg2 = ["psycopg2"]
-psycopg2-binary = ["psycopg2-binary"]
-
 [tool.ruff]
 target-version = "py312"
 line-length = 110
@@ -59,9 +15,6 @@ convention = "numpy"
 "**/tests/**" = ["ANN", "ARG", "ASYNC", "BLE001", "D", "DTZ", "E722", "FBT003", "INP001", "N", "PGH003", "PLC", "PLR2004", "PLW0603", "PLW1641", "RET", "RUF012", "RUF100", "S104", "S105", "S106", "S108", "S113", "S324", "S603", "S607", "S608", "SLF", "TRY003", "TRY301"]
 "**/test_*.py" = ["ANN", "ARG", "ASYNC", "BLE001", "D", "DTZ", "E722", "FBT003", "INP001", "N", "PGH003", "PLC", "PLR2004", "PLW0603", "PLW1641", "RET", "RUF012", "RUF100", "S104", "S105", "S106", "S108", "S113", "S324", "S603", "S607", "S608", "SLF", "TRY003", "TRY301"]
 "**/*_test.py" = ["ANN", "ARG", "ASYNC", "BLE001", "D", "DTZ", "E722", "FBT003", "INP001", "N", "PGH003", "PLC", "PLR2004", "PLW0603", "PLW1641", "RET", "RUF012", "RUF100", "S104", "S105", "S106", "S108", "S113", "S324", "S603", "S607", "S608", "SLF", "TRY003", "TRY301"]
-
-[tool.pytest.ini_options]
-testpaths = ["c2cgeoform/tests"]
 
 [tool.poetry]
 exclude = ["c2cgeoform/static/node_modules/**"]
@@ -96,7 +49,7 @@ requests = "2.34.2"
 setuptools = "80.10.2"
 
 [tool.poetry.group.dev.dependencies]
-prospector = { version = "1.18.0", extras = [
+prospector = { version = "1.19.0", extras = [
   "with-bandit",
   "with-mypy",
   "with-pyroma", "with_ruff", "with_pyroma"
@@ -134,3 +87,49 @@ format-jinja = """
 default = "present"
 setuptools = "<81.0.0"
 deform = "<3.0.0"
+
+[tool.pytest.ini_options]
+testpaths = ["c2cgeoform/tests"]
+
+[project]
+classifiers = [
+    'Framework :: Pyramid',
+    'Programming Language :: Python',
+    'Programming Language :: Python :: 3',
+    'Programming Language :: Python :: 3.12',
+    'Programming Language :: Python :: 3.13',
+    'Topic :: Internet :: WWW/HTTP',
+    'Topic :: Internet :: WWW/HTTP :: WSGI :: Application',
+    'Typing :: Typed',
+]
+dynamic = ["dependencies", "version"]
+name = "c2cgeoform"
+description = "c2cgeoform"
+readme = "README.md"
+keywords = ["web", "wsgi", "bfg", "pylons", "pyramid"]
+authors = [{name = "Camptocamp",email = "info@camptocamp.com"}]
+packages = [{ include = "c2cgeoform" }]
+include = [
+  "c2cgeoform/py.typed",
+  "c2cgeoform/scaffolds/c2cgeoform/**",
+  "c2cgeoform/templates/**",
+  "c2cgeoform/static/**",
+  "c2cgeoform/static/dist/*",
+]
+requires-python = ">=3.12"
+dependencies = ["babel", "colanderalchemy", "deform<3.0.0", "geoalchemy2", "geojson", "lingua", "pyramid", "pyramid-beaker", "pyramid-chameleon", "pyramid-jinja2", "pyproj", "shapely", "sqlalchemy", "zope-sqlalchemy", "requests", "setuptools<81.0.0"]
+
+[project.urls]
+repository = "https://github.com/camptocamp/c2cgeoform"
+"Bug Tracker" = "https://github.com/camptocamp/c2cgeoform/issues"
+
+[project.optional-dependencies]
+psycopg2 = ["psycopg2"]
+psycopg2-binary = ["psycopg2-binary"]
+
+[build-system]
+requires = [
+  "poetry-core>=1.0.0",
+  "poetry-dynamic-versioning",
+]
+build-backend = "poetry.core.masonry.api"
