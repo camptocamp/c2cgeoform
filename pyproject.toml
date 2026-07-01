@@ -96,7 +96,7 @@ requests = "2.34.2"
 setuptools = "80.10.2"
 
 [tool.poetry.group.dev.dependencies]
-prospector = { version = "1.18.0", extras = [
+prospector = { version = "1.19.0", extras = [
   "with-bandit",
   "with-mypy",
   "with-pyroma", "with_ruff", "with_pyroma"
