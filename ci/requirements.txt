@@ -4,4 +4,4 @@ poetry-dynamic-versioning==1.10.0
 poetry-plugin-export==1.10.0
 pre-commit==4.6.0
 tag-publish==1.1.1
-setuptools==80.9.0
+setuptools==83.0.0
