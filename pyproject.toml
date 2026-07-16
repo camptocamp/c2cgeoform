@@ -46,7 +46,7 @@ shapely = "2.1.2"
 sqlalchemy = "2.0.51"
 zope-sqlalchemy = "4.1"
 requests = "2.34.2"
-setuptools = "80.10.2"
+setuptools = "83.0.0"
 
 [tool.poetry.group.dev.dependencies]
 prospector = { version = "1.19.0", extras = [
@@ -85,7 +85,7 @@ format-jinja = """
 
 [tool.poetry-plugin-tweak-dependencies-version]
 default = "present"
-setuptools = "<81.0.0"
+setuptools = "<84.0.0"
 deform = "<3.0.0"
 
 [tool.pytest.ini_options]
@@ -117,7 +117,7 @@ include = [
   "c2cgeoform/static/dist/*",
 ]
 requires-python = ">=3.12"
-dependencies = ["babel", "colanderalchemy", "deform<3.0.0", "geoalchemy2", "geojson", "lingua", "pyramid", "pyramid-beaker", "pyramid-chameleon", "pyramid-jinja2", "pyproj", "shapely", "sqlalchemy", "zope-sqlalchemy", "requests", "setuptools<81.0.0"]
+dependencies = ["babel", "colanderalchemy", "deform<3.0.0", "geoalchemy2", "geojson", "lingua", "pyramid", "pyramid-beaker", "pyramid-chameleon", "pyramid-jinja2", "pyproj", "shapely", "sqlalchemy", "zope-sqlalchemy", "requests", "setuptools<84.0.0"]
 
 [project.urls]
 repository = "https://github.com/camptocamp/c2cgeoform"
