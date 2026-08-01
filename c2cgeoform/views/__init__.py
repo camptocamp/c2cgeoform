@@ -1,3 +1,4 @@
+# Copyright (c) 2026
 from typing import Any
 
 import pyramid.request
