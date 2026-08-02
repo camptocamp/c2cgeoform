@@ -1,3 +1,4 @@
+# Copyright (c) 2026
 import json
 import logging
 import os

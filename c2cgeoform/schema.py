@@ -1,3 +1,4 @@
+# Copyright (c) 2026
 from functools import partial
 from typing import Any, cast
 

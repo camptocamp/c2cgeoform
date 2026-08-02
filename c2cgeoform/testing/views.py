@@ -1,3 +1,4 @@
+# Copyright (c) 2026
 import pprint
 from typing import Any, cast
 
