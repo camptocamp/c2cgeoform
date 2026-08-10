@@ -1,3 +1,4 @@
+# Copyright (c) 2026
 import logging
 from collections.abc import Callable
 from typing import (

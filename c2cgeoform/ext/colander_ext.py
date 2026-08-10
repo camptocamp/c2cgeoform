@@ -1,3 +1,4 @@
+# Copyright (c) 2026
 import io
 import json
 import os

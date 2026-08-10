@@ -1,3 +1,4 @@
+# Copyright (c) 2026
 import configparser
 from pathlib import Path
 
