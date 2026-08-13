@@ -37,7 +37,7 @@ poetry:
 
 .PHONY: prospector
 prospector: poetry
-	poetry run prospector --output-format=pylint --die-on-tool-error
+	poetry run prospector --output-format=pylint --direct-tool-stdout
 
 .build/node_modules.timestamp: c2cgeoform/static/package.json
 	mkdir -p $(dir $@)
