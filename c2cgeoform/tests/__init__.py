@@ -1,3 +1,5 @@
+# Copyright (c) 2026
+
 import time
 import unittest
 from pathlib import Path

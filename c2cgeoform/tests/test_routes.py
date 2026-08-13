@@ -1,3 +1,5 @@
+# Copyright (c) 2026
+
 # pylint: disable=no-self-use
 
 from unittest import TestCase

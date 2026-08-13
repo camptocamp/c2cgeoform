@@ -1,3 +1,5 @@
+# Copyright (c) 2026
+
 import colander
 import deform
 from sqlalchemy import Boolean, Column, ForeignKey, Integer, Table, Text
