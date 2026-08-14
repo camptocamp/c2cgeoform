@@ -1,3 +1,5 @@
+# Copyright (c) 2026
+
 from functools import partial
 from itertools import groupby
 from unittest import TestCase

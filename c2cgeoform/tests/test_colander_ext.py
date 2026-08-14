@@ -1,3 +1,5 @@
+# Copyright (c) 2026
+
 import json
 
 import pytest
