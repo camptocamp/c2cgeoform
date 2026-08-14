@@ -64,11 +64,6 @@ jobs:
           c2cciutils-docker-logs
           docker compose down -v --remove-orphans
         if: always()
-      - uses: camptocamp/initialise-gopass-summon-action@17703c87720ba3766abc90da60b437783b530d93 # v2.0.1
-        with:
-          ci-gpg-private-key: ${{secrets.CI_GPG_PRIVATE_KEY}}
-          github-gopass-ci-token: ${{secrets.GOPASS_CI_GITHUB_TOKEN}}
-        if: env.HAS_SECRETS == 'HAS_SECRETS'
 
       - name: Publish
         run: tag-publish
