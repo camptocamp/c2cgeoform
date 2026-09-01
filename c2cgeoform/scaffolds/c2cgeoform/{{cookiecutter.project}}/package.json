@@ -12,7 +12,7 @@
     "jquery": "4.0.0",
     "jquery.scrollintoview": "1.9.4",
     "jquery-steps": "1.1.0",
-    "ol": "10.9.0",
+    "ol": "10.10.0",
     "typeahead.js": "0.11.1"
   }
 }
