@@ -35,15 +35,15 @@ deform = "2.0.15"
 geoalchemy2 = "0.20.0"
 geojson = "3.3.0"
 lingua = "4.16.2"
-psycopg2 = { version = "2.9.12", optional = true }
-psycopg2-binary = { version = "2.9.12", optional = true }
+psycopg2 = { version = "2.9.13", optional = true }
+psycopg2-binary = { version = "2.9.13", optional = true }
 pyramid = "2.1"
 pyramid-beaker = "0.9"
 pyramid-chameleon = "0.3"
 pyramid-jinja2 = "2.10.1"
-pyproj = "3.7.2"
+pyproj = "3.8.0"
 shapely = "2.1.2"
-sqlalchemy = "2.0.52"
+sqlalchemy = "2.0.54"
 zope-sqlalchemy = "4.1"
 requests = "2.34.2"
 setuptools = "80.10.2"
@@ -59,7 +59,7 @@ prospector-profile-utils = "1.27.0"
 webtest = "3.0.7"
 sphinx = "9.1.0"
 sphinx-rtd-theme = "3.1.0"
-types-requests = "2.33.0.20260712"
+types-requests = "2.33.0.20260906"
 pytest = "9.1.1"
 cookiecutter = "2.7.1"
 ruff = "0.16.5"
@@ -119,7 +119,7 @@ include = [
   "c2cgeoform/static/dist/*",
 ]
 requires-python = ">=3.12"
-dependencies = ["babel", "colanderalchemy", "deform<3.0.0", "geoalchemy2", "geojson", "lingua", "pyramid", "pyramid-beaker", "pyramid-chameleon", "pyramid-jinja2", "pyproj", "shapely", "sqlalchemy", "zope-sqlalchemy", "requests", "setuptools<81.0.0"]
+dependencies = ["babel", "colanderalchemy", "deform<3.0.0", "geoalchemy2", "geojson", "lingua", "pyramid", "pyramid-beaker", "pyramid-chameleon", "pyramid-jinja2", "pyproj", "shapely", "sqlalchemy<2.1", "zope-sqlalchemy", "requests", "setuptools<81.0.0"]
 
 [project.urls]
 repository = "https://github.com/camptocamp/c2cgeoform"
@@ -131,7 +131,7 @@ psycopg2-binary = ["psycopg2-binary"]
 
 [build-system]
 requires = [
-  "poetry-core==2.4.0",
+  "poetry-core==2.5.0",
   "poetry-dynamic-versioning[plugin]==1.10.0",
 ]
 build-backend = "poetry.core.masonry.api"
