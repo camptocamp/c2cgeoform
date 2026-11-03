@@ -451,6 +451,17 @@ class AbstractViews(Generic[T]):
             assert self._model is not None
             return cast("T", self._model())  # type: ignore[call-overload] # pylint: disable=not-callable
         primary_key = self._request.matchdict.get("id")
+        if isinstance(primary_key, str):
+            assert self._model is not None
+            inspected_model = inspect(self._model)
+            assert inspected_model is not None
+            column = inspected_model.columns[self._id_field]
+            python_type = column.type.python_type
+            if python_type is not str:
+                try:
+                    primary_key = python_type(primary_key)
+                except (ValueError, TypeError):
+                    pass
         obj = (
             self._request.dbsession.query(self._model)
             .filter(getattr(self._model, self._id_field) == primary_key)

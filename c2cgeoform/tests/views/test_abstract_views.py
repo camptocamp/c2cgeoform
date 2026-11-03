@@ -5,6 +5,7 @@ from unittest.mock import Mock
 
 import pytest
 from bs4 import BeautifulSoup
+from pyramid import testing
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 
 from c2cgeoform.models import DBSession
@@ -28,8 +29,26 @@ class TestListField(TestCase):
 class ConcreteViews(AbstractViews):
     _model = Person
     _id_field = "id"
-    _list_fields = [_list_field("name", label="Name"), _list_field("first_name")]
+    _list_fields = [_list_field("name", label="Name"), _list_field("first_name")]  # noqa: RUF012
     _base_schema = GeoFormSchemaNode(Person, title="Person")
+
+
+class TestGetObject(TestCase):
+    def test_converts_string_id_to_column_type(self):
+        request = testing.DummyRequest()
+        request.matchdict = {"id": "1"}
+        query = Mock()
+        query.filter.return_value = query
+        query.one_or_none.return_value = Person(id=1, name="Smith", first_name="Peter")
+        request.dbsession = Mock()
+        request.dbsession.query.return_value = query
+
+        views = ConcreteViews(request)
+        obj = views._get_object()
+
+        assert obj.id == 1
+        filter_expression = query.filter.call_args[0][0]
+        assert filter_expression.right.value == 1
 
 
 class TestAbstractViews(DatabaseTestCase):
