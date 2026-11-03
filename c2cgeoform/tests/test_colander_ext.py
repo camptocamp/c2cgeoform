@@ -137,7 +137,7 @@ class TestBinaryData(DatabaseTestCase):
         from c2cgeoform.ext.colander_ext import BinaryData
 
         dirpath = os.path.dirname(os.path.realpath(__file__))
-        file_ = open(os.path.join(dirpath, "data", "1x1.png"), "br")
+        file_ = open(os.path.join(dirpath, "data", "1x1.png"), "br")  # noqa: SIM115
         binary = BinaryData()
         assert isinstance(binary.deserialize({}, file_), bytes)
 

@@ -44,8 +44,8 @@ person_tag = Table(
 
 class Person(Base):
     __tablename__ = "tests_persons"
-    __colanderalchemy_config__ = {"title": "A Person", "description": "Tell us about you."}
-    __c2cgeoform_config__ = {"duplicate": True}
+    __colanderalchemy_config__ = {"title": "A Person", "description": "Tell us about you."}  # noqa: RUF012
+    __c2cgeoform_config__ = {"duplicate": True}  # noqa: RUF012
 
     id = Column(
         Integer,

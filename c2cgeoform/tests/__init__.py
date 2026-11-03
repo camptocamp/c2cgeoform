@@ -20,7 +20,7 @@ def wait_for_db(engine):
             with engine.connect() as connection:
                 connection.execute(text("SELECT 1;"))
             return
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001  # Retry on any connection error.
             print(str(e))
             print("Waiting for the DataBase server to be reachable")
             time.sleep(sleep_time)
