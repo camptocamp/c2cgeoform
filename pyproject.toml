@@ -1,5 +1,5 @@
 [tool.ruff]
-target-version = "py312"
+target-version = "py313"
 line-length = 110
 
 [tool.ruff.lint]
@@ -27,7 +27,7 @@ main = "c2cgeoform:main"
 c2cgeoform = "c2cgeoform.scaffolds:C2cgeoformTemplate"
 
 [tool.poetry.dependencies]
-python = ">=3.12,<4"
+python = ">=3.13,<4"
 babel = "2.18.0"
 
 colanderalchemy = "0.3.4"
@@ -42,7 +42,7 @@ pyramid-beaker = "0.9"
 pyramid-chameleon = "0.3"
 pyramid-jinja2 = "2.10.1"
 pyproj = "3.8.0"
-shapely = "2.1.2"
+shapely = "2.2.0"
 sqlalchemy = "2.0.52"
 zope-sqlalchemy = "4.1"
 requests = "2.34.2"
@@ -57,10 +57,10 @@ prospector = { version = "1.19.1", extras = [
 prospector-profile-duplicated = "1.12.0"
 prospector-profile-utils = "1.27.0"
 webtest = "3.0.7"
-sphinx = "9.1.0"
+sphinx = "9.2.0"
 sphinx-rtd-theme = "3.1.0"
-types-requests = "2.33.0.20260906"
-pytest = "9.1.1"
+types-requests = "2.33.0.20261006"
+pytest = "9.2.0"
 cookiecutter = "2.7.1"
 ruff = "0.16.9"
 pylint = "4.0.9"
@@ -98,7 +98,6 @@ classifiers = [
     'Framework :: Pyramid',
     'Programming Language :: Python',
     'Programming Language :: Python :: 3',
-    'Programming Language :: Python :: 3.12',
     'Programming Language :: Python :: 3.13',
     'Topic :: Internet :: WWW/HTTP',
     'Topic :: Internet :: WWW/HTTP :: WSGI :: Application',
@@ -118,7 +117,7 @@ include = [
   "c2cgeoform/static/**",
   "c2cgeoform/static/dist/*",
 ]
-requires-python = ">=3.12"
+requires-python = ">=3.13"
 dependencies = ["babel", "colanderalchemy", "deform<3.0.0", "geoalchemy2", "geojson", "lingua", "pyramid", "pyramid-beaker", "pyramid-chameleon", "pyramid-jinja2", "pyproj", "shapely", "sqlalchemy<2.1", "zope-sqlalchemy", "requests", "setuptools<81.0.0"]
 
 [project.urls]
@@ -132,6 +131,6 @@ psycopg2-binary = ["psycopg2-binary"]
 [build-system]
 requires = [
   "poetry-core==2.5.0",
-  "poetry-dynamic-versioning[plugin]==1.10.0",
+  "poetry-dynamic-versioning[plugin]==1.10.1",
 ]
 build-backend = "poetry.core.masonry.api"
