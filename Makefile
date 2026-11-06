@@ -33,7 +33,7 @@ check: prospector
 
 .PHONY: poetry
 poetry:
-	poetry install --with=dev --extras=psycopg2-binary
+	poetry install --with=dev --extras=psycopg-binary
 
 .PHONY: prospector
 prospector: poetry
