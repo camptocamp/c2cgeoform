@@ -25,7 +25,7 @@ from geoalchemy2.elements import WKBElement
 from geoalchemy2.shape import to_shape
 from geojson import Feature, FeatureCollection
 from pyramid.httpexceptions import HTTPFound, HTTPInternalServerError, HTTPNotFound
-from sqlalchemy import desc, or_, types
+from sqlalchemy import or_, types
 from sqlalchemy.exc import DBAPIError
 from sqlalchemy.inspection import inspect
 from sqlalchemy.orm.properties import ColumnProperty
@@ -389,7 +389,7 @@ class AbstractViews[T: type]:
         for field in self._list_fields:
             if field.id() == sort:
                 if order == "desc":
-                    query = query.order_by(desc(field.sort_column()))
+                    query = query.order_by(field.sort_column().desc())
                 else:
                     query = query.order_by(field.sort_column())
         # default order by
@@ -399,7 +399,7 @@ class AbstractViews[T: type]:
 
     def _grid_rows(self, query: sqlalchemy.orm.query.Query[T], offset: int, limit: int) -> JSONList:
         # Sort on primary key as subqueryload with limit need deterministic order
-        for pkey_column in inspect(self._model).primary_key:  # type: ignore[union-attr]
+        for pkey_column in inspect(self._model).primary_key:
             query = query.order_by(pkey_column)
 
         if limit != -1:
@@ -472,7 +472,7 @@ class AbstractViews[T: type]:
         return cast("T", obj)
 
     def _model_config(self) -> JSONDict:
-        return getattr(inspect(self._model).class_, "__c2cgeoform_config__", {})  # type: ignore[union-attr]
+        return getattr(inspect(self._model).class_, "__c2cgeoform_config__", {})
 
     def _grid_actions(self) -> list[ItemAction]:
         return [
@@ -567,7 +567,7 @@ class AbstractViews[T: type]:
         dest = cast("T", source.__class__())  # type: ignore[call-overload]
         insp = inspect(source.__class__)
 
-        for prop in insp.attrs:  # type: ignore[union-attr]
+        for prop in insp.attrs:
             if isinstance(prop, ColumnProperty):
                 is_primary_key = prop.columns[0].primary_key
                 to_duplicate = model_attr_info(prop.columns[0], "c2cgeoform", "duplicate", default=True)
