@@ -1,6 +1,6 @@
 geoalchemy2
 plaster_pastedeploy
-psycopg2-binary
+psycopg[binary]
 pyramid_debugtoolbar
 pyramid_retry
 pyramid_tm
