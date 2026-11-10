@@ -103,6 +103,16 @@ jobs:
           cache-python: true
           python-version: '3.13'
 
+      # The files that are not committed but should be in the package: the compiled
+      # translations and the JavaScript bundle.
+      - name: Install packages
+        run: sudo apt-get install --yes gettext
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+      - name: Build the package files
+        run: make compile-catalog c2cgeoform/static/dist/index.js
+
       - name: Publish
         run: uv run --locked --isolated --project=.github/publish tag-publish
         env:
