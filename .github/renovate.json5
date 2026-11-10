@@ -32,6 +32,12 @@
       enabled: false,
       matchPackageNames: ['/^bootstrap$/'],
     },
+    /** Don't upgrade jQuery major versions, Bootstrap3 require jQuery<4 */
+    {
+      matchUpdateTypes: ['major'],
+      enabled: false,
+      matchPackageNames: ['/^jquery$/'],
+    },
     /** Disable upgrading the supported Python version */
     {
       matchFileNames: ['pyproject.toml'],
