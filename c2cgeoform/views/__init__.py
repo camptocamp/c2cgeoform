@@ -12,8 +12,8 @@ from c2cgeoform import JSONDict
 @view_config(route_name="c2cgeoform_locale", renderer="json")  # type: ignore[untyped-decorator]
 def set_locale_cookie(request: pyramid.request.Request) -> JSONDict | pyramid.response.Response:
     """View to change the preferred language."""
-    if request.GET["language"]:
-        language = request.GET["language"]
+    language = request.GET.get("language")
+    if language:
         request.response.set_cookie("_LOCALE_", value=language, max_age=31536000)  # max_age = year
     if request.referer is not None:
         return HTTPFound(location=request.referer, headers=request.response.headers)
